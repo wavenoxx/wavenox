@@ -5,16 +5,22 @@ import slide1 from "@/assets/slide-01.jpg";
 import slide2 from "@/assets/slide-02.jpg";
 import slide3 from "@/assets/slide-03.jpg";
 import slide4 from "@/assets/slide-04.jpg";
+import slide1Mobile from "@/assets/slide-01-mobile.jpg";
+import slide2Mobile from "@/assets/slide-02-mobile.jpg";
+import slide3Mobile from "@/assets/slide-03-mobile.jpg";
+import slide4Mobile from "@/assets/slide-04-mobile.jpg";
 
 type Slide = {
-  image: string;
+  desktopImage: string;
+  mobileImage: string;
   headline: React.ReactNode;
   sub: string;
 };
 
 const slides: Slide[] = [
   {
-    image: slide1,
+    desktopImage: slide1,
+    mobileImage: slide1Mobile,
     headline: (
       <>
         <span style={{ color: "#F57C00" }}>Absolute</span> power.
@@ -24,7 +30,8 @@ const slides: Slide[] = [
     sub: "Deploying world-class solar infrastructure for residential and commercial assets. Superior engineering, seamless execution, and absolute energy independence.",
   },
   {
-    image: slide2,
+    desktopImage: slide2,
+    mobileImage: slide2Mobile,
     headline: (
       <>
         <span style={{ color: "#F57C00" }}>Engineered</span> for the future.
@@ -33,7 +40,8 @@ const slides: Slide[] = [
     sub: "Intelligent roof architecture that actively monitors and maximizes your energy generation. Real-time data, AI-driven efficiency, and complete control.",
   },
   {
-    image: slide3,
+    desktopImage: slide3,
+    mobileImage: slide3Mobile,
     headline: (
       <>
         Your roof, your greatest <span style={{ color: "#F57C00" }}>asset</span>.
@@ -42,7 +50,8 @@ const slides: Slide[] = [
     sub: "Turn sunlight into a high-yielding financial investment. Eliminate rising electricity costs instantly and secure maximum government subsidies across Hyderabad.",
   },
   {
-    image: slide4,
+    desktopImage: slide4,
+    mobileImage: slide4Mobile,
     headline: (
       <>
         <span style={{ color: "#F57C00" }}>Built</span> to last a lifetime.
@@ -71,31 +80,44 @@ export function Hero() {
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black text-white">
-      {/* Background slides */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, scale: 1.08 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ opacity: { duration: 1.2 }, scale: { duration: 7, ease: "linear" } }}
-          className="absolute inset-0"
-        >
-          <img
-            src={current.image}
-            alt=""
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* Background slides — stacked, crossfade via opacity */}
+      <div className="absolute inset-0">
+        {slides.map((s, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000 ease-out"
+            style={{ opacity: i === index ? 1 : 0 }}
+            aria-hidden={i !== index}
+          >
+            <img
+              src={s.desktopImage}
+              alt=""
+              className="hidden md:block h-full w-full object-cover"
+              draggable={false}
+            />
+            <img
+              src={s.mobileImage}
+              alt=""
+              className="block md:hidden h-full w-full object-cover"
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
 
-      {/* Gradient overlay: strong left → transparent right */}
+      {/* Gradient overlay: strong left → transparent right (desktop); stronger bottom on mobile */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 hidden md:block"
         style={{
           background:
             "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 30%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.05) 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 md:hidden"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.85) 100%)",
         }}
       />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-black/70 to-transparent" />
@@ -189,12 +211,12 @@ export function Hero() {
 
           <a
             href="#"
-            className="group relative mt-8 inline-flex w-full items-center justify-center gap-3 overflow-hidden border border-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] transition-colors duration-300 hover:text-black md:mt-10 md:w-auto md:px-8 md:py-4 md:text-sm"
+            className="group relative mt-8 inline-flex w-auto max-w-fit items-center justify-center gap-2 overflow-hidden border border-white px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 hover:text-black md:mt-10 md:gap-3 md:px-8 md:py-4 md:text-sm"
           >
             <span className="absolute inset-0 -z-0 origin-left scale-x-0 bg-white transition-transform duration-500 ease-out group-hover:scale-x-100" />
             <span className="relative z-10">Unlock Energy Independence</span>
             <ArrowRight
-              className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1"
+              className="relative z-10 h-3.5 w-3.5 transition-transform group-hover:translate-x-1 md:h-4 md:w-4"
               style={{ color: "#F57C00" }}
             />
           </a>
