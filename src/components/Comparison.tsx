@@ -162,18 +162,23 @@ export function Comparison() {
             </span>
           </motion.div>
 
-          <motion.h2
+          <motion.div
             variants={headerVariants}
-            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white md:text-4xl"
+            className="mt-6 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8"
           >
-            Conventional Solar VS{" "}
+            <span className="text-3xl font-medium text-gray-400 md:text-4xl">
+              Conventional Solar
+            </span>
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-bold text-gray-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] backdrop-blur-md">
+              VS
+            </span>
             <span
-              className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
+              className="text-3xl font-bold text-[#F57C00] md:text-4xl"
               style={{ filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))" }}
             >
               Wavenox Architecture
             </span>
-          </motion.h2>
+          </motion.div>
 
           <motion.p
             variants={headerVariants}
