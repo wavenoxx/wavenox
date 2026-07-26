@@ -191,7 +191,7 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-20 mx-auto flex h-[calc(100vh-92px)] max-w-[1400px] flex-col justify-center px-6 md:px-12">
-        <div className="max-w-2xl">
+        <div className="flex w-full flex-col items-start justify-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={index}
@@ -200,7 +200,7 @@ export function Hero() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1 className="text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="max-w-[280px] text-balance text-3xl font-bold leading-[1.05] tracking-tight sm:max-w-xs sm:text-4xl md:max-w-2xl md:text-5xl lg:text-6xl">
                 {current.headline}
               </h1>
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/75 md:text-base">
