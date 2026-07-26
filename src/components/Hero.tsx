@@ -24,7 +24,7 @@ const slides: Slide[] = [
     headline: (
       <>
         <span style={{ color: "#F57C00" }}>Absolute</span> power.
-        <br className="hidden sm:block" /> Zero compromise.
+        <br className="hidden sm:block" /> Zero compromise
       </>
     ),
     sub: "Deploying world-class solar infrastructure for residential and commercial assets. Superior engineering, seamless execution, and absolute energy independence.",
@@ -34,7 +34,7 @@ const slides: Slide[] = [
     mobileImage: slide2Mobile,
     headline: (
       <>
-        <span style={{ color: "#F57C00" }}>Engineered</span> for the future.
+        <span style={{ color: "#F57C00" }}>Engineered</span> for the future
       </>
     ),
     sub: "Intelligent roof architecture that actively monitors and maximizes your energy generation. Real-time data, AI-driven efficiency, and complete control.",
@@ -44,7 +44,7 @@ const slides: Slide[] = [
     mobileImage: slide3Mobile,
     headline: (
       <>
-        Your roof, your greatest <span style={{ color: "#F57C00" }}>asset</span>.
+        Your roof, your greatest <span style={{ color: "#F57C00" }}>asset</span>
       </>
     ),
     sub: "Turn sunlight into a high-yielding financial investment. Eliminate rising electricity costs instantly and secure maximum government subsidies across Hyderabad.",
@@ -54,7 +54,7 @@ const slides: Slide[] = [
     mobileImage: slide4Mobile,
     headline: (
       <>
-        <span style={{ color: "#F57C00" }}>Built</span> to last a lifetime.
+        <span style={{ color: "#F57C00" }}>Built</span> to last a lifetime
       </>
     ),
     sub: "From ultra-premium villas to massive commercial hubs, Wavenox delivers Tier-1 solar performance backed by an ironclad 25-year structural warranty.",
@@ -200,7 +200,7 @@ export function Hero() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1 className="text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 {current.headline}
               </h1>
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/75 md:text-base">
