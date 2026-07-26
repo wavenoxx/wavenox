@@ -44,7 +44,7 @@ const slides: Slide[] = [
     mobileImage: slide3Mobile,
     headline: (
       <>
-        Your roof, your greatest <span style={{ color: "#F57C00" }}>asset</span>
+        Your roof your greatest <span style={{ color: "#F57C00" }}>asset</span>
       </>
     ),
     sub: "Turn sunlight into a high-yielding financial investment. Eliminate rising electricity costs instantly and secure maximum government subsidies across Hyderabad.",
