@@ -47,7 +47,7 @@ const features: Feature[] = [
 const containerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.15, delayChildren: 0.05 },
   },
 };
 
@@ -56,7 +56,7 @@ const cardVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, ease: "easeOut" },
   },
 };
 
@@ -101,7 +101,7 @@ export function Features() {
           className="mx-auto max-w-3xl text-center"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.4 }}
+          viewport={{ once: true, amount: 0.1, margin: "100px 0px 100px 0px" }}
           variants={containerVariants}
         >
           <motion.div variants={headerVariants} className="flex justify-center">
@@ -136,10 +136,10 @@ export function Features() {
 
         {/* Cards */}
         <motion.div
-          className="mt-14 grid grid-cols-1 gap-5 sm:gap-6 md:mt-20 md:grid-cols-2 xl:grid-cols-4"
+          className="mt-14 grid min-h-[240px] grid-cols-1 gap-5 sm:gap-6 md:mt-20 md:grid-cols-2 xl:grid-cols-4"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
+          viewport={{ once: true, amount: 0.1, margin: "100px 0px 100px 0px" }}
           variants={containerVariants}
         >
           {features.map((feature) => {
