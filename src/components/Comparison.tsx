@@ -166,14 +166,13 @@ export function Comparison() {
             variants={headerVariants}
             className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white md:text-4xl"
           >
-            Conventional Solar vs.{" "}
+            Conventional Solar VS{" "}
             <span
               className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
               style={{ filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))" }}
             >
               Wavenox Architecture
             </span>
-            .
           </motion.h2>
 
           <motion.p
