@@ -12,35 +12,35 @@ type Feature = {
 const features: Feature[] = [
   {
     icon: Wind,
-    title: "Wind Warrior",
-    stat: "250 kmph",
+    title: "TIER-1 RESILIENCE",
+    stat: "Cyclone-Proof",
     description:
-      "Engineered to withstand cyclonic wind speeds that destroy conventional solar panels.",
-    proof: "vs <100 kmph standard",
+      "Engineered with ultra-durable aerospace-grade mounting structures to withstand extreme weather and high wind velocities across India.",
+    proof: "Structurally superior to conventional mounts",
   },
   {
     icon: Zap,
-    title: "Power Dense",
-    stat: "13W/sqft",
+    title: "MAXIMUM YIELD",
+    stat: "Ultra-High Efficiency",
     description:
-      "Generates 13 watts per square foot — 30% more than conventional panels at 10W/sqft.",
-    proof: "30% more generation",
+      "Utilizing advanced Mono PERC half-cut cell technology to generate up to 30% more power per square foot than standard rooftop installations.",
+    proof: "30% more energy in the same roof space",
   },
   {
     icon: ShieldCheck,
-    title: "Zero Micro-Cracks",
-    stat: "Never",
+    title: "ZERO DEGRADATION",
+    stat: "25-Year Lifespan",
     description:
-      "Monolithic structure eliminates micro-cracks, maintaining peak performance for 25+ years.",
-    proof: "Structurally superior",
+      "Flawless monolithic installation eliminates micro-cracking and thermal stress, ensuring peak energy generation for decades without maintenance.",
+    proof: "Ironclad 25-Year Performance Warranty",
   },
   {
     icon: Wrench,
-    title: "Rapid Deploy",
-    stat: "1 Step",
+    title: "SEAMLESS INTEGRATION",
+    stat: "Zero Hassle",
     description:
-      "A single integrated installation vs. conventional two-step processes. Faster, cheaper, cleaner.",
-    proof: "vs 2-step conventional",
+      "From customized 3D roof mapping to final net-metering and government subsidy approvals, we handle the entire end-to-end solar deployment process.",
+    proof: "Turnkey EPC Solution",
   },
 ];
 
