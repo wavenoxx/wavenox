@@ -23,7 +23,7 @@ const slides: Slide[] = [
     mobileImage: slide1Mobile,
     headline: (
       <>
-        <span style={{ color: "#F57C00" }}>Absolute</span> power.
+        <span style={{ color: "#F57C00" }}>Absolute</span> power
         <br className="hidden sm:block" /> Zero compromise
       </>
     ),
