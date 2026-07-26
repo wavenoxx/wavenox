@@ -106,22 +106,22 @@ export function Features() {
         >
           <motion.div variants={headerVariants} className="flex justify-center">
             <span className="inline-flex items-center rounded-full border border-[#F57C00]/40 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F5B366] backdrop-blur-xl shadow-[0_0_30px_-10px_rgba(245,124,0,0.4)]">
-              Why Wavenox
+              THE WAVENOX ADVANTAGE
             </span>
           </motion.div>
 
           <motion.h2
             variants={headerVariants}
-            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
+            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white md:text-4xl lg:text-5xl"
           >
-            Engineering That{" "}
+            The pinnacle of solar{" "}
             <span
               className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
               style={{
                 filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))",
               }}
             >
-              Outperforms
+              architecture
             </span>
           </motion.h2>
 
@@ -129,8 +129,9 @@ export function Features() {
             variants={headerVariants}
             className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base"
           >
-            Built for India's harshest climates. Engineered to generate maximum
-            revenue while protecting your most valuable asset.
+            Engineered exclusively for Indian climates. Wavenox delivers maximum
+            energy yields, eliminating your electricity bills while drastically
+            increasing your property value.
           </motion.p>
         </motion.div>
 
