@@ -12,35 +12,35 @@ type Feature = {
 const features: Feature[] = [
   {
     icon: Wind,
-    title: "Wind Warrior",
-    stat: "250 kmph",
+    title: "TIER-1 RESILIENCE",
+    stat: "Cyclone-Proof",
     description:
-      "Engineered to withstand cyclonic wind speeds that destroy conventional solar panels.",
-    proof: "vs <100 kmph standard",
+      "Engineered with ultra-durable aerospace-grade mounting structures to withstand extreme weather and high wind velocities across India.",
+    proof: "Structurally superior to conventional mounts",
   },
   {
     icon: Zap,
-    title: "Power Dense",
-    stat: "13W/sqft",
+    title: "MAXIMUM YIELD",
+    stat: "Ultra-High Efficiency",
     description:
-      "Generates 13 watts per square foot — 30% more than conventional panels at 10W/sqft.",
-    proof: "30% more generation",
+      "Utilizing advanced Mono PERC half-cut cell technology to generate up to 30% more power per square foot than standard rooftop installations.",
+    proof: "30% more energy in the same roof space",
   },
   {
     icon: ShieldCheck,
-    title: "Zero Micro-Cracks",
-    stat: "Never",
+    title: "ZERO DEGRADATION",
+    stat: "25-Year Lifespan",
     description:
-      "Monolithic structure eliminates micro-cracks, maintaining peak performance for 25+ years.",
-    proof: "Structurally superior",
+      "Flawless monolithic installation eliminates micro-cracking and thermal stress, ensuring peak energy generation for decades without maintenance.",
+    proof: "Ironclad 25-Year Performance Warranty",
   },
   {
     icon: Wrench,
-    title: "Rapid Deploy",
-    stat: "1 Step",
+    title: "SEAMLESS INTEGRATION",
+    stat: "Zero Hassle",
     description:
-      "A single integrated installation vs. conventional two-step processes. Faster, cheaper, cleaner.",
-    proof: "vs 2-step conventional",
+      "From customized 3D roof mapping to final net-metering and government subsidy approvals, we handle the entire end-to-end solar deployment process.",
+    proof: "Turnkey EPC Solution",
   },
 ];
 
@@ -106,22 +106,22 @@ export function Features() {
         >
           <motion.div variants={headerVariants} className="flex justify-center">
             <span className="inline-flex items-center rounded-full border border-[#F57C00]/40 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F5B366] backdrop-blur-xl shadow-[0_0_30px_-10px_rgba(245,124,0,0.4)]">
-              Why Wavenox
+              THE WAVENOX ADVANTAGE
             </span>
           </motion.div>
 
           <motion.h2
             variants={headerVariants}
-            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
+            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white md:text-4xl lg:text-5xl"
           >
-            Engineering That{" "}
+            The pinnacle of solar{" "}
             <span
               className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
               style={{
                 filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))",
               }}
             >
-              Outperforms
+              architecture
             </span>
           </motion.h2>
 
@@ -129,8 +129,9 @@ export function Features() {
             variants={headerVariants}
             className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base"
           >
-            Built for India's harshest climates. Engineered to generate maximum
-            revenue while protecting your most valuable asset.
+            Engineered exclusively for Indian climates. Wavenox delivers maximum
+            energy yields, eliminating your electricity bills while drastically
+            increasing your property value.
           </motion.p>
         </motion.div>
 
