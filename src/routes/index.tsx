@@ -28,6 +28,7 @@ function Index() {
   return (
     <main className="bg-black">
       <Hero />
+      <Features />
     </main>
   );
 }
