@@ -209,17 +209,6 @@ export function Hero() {
             </motion.div>
           </AnimatePresence>
 
-          <a
-            href="#"
-            className="group relative mt-8 inline-flex w-auto max-w-fit items-center justify-center gap-2 overflow-hidden border border-white px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 hover:text-black md:mt-10 md:gap-3 md:px-8 md:py-4 md:text-sm"
-          >
-            <span className="absolute inset-0 -z-0 origin-left scale-x-0 bg-white transition-transform duration-500 ease-out group-hover:scale-x-100" />
-            <span className="relative z-10">Unlock Energy Independence</span>
-            <ArrowRight
-              className="relative z-10 h-3.5 w-3.5 transition-transform group-hover:translate-x-1 md:h-4 md:w-4"
-              style={{ color: "#F57C00" }}
-            />
-          </a>
         </div>
       </div>
 
