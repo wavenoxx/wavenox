@@ -125,16 +125,16 @@ export function Ecosystem() {
     target: containerRef,
     offset: ["start start", "end end"],
   });
-  // Real-physics inertia — vertical scroll drives horizontal pan, then glides to rest.
-  const smooth = useSpring(scrollYProgress, { damping: 20, stiffness: 100, mass: 0.5 });
+  // Real-world physics inertia — vertical scroll drives horizontal pan via a spring.
+  const smooth = useSpring(scrollYProgress, { stiffness: 50, damping: 20, restDelta: 0.001 });
 
   // Three parallax layers moving at different speeds for cinematic depth.
-  const xBg = useTransform(smooth, [0, 1], ["0%", "-20%"]);
-  const xMid = useTransform(smooth, [0, 1], ["0%", "-65%"]);
-  const xFg = useTransform(smooth, [0, 1], ["0%", "-85%"]);
+  const xBg = useTransform(smooth, [0, 1], ["0%", "-30%"]);
+  const xMid = useTransform(smooth, [0, 1], ["0%", "-90%"]);
+  const xFg = useTransform(smooth, [0, 1], ["0%", "-95%"]);
 
   return (
-    <section ref={containerRef} className="relative bg-black h-[400vh] md:h-[300vh]">
+    <section ref={containerRef} className="relative bg-black h-[1000vh]">
       <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
         {/* Layer 1 — Background: slow-panning cyber grid */}
         <motion.div
