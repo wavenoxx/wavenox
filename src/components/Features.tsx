@@ -146,40 +146,45 @@ export function Features() {
                   aria-hidden
                   className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-[#F57C00]/0 via-[#F57C00]/0 to-[#F57C00]/0 opacity-0 blur transition-opacity duration-500 group-hover:from-[#FFB547]/60 group-hover:via-[#F57C00]/40 group-hover:to-transparent group-hover:opacity-100"
                 />
-                <div className="relative flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-2xl transition-colors duration-500 group-hover:border-[#F57C00]/40 md:p-8">
-                  {/* Icon */}
-                  <div className="relative mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-500 group-hover:scale-110 group-hover:border-[#F57C00]/50 group-hover:bg-[#F57C00]/10 group-hover:shadow-[0_0_40px_-5px_rgba(245,124,0,0.6)]">
-                    <Icon
-                      className="h-5 w-5 text-[#F5B366] transition-colors duration-500 group-hover:text-[#FFB547]"
-                      strokeWidth={1.8}
-                    />
-                  </div>
+                <div className="relative overflow-hidden rounded-2xl p-px">
+                  {/* 24/7 rotating conic-gradient border */}
+                  <span aria-hidden className="card-glow-spin opacity-70" />
+                  <div className="relative flex h-full flex-col rounded-2xl border border-white/10 bg-black/90 p-6 backdrop-blur-2xl transition-colors duration-500 group-hover:border-[#F57C00]/40 md:p-8">
+                    {/* Icon */}
+                    <div className="relative mb-6 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-500 group-hover:scale-110 group-hover:border-[#F57C00]/50 group-hover:bg-[#F57C00]/10 group-hover:shadow-[0_0_40px_-5px_rgba(245,124,0,0.6)]">
+                      <Icon
+                        className="h-5 w-5 text-[#F5B366] transition-colors duration-500 group-hover:text-[#FFB547]"
+                        strokeWidth={1.8}
+                      />
+                    </div>
 
-                  <h3 className="text-[10px] font-medium uppercase tracking-widest text-gray-400 md:text-xs">
-                    {feature.title}
-                  </h3>
+                    <h3 className="text-[10px] font-medium uppercase tracking-widest text-gray-400 md:text-xs">
+                      {feature.title}
+                    </h3>
 
-                  <p
-                    className="mt-3 bg-gradient-to-br from-[#FFB547] to-[#E56A00] bg-clip-text text-xl font-semibold tracking-tight text-transparent md:text-2xl"
-                    style={{
-                      filter: "drop-shadow(0 0 18px rgba(245,124,0,0.25))",
-                    }}
-                  >
-                    {feature.stat}
-                  </p>
+                    <p
+                      className="mt-3 bg-gradient-to-br from-[#FFB547] to-[#E56A00] bg-clip-text text-xl font-semibold tracking-tight text-transparent md:text-2xl"
+                      style={{
+                        filter: "drop-shadow(0 0 18px rgba(245,124,0,0.25))",
+                      }}
+                    >
+                      {feature.stat}
+                    </p>
 
-                  <p className="mt-4 text-xs leading-relaxed text-gray-400 md:text-sm">
-                    {feature.description}
-                  </p>
+                    <p className="mt-4 text-xs leading-relaxed text-gray-400 md:text-sm">
+                      {feature.description}
+                    </p>
 
-                  <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-4">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#F57C00] shadow-[0_0_8px_rgba(245,124,0,0.8)]" />
-                    <span className="text-[10px] text-gray-500 md:text-xs">
-                      {feature.proof}
-                    </span>
+                    <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-4">
+                      <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[#F57C00] shadow-[0_0_8px_rgba(245,124,0,0.8)]" />
+                      <span className="text-[10px] text-gray-500 md:text-xs">
+                        {feature.proof}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </motion.article>
+
             );
           })}
         </motion.div>
