@@ -134,17 +134,6 @@ export function Comparison() {
     <section className="relative overflow-hidden bg-black py-20 md:py-32">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at center, black 40%, transparent 80%)",
-        }}
-      />
-      <div
-        aria-hidden
         className="pointer-events-none absolute left-1/2 top-40 h-[380px] w-[900px] -translate-x-1/2 rounded-full bg-[#F57C00]/8 blur-[140px]"
       />
 
