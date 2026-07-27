@@ -65,7 +65,7 @@ export function Press() {
       className="relative overflow-hidden"
       style={{ backgroundImage: "none", backgroundColor: "#000000" }}
     >
-      <div className="mx-auto max-w-7xl px-4 pt-32 pb-16 md:pb-24">
+      <div className="mx-auto max-w-7xl px-4 pt-16 pb-16 md:pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
