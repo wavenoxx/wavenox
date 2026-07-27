@@ -140,7 +140,7 @@ export function Ecosystem() {
         <motion.div
           aria-hidden
           style={{ x: xBg }}
-          className="pointer-events-none absolute inset-0 w-[500vw] md:w-[240vw] will-change-transform"
+          className="pointer-events-none absolute inset-0 w-[1000vw] will-change-transform"
         >
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:20px_20px] opacity-70" />
           <div className="absolute left-1/2 top-1/2 h-[520px] w-[1100px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F57C00]/[0.06] blur-[160px]" />
