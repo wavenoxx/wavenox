@@ -35,9 +35,27 @@
     border-color: var(--color-border);
   }
   html, body {
-    background-color: var(--color-background);
+    background-color: #000000 !important;
+    background-image: none !important;
     color: var(--color-foreground);
     font-family: var(--font-display);
     -webkit-font-smoothing: antialiased;
   }
 }
+
+@keyframes border-spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@utility card-glow-spin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200%;
+  aspect-ratio: 1 / 1;
+  background: conic-gradient(from 0deg, transparent 0%, rgba(245,124,0,0.55) 12%, transparent 25%, transparent 50%, rgba(245,124,0,0.35) 62%, transparent 75%);
+  animation: border-spin 6s linear infinite;
+  pointer-events: none;
+}
+

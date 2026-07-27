@@ -28,12 +28,15 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="bg-black">
+    <main
+      className="bg-black"
+      style={{ backgroundImage: "none", backgroundColor: "#000000" }}
+    >
       <Hero />
       <Features />
       <Comparison />
       <DataMatrix />
     </main>
-
   );
 }
+

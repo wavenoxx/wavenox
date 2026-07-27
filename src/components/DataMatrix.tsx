@@ -83,7 +83,7 @@ const headerVariants: Variants = {
 
 export function DataMatrix() {
   return (
-    <section className="relative overflow-hidden bg-black py-20 md:py-32">
+    <section className="relative overflow-hidden bg-black py-32 md:py-48">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/3 h-[400px] w-[900px] -translate-x-1/2 rounded-full bg-[#F57C00]/8 blur-[160px]"
@@ -105,12 +105,12 @@ export function DataMatrix() {
 
           <motion.div
             variants={headerVariants}
-            className="mt-10 flex flex-col items-center justify-center gap-4 md:mt-14 md:flex-row md:gap-8"
+            className="mt-16 flex flex-col items-center justify-center gap-6 md:mt-24 md:flex-row md:gap-10"
           >
             <span className="whitespace-nowrap text-xl font-medium text-gray-400 sm:text-2xl md:text-3xl lg:text-4xl">
               Conventional Roof
             </span>
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-bold text-gray-300 backdrop-blur-md">
+            <span className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-sm font-bold tracking-[0.28em] text-white/80 backdrop-blur-2xl shadow-[0_0_40px_-15px_rgba(245,124,0,0.5)] md:px-10 md:py-5 md:text-base">
               VS
             </span>
             <span
@@ -123,21 +123,25 @@ export function DataMatrix() {
 
           <motion.p
             variants={headerVariants}
-            className="mx-auto mt-8 max-w-2xl text-balance text-sm leading-relaxed text-white/60 md:mt-10 md:text-base"
+            className="mx-auto mt-10 max-w-2xl text-balance text-sm leading-relaxed text-white/60 md:mt-14 md:text-base"
           >
             Analyze the raw performance metrics. See exactly why commercial and
             residential owners are abandoning conventional solar
           </motion.p>
         </motion.div>
 
+
         {/* Data matrix */}
         <motion.div
-          className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-2xl md:mt-16"
+          className="relative mt-12 overflow-hidden rounded-2xl p-px md:mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1, margin: "100px 0px 100px 0px" }}
           variants={container}
         >
+          <span aria-hidden className="card-glow-spin opacity-60" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/90 backdrop-blur-2xl">
+
           {/* Column headers - desktop only */}
           <div className="hidden grid-cols-[1.5fr_1fr_1fr] gap-4 border-b border-white/10 bg-white/[0.02] px-6 py-4 md:grid md:px-8">
             <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/40">
@@ -224,7 +228,7 @@ export function DataMatrix() {
                       className="inline-flex items-center gap-2 text-sm font-semibold text-[#F57C00] transition-[filter] duration-300 group-hover:[filter:drop-shadow(0_0_10px_rgba(245,124,0,0.6))] md:text-base"
                     >
                       {row.wavenox.stat}
-                      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#F57C00]/20 shadow-[0_0_10px_rgba(245,124,0,0.5)]">
+                      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#F57C00]/20 shadow-[0_0_10px_rgba(245,124,0,0.5)] animate-pulse">
                         <Check
                           className="h-2.5 w-2.5 text-[#FFB547]"
                           strokeWidth={3}
@@ -239,8 +243,10 @@ export function DataMatrix() {
               </motion.div>
             );
           })}
+          </div>
         </motion.div>
       </div>
     </section>
+
   );
 }
