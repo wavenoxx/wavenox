@@ -323,7 +323,7 @@ export function Ecosystem() {
         {/* Layer 3 — Foreground: fast-panning particles + overlay laser for depth */}
         <motion.div
           style={{ x: xFg }}
-          className="pointer-events-none absolute inset-0 flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform"
+          className="pointer-events-none absolute inset-0 flex h-full w-[1000vw] items-center will-change-transform"
         >
           <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet" className="block h-full w-full" aria-hidden>
             <defs>
