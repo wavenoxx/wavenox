@@ -7,6 +7,7 @@ import { Ecosystem } from "@/components/Ecosystem";
 import { RoiEngine } from "@/components/RoiEngine";
 import { Process } from "@/components/Process";
 import { Portfolio } from "@/components/Portfolio";
+import { Press } from "@/components/Press";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,6 +45,7 @@ function Index() {
       <RoiEngine />
       <Process />
       <Portfolio />
+      <Press />
     </main>
   );
 }
