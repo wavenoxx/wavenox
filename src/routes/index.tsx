@@ -33,7 +33,6 @@ function Index() {
       <Features />
       <Comparison />
       <DataMatrix />
-      <Ecosystem />
     </main>
 
   );
