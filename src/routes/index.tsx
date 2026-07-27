@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { Comparison } from "@/components/Comparison";
 import { DataMatrix } from "@/components/DataMatrix";
+import { Ecosystem } from "@/components/Ecosystem";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +34,7 @@ function Index() {
       <Features />
       <Comparison />
       <DataMatrix />
+      <Ecosystem />
     </main>
 
   );
