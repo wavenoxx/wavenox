@@ -100,13 +100,13 @@ export function Features() {
 
           <motion.h2
             variants={headerVariants}
-            className="mt-6 text-3xl font-bold leading-[1.1] tracking-tight text-white md:text-4xl lg:text-5xl"
+            className="mt-10 text-3xl font-bold leading-[1.1] tracking-tight text-white md:mt-14 md:text-4xl lg:text-5xl"
           >
             The pinnacle of solar{" "}
             <span
               className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
               style={{
-                filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))",
+                filter: "drop-shadow(0 0 10px rgba(245,124,0,0.35))",
               }}
             >
               architecture
@@ -115,7 +115,7 @@ export function Features() {
 
           <motion.p
             variants={headerVariants}
-            className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base"
+            className="mx-auto mt-8 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base"
           >
             Engineered exclusively for Indian climates. Wavenox delivers maximum
             energy yields, eliminating your electricity bills while drastically
