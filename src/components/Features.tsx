@@ -69,8 +69,9 @@ export function Features() {
   return (
     <section
       id="why-wavenox"
-      className="relative overflow-hidden bg-black py-20 md:py-32"
+      className="relative overflow-hidden bg-black py-32 md:py-48"
     >
+
       <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0"
