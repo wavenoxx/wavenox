@@ -110,7 +110,7 @@ export function DataMatrix() {
             <span className="whitespace-nowrap text-xl font-medium text-gray-400 sm:text-2xl md:text-3xl lg:text-4xl">
               Conventional Roof
             </span>
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-[11px] font-bold tracking-[0.15em] text-white/80 backdrop-blur-2xl shadow-[0_0_24px_-10px_rgba(245,124,0,0.5)] md:h-12 md:w-12 md:text-xs">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.04] text-xs font-bold tracking-[0.15em] text-white/80 backdrop-blur-2xl shadow-[0_0_24px_-10px_rgba(245,124,0,0.5)]">
               VS
             </span>
             <span
