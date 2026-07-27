@@ -86,17 +86,6 @@ export function DataMatrix() {
     <section className="relative overflow-hidden bg-black py-20 md:py-32">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at center, black 40%, transparent 80%)",
-        }}
-      />
-      <div
-        aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/3 h-[400px] w-[900px] -translate-x-1/2 rounded-full bg-[#F57C00]/8 blur-[160px]"
       />
 
@@ -116,17 +105,17 @@ export function DataMatrix() {
 
           <motion.div
             variants={headerVariants}
-            className="mt-6 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8"
+            className="mt-10 flex flex-col items-center justify-center gap-4 md:mt-14 md:flex-row md:gap-8"
           >
-            <span className="text-2xl font-medium text-gray-400 md:text-4xl">
+            <span className="whitespace-nowrap text-xl font-medium text-gray-400 sm:text-2xl md:text-3xl lg:text-4xl">
               Conventional Roof
             </span>
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-bold text-gray-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] backdrop-blur-md">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-bold text-gray-300 backdrop-blur-md">
               VS
             </span>
             <span
-              className="text-2xl font-bold text-[#F57C00] md:text-4xl"
-              style={{ filter: "drop-shadow(0 0 24px rgba(245,124,0,0.35))" }}
+              className="whitespace-nowrap text-xl font-bold text-[#F57C00] sm:text-2xl md:text-3xl lg:text-4xl"
+              style={{ filter: "drop-shadow(0 0 10px rgba(245,124,0,0.35))" }}
             >
               Wavenox Supremacy
             </span>
@@ -134,7 +123,7 @@ export function DataMatrix() {
 
           <motion.p
             variants={headerVariants}
-            className="mx-auto mt-5 max-w-2xl text-balance text-sm leading-relaxed text-white/60 md:text-base"
+            className="mx-auto mt-8 max-w-2xl text-balance text-sm leading-relaxed text-white/60 md:mt-10 md:text-base"
           >
             Analyze the raw performance metrics. See exactly why commercial and
             residential owners are abandoning conventional solar
