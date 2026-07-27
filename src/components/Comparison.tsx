@@ -131,7 +131,7 @@ export function Comparison() {
   const rightDim = hovered === "left";
 
   return (
-    <section className="relative overflow-hidden bg-black py-32 md:py-48">
+    <section className="relative overflow-hidden bg-black py-16 md:py-24">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-40 h-[380px] w-[900px] -translate-x-1/2 rounded-full bg-[#F57C00]/8 blur-[140px]"
@@ -153,12 +153,12 @@ export function Comparison() {
 
           <motion.div
             variants={headerVariants}
-            className="mt-16 flex flex-col items-center justify-center gap-6 md:mt-24 md:flex-row md:gap-10"
+            className="mt-10 flex flex-col items-center justify-center gap-4 md:mt-14 md:flex-row md:gap-6"
           >
             <span className="whitespace-nowrap text-xl font-medium text-gray-400 sm:text-2xl md:text-3xl lg:text-4xl">
               Conventional Solar
             </span>
-            <span className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-sm font-bold tracking-[0.28em] text-white/80 backdrop-blur-2xl shadow-[0_0_40px_-15px_rgba(245,124,0,0.5)] md:px-10 md:py-5 md:text-base">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-[11px] font-bold tracking-[0.15em] text-white/80 backdrop-blur-2xl shadow-[0_0_24px_-10px_rgba(245,124,0,0.5)] md:h-12 md:w-12 md:text-xs">
               VS
             </span>
             <span
