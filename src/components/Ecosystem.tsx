@@ -148,6 +148,7 @@ export function Ecosystem() {
                 </div>
               </article>
             ))}
+            <div aria-hidden className="shrink-0 w-[10vw] md:w-[6vw]" />
           </motion.div>
         </div>
       </div>
