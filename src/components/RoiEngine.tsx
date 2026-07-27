@@ -130,9 +130,11 @@ export function RoiEngine() {
   const conv = computeYield(sqft, WATTS_PER_SQFT_CONV);
   const savings = wx.lifetimeInr - conv.lifetimeInr;
 
-  const maxL = Math.max(wx.lifetimeInr, conv.lifetimeInr, 1);
-  const wxPct = (wx.lifetimeInr / maxL) * 100;
-  const convPct = (conv.lifetimeInr / maxL) * 100;
+  // Fixed ceiling based on max slider (100,000 sqft) at Wavenox density so
+  // Wavenox is always taller than Conventional and both bars scale live.
+  const maxPossibleYield = computeYield(100000, WATTS_PER_SQFT_WAVENOX).lifetimeInr;
+  const wxPct = Math.max((wx.lifetimeInr / maxPossibleYield) * 100, 8);
+  const convPct = Math.max((conv.lifetimeInr / maxPossibleYield) * 100, 5);
 
   return (
     <section

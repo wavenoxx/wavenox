@@ -63,7 +63,7 @@ export function Ecosystem() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const physics = useSpring(scrollYProgress, { stiffness: 50, damping: 20, mass: 0.5 });
-  const x = useTransform(physics, [0, 1], ["2%", "-72%"]);
+  const x = useTransform(physics, [0, 1], ["2%", "-85%"]);
 
   return (
     <section
@@ -148,6 +148,7 @@ export function Ecosystem() {
                 </div>
               </article>
             ))}
+            <div aria-hidden className="shrink-0 w-[10vw] md:w-[6vw]" />
           </motion.div>
         </div>
       </div>
