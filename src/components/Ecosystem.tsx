@@ -73,13 +73,13 @@ export function Ecosystem() {
     >
       <div className="sticky top-0 flex h-screen flex-col overflow-hidden">
         {/* Header */}
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-24 text-center sm:px-8 md:pt-32">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-24 text-center sm:px-8 md:pb-32 md:pt-32">
           <div className="flex justify-center">
             <span className="inline-flex items-center rounded-full border border-[#F57C00]/40 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.32em] text-[#F5B366] backdrop-blur-xl shadow-[0_0_30px_-10px_rgba(245,124,0,0.5)]">
               Step 05 — Infinite Scalability
             </span>
           </div>
-          <h2 className="mt-8 text-3xl font-bold leading-[1.05] tracking-tight text-white md:mt-12 md:text-5xl lg:text-6xl">
+          <h2 className="mt-10 text-3xl font-bold leading-[1.1] tracking-tight text-white md:mt-14 md:text-4xl lg:text-5xl">
             The{" "}
             <span
               className="bg-gradient-to-r from-[#FFB547] via-[#F57C00] to-[#C25A00] bg-clip-text text-transparent"
@@ -89,10 +89,10 @@ export function Ecosystem() {
             </span>{" "}
             Ecosystem
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-gray-300 md:mt-8 md:text-base">
+          <p className="mx-auto mt-8 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base">
             Architected for infinite scalability. From urban rooftops to
             sprawling solar forests, Wavenox adapts to your exact energy demands
-            without compromise
+            without compromise.
           </p>
         </div>
 
