@@ -131,7 +131,7 @@ export function Comparison() {
   const rightDim = hovered === "left";
 
   return (
-    <section className="relative overflow-hidden bg-black py-32 md:py-48">
+    <section className="relative overflow-hidden bg-black py-16 md:py-24">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-40 h-[380px] w-[900px] -translate-x-1/2 rounded-full bg-[#F57C00]/8 blur-[140px]"
