@@ -126,7 +126,7 @@ export function Features() {
 
         {/* Cards */}
         <motion.div
-          className="mt-14 grid min-h-[240px] grid-cols-1 gap-5 sm:gap-6 md:mt-20 md:grid-cols-2 xl:grid-cols-4"
+          className="mt-14 grid auto-rows-fr grid-cols-1 gap-5 sm:gap-6 md:mt-20 md:grid-cols-2 xl:grid-cols-4"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1, margin: "100px 0px 100px 0px" }}
@@ -140,14 +140,14 @@ export function Features() {
                 variants={cardVariants}
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="group relative rounded-2xl"
+                className="group relative h-full rounded-2xl"
               >
                 {/* Glow border layer */}
                 <div
                   aria-hidden
                   className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-[#F57C00]/0 via-[#F57C00]/0 to-[#F57C00]/0 opacity-0 blur transition-opacity duration-500 group-hover:from-[#FFB547]/60 group-hover:via-[#F57C00]/40 group-hover:to-transparent group-hover:opacity-100"
                 />
-                <div className="relative overflow-hidden rounded-2xl p-px">
+                <div className="relative h-full overflow-hidden rounded-2xl p-px">
                   {/* 24/7 rotating conic-gradient border */}
                   <span aria-hidden className="card-glow-spin opacity-70" />
                   <div className="relative flex h-full flex-col rounded-2xl border border-white/10 bg-black/90 p-6 backdrop-blur-2xl transition-colors duration-500 group-hover:border-[#F57C00]/40 md:p-8">
