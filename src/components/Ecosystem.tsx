@@ -129,7 +129,7 @@ export function Ecosystem() {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
 
   return (
-    <section ref={containerRef} className="relative bg-[#050505] h-[300vh]">
+    <section ref={containerRef} className="relative bg-black h-[300vh]">
       <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
         {/* Cyber grid background */}
         <div
