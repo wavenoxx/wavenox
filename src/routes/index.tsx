@@ -6,6 +6,7 @@ import { DataMatrix } from "@/components/DataMatrix";
 import { Ecosystem } from "@/components/Ecosystem";
 import { RoiEngine } from "@/components/RoiEngine";
 import { Process } from "@/components/Process";
+import { Portfolio } from "@/components/Portfolio";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,6 +43,7 @@ function Index() {
       <Ecosystem />
       <RoiEngine />
       <Process />
+      <Portfolio />
     </main>
   );
 }
