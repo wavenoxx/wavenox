@@ -133,12 +133,15 @@ export function DataMatrix() {
 
         {/* Data matrix */}
         <motion.div
-          className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-2xl md:mt-16"
+          className="relative mt-12 overflow-hidden rounded-2xl p-px md:mt-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1, margin: "100px 0px 100px 0px" }}
           variants={container}
         >
+          <span aria-hidden className="card-glow-spin opacity-60" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/90 backdrop-blur-2xl">
+
           {/* Column headers - desktop only */}
           <div className="hidden grid-cols-[1.5fr_1fr_1fr] gap-4 border-b border-white/10 bg-white/[0.02] px-6 py-4 md:grid md:px-8">
             <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/40">
