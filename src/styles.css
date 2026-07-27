@@ -48,6 +48,17 @@
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+@keyframes pulse-packet-move {
+  0% { left: -10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+.pulse-packet {
+  animation: pulse-packet-move 3.2s linear infinite;
+}
+
 @utility card-glow-spin {
   position: absolute;
   left: 50%;

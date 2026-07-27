@@ -5,6 +5,7 @@ import { Comparison } from "@/components/Comparison";
 import { DataMatrix } from "@/components/DataMatrix";
 import { Ecosystem } from "@/components/Ecosystem";
 import { RoiEngine } from "@/components/RoiEngine";
+import { Process } from "@/components/Process";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,6 +41,7 @@ function Index() {
       <DataMatrix />
       <Ecosystem />
       <RoiEngine />
+      <Process />
     </main>
   );
 }
