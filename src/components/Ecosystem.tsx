@@ -319,6 +319,44 @@ export function Ecosystem() {
             </svg>
           </div>
         </motion.div>
+
+        {/* Layer 3 — Foreground: fast-panning particles + overlay laser for depth */}
+        <motion.div
+          style={{ x: xFg }}
+          className="pointer-events-none absolute inset-0 flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform"
+        >
+          <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet" className="block h-full w-full" aria-hidden>
+            <defs>
+              <linearGradient id="laserGradFg" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="rgba(245,124,0,0)" />
+                <stop offset="55%" stopColor="rgba(255,180,90,1)" />
+                <stop offset="100%" stopColor="rgba(255,230,180,1)" />
+              </linearGradient>
+              <filter id="laserGlowFg" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <motion.path
+              d={ENERGY_PATH}
+              fill="none"
+              stroke="url(#laserGradFg)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeDasharray="60 1560"
+              initial={{ strokeDashoffset: 1620 }}
+              animate={{ strokeDashoffset: 0 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              filter="url(#laserGlowFg)"
+            />
+            <EnergyParticle delay={0.6} />
+            <EnergyParticle delay={1.8} />
+            <EnergyParticle delay={3.0} />
+          </svg>
+        </motion.div>
       </div>
     </section>
   );
