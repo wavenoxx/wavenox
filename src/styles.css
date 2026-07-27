@@ -59,3 +59,38 @@
   pointer-events: none;
 }
 
+/* Wavenox premium range slider */
+.wavenox-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+.wavenox-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #F57C00;
+  border: 2px solid #000;
+  box-shadow: 0 0 0 2px rgba(245,124,0,0.4), 0 0 20px rgba(245,124,0,0.7);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.wavenox-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.wavenox-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #F57C00;
+  border: 2px solid #000;
+  box-shadow: 0 0 0 2px rgba(245,124,0,0.4), 0 0 20px rgba(245,124,0,0.7);
+  cursor: pointer;
+}
+
+
