@@ -1,5 +1,5 @@
 import { motion, type Variants } from "framer-motion";
-import { ScanLine, Wrench, Zap, ArrowRight } from "lucide-react";
+import { ScanLine, Wrench, Zap } from "lucide-react";
 
 const steps = [
   {
@@ -42,7 +42,7 @@ const cardVariants: Variants = {
 export function Process() {
   return (
     <section
-      className="relative overflow-hidden py-16 md:py-24"
+      className="relative overflow-hidden py-8 md:py-12"
       style={{ backgroundImage: "none", backgroundColor: "#000000" }}
     >
       <div
@@ -50,7 +50,7 @@ export function Process() {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F57C00]/8 blur-[180px]"
       />
 
-      <div className="relative mx-auto max-w-6xl px-5 pt-16 sm:px-8 md:pt-32">
+      <div className="relative mx-auto max-w-6xl px-5 pt-8 sm:px-8 md:pt-16">
         {/* Header */}
         <motion.div
           className="mx-auto max-w-3xl text-center"
@@ -146,26 +146,8 @@ export function Process() {
           </div>
         </div>
 
-        {/* Apex CTA */}
-        <motion.div
-          className="mt-16 flex justify-center md:mt-20"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <button
-            type="button"
-            className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-b from-[#FF9A2E] to-[#F57C00] px-8 py-4 text-sm font-semibold tracking-wide text-black shadow-[0_10px_60px_-10px_rgba(245,124,0,0.8),inset_0_1px_0_rgba(255,255,255,0.35)] transition-all duration-300 hover:shadow-[0_20px_80px_-10px_rgba(245,124,0,1),inset_0_1px_0_rgba(255,255,255,0.4)] hover:-translate-y-0.5 md:text-base"
-          >
-            <span
-              aria-hidden
-              className="absolute -inset-4 -z-10 rounded-full bg-[#F57C00]/30 blur-2xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-            />
-            Initiate Architectural Scan
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.5} />
-          </button>
-        </motion.div>
+
+
       </div>
     </section>
   );
