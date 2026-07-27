@@ -71,18 +71,6 @@ export function Features() {
       id="why-wavenox"
       className="relative overflow-hidden bg-black py-20 md:py-32"
     >
-      {/* Animated technical grid background */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at center, black 40%, transparent 80%)",
-        }}
-      />
       <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0"
