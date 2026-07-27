@@ -8,6 +8,7 @@ import { RoiEngine } from "@/components/RoiEngine";
 import { Process } from "@/components/Process";
 import { Portfolio } from "@/components/Portfolio";
 import { Press } from "@/components/Press";
+import { Certifications } from "@/components/Certifications";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,6 +47,7 @@ function Index() {
       <Process />
       <Portfolio />
       <Press />
+      <Certifications />
     </main>
   );
 }
