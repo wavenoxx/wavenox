@@ -47,6 +47,7 @@ function Index() {
       <Process />
       <Portfolio />
       <Press />
+      <Certifications />
     </main>
   );
 }
