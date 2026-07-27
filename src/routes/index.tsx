@@ -39,6 +39,7 @@ function Index() {
       <Comparison />
       <DataMatrix />
       <Ecosystem />
+      <RoiEngine />
     </main>
   );
 }
