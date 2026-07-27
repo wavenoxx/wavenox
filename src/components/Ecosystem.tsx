@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 // Energy laser path weaving from solar farm -> transmission towers -> city skyline
@@ -125,22 +125,26 @@ export function Ecosystem() {
     target: containerRef,
     offset: ["start start", "end end"],
   });
-  // Pan the wide canvas horizontally as the user scrolls vertically.
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
+  // Real-physics inertia — vertical scroll drives horizontal pan, then glides to rest.
+  const smooth = useSpring(scrollYProgress, { damping: 20, stiffness: 100, mass: 0.5 });
+
+  // Three parallax layers moving at different speeds for cinematic depth.
+  const xBg = useTransform(smooth, [0, 1], ["0%", "-20%"]);
+  const xMid = useTransform(smooth, [0, 1], ["0%", "-65%"]);
+  const xFg = useTransform(smooth, [0, 1], ["0%", "-85%"]);
 
   return (
-    <section ref={containerRef} className="relative bg-[#050505] h-[300vh]">
+    <section ref={containerRef} className="relative bg-black h-[400vh] md:h-[300vh]">
       <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
-        {/* Cyber grid background */}
-        <div
+        {/* Layer 1 — Background: slow-panning cyber grid */}
+        <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:20px_20px] opacity-70"
-        />
-        {/* Ambient orange glow */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[1100px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F57C00]/[0.06] blur-[160px]"
-        />
+          style={{ x: xBg }}
+          className="pointer-events-none absolute inset-0 w-[500vw] md:w-[240vw] will-change-transform"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:20px_20px] opacity-70" />
+          <div className="absolute left-1/2 top-1/2 h-[520px] w-[1100px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F57C00]/[0.06] blur-[160px]" />
+        </motion.div>
 
         {/* Fixed header */}
         <div className="pointer-events-none absolute inset-x-0 top-10 z-20 mx-auto max-w-7xl px-5 sm:px-8 md:top-16">
@@ -160,11 +164,12 @@ export function Ecosystem() {
           </div>
         </div>
 
-        {/* Horizontally translating canvas */}
-        <motion.div style={{ x }} className="relative flex h-full w-[250vw] items-center will-change-transform md:w-[220vw]">
+        {/* Layer 2 — Midground: SVG landscape with anchored typography */}
+        <motion.div style={{ x: xMid }} className="relative flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform">
           <div className="relative h-full w-full">
             {/* Anchored floating typography over each region */}
             <div className="pointer-events-none absolute inset-0 z-10">
+
               {/* Generation ~ 10% of canvas */}
               <div className="absolute left-[8%] top-[38%] text-center">
                 <p
@@ -313,6 +318,44 @@ export function Ecosystem() {
               <EnergyParticle delay={4.8} />
             </svg>
           </div>
+        </motion.div>
+
+        {/* Layer 3 — Foreground: fast-panning particles + overlay laser for depth */}
+        <motion.div
+          style={{ x: xFg }}
+          className="pointer-events-none absolute inset-0 flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform"
+        >
+          <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet" className="block h-full w-full" aria-hidden>
+            <defs>
+              <linearGradient id="laserGradFg" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="rgba(245,124,0,0)" />
+                <stop offset="55%" stopColor="rgba(255,180,90,1)" />
+                <stop offset="100%" stopColor="rgba(255,230,180,1)" />
+              </linearGradient>
+              <filter id="laserGlowFg" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <motion.path
+              d={ENERGY_PATH}
+              fill="none"
+              stroke="url(#laserGradFg)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeDasharray="60 1560"
+              initial={{ strokeDashoffset: 1620 }}
+              animate={{ strokeDashoffset: 0 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              filter="url(#laserGlowFg)"
+            />
+            <EnergyParticle delay={0.6} />
+            <EnergyParticle delay={1.8} />
+            <EnergyParticle delay={3.0} />
+          </svg>
         </motion.div>
       </div>
     </section>

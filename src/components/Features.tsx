@@ -69,7 +69,7 @@ export function Features() {
   return (
     <section
       id="why-wavenox"
-      className="relative overflow-hidden bg-[#050505] py-20 md:py-32"
+      className="relative overflow-hidden bg-black py-20 md:py-32"
     >
       {/* Animated technical grid background */}
       <div
