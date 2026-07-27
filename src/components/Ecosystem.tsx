@@ -165,7 +165,7 @@ export function Ecosystem() {
         </div>
 
         {/* Layer 2 — Midground: SVG landscape with anchored typography */}
-        <motion.div style={{ x: xMid }} className="relative flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform">
+        <motion.div style={{ x: xMid }} className="relative flex h-full w-[1000vw] items-center will-change-transform">
           <div className="relative h-full w-full">
             {/* Anchored floating typography over each region */}
             <div className="pointer-events-none absolute inset-0 z-10">
