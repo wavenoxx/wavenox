@@ -243,8 +243,10 @@ export function DataMatrix() {
               </motion.div>
             );
           })}
+          </div>
         </motion.div>
       </div>
     </section>
+
   );
 }
