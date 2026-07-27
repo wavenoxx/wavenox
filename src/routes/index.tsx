@@ -4,6 +4,7 @@ import { Features } from "@/components/Features";
 import { Comparison } from "@/components/Comparison";
 import { DataMatrix } from "@/components/DataMatrix";
 import { Ecosystem } from "@/components/Ecosystem";
+import { RoiEngine } from "@/components/RoiEngine";
 
 export const Route = createFileRoute("/")({
   head: () => ({
