@@ -77,7 +77,7 @@ export function Certifications() {
   return (
     <section
       id="certifications"
-      className="relative overflow-hidden bg-black py-16 md:py-24"
+      className="relative overflow-hidden bg-black py-12 md:py-16"
       style={{
         backgroundImage: "none !important",
         backgroundColor: "#000000 !important",

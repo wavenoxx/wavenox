@@ -109,7 +109,7 @@ export function Press() {
       </div>
 
       {/* Article Cards */}
-      <div className="mx-auto max-w-7xl px-4 pb-32">
+      <div className="mx-auto max-w-7xl px-4 pb-24">
         <div className="grid gap-8 md:grid-cols-3 auto-rows-fr">
           {ARTICLES.map((a, i) => (
             <motion.article

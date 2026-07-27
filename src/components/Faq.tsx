@@ -65,7 +65,7 @@ export function Faq() {
   return (
     <section
       id="faq"
-      className="relative overflow-hidden py-24 md:py-32"
+      className="relative overflow-hidden py-16 md:py-20"
       style={{
         backgroundImage: "none !important",
         backgroundColor: "#000000 !important",
@@ -77,7 +77,7 @@ export function Faq() {
       />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
           {/* Left — Sticky */}
           <motion.div
             className="lg:col-span-4"
