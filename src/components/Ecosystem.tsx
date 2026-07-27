@@ -125,22 +125,22 @@ export function Ecosystem() {
     target: containerRef,
     offset: ["start start", "end end"],
   });
-  // Real-physics inertia — vertical scroll drives horizontal pan, then glides to rest.
-  const smooth = useSpring(scrollYProgress, { damping: 20, stiffness: 100, mass: 0.5 });
+  // Real-world physics inertia — vertical scroll drives horizontal pan via a spring.
+  const smooth = useSpring(scrollYProgress, { stiffness: 50, damping: 20, restDelta: 0.001 });
 
   // Three parallax layers moving at different speeds for cinematic depth.
-  const xBg = useTransform(smooth, [0, 1], ["0%", "-20%"]);
-  const xMid = useTransform(smooth, [0, 1], ["0%", "-65%"]);
-  const xFg = useTransform(smooth, [0, 1], ["0%", "-85%"]);
+  const xBg = useTransform(smooth, [0, 1], ["0%", "-30%"]);
+  const xMid = useTransform(smooth, [0, 1], ["0%", "-90%"]);
+  const xFg = useTransform(smooth, [0, 1], ["0%", "-95%"]);
 
   return (
-    <section ref={containerRef} className="relative bg-black h-[400vh] md:h-[300vh]">
+    <section ref={containerRef} className="relative bg-black h-[1000vh]">
       <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
         {/* Layer 1 — Background: slow-panning cyber grid */}
         <motion.div
           aria-hidden
           style={{ x: xBg }}
-          className="pointer-events-none absolute inset-0 w-[500vw] md:w-[240vw] will-change-transform"
+          className="pointer-events-none absolute inset-0 w-[1000vw] will-change-transform"
         >
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:20px_20px] opacity-70" />
           <div className="absolute left-1/2 top-1/2 h-[520px] w-[1100px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F57C00]/[0.06] blur-[160px]" />
@@ -165,7 +165,7 @@ export function Ecosystem() {
         </div>
 
         {/* Layer 2 — Midground: SVG landscape with anchored typography */}
-        <motion.div style={{ x: xMid }} className="relative flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform">
+        <motion.div style={{ x: xMid }} className="relative flex h-full w-[1000vw] items-center will-change-transform">
           <div className="relative h-full w-full">
             {/* Anchored floating typography over each region */}
             <div className="pointer-events-none absolute inset-0 z-10">
@@ -323,7 +323,7 @@ export function Ecosystem() {
         {/* Layer 3 — Foreground: fast-panning particles + overlay laser for depth */}
         <motion.div
           style={{ x: xFg }}
-          className="pointer-events-none absolute inset-0 flex h-full w-[400vw] md:w-[200vw] items-center will-change-transform"
+          className="pointer-events-none absolute inset-0 flex h-full w-[1000vw] items-center will-change-transform"
         >
           <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMid meet" className="block h-full w-full" aria-hidden>
             <defs>
