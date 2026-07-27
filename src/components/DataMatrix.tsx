@@ -228,7 +228,7 @@ export function DataMatrix() {
                       className="inline-flex items-center gap-2 text-sm font-semibold text-[#F57C00] transition-[filter] duration-300 group-hover:[filter:drop-shadow(0_0_10px_rgba(245,124,0,0.6))] md:text-base"
                     >
                       {row.wavenox.stat}
-                      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#F57C00]/20 shadow-[0_0_10px_rgba(245,124,0,0.5)]">
+                      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#F57C00]/20 shadow-[0_0_10px_rgba(245,124,0,0.5)] animate-pulse">
                         <Check
                           className="h-2.5 w-2.5 text-[#FFB547]"
                           strokeWidth={3}
