@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 
 export function EclipseGateway({ onUnlock }: { onUnlock: () => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const orbRef = useRef<HTMLDivElement>(null);
   const [locked, setLocked] = useState(true);
   const [flash, setFlash] = useState(false);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+
 
   useEffect(() => {
     // Lock body scroll while gateway is active
