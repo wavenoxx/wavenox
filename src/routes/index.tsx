@@ -40,6 +40,7 @@ function Index() {
       className="bg-black"
       style={{ backgroundImage: "none", backgroundColor: "#000000" }}
     >
+      <Header />
       <Hero />
       <Features />
       <Comparison />
