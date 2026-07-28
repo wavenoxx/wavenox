@@ -39,17 +39,15 @@ const fadeUp = {
 
 function CinematicHero({
   image,
-  eyebrow,
   headline,
   sub,
   cta,
   align = "left",
 }: {
   image: string;
-  eyebrow: string;
   headline: string;
   sub: string;
-  cta: string;
+  cta?: string;
   align?: "left" | "center";
 }) {
   const isCenter = align === "center";
@@ -77,11 +75,8 @@ function CinematicHero({
         }`}
       >
         <motion.div {...fadeUp} className={isCenter ? "max-w-3xl" : "max-w-2xl"}>
-          <span className="mb-6 inline-block text-[11px] font-bold uppercase tracking-[0.5em] text-[#F57C00]">
-            {eyebrow}
-          </span>
           <h1
-            className={`text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[88px]`}
+            className={`text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-3xl sm:text-4xl lg:text-5xl`}
           >
             {headline}
           </h1>
@@ -92,14 +87,16 @@ function CinematicHero({
           >
             {sub}
           </p>
-          <div className={`mt-10 flex ${isCenter ? "justify-center" : ""}`}>
-            <button
-              type="button"
-              className="rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
-            >
-              {cta}
-            </button>
-          </div>
+          {cta && (
+            <div className={`mt-10 flex ${isCenter ? "justify-center" : ""}`}>
+              <button
+                type="button"
+                className="rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
+              >
+                {cta}
+              </button>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
@@ -130,7 +127,7 @@ function OmniGridCards() {
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <motion.h2
           {...fadeUp}
-          className="mx-auto max-w-4xl text-center text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+          className="mx-auto max-w-4xl text-center text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
         >
           The Omni-Grid Advantage
         </motion.h2>
@@ -166,12 +163,6 @@ function OmniGridCards() {
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent" />
               </div>
               <div className="p-8 md:p-10">
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#F57C00]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#F57C00]">
-                    Protocol 0{i + 1}
-                  </span>
-                </div>
                 <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-white md:text-xl">
                   {c.title}
                 </h3>
@@ -194,25 +185,20 @@ function LiquidGlassPage() {
 
       <CinematicHero
         image={lgHero01}
-        eyebrow="Liquid Glass — 01"
         headline="Engineered For Extremes"
         sub="Liquid Glass is forged to withstand Category 5 cyclones, massive hail, and extreme thermal conditions. Total energy independence, unbreakable architecture."
-        cta="Explore Resilience"
       />
 
       <CinematicHero
         image={lgHero02}
-        eyebrow="Liquid Glass — 02"
         headline="Architectural Freedom"
         sub="Invisible integration. Transform ultra-luxury estates and massive skyscrapers into autonomous power plants without the visual noise of traditional solar grids."
-        cta="View Integration"
       />
 
       <OmniGridCards />
 
       <CinematicHero
         image={lgScale}
-        eyebrow="Liquid Glass — 05"
         headline="Global Deployment"
         sub="Delivering architectural energy independence to luxury estates and enterprise mega-structures worldwide."
         cta="Check Availability"
