@@ -191,10 +191,8 @@ function LiquidGlassPage() {
 
       <CinematicHero
         image={lgHero02}
-        eyebrow="Liquid Glass — 02"
         headline="Architectural Freedom"
         sub="Invisible integration. Transform ultra-luxury estates and massive skyscrapers into autonomous power plants without the visual noise of traditional solar grids."
-        cta="View Integration"
       />
 
       <OmniGridCards />
