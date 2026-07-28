@@ -52,7 +52,9 @@ export function EclipseGateway({ onUnlock }: { onUnlock: () => void }) {
           exit={{ opacity: 0, scale: 1.2 }}
           transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] bg-black overflow-hidden"
+          ref={containerRef}
         >
+
           {/* subtle radial vignette */}
           <div
             className="pointer-events-none absolute inset-0"
