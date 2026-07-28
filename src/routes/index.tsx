@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { Comparison } from "@/components/Comparison";
@@ -39,6 +40,7 @@ function Index() {
       className="bg-black"
       style={{ backgroundImage: "none", backgroundColor: "#000000" }}
     >
+      <Header />
       <Hero />
       <Features />
       <Comparison />
