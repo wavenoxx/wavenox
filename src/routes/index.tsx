@@ -34,28 +34,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-
   return (
-    <>
-      {!isUnlocked && <EclipseGateway onUnlock={() => setIsUnlocked(true)} />}
-      <main
-        className="bg-black"
-        style={{ backgroundImage: "none", backgroundColor: "#000000" }}
-      >
-        <Hero />
-        <Features />
-        <Comparison />
-        <DataMatrix />
-        <Ecosystem />
-        <RoiEngine />
-        <Process />
-        <Portfolio />
-        <Press />
-        <Certifications />
-        <Faq />
-      </main>
-    </>
+    <main
+      className="bg-black"
+      style={{ backgroundImage: "none", backgroundColor: "#000000" }}
+    >
+      <Hero />
+      <Features />
+      <Comparison />
+      <DataMatrix />
+      <Ecosystem />
+      <RoiEngine />
+      <Process />
+      <Portfolio />
+      <Press />
+      <Certifications />
+      <Faq />
+    </main>
   );
 }
 
