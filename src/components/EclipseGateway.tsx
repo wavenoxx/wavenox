@@ -121,12 +121,8 @@ export function EclipseGateway({ onUnlock }: { onUnlock: () => void }) {
           {/* Draggable orb layer */}
           <motion.div
             drag
-            dragConstraints={{
-              left: -window.innerWidth,
-              right: window.innerWidth,
-              top: -window.innerHeight,
-              bottom: window.innerHeight,
-            }}
+            dragConstraints={containerRef}
+
             dragElastic={0.15}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
