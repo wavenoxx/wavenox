@@ -25,20 +25,20 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-40 bg-transparent flex justify-between items-center px-4 lg:px-10 py-6">
+      <header className="fixed top-0 left-0 w-full z-50 bg-transparent flex justify-between items-center px-8 lg:px-16 py-6">
         <a
           href="#"
-          className="text-white text-xl lg:text-2xl font-bold uppercase tracking-[0.4em] select-none"
+          className="text-white text-xl font-bold uppercase tracking-[0.5em] select-none"
         >
           WAVENOX
         </a>
 
-        <nav className="hidden xl:flex items-center space-x-5 2xl:space-x-7">
+        <nav className="hidden xl:flex items-center space-x-8 2xl:space-x-12">
           {NAV_ITEMS.map((item) => (
             <a
               key={item}
               href="#"
-              className="relative text-white text-[11px] font-bold uppercase tracking-widest group"
+              className="relative text-white/90 text-[11px] font-bold uppercase tracking-[0.25em] transition-colors duration-300 hover:text-white group"
             >
               {item}
               <span className="absolute left-0 -bottom-1 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
