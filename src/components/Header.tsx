@@ -25,10 +25,10 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-transparent flex justify-between items-center px-8 lg:px-16 py-6">
+      <header className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-6">
         <a
           href="#"
-          className="text-white text-xl font-bold uppercase tracking-[0.5em] select-none"
+          className="text-white text-lg lg:text-xl font-bold uppercase tracking-[0.35em] select-none"
         >
           WAVENOX
         </a>
