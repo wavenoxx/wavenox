@@ -92,24 +92,38 @@ export function Header() {
             </div>
 
             <nav className="flex flex-col">
-              {NAV_ITEMS.map((item, i) => (
-                <motion.a
-                  key={item}
-                  href="#"
-                  onClick={() => setOpen(false)}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
+              {NAV_ITEMS.map((item, i) => {
+                const cls =
+                  "w-full py-5 border-b border-gray-800 text-white text-sm font-semibold uppercase tracking-widest flex justify-between items-center";
+                const motionProps = {
+                  initial: { opacity: 0, y: 10 },
+                  animate: { opacity: 1, y: 0 },
+                  transition: {
                     duration: 0.4,
                     delay: 0.08 + i * 0.04,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="w-full py-5 border-b border-gray-800 text-white text-sm font-semibold uppercase tracking-widest flex justify-between items-center"
-                >
-                  <span>{item}</span>
-                  <ChevronDown size={16} className="text-gray-400" />
-                </motion.a>
-              ))}
+                    ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+                  },
+                  onClick: () => setOpen(false),
+                  className: cls,
+                };
+                const inner = (
+                  <>
+                    <span>{item.label}</span>
+                    <ChevronDown size={16} className="text-gray-400" />
+                  </>
+                );
+                return item.to ? (
+                  <motion.div key={item.label} {...motionProps}>
+                    <Link to={item.to} onClick={() => setOpen(false)} className="contents">
+                      {inner}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.a key={item.label} href="#" {...motionProps}>
+                    {inner}
+                  </motion.a>
+                );
+              })}
             </nav>
           </motion.div>
         )}
