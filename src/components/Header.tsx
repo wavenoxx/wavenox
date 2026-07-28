@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
-const NAV_ITEMS = [
-  "LIQUID GLASS",
-  "RESIDENTIAL",
-  "OMNI-GRID",
-  "DEFENSE & SAFETY",
-  "SYSTEM INTELLIGENCE",
-  "ENTERPRISE SCALE",
-  "THE BRAND",
-  "DEPLOY",
+type NavItem = { label: string; to?: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "LIQUID GLASS", to: "/liquid-glass" },
+  { label: "RESIDENTIAL" },
+  { label: "OMNI-GRID" },
+  { label: "DEFENSE & SAFETY" },
+  { label: "SYSTEM INTELLIGENCE" },
+  { label: "ENTERPRISE SCALE" },
+  { label: "THE BRAND" },
+  { label: "DEPLOY" },
 ];
 
 export function Header() {
@@ -26,24 +29,33 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-6">
-        <a
-          href="#"
+        <Link
+          to="/"
           className="text-white text-lg lg:text-xl font-bold uppercase tracking-[0.35em] select-none"
         >
           WAVENOX
-        </a>
+        </Link>
 
         <nav className="hidden xl:flex items-center space-x-8 2xl:space-x-12">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="relative text-white/90 text-[11px] font-bold uppercase tracking-[0.25em] transition-colors duration-300 hover:text-white group"
-            >
-              {item}
-              <span className="absolute left-0 -bottom-1 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const cls =
+              "relative text-white/90 text-[11px] font-bold uppercase tracking-[0.25em] transition-colors duration-300 hover:text-white group";
+            const inner = (
+              <>
+                {item.label}
+                <span className="absolute left-0 -bottom-1 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
+              </>
+            );
+            return item.to ? (
+              <Link key={item.label} to={item.to} className={cls}>
+                {inner}
+              </Link>
+            ) : (
+              <a key={item.label} href="#" className={cls}>
+                {inner}
+              </a>
+            );
+          })}
         </nav>
 
         <button
@@ -80,24 +92,38 @@ export function Header() {
             </div>
 
             <nav className="flex flex-col">
-              {NAV_ITEMS.map((item, i) => (
-                <motion.a
-                  key={item}
-                  href="#"
-                  onClick={() => setOpen(false)}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
+              {NAV_ITEMS.map((item, i) => {
+                const cls =
+                  "w-full py-5 border-b border-gray-800 text-white text-sm font-semibold uppercase tracking-widest flex justify-between items-center";
+                const motionProps = {
+                  initial: { opacity: 0, y: 10 },
+                  animate: { opacity: 1, y: 0 },
+                  transition: {
                     duration: 0.4,
                     delay: 0.08 + i * 0.04,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="w-full py-5 border-b border-gray-800 text-white text-sm font-semibold uppercase tracking-widest flex justify-between items-center"
-                >
-                  <span>{item}</span>
-                  <ChevronDown size={16} className="text-gray-400" />
-                </motion.a>
-              ))}
+                    ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+                  },
+                  onClick: () => setOpen(false),
+                  className: cls,
+                };
+                const inner = (
+                  <>
+                    <span>{item.label}</span>
+                    <ChevronDown size={16} className="text-gray-400" />
+                  </>
+                );
+                return item.to ? (
+                  <motion.div key={item.label} {...motionProps}>
+                    <Link to={item.to} onClick={() => setOpen(false)} className="contents">
+                      {inner}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.a key={item.label} href="#" {...motionProps}>
+                    {inner}
+                  </motion.a>
+                );
+              })}
             </nav>
           </motion.div>
         )}
