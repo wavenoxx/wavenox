@@ -61,11 +61,8 @@ const slides: Slide[] = [
   },
 ];
 
-const navLinks = ["Home", "Residential", "Commercial", "Contact"];
-
 export function Hero() {
   const [index, setIndex] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const total = slides.length;
 
   useEffect(() => {
