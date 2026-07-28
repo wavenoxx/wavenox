@@ -39,17 +39,15 @@ const fadeUp = {
 
 function CinematicHero({
   image,
-  eyebrow,
   headline,
   sub,
   cta,
   align = "left",
 }: {
   image: string;
-  eyebrow: string;
   headline: string;
   sub: string;
-  cta: string;
+  cta?: string;
   align?: "left" | "center";
 }) {
   const isCenter = align === "center";
@@ -77,11 +75,8 @@ function CinematicHero({
         }`}
       >
         <motion.div {...fadeUp} className={isCenter ? "max-w-3xl" : "max-w-2xl"}>
-          <span className="mb-6 inline-block text-[11px] font-bold uppercase tracking-[0.5em] text-[#F57C00]">
-            {eyebrow}
-          </span>
           <h1
-            className={`text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[88px]`}
+            className={`text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-3xl sm:text-4xl lg:text-5xl`}
           >
             {headline}
           </h1>
@@ -92,14 +87,16 @@ function CinematicHero({
           >
             {sub}
           </p>
-          <div className={`mt-10 flex ${isCenter ? "justify-center" : ""}`}>
-            <button
-              type="button"
-              className="rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
-            >
-              {cta}
-            </button>
-          </div>
+          {cta && (
+            <div className={`mt-10 flex ${isCenter ? "justify-center" : ""}`}>
+              <button
+                type="button"
+                className="rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
+              >
+                {cta}
+              </button>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
