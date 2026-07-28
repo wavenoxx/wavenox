@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { Comparison } from "@/components/Comparison";
@@ -11,7 +10,6 @@ import { Portfolio } from "@/components/Portfolio";
 import { Press } from "@/components/Press";
 import { Certifications } from "@/components/Certifications";
 import { Faq } from "@/components/Faq";
-import { EclipseGateway } from "@/components/EclipseGateway";
 
 export const Route = createFileRoute("/")({
   head: () => ({
