@@ -199,7 +199,6 @@ function LiquidGlassPage() {
 
       <CinematicHero
         image={lgScale}
-        eyebrow="Liquid Glass — 05"
         headline="Global Deployment"
         sub="Delivering architectural energy independence to luxury estates and enterprise mega-structures worldwide."
         cta="Check Availability"
