@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
-const NAV_ITEMS = [
-  "LIQUID GLASS",
-  "RESIDENTIAL",
-  "OMNI-GRID",
-  "DEFENSE & SAFETY",
-  "SYSTEM INTELLIGENCE",
-  "ENTERPRISE SCALE",
-  "THE BRAND",
-  "DEPLOY",
+type NavItem = { label: string; to?: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "LIQUID GLASS", to: "/liquid-glass" },
+  { label: "RESIDENTIAL" },
+  { label: "OMNI-GRID" },
+  { label: "DEFENSE & SAFETY" },
+  { label: "SYSTEM INTELLIGENCE" },
+  { label: "ENTERPRISE SCALE" },
+  { label: "THE BRAND" },
+  { label: "DEPLOY" },
 ];
 
 export function Header() {
