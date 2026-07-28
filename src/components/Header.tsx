@@ -29,12 +29,12 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-6">
-        <a
-          href="#"
+        <Link
+          to="/"
           className="text-white text-lg lg:text-xl font-bold uppercase tracking-[0.35em] select-none"
         >
           WAVENOX
-        </a>
+        </Link>
 
         <nav className="hidden xl:flex items-center space-x-8 2xl:space-x-12">
           {NAV_ITEMS.map((item) => {
