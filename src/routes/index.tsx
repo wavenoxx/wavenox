@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { Comparison } from "@/components/Comparison";
@@ -11,7 +10,6 @@ import { Portfolio } from "@/components/Portfolio";
 import { Press } from "@/components/Press";
 import { Certifications } from "@/components/Certifications";
 import { Faq } from "@/components/Faq";
-import { EclipseGateway } from "@/components/EclipseGateway";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,28 +34,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-
   return (
-    <>
-      {!isUnlocked && <EclipseGateway onUnlock={() => setIsUnlocked(true)} />}
-      <main
-        className="bg-black"
-        style={{ backgroundImage: "none", backgroundColor: "#000000" }}
-      >
-        <Hero />
-        <Features />
-        <Comparison />
-        <DataMatrix />
-        <Ecosystem />
-        <RoiEngine />
-        <Process />
-        <Portfolio />
-        <Press />
-        <Certifications />
-        <Faq />
-      </main>
-    </>
+    <main
+      className="bg-black"
+      style={{ backgroundImage: "none", backgroundColor: "#000000" }}
+    >
+      <Hero />
+      <Features />
+      <Comparison />
+      <DataMatrix />
+      <Ecosystem />
+      <RoiEngine />
+      <Process />
+      <Portfolio />
+      <Press />
+      <Certifications />
+      <Faq />
+    </main>
   );
 }
 
