@@ -127,7 +127,7 @@ function OmniGridCards() {
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <motion.h2
           {...fadeUp}
-          className="mx-auto max-w-4xl text-center text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+          className="mx-auto max-w-4xl text-center text-balance font-bold uppercase leading-[0.95] tracking-[-0.01em] text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
         >
           The Omni-Grid Advantage
         </motion.h2>
@@ -163,12 +163,6 @@ function OmniGridCards() {
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent" />
               </div>
               <div className="p-8 md:p-10">
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#F57C00]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#F57C00]">
-                    Protocol 0{i + 1}
-                  </span>
-                </div>
                 <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-white md:text-xl">
                   {c.title}
                 </h3>
