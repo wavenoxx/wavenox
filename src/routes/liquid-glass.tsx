@@ -185,10 +185,8 @@ function LiquidGlassPage() {
 
       <CinematicHero
         image={lgHero01}
-        eyebrow="Liquid Glass — 01"
         headline="Engineered For Extremes"
         sub="Liquid Glass is forged to withstand Category 5 cyclones, massive hail, and extreme thermal conditions. Total energy independence, unbreakable architecture."
-        cta="Explore Resilience"
       />
 
       <CinematicHero
