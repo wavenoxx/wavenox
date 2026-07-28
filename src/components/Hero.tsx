@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import slide1 from "@/assets/slide-01.jpg";
 import slide2 from "@/assets/slide-02.jpg";
 import slide3 from "@/assets/slide-03.jpg";
