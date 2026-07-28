@@ -119,75 +119,8 @@ export function Hero() {
       />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-black/70 to-transparent" />
 
-      {/* Header */}
-      <header className="relative z-30">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
-          <a
-            href="#"
-            className="text-xl font-black uppercase tracking-[0.35em] md:text-2xl"
-          >
-            WAVENOX
-          </a>
-
-          <nav className="hidden items-center gap-10 md:flex">
-            {navLinks.map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="text-sm font-medium tracking-wide text-white/80 transition-colors hover:text-white"
-              >
-                {l}
-              </a>
-            ))}
-          </nav>
-
-          <button
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(true)}
-            className="grid h-10 w-10 place-items-center rounded-md border border-white/20 md:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-      </header>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm md:hidden"
-          >
-            <div className="flex items-center justify-between px-6 py-6">
-              <span className="text-xl font-black uppercase tracking-[0.35em]">WAVENOX</span>
-              <button
-                aria-label="Close menu"
-                onClick={() => setMenuOpen(false)}
-                className="grid h-10 w-10 place-items-center rounded-md border border-white/20"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-6 px-8 pt-10">
-              {navLinks.map((l) => (
-                <a
-                  key={l}
-                  href="#"
-                  onClick={() => setMenuOpen(false)}
-                  className="text-3xl font-semibold tracking-tight text-white/90"
-                >
-                  {l}
-                </a>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Content */}
-      <div className="relative z-20 mx-auto flex h-[calc(100vh-92px)] max-w-[1400px] flex-col justify-center px-6 md:px-12">
+      <div className="relative z-20 mx-auto flex h-screen max-w-[1400px] flex-col justify-center px-6 md:px-12">
         <div className="flex w-full flex-col items-start justify-center">
           <AnimatePresence mode="wait">
             <motion.div
