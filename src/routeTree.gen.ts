@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
-import { Route as OmniGridRouteImport } from './routes/omni-grid'
 import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -23,11 +22,6 @@ const ResidentialRoute = ResidentialRouteImport.update({
 const OmnigridRoute = OmnigridRouteImport.update({
   id: '/omnigrid',
   path: '/omnigrid',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OmniGridRoute = OmniGridRouteImport.update({
-  id: '/omni-grid',
-  path: '/omni-grid',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LiquidGlassRoute = LiquidGlassRouteImport.update({
@@ -44,14 +38,12 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
-  '/omni-grid': typeof OmniGridRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
-  '/omni-grid': typeof OmniGridRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
@@ -59,28 +51,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
-  '/omni-grid': typeof OmniGridRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/liquid-glass' | '/omni-grid' | '/omnigrid' | '/residential'
+  fullPaths: '/' | '/liquid-glass' | '/omnigrid' | '/residential'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/liquid-glass' | '/omni-grid' | '/omnigrid' | '/residential'
-  id:
-    | '__root__'
-    | '/'
-    | '/liquid-glass'
-    | '/omni-grid'
-    | '/omnigrid'
-    | '/residential'
+  to: '/' | '/liquid-glass' | '/omnigrid' | '/residential'
+  id: '__root__' | '/' | '/liquid-glass' | '/omnigrid' | '/residential'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LiquidGlassRoute: typeof LiquidGlassRoute
-  OmniGridRoute: typeof OmniGridRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
 }
@@ -99,13 +83,6 @@ declare module '@tanstack/react-router' {
       path: '/omnigrid'
       fullPath: '/omnigrid'
       preLoaderRoute: typeof OmnigridRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/omni-grid': {
-      id: '/omni-grid'
-      path: '/omni-grid'
-      fullPath: '/omni-grid'
-      preLoaderRoute: typeof OmniGridRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/liquid-glass': {
@@ -128,7 +105,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LiquidGlassRoute: LiquidGlassRoute,
-  OmniGridRoute: OmniGridRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
 }
