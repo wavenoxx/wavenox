@@ -186,7 +186,7 @@ function EcosystemInfographic() {
             ))}
 
             {/* the estate mass */}
-            <circle cx="500" cy="700" r="260" fill="rgba(255,255,255,0.92)" />
+            <circle cx="500" cy="690" r="300" fill="rgba(255,255,255,0.92)" />
 
             {NODES.map((n, i) => (
               <g key={n.label}>
