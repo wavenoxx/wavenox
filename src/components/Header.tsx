@@ -9,7 +9,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "LIQUID GLASS", to: "/liquid-glass" },
   { label: "RESIDENTIAL", to: "/residential" },
   { label: "OMNI GRID", to: "/omnigrid" },
-  { label: "DEFENSE & SAFETY" },
+  { label: "DEFENSE & SAFETY", to: "/defense" },
   { label: "SYSTEM INTELLIGENCE" },
   { label: "ENTERPRISE SCALE" },
   { label: "THE BRAND" },
