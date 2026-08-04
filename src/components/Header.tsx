@@ -7,7 +7,7 @@ type NavItem = { label: string; to?: string };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "LIQUID GLASS", to: "/liquid-glass" },
-  { label: "RESIDENTIAL" },
+  { label: "RESIDENTIAL", to: "/residential" },
   { label: "OMNI-GRID" },
   { label: "DEFENSE & SAFETY" },
   { label: "SYSTEM INTELLIGENCE" },
