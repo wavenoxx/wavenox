@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
+import { Route as DefenseRouteImport } from './routes/defense'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ResidentialRoute = ResidentialRouteImport.update({
@@ -29,6 +30,11 @@ const LiquidGlassRoute = LiquidGlassRouteImport.update({
   path: '/liquid-glass',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DefenseRoute = DefenseRouteImport.update({
+  id: '/defense',
+  path: '/defense',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/defense': typeof DefenseRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/defense': typeof DefenseRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/defense': typeof DefenseRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/liquid-glass' | '/omnigrid' | '/residential'
+  fullPaths: '/' | '/defense' | '/liquid-glass' | '/omnigrid' | '/residential'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/liquid-glass' | '/omnigrid' | '/residential'
-  id: '__root__' | '/' | '/liquid-glass' | '/omnigrid' | '/residential'
+  to: '/' | '/defense' | '/liquid-glass' | '/omnigrid' | '/residential'
+  id:
+    | '__root__'
+    | '/'
+    | '/defense'
+    | '/liquid-glass'
+    | '/omnigrid'
+    | '/residential'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DefenseRoute: typeof DefenseRoute
   LiquidGlassRoute: typeof LiquidGlassRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiquidGlassRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/defense': {
+      id: '/defense'
+      path: '/defense'
+      fullPath: '/defense'
+      preLoaderRoute: typeof DefenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DefenseRoute: DefenseRoute,
   LiquidGlassRoute: LiquidGlassRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
