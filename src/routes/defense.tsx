@@ -91,18 +91,19 @@ function TechnicalGrid() {
           {items.map((it) => (
             <figure
               key={it.k}
-              className="relative aspect-[3/4] w-full overflow-hidden border border-white/10 bg-[#0a0a0a]"
+              className="relative aspect-[3/4] w-full bg-black"
             >
               <img
                 src={it.src}
                 alt={it.alt}
                 loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover opacity-80"
+                className="mask-void-all absolute inset-0 h-full w-full object-cover opacity-80"
               />
               <div
-                className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"
+                className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"
                 aria-hidden="true"
               />
+
               <figcaption className="absolute inset-x-0 bottom-0 p-8 md:p-12">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-white md:text-xs">
                   {it.k}: {it.v}
@@ -123,12 +124,17 @@ function ClimateHero() {
         src={IMG.storm}
         alt="Dark stormy landscape surrounding a remote luxury house"
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover opacity-55"
+        className="mask-void-y absolute inset-0 h-full w-full object-cover opacity-55"
       />
       <div
         className="absolute inset-0 bg-gradient-to-l from-black via-black/70 to-transparent"
         aria-hidden="true"
       />
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"
+        aria-hidden="true"
+      />
+
       <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-[1400px] items-center justify-end px-6 py-32 md:px-12 lg:py-48">
         <div className="max-w-xl text-left lg:text-right">
           <h2 className={H}>Climate Fortitude</h2>
@@ -202,14 +208,19 @@ function ShieldProtocol() {
         </div>
 
         <div className="w-full lg:w-1/2">
-          <div className="relative aspect-square w-full overflow-hidden border border-white/10 bg-[#0a0a0a]">
+          <div className="relative aspect-square w-full bg-black">
             <img
               src={IMG.tile}
               alt="Black monolithic surface in dark minimal technology detail"
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-80"
+              className="mask-void-all absolute inset-0 h-full w-full object-cover opacity-80"
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"
+              aria-hidden="true"
             />
           </div>
+
         </div>
       </div>
     </section>
