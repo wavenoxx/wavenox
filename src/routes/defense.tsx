@@ -2,6 +2,17 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 
+const IMG = {
+  hero: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=2400&q=80",
+  gridA:
+    "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80",
+  gridB:
+    "https://images.unsplash.com/photo-1439337153520-7082a56a81f4?auto=format&fit=crop&w=1200&q=80",
+  storm:
+    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2400&q=80",
+  tile: "https://images.unsplash.com/photo-1497604401993-f2e922e5cb0a?auto=format&fit=crop&w=1600&q=80",
+};
+
 export const Route = createFileRoute("/defense")({
   head: () => ({
     meta: [
@@ -15,10 +26,12 @@ export const Route = createFileRoute("/defense")({
       {
         property: "og:description",
         content:
-          "Military-grade architecture, EMP shielding, and failsafe redundancy for your estate.",
+          "Military grade architecture, EMP shielding, and failsafe redundancy for your estate.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: IMG.hero },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: IMG.hero },
     ],
   }),
   component: DefensePage,
@@ -31,11 +44,19 @@ const BODY = "text-sm leading-relaxed text-white/50 md:text-base";
 function CoreHero() {
   return (
     <section className="relative min-h-screen w-full bg-black">
-      <div className="absolute inset-0 bg-[#111111]" aria-hidden="true" />
+      <img
+        src={IMG.hero}
+        alt="Dark minimalist architecture facade at dusk"
+        className="absolute inset-0 h-full w-full object-cover opacity-60"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"
+        aria-hidden="true"
+      />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1400px] items-end px-6 pb-32 pt-48 md:px-12 lg:pb-48">
         <div className="max-w-xl">
           <h1 className={H}>Impenetrable by Design</h1>
-          <p className={`mt-8 ${BODY}`}>
+          <p className={`mt-8 ${BODY} text-white/70`}>
             Engineered to withstand Category 5 hurricanes, ballistic impacts, and
             extreme thermal shock. Your estate remains an unyielding fortress.
           </p>
@@ -46,31 +67,43 @@ function CoreHero() {
 }
 
 function TechnicalGrid() {
+  const items = [
+    { k: "Impact Rating", v: "MIL-STD-810G", src: IMG.gridA, alt: "Black titanium metal texture" },
+    { k: "Wind Resistance", v: "250 MPH", src: IMG.gridB, alt: "Dark aerospace metal structure" },
+  ];
   return (
     <section className="w-full bg-black py-32 lg:py-48">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <div className="max-w-xl">
-          <h2 className={H}>Military-Grade Architecture</h2>
+          <h2 className={H}>Military Grade Architecture</h2>
           <p className={`mt-8 ${BODY}`}>
             Forged from aerospace-grade polymers and reinforced titanium. Wavenox
             tiles provide structural armor for your sanctuary.
           </p>
         </div>
 
-        <div className="mt-32 grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-16">
-          {[
-            ["Impact Rating", "MIL-STD-810G"],
-            ["Wind Resistance", "250 MPH"],
-          ].map(([k, v]) => (
-            <div
-              key={k}
-              className="flex min-h-[220px] flex-col justify-end border border-white/10 bg-[#111111] p-8 md:p-12"
+        <div className="mt-32 grid grid-cols-1 gap-32 md:grid-cols-2">
+          {items.map((it) => (
+            <figure
+              key={it.k}
+              className="relative aspect-[3/4] w-full overflow-hidden border border-white/10 bg-[#0a0a0a]"
             >
-              <span className={LABEL}>{k}</span>
-              <div className="mt-4 text-xl font-bold uppercase tracking-tight text-white md:text-3xl">
-                {v}
-              </div>
-            </div>
+              <img
+                src={it.src}
+                alt={it.alt}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover opacity-80"
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"
+                aria-hidden="true"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 p-8 md:p-12">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white md:text-xs">
+                  {it.k}: {it.v}
+                </span>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
@@ -81,21 +114,23 @@ function TechnicalGrid() {
 function ClimateHero() {
   return (
     <section className="relative min-h-[80vh] w-full bg-black">
-      <div className="absolute inset-0 bg-[#111111]" aria-hidden="true" />
+      <img
+        src={IMG.storm}
+        alt="Dark stormy landscape surrounding a remote luxury house"
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover opacity-55"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-l from-black via-black/70 to-transparent"
+        aria-hidden="true"
+      />
       <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-[1400px] items-center justify-end px-6 py-32 md:px-12 lg:py-48">
         <div className="max-w-xl text-left lg:text-right">
           <h2 className={H}>Climate Fortitude</h2>
-          <p className={`mt-8 ${BODY}`}>
+          <p className={`mt-8 ${BODY} text-white/70`}>
             When the grid collapses and the elements rage, Wavenox ensures your
             estate remains an island of light, warmth, and absolute security.
           </p>
-          <button
-            type="button"
-            className="mt-12 inline-flex items-center gap-3 border border-white/10 px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-white md:text-xs"
-          >
-            Watch
-            <span aria-hidden="true">&rarr;</span>
-          </button>
         </div>
       </div>
     </section>
@@ -127,7 +162,7 @@ function ShieldProtocol() {
 
   return (
     <section className="w-full bg-black py-32 lg:py-48">
-      <div className="mx-auto flex max-w-[1400px] flex-col gap-32 px-6 md:px-12 lg:flex-row lg:items-center lg:gap-48">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-32 px-6 md:px-12 lg:flex-row lg:items-center">
         <div className="w-full lg:w-1/2">
           <h2 className={H}>The Shield Protocol</h2>
 
@@ -162,7 +197,14 @@ function ShieldProtocol() {
         </div>
 
         <div className="w-full lg:w-1/2">
-          <div className="min-h-[420px] w-full border border-white/10 bg-[#111111] lg:min-h-[560px]" />
+          <div className="relative aspect-square w-full overflow-hidden border border-white/10 bg-[#0a0a0a]">
+            <img
+              src={IMG.tile}
+              alt="Black monolithic surface in dark minimal technology detail"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-80"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -170,7 +212,7 @@ function ShieldProtocol() {
 }
 
 const MATRIX = [
-  ["EMP Shielding", "Military-grade Faraday cages protect the core."],
+  ["EMP Shielding", "Military grade Faraday cages protect the core."],
   ["Thermal Regulation", "Active heat dissipation prevents micro-cracking."],
   [
     "Ballistic Rated",
@@ -185,7 +227,7 @@ const MATRIX = [
 function SpecificationsMatrix() {
   return (
     <section className="w-full bg-black py-32 lg:py-48">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-20 px-6 md:grid-cols-2 md:px-12 lg:gap-32">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-16 px-6 md:gap-32 md:px-12">
         {MATRIX.map(([title, body]) => (
           <div key={title}>
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-white md:text-xs">
