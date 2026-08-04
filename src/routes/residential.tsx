@@ -30,19 +30,19 @@ export const Route = createFileRoute("/residential")({
 });
 
 const fadeUp = {
-  initial: { opacity: 0, y: 28 },
+  initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.3 },
-  transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
+  transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] as const },
 };
 
 function DataRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-6 border-b border-white/20 py-5">
-      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
+    <div className="flex items-baseline justify-between gap-10 border-b border-white/10 py-6">
+      <span className="text-[10px] font-normal uppercase tracking-[0.3em] text-white/40">
         {label}
       </span>
-      <span className="text-sm text-white md:text-base">{value}</span>
+      <span className="text-sm font-light text-white/90">{value}</span>
     </div>
   );
 }
@@ -58,15 +58,14 @@ function CoreHero() {
         className="absolute inset-0 h-full w-full object-cover"
         draggable={false}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.45)_0%,rgba(0,0,0,0.8)_65%,rgba(0,0,0,0.96)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-black to-transparent" />
+      <div className="absolute inset-0 bg-black/70" />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1400px] flex-col items-center justify-center px-6 text-center md:px-12">
         <motion.div {...fadeUp}>
-          <h1 className="text-balance text-3xl font-bold uppercase tracking-[-0.01em] text-white sm:text-4xl lg:text-5xl">
+          <h1 className="text-balance text-3xl font-light uppercase tracking-[0.12em] text-white/90 sm:text-4xl lg:text-5xl">
             The Luxury Estate
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-[10px] font-bold uppercase leading-relaxed tracking-[0.2em] text-white/60 md:text-xs">
+          <p className="mx-auto mt-16 max-w-2xl text-[10px] font-normal uppercase leading-loose tracking-[0.3em] text-white/50 md:text-xs">
             Autonomous energy for the world's most exclusive homes
           </p>
         </motion.div>
@@ -77,34 +76,33 @@ function CoreHero() {
 
 function TechnicalSpecs() {
   return (
-    <section className="bg-black py-20 md:py-32">
-      <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-6 md:px-12 lg:grid-cols-2 lg:gap-20">
-        <motion.div {...fadeUp} className="relative">
+    <section className="bg-black py-32 lg:py-48">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-24 px-6 md:px-12 lg:grid-cols-2 lg:gap-32">
+        <motion.div {...fadeUp}>
           <img
             src={resTile}
             alt="Wavenox Liquid Glass solar tile render"
             loading="lazy"
             width={1200}
             height={1200}
-            className="mx-auto w-full max-w-xl object-contain"
+            className="mx-auto w-full max-w-lg object-contain"
           />
         </motion.div>
 
         <motion.div
           {...fadeUp}
-          transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="text-2xl font-bold uppercase tracking-[-0.01em] text-white sm:text-3xl lg:text-4xl">
+          <h2 className="text-2xl font-light uppercase tracking-[0.12em] text-white/90 sm:text-3xl lg:text-4xl">
             Architectural Power
           </h2>
-          <p className="mt-6 max-w-lg text-sm leading-relaxed text-white/60 md:text-base">
+          <p className="mt-10 max-w-lg text-sm font-light leading-relaxed text-white/50">
             Each Liquid Glass tile replaces conventional roofing entirely — no frames,
             no conduits, no visual compromise. The result is a monolithic surface that
-            reads as architecture and performs as infrastructure, generating silently
-            for decades.
+            reads as architecture and performs as infrastructure.
           </p>
 
-          <div className="mt-12 max-w-lg">
+          <div className="mt-20 max-w-lg">
             <DataRow label="Thickness" value="12mm" />
             <DataRow label="Efficiency" value="24.5%" />
             <DataRow label="Impact Rating" value="MIL-STD-810G" />
@@ -117,7 +115,7 @@ function TechnicalSpecs() {
 
 function SecondaryHero() {
   return (
-    <section className="relative min-h-[80vh] w-full overflow-hidden bg-black">
+    <section className="relative min-h-[90vh] w-full overflow-hidden bg-black">
       <img
         src={resHero02}
         alt="Aerial view of a villa rooftop clad in seamless black solar glass"
@@ -127,15 +125,14 @@ function SecondaryHero() {
         className="absolute inset-0 h-full w-full object-cover"
         draggable={false}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.72)_38%,rgba(0,0,0,0.2)_75%,rgba(0,0,0,0.05)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-black to-transparent" />
+      <div className="absolute inset-0 bg-black/70" />
 
-      <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-[1400px] flex-col justify-center px-6 md:px-12">
+      <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-[1400px] flex-col justify-center px-6 md:px-12">
         <motion.div {...fadeUp} className="max-w-2xl">
-          <h2 className="text-balance text-3xl font-bold uppercase tracking-[-0.01em] text-white sm:text-4xl lg:text-5xl">
+          <h2 className="text-balance text-3xl font-light uppercase tracking-[0.12em] text-white/90 sm:text-4xl lg:text-5xl">
             Zero Compromise
           </h2>
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
+          <p className="mt-12 max-w-2xl text-sm font-light leading-relaxed text-white/50 md:text-base">
             Eliminate grid reliance without sacrificing design. Our patented
             glassmorphic surface absorbs maximum solar radiation while remaining
             entirely invisible from street level.
@@ -147,76 +144,70 @@ function SecondaryHero() {
 }
 
 const NODES = [
-  { label: "Solar Capture", x: 380, y: 425, r: 300 },
-  { label: "Smart Storage", x: 560, y: 305, r: 400 },
-  { label: "EV Integration", x: 700, y: 242, r: 500 },
-  { label: "The Estate", x: 850, y: 213, r: 600 },
+  { label: "Solar Capture", x: 140 },
+  { label: "Smart Storage", x: 380 },
+  { label: "EV Integration", x: 620 },
+  { label: "The Estate", x: 860 },
 ];
 
 function EcosystemInfographic() {
   return (
-    <section className="bg-black py-20 md:py-32">
+    <section className="bg-black py-32 lg:py-48">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <motion.h2
           {...fadeUp}
-          className="text-center text-2xl font-bold uppercase tracking-[-0.01em] text-white sm:text-3xl lg:text-4xl"
+          className="text-center text-2xl font-light uppercase tracking-[0.12em] text-white/90 sm:text-3xl lg:text-4xl"
         >
           The Autonomous Ecosystem
         </motion.h2>
 
-        <motion.div {...fadeUp} className="mt-14 md:mt-20">
+        <motion.div {...fadeUp} className="mt-24 lg:mt-32">
           <svg
-            viewBox="0 0 1000 460"
+            viewBox="0 0 1000 240"
             className="mx-auto w-full max-w-5xl"
             role="img"
             aria-label="Wavenox energy flow: solar capture, smart storage, EV integration, the estate"
           >
-            {/* orbit arcs */}
-            {NODES.map((n) => (
-              <circle
-                key={`arc-${n.label}`}
-                cx="500"
-                cy="700"
-                r={n.r}
-                fill="none"
-                stroke="rgba(255,255,255,0.16)"
-                strokeWidth="1"
-                strokeDasharray="2 8"
-              />
-            ))}
-
-            {/* the estate mass */}
-            <circle cx="500" cy="690" r="300" fill="rgba(255,255,255,0.92)" />
-
+            <line
+              x1="140"
+              y1="110"
+              x2="860"
+              y2="110"
+              className="stroke-white/20"
+              strokeWidth="0.5"
+            />
             {NODES.map((n, i) => (
               <g key={n.label}>
-                <circle cx={n.x} cy={n.y} r="5" fill="#ffffff" />
-                <line
-                  x1={n.x}
-                  y1={n.y}
-                  x2={n.x - 42}
-                  y2={n.y + 26}
-                  stroke="rgba(255,255,255,0.55)"
-                  strokeWidth="1"
+                <circle
+                  cx={n.x}
+                  cy="110"
+                  r="26"
+                  fill="none"
+                  className="stroke-white/20"
+                  strokeWidth="0.5"
                 />
-                <line
-                  x1={n.x - 42}
-                  y1={n.y + 26}
-                  x2={n.x - 200}
-                  y2={n.y + 26}
-                  stroke="rgba(255,255,255,0.55)"
-                  strokeWidth="1"
-                />
+                <circle cx={n.x} cy="110" r="2" className="fill-white/50" />
                 <text
-                  x={n.x - 200}
-                  y={n.y + 19}
-                  fill="#ffffff"
-                  fontSize="13"
-                  fontWeight="700"
-                  letterSpacing="2.4"
-                  textAnchor="start"
+                  x={n.x}
+                  y="180"
+                  className="fill-white/50"
+                  fontSize="9"
+                  fontWeight="400"
+                  letterSpacing="3"
+                  textAnchor="middle"
                 >
-                  {`0${i + 1} — ${n.label.toUpperCase()}`}
+                  {`0${i + 1}`}
+                </text>
+                <text
+                  x={n.x}
+                  y="202"
+                  className="fill-white/90"
+                  fontSize="10"
+                  fontWeight="300"
+                  letterSpacing="2.6"
+                  textAnchor="middle"
+                >
+                  {n.label.toUpperCase()}
                 </text>
               </g>
             ))}
@@ -251,9 +242,9 @@ function Configurations() {
   const [active, setActive] = useState<ConfigKey>("VILLA");
 
   return (
-    <section className="bg-black pb-24 md:pb-36">
-      <div className="mx-auto grid max-w-[1400px] items-center gap-12 lg:grid-cols-2 lg:gap-0">
-        <div className="relative h-[420px] w-full overflow-hidden lg:h-[760px]">
+    <section className="bg-black pb-32 lg:pb-48">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-24 lg:grid-cols-2 lg:gap-32">
+        <div className="relative h-[440px] w-full overflow-hidden lg:h-[780px]">
           <img
             src={resInterior}
             alt="Luxury smart home energy control panel at night"
@@ -262,28 +253,27 @@ function Configurations() {
             height={1600}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-black/40 via-transparent to-black" />
         </div>
 
-        <motion.div {...fadeUp} className="px-6 md:px-12 lg:pl-16">
-          <h2 className="text-2xl font-bold uppercase tracking-[-0.01em] text-white sm:text-3xl lg:text-4xl">
+        <motion.div {...fadeUp} className="px-6 md:px-12 lg:pl-0 lg:pr-16">
+          <h2 className="text-2xl font-light uppercase tracking-[0.12em] text-white/90 sm:text-3xl lg:text-4xl">
             System Configurations
           </h2>
-          <p className="mt-6 max-w-lg text-sm leading-relaxed text-white/60 md:text-base">
+          <p className="mt-10 max-w-lg text-sm font-light leading-relaxed text-white/50">
             Three deployment tiers, calibrated to the scale of the residence. Every
             configuration is engineered, commissioned, and monitored by Wavenox.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-8">
+          <div className="mt-16 flex flex-wrap gap-10">
             {(Object.keys(CONFIGS) as ConfigKey[]).map((key) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setActive(key)}
-                className={`border-b pb-1 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-300 ${
+                className={`pb-2 text-[11px] font-normal uppercase tracking-[0.3em] transition-colors duration-700 ease-out ${
                   active === key
-                    ? "border-white text-white"
-                    : "border-transparent text-white/40 hover:text-white/70"
+                    ? "border-b border-white text-white"
+                    : "text-white/30 hover:text-white/60"
                 }`}
               >
                 {key}
@@ -291,16 +281,16 @@ function Configurations() {
             ))}
           </div>
 
-          <div className="mt-10 max-w-lg">
+          <div className="mt-14 max-w-lg">
             {CONFIGS[active].map((row) => (
               <DataRow key={row.label} label={row.label} value={row.value} />
             ))}
           </div>
 
-          <div className="mt-12">
+          <div className="mt-20">
             <button
               type="button"
-              className="rounded-full bg-white px-8 py-3 text-[11px] font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-white/80"
+              className="rounded-full bg-white px-10 py-4 text-sm font-medium tracking-[0.2em] text-black transition-all duration-700 ease-out hover:bg-white/90"
             >
               Request Consultation
             </button>
