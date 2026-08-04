@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ResidentialRoute = ResidentialRouteImport.update({
+  id: '/residential',
+  path: '/residential',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LiquidGlassRoute = LiquidGlassRouteImport.update({
   id: '/liquid-glass',
   path: '/liquid-glass',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
+  '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
+  '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/liquid-glass': typeof LiquidGlassRoute
+  '/residential': typeof ResidentialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/liquid-glass'
+  fullPaths: '/' | '/liquid-glass' | '/residential'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/liquid-glass'
-  id: '__root__' | '/' | '/liquid-glass'
+  to: '/' | '/liquid-glass' | '/residential'
+  id: '__root__' | '/' | '/liquid-glass' | '/residential'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LiquidGlassRoute: typeof LiquidGlassRoute
+  ResidentialRoute: typeof ResidentialRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/residential': {
+      id: '/residential'
+      path: '/residential'
+      fullPath: '/residential'
+      preLoaderRoute: typeof ResidentialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/liquid-glass': {
       id: '/liquid-glass'
       path: '/liquid-glass'
@@ -71,17 +88,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LiquidGlassRoute: LiquidGlassRoute,
+  ResidentialRoute: ResidentialRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
