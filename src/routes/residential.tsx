@@ -147,10 +147,10 @@ function SecondaryHero() {
 }
 
 const NODES = [
-  { label: "Solar Capture", x: 120, y: 300, r: 300 },
-  { label: "Smart Storage", x: 330, y: 205, r: 400 },
-  { label: "EV Integration", x: 560, y: 130, r: 500 },
-  { label: "The Estate", x: 810, y: 80, r: 600 },
+  { label: "Solar Capture", x: 380, y: 425, r: 300 },
+  { label: "Smart Storage", x: 560, y: 305, r: 400 },
+  { label: "EV Integration", x: 700, y: 242, r: 500 },
+  { label: "The Estate", x: 850, y: 213, r: 600 },
 ];
 
 function EcosystemInfographic() {
@@ -176,7 +176,7 @@ function EcosystemInfographic() {
               <circle
                 key={`arc-${n.label}`}
                 cx="500"
-                cy="820"
+                cy="700"
                 r={n.r}
                 fill="none"
                 stroke="rgba(255,255,255,0.16)"
@@ -185,37 +185,36 @@ function EcosystemInfographic() {
               />
             ))}
 
-            {/* core estate mass */}
-            <circle cx="500" cy="820" r="240" fill="rgba(255,255,255,0.9)" />
+            {/* the estate mass */}
+            <circle cx="500" cy="700" r="260" fill="rgba(255,255,255,0.92)" />
 
             {NODES.map((n, i) => (
               <g key={n.label}>
-                <circle cx={n.x + 250} cy={n.y} r="5" fill="#ffffff" />
+                <circle cx={n.x} cy={n.y} r="5" fill="#ffffff" />
                 <line
-                  x1={n.x + 250}
+                  x1={n.x}
                   y1={n.y}
-                  x2={n.x + 195}
-                  y2={n.y + 34}
-                  stroke="rgba(255,255,255,0.6)"
+                  x2={n.x - 42}
+                  y2={n.y + 26}
+                  stroke="rgba(255,255,255,0.55)"
                   strokeWidth="1"
                 />
                 <line
-                  x1={n.x + 195}
-                  y1={n.y + 34}
-                  x2={n.x + 60}
-                  y2={n.y + 34}
-                  stroke="rgba(255,255,255,0.6)"
+                  x1={n.x - 42}
+                  y1={n.y + 26}
+                  x2={n.x - 200}
+                  y2={n.y + 26}
+                  stroke="rgba(255,255,255,0.55)"
                   strokeWidth="1"
                 />
                 <text
-                  x={n.x + 60}
-                  y={n.y + 28}
+                  x={n.x - 200}
+                  y={n.y + 19}
                   fill="#ffffff"
                   fontSize="13"
                   fontWeight="700"
                   letterSpacing="2.4"
                   textAnchor="start"
-                  style={{ textTransform: "uppercase" }}
                 >
                   {`0${i + 1} — ${n.label.toUpperCase()}`}
                 </text>
