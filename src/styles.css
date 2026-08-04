@@ -105,3 +105,17 @@
 }
 
 
+
+/* Fade to Void — seamless image blending into #000000 */
+@utility mask-void-bottom {
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 45%, black 100%);
+  mask-image: linear-gradient(to top, transparent 0%, black 45%, black 100%);
+}
+@utility mask-void-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+}
+@utility mask-void-all {
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 35%, transparent 100%);
+}

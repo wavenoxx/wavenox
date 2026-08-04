@@ -47,13 +47,18 @@ function CoreHero() {
       <img
         src={IMG.hero}
         alt="Dark minimalist architecture facade at dusk"
-        className="absolute inset-0 h-full w-full object-cover opacity-60"
+        className="mask-void-bottom absolute inset-0 h-full w-full object-cover opacity-60"
       />
       <div
         className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"
         aria-hidden="true"
       />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"
+        aria-hidden="true"
+      />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1400px] items-end px-6 pb-32 pt-48 md:px-12 lg:pb-48">
+
         <div className="max-w-xl">
           <h1 className={H}>Impenetrable by Design</h1>
           <p className={`mt-8 ${BODY} text-white/70`}>
