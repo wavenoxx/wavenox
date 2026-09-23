@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 
 const IMG = {
   hero: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=80",
@@ -204,6 +206,33 @@ function SpecificationsMatrix() {
   );
 }
 
+function DefenseCTA() {
+  return (
+    <section className="border-t border-white/10 bg-black px-6 py-24 text-center md:py-36">
+      <div className="mx-auto max-w-4xl">
+        <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
+          FORTRESS-GRADE INTEGRATION
+        </span>
+        <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
+          ARMOR YOUR ESTATE WITH WAVENOX DEFENSE
+        </h2>
+        <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
+          Engineered for mission-critical continuity, EMP immunity, and ballistic resilience. Our defense engineering team deploys worldwide.
+        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => openConsultationDrawer("industrial")}
+            className="cursor-pointer rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-[#F57C00] hover:text-black"
+          >
+            COMMISSION DEFENSE AUDIT →
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DefensePage() {
   return (
     <main className="min-h-screen w-full bg-black">
@@ -213,6 +242,8 @@ function DefensePage() {
       <ClimateHero />
       <ShieldProtocol />
       <SpecificationsMatrix />
+      <DefenseCTA />
+      <Footer />
     </main>
   );
 }

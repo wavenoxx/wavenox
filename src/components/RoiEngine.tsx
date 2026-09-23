@@ -43,7 +43,7 @@ function CountUp({
   }, [value, mv]);
 
   useEffect(() => {
-    const unsub = spring.on("change", (v) => {
+    const unsub = spring.on("change", (v: number) => {
       setDisplay(format(v));
       prevRef.current = v;
     });
@@ -81,7 +81,7 @@ function PhysicsBar({
 }) {
   const mv = useMotionValue(0);
   const spring = useSpring(mv, { stiffness: 100, damping: 15 });
-  const height = useTransform(spring, (v) => `${v}%`);
+  const height = useTransform(spring, (v: number) => `${v}%`);
 
   useEffect(() => {
     mv.set(targetPct);

@@ -11,6 +11,7 @@ import { Portfolio } from "@/components/Portfolio";
 import { Press } from "@/components/Press";
 import { Certifications } from "@/components/Certifications";
 import { Faq } from "@/components/Faq";
+import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -52,6 +53,7 @@ function Index() {
       <Press />
       <Certifications />
       <Faq />
+      <Footer />
     </main>
   );
 }

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import resHero01 from "@/assets/res-hero-01.jpg";
 import resHero02 from "@/assets/res-hero-02.jpg";
 import resTile from "@/assets/res-tile.jpg";
@@ -325,7 +327,8 @@ function Configurations() {
           <div className="mt-12">
             <button
               type="button"
-              className="rounded-full bg-white px-10 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-black transition-all duration-500 hover:bg-white/90"
+              onClick={() => openConsultationDrawer(active.toLowerCase())}
+              className="rounded-full bg-white px-10 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.2)]"
             >
               Request Consultation
             </button>
@@ -345,6 +348,7 @@ function ResidentialPage() {
       <SecondaryHero />
       <EcosystemInfographic />
       <Configurations />
+      <Footer />
     </main>
   );
 }

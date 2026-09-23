@@ -13,6 +13,10 @@ import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
 import { Route as DefenseRouteImport } from './routes/defense'
+import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as IntelligenceRouteImport } from './routes/intelligence'
+import { Route as BrandRouteImport } from './routes/brand'
+import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ResidentialRoute = ResidentialRouteImport.update({
@@ -35,6 +39,26 @@ const DefenseRoute = DefenseRouteImport.update({
   path: '/defense',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnterpriseRoute = EnterpriseRouteImport.update({
+  id: '/enterprise',
+  path: '/enterprise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntelligenceRoute = IntelligenceRouteImport.update({
+  id: '/intelligence',
+  path: '/intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandRoute = BrandRouteImport.update({
+  id: '/brand',
+  path: '/brand',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeployRoute = DeployRouteImport.update({
+  id: '/deploy',
+  path: '/deploy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,14 +67,22 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/brand': typeof BrandRoute
   '/defense': typeof DefenseRoute
+  '/deploy': typeof DeployRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/intelligence': typeof IntelligenceRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/brand': typeof BrandRoute
   '/defense': typeof DefenseRoute
+  '/deploy': typeof DeployRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/intelligence': typeof IntelligenceRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
@@ -58,20 +90,46 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/brand': typeof BrandRoute
   '/defense': typeof DefenseRoute
+  '/deploy': typeof DeployRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/intelligence': typeof IntelligenceRoute
   '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/defense' | '/liquid-glass' | '/omnigrid' | '/residential'
+  fullPaths:
+    | '/'
+    | '/brand'
+    | '/defense'
+    | '/deploy'
+    | '/enterprise'
+    | '/intelligence'
+    | '/liquid-glass'
+    | '/omnigrid'
+    | '/residential'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/defense' | '/liquid-glass' | '/omnigrid' | '/residential'
+  to:
+    | '/'
+    | '/brand'
+    | '/defense'
+    | '/deploy'
+    | '/enterprise'
+    | '/intelligence'
+    | '/liquid-glass'
+    | '/omnigrid'
+    | '/residential'
   id:
     | '__root__'
     | '/'
+    | '/brand'
     | '/defense'
+    | '/deploy'
+    | '/enterprise'
+    | '/intelligence'
     | '/liquid-glass'
     | '/omnigrid'
     | '/residential'
@@ -79,7 +137,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BrandRoute: typeof BrandRoute
   DefenseRoute: typeof DefenseRoute
+  DeployRoute: typeof DeployRoute
+  EnterpriseRoute: typeof EnterpriseRoute
+  IntelligenceRoute: typeof IntelligenceRoute
   LiquidGlassRoute: typeof LiquidGlassRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
@@ -108,11 +170,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiquidGlassRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enterprise': {
+      id: '/enterprise'
+      path: '/enterprise'
+      fullPath: '/enterprise'
+      preLoaderRoute: typeof EnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intelligence': {
+      id: '/intelligence'
+      path: '/intelligence'
+      fullPath: '/intelligence'
+      preLoaderRoute: typeof IntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/defense': {
       id: '/defense'
       path: '/defense'
       fullPath: '/defense'
       preLoaderRoute: typeof DefenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brand': {
+      id: '/brand'
+      path: '/brand'
+      fullPath: '/brand'
+      preLoaderRoute: typeof BrandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deploy': {
+      id: '/deploy'
+      path: '/deploy'
+      fullPath: '/deploy'
+      preLoaderRoute: typeof DeployRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -127,7 +217,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BrandRoute: BrandRoute,
   DefenseRoute: DefenseRoute,
+  DeployRoute: DeployRoute,
+  EnterpriseRoute: EnterpriseRoute,
+  IntelligenceRoute: IntelligenceRoute,
   LiquidGlassRoute: LiquidGlassRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,

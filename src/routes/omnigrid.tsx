@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import ogHero01 from "@/assets/og-hero-01.jpg";
 import ogHero02 from "@/assets/og-hero-02.jpg";
 import ogCore from "@/assets/og-core.jpg";
@@ -276,6 +278,31 @@ function Hardware() {
   );
 }
 
+function OmnigridCTA() {
+  return (
+    <section className="border-t border-white/10 bg-black px-6 py-24 text-center md:py-36">
+      <div className="mx-auto max-w-4xl">
+        <span className={LABEL}>INTELLIGENT ENERGY ARBITRATION</span>
+        <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
+          DEPLOY OMNIGRID INTELLIGENCE
+        </h2>
+        <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/50 md:text-base">
+          Sub-millisecond islanding, military battery telemetry, and autonomous grid arbitrage. Speak with our lead system architect.
+        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => openConsultationDrawer("estate")}
+            className="cursor-pointer rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-[#F57C00] hover:text-black"
+          >
+            REQUEST ARCHITECTURE AUDIT →
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function OmnigridPage() {
   return (
     <main className="min-h-screen w-full bg-black">
@@ -285,6 +312,8 @@ function OmnigridPage() {
       <FailsafeSplit />
       <LogicBlueprint />
       <Hardware />
+      <OmnigridCTA />
+      <Footer />
     </main>
   );
 }

@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { BRAND_CONFIG } from "../config/brand";
+import { BUSINESS } from "../config/business";
+import { ConsultationDrawer } from "../components/ConsultationDrawer";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
+      { name: "description", content: BRAND_CONFIG.description },
+      { name: "author", content: BRAND_CONFIG.legalName },
+      { property: "og:title", content: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
+      { property: "og:description", content: BRAND_CONFIG.description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: BRAND_CONFIG.domain },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: `@${BRAND_CONFIG.name.toLowerCase()}` },
     ],
     links: [
       {
@@ -101,10 +105,39 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HomeAndConstructionBusiness",
+    name: `${BRAND_CONFIG.name} Architectural Solar`,
+    legalName: BRAND_CONFIG.legalName,
+    url: BRAND_CONFIG.domain,
+    telephone: BRAND_CONFIG.contact.phoneDisplay,
+    email: BRAND_CONFIG.contact.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: BRAND_CONFIG.contact.address,
+      addressLocality: BUSINESS.primaryCity,
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: BUSINESS.geo.lat,
+      longitude: BUSINESS.geo.lng,
+    },
+    areaServed: BUSINESS.serviceHubs.map((hub) => ({
+      "@type": "City",
+      name: hub.city,
+    })),
+  };
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body>
         {children}
@@ -121,6 +154,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <ConsultationDrawer />
     </QueryClientProvider>
   );
 }

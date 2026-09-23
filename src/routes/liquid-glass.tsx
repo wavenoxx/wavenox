@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import lgHero01 from "@/assets/lg-hero-01.jpg";
 import lgHero02 from "@/assets/lg-hero-02.jpg";
 import lgCard01 from "@/assets/lg-card-01.jpg";
@@ -91,7 +93,8 @@ function CinematicHero({
             <div className={`mt-10 flex ${isCenter ? "justify-center" : ""}`}>
               <button
                 type="button"
-                className="rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
+                onClick={() => openConsultationDrawer("commercial")}
+                className="cursor-pointer rounded-full bg-white px-8 py-3 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-[#F57C00] hover:text-black"
               >
                 {cta}
               </button>
@@ -204,6 +207,8 @@ function LiquidGlassPage() {
         cta="Check Availability"
         align="center"
       />
+
+      <Footer />
     </main>
   );
 }

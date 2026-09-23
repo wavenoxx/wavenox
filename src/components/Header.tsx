@@ -2,18 +2,21 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { BrandLogo } from "./BrandLogo";
+import { openConsultationDrawer } from "./ConsultationDrawer";
 
-type NavItem = { label: string; to?: string };
+type NavItem = { label: string; to?: string; href?: string };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "LIQUID GLASS", to: "/liquid-glass" },
   { label: "RESIDENTIAL", to: "/residential" },
-  { label: "OMNI GRID", to: "/omnigrid" },
-  { label: "DEFENSE & SAFETY", to: "/defense" },
-  { label: "SYSTEM INTELLIGENCE" },
-  { label: "ENTERPRISE SCALE" },
-  { label: "THE BRAND" },
-  { label: "DEPLOY" },
+  { label: "ENTERPRISE", to: "/enterprise" },
+  { label: "OMNIGRID", to: "/omnigrid" },
+  { label: "INTELLIGENCE", to: "/intelligence" },
+  { label: "DEFENSE", to: "/defense" },
+  { label: "BRAND", to: "/brand" },
+  { label: "CONFIGURATOR", to: "/deploy" },
+  { label: "VIP CONSULTATION", href: "#consultation" },
 ];
 
 export function Header() {
@@ -28,13 +31,8 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-6">
-        <Link
-          to="/"
-          className="text-white text-lg lg:text-xl font-bold uppercase tracking-[0.35em] select-none"
-        >
-          WAVENOX
-        </Link>
+      <header className="fixed top-0 left-0 w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-5">
+        <BrandLogo size="md" />
 
         <nav className="hidden xl:flex items-center space-x-8 2xl:space-x-12">
           {NAV_ITEMS.map((item) => {
@@ -50,8 +48,17 @@ export function Header() {
               <Link key={item.label} to={item.to} className={cls}>
                 {inner}
               </Link>
+            ) : item.href === "#consultation" ? (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => openConsultationDrawer()}
+                className={`${cls} cursor-pointer`}
+              >
+                {inner}
+              </button>
             ) : (
-              <a key={item.label} href="#" className={cls}>
+              <a key={item.label} href={item.href || "#"} className={cls}>
                 {inner}
               </a>
             );
@@ -77,10 +84,8 @@ export function Header() {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 bg-black z-50 pt-20 px-8 overflow-y-auto"
           >
-            <div className="fixed top-0 left-0 w-full flex justify-between items-center px-4 py-6">
-              <span className="text-white text-xl font-bold uppercase tracking-[0.4em]">
-                WAVENOX
-              </span>
+            <div className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 border-b border-white/10 bg-black">
+              <BrandLogo size="md" asLink={false} />
               <button
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
@@ -118,8 +123,21 @@ export function Header() {
                       {inner}
                     </Link>
                   </motion.div>
+                ) : item.href === "#consultation" ? (
+                  <motion.button
+                    key={item.label}
+                    type="button"
+                    {...motionProps}
+                    onClick={() => {
+                      setOpen(false);
+                      openConsultationDrawer();
+                    }}
+                    className={`${cls} text-left cursor-pointer`}
+                  >
+                    {inner}
+                  </motion.button>
                 ) : (
-                  <motion.a key={item.label} href="#" {...motionProps}>
+                  <motion.a key={item.label} href={item.href || "#"} {...motionProps}>
                     {inner}
                   </motion.a>
                 );

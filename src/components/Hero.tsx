@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { openConsultationDrawer } from "./ConsultationDrawer";
 import slide1 from "@/assets/slide-01.jpg";
 import slide2 from "@/assets/slide-02.jpg";
 import slide3 from "@/assets/slide-03.jpg";
@@ -139,6 +140,23 @@ export function Hero() {
             </motion.div>
           </AnimatePresence>
 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 w-full sm:w-auto md:mt-10"
+          >
+            <button
+              type="button"
+              onClick={() => openConsultationDrawer("villa")}
+              className="group inline-flex w-full sm:w-auto items-center justify-center gap-3 border border-white/40 bg-transparent px-8 py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-black active:border-[#F57C00] active:bg-[#F57C00] active:text-black cursor-pointer"
+            >
+              <span>Unlock Energy Independence</span>
+              <span className="text-[#F57C00] transition-colors duration-300 group-hover:text-black group-active:text-black font-mono text-sm">
+                →
+              </span>
+            </button>
+          </motion.div>
         </div>
       </div>
 
