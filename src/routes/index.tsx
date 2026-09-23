@@ -3,6 +3,8 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { SleekDesign } from "@/components/SleekDesign";
 import { OutageProtection } from "@/components/OutageProtection";
+import { BillSavingsSlider } from "@/components/BillSavingsSlider";
+import { EfficiencyTech } from "@/components/EfficiencyTech";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -36,6 +38,8 @@ function Index() {
       <Hero />
       <SleekDesign />
       <OutageProtection />
+      <BillSavingsSlider />
+      <EfficiencyTech />
       <Footer />
       <ConsultationDrawer />
     </main>
