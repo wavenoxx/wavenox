@@ -7,6 +7,8 @@ import { BillSavingsSlider } from "@/components/BillSavingsSlider";
 import { EfficiencyTech } from "@/components/EfficiencyTech";
 import { EnergyControl } from "@/components/EnergyControl";
 import { TechSpecs } from "@/components/TechSpecs";
+import { OrderProcess } from "@/components/OrderProcess";
+import { SupportFaq } from "@/components/SupportFaq";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -44,6 +46,8 @@ function Index() {
       <EfficiencyTech />
       <EnergyControl />
       <TechSpecs />
+      <OrderProcess />
+      <SupportFaq />
       <Footer />
       <ConsultationDrawer />
     </main>
