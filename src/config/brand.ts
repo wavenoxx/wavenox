@@ -32,9 +32,19 @@ export interface BrandContactConfig {
   phoneDisplay: string;
   phoneDial: string;
   phoneHref: string;
+  phone: {
+    dial: string;
+    display: string;
+    href: string;
+  };
   whatsappDisplay: string;
   whatsappDial: string;
   whatsappLink: string;
+  whatsapp: {
+    dial: string;
+    display: string;
+    link: string;
+  };
   email: string;
   emailHref: string;
   address: string;
@@ -153,9 +163,19 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
       phoneDisplay,
       phoneDial,
       phoneHref: phoneDial ? `tel:${phoneDial}` : "#",
+      phone: {
+        dial: phoneDial,
+        display: phoneDisplay,
+        href: phoneDial ? `tel:${phoneDial}` : "#",
+      },
       whatsappDisplay,
       whatsappDial,
       whatsappLink,
+      whatsapp: {
+        dial: whatsappDial,
+        display: whatsappDisplay,
+        link: whatsappLink,
+      },
       email,
       emailHref: email ? `mailto:${email}` : "#",
       address,

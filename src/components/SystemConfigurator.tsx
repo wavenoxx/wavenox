@@ -270,11 +270,11 @@ export function SystemConfigurator() {
               Request Advisor Call
             </button>
             <a
-              href={`tel:${BRAND_CONFIG.contact.phone}`}
+              href={BRAND_CONFIG.contact.phoneHref}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#171A20] hover:text-[#5C5E62] transition-colors"
             >
               <PhoneCall className="h-3.5 w-3.5" />
-              {BRAND_CONFIG.contact.phone}
+              {BRAND_CONFIG.contact.phoneDisplay}
             </a>
           </div>
         </div>
