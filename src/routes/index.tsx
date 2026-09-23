@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { SleekDesign } from "@/components/SleekDesign";
+import { OutageProtection } from "@/components/OutageProtection";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -32,6 +34,8 @@ function Index() {
     <main className="min-h-screen bg-white text-[#171A20] selection:bg-[#171A20] selection:text-white">
       <Header />
       <Hero />
+      <SleekDesign />
+      <OutageProtection />
       <Footer />
       <ConsultationDrawer />
     </main>
