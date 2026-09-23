@@ -1,8 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import {
+  Battery,
+  Zap,
+  ShieldCheck,
+  Check,
+  Sparkles,
+  ArrowRight,
+  Clock,
+  Layers,
+  VolumeX,
+  Gauge,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { BRAND_CONFIG } from "@/config/brand";
 import ogHero01 from "@/assets/og-hero-01.jpg";
 import ogHero02 from "@/assets/og-hero-02.jpg";
 import ogCore from "@/assets/og-core.jpg";
@@ -11,20 +25,19 @@ import ogModule from "@/assets/og-module.jpg";
 export const Route = createFileRoute("/omnigrid")({
   head: () => ({
     meta: [
-      { title: "Omnigrid — WAVENOX" },
+      { title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content:
-          "Omnigrid is the central intelligence of your autonomous estate — silent energy orchestration, instant islanding, and military-grade hardware.",
+          "Whole-home battery storage engineered for Indian grid resilience. 13.5 kWh usable capacity per unit, sub-4ms outage islanding, and intelligent Time-of-Day tariff shaving.",
       },
-      { property: "og:title", content: "Omnigrid — WAVENOX" },
+      { property: "og:title", content: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
         property: "og:description",
         content:
-          "The central intelligence of your autonomous estate. Silent orchestration, seamless failsafe, absolute autonomy.",
+          "Silent whole-villa energy independence. Zero-flicker blackout protection and modular LFP battery storage.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OmnigridPage,
@@ -33,287 +46,376 @@ export const Route = createFileRoute("/omnigrid")({
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.3 },
-  transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
+  viewport: { once: true, amount: 0.25 },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
 };
 
-const LABEL =
-  "text-[10px] font-bold uppercase tracking-widest text-white/50 md:text-xs";
-
-function CoreHero() {
-  return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-black">
-      <img
-        src={ogHero01}
-        alt="Macro view of the polished black glass surface of the Omnigrid unit reflecting a minimalist luxury interior"
-        width={1920}
-        height={1088}
-        className="absolute inset-0 h-full w-full object-cover"
-        draggable={false}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" />
-
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1400px] flex-col items-center justify-center px-6 text-center md:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <h1 className="text-balance text-4xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl">
-            Omnigrid
-          </h1>
-          <p className={`mx-auto mt-10 max-w-2xl leading-relaxed ${LABEL}`}>
-            The central intelligence of your autonomous estate
-          </p>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function AutonomyHero() {
-  return (
-    <section className="relative min-h-[80vh] w-full overflow-hidden bg-black">
-      <img
-        src={ogHero02}
-        alt="Omnigrid unit standing alone under a single spotlight in a pristine mansion utility gallery"
-        width={1920}
-        height={1088}
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover"
-        draggable={false}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
-
-      <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-[1400px] items-center px-6 py-32 md:px-12 lg:py-48">
-        <motion.div {...fadeUp} className="max-w-xl">
-          <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-5xl">
-            Absolute Autonomy
-          </h2>
-          <p className="mt-8 text-sm leading-relaxed text-white/50 md:text-base">
-            Omnigrid silently orchestrates energy capture, storage, and distribution.
-            It eliminates grid reliance, protecting your sanctuary from external
-            failures with zero intervention.
-          </p>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function FailsafeSplit() {
-  return (
-    <section className="w-full bg-black py-32 lg:py-48">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-24 px-6 md:px-12 lg:grid-cols-2 lg:gap-32">
-        <motion.div {...fadeUp} className="relative aspect-square w-full overflow-hidden">
-          <img
-            src={ogCore}
-            alt="Macro detail of the Omnigrid edge showing titanium framing and liquid glass finish"
-            width={1440}
-            height={1440}
-            loading="lazy"
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
-        </motion.div>
-
-        <motion.div {...fadeUp}>
-          <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-5xl">
-            Seamless Failsafe
-          </h2>
-          <p className="mt-8 max-w-xl text-sm leading-relaxed text-white/50 md:text-base">
-            In the event of a catastrophic grid blackout, Omnigrid islands your estate
-            in under 0.1 milliseconds. Your life continues uninterrupted. Uncompromised
-            luxury.
-          </p>
-
-          <div className="mt-16 border-t border-white/10">
-            {[
-              ["Transfer Time", "< 0.1 ms"],
-              ["Uptime", "99.9997%"],
-              ["Redundancy", "Triple Bus"],
-            ].map(([k, v]) => (
-              <div
-                key={k}
-                className="flex items-baseline justify-between gap-10 border-b border-white/10 py-6"
-              >
-                <span className={LABEL}>{k}</span>
-                <span className="text-sm font-bold tracking-tight text-white md:text-base">
-                  {v}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function LogicBlueprint() {
-  return (
-    <section className="w-full bg-black py-32 lg:py-48">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <motion.div {...fadeUp} className="max-w-2xl">
-          <span className={LABEL}>Blueprint</span>
-          <h2 className="mt-6 text-3xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-5xl">
-            The Logic Architecture
-          </h2>
-          <p className="mt-8 text-sm leading-relaxed text-white/50 md:text-base">
-            Every photon captured is metered, arbitrated, and dispatched by the
-            Omnigrid processor. Generation, reserve, and estate demand resolve
-            continuously across a single silent logic bus.
-          </p>
-        </motion.div>
-
-        <motion.div {...fadeUp} className="mt-28 w-full overflow-x-auto">
-          <svg
-            viewBox="0 0 1200 620"
-            className="h-auto w-full min-w-[860px]"
-            fill="none"
-            role="img"
-            aria-label="Omnigrid energy flow: liquid glass roof to Omnigrid processor to battery reserve and estate loads"
-          >
-            <g className="stroke-white/20" strokeWidth={0.5}>
-              <circle cx="600" cy="310" r="120" />
-              <circle cx="600" cy="310" r="185" strokeDasharray="2 10" />
-              <circle cx="600" cy="310" r="250" />
-              <circle cx="600" cy="310" r="305" strokeDasharray="1 12" />
-              <path d="M600 60 V190" />
-              <path d="M600 430 V560" />
-              <path d="M295 310 H480" />
-              <path d="M720 310 H905" />
-            </g>
-
-            <g className="stroke-white/40" strokeWidth={0.75}>
-              <circle cx="600" cy="310" r="34" />
-            </g>
-
-            <g className="fill-white">
-              <circle cx="600" cy="60" r="3" />
-              <circle cx="600" cy="560" r="3" />
-              <circle cx="295" cy="310" r="3" />
-              <circle cx="905" cy="310" r="3" />
-            </g>
-
-            <g
-              className="fill-white"
-              fontSize="11"
-              fontWeight="700"
-              letterSpacing="2.6"
-              textAnchor="middle"
-            >
-              <text x="600" y="40">LIQUID GLASS ROOF</text>
-              <text x="600" y="316">OMNIGRID PROCESSOR</text>
-              <text x="600" y="590">ESTATE LOADS</text>
-              <text x="295" y="290">BATTERY RESERVE</text>
-              <text x="905" y="290">GRID EXPORT</text>
-            </g>
-
-            <g
-              className="fill-white/40"
-              fontSize="9"
-              fontWeight="600"
-              letterSpacing="2"
-              textAnchor="middle"
-            >
-              <text x="600" y="86">01</text>
-              <text x="295" y="336">03</text>
-              <text x="905" y="336">04</text>
-              <text x="600" y="538">02</text>
-            </g>
-          </svg>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-const HARDWARE = [
-  "A.I. Energy Routing",
-  "Thermal Management",
-  "Military-Grade Enclosure",
-  "Instant Islanding",
+const STACK_OPTIONS = [
+  {
+    units: 1,
+    capacity: "13.5 kWh",
+    desc: "Essential Luxury Backup",
+    loads: "Powers lighting, WiFi, smart automation, refrigeration, and 1 high-tonnage Inverter AC.",
+  },
+  {
+    units: 2,
+    capacity: "27.0 kWh",
+    desc: "Whole-Home Standard (Recommended)",
+    loads: "Full villa autonomy powering 4 Inverter ACs, home elevator, heated pool pumps, and kitchen.",
+    isPopular: true,
+  },
+  {
+    units: 3,
+    capacity: "40.5 kWh",
+    desc: "Multi-Day Autonomy",
+    loads: "Extended multi-day independence for sprawling estates with multiple central AC chillers.",
+  },
+  {
+    units: 4,
+    capacity: "54.0 kWh",
+    desc: "Commercial Microgrid",
+    loads: "Heavy residential compounds, corporate retreat villas, and high-discharge Level 2 EV charging.",
+  },
 ];
 
-function Hardware() {
-  return (
-    <section className="w-full bg-black py-32 lg:py-48">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-24 px-6 md:px-12 lg:grid-cols-2 lg:gap-32">
-        <motion.div {...fadeUp}>
-          <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-5xl">
-            The Hardware
-          </h2>
-          <p className="mt-8 max-w-xl text-sm leading-relaxed text-white/50 md:text-base">
-            Engineered in-house as a single sealed monolith. Every subsystem is
-            shielded, silent, and built to run for decades without intervention.
-          </p>
+function OmnigridPage() {
+  const [selectedUnits, setSelectedUnits] = useState(2);
 
-          <div className="mt-16 border-t border-white/10">
-            {HARDWARE.map((spec) => (
-              <div key={spec} className="border-b border-white/10 py-6">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white md:text-xs">
-                  {spec}
-                </span>
+  return (
+    <div className="min-h-screen w-full bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-white">
+      <Header />
+
+      {/* =========================================================================
+          HERO: 100vh Full-Bleed Omnigrid Studio Gallery
+          ========================================================================= */}
+      <section className="relative min-h-screen w-full overflow-hidden bg-[#171A20]">
+        <img
+          src={ogHero01}
+          alt="Monolithic Omnigrid clean energy storage unit standing in minimalist architectural gallery"
+          className="absolute inset-0 h-full w-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-between px-6 pt-32 pb-16 text-center lg:px-12">
+          {/* Centered Typography */}
+          <div className="my-auto max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/75">
+                WHOLE-HOME ENERGY STORAGE
+              </span>
+              <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
+                Omnigrid Clean Storage
+              </h1>
+              <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-xl mx-auto leading-relaxed">
+                24/7 Outage Defense, Time-of-Day Tariff Optimization, and Absolute Energy Sovereignty.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Bottom Floating Specs Dock & Dual Pills */}
+          <div className="w-full max-w-4xl space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
+            >
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">13.5 kWh</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  Capacity / Unit
+                </div>
               </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">&lt; 4ms</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  Sub-Cycle Islanding
+                </div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">10-Year</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  Unconditional Warranty
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Dual CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+                Configure Omnigrid System
+              </Link>
+              <button
+                type="button"
+                onClick={() => openConsultationDrawer("villa")}
+                className="tesla-pill-glass w-full sm:w-auto text-sm cursor-pointer"
+              >
+                Consult Storage Engineer
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 2: 24/7 Outage Defense & Seamless Islanding (Pure White #FFFFFF)
+          ========================================================================= */}
+      <section className="w-full bg-[#FFFFFF] py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Visual Frame */}
+            <motion.div {...fadeUp} className="lg:col-span-7">
+              <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm bg-[#171A20]">
+                <img
+                  src={ogCore}
+                  alt="Precision Lithium Iron Phosphate battery module architecture inside Omnigrid"
+                  className="w-full aspect-[16/10] object-cover"
+                />
+              </div>
+            </motion.div>
+
+            {/* Narrative & Feature Highlights */}
+            <motion.div {...fadeUp} className="lg:col-span-5 space-y-6">
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+                UNINTERRUPTED POWER
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+                Immunity from the Utility Grid
+              </h2>
+              <p className="text-sm sm:text-base text-[#5C5E62] leading-relaxed">
+                Indian electrical grids suffer frequent voltage sags, brownouts, and monsoon line breaks. Omnigrid acts as an impenetrable electronic shield, detecting grid disruptions and transferring your entire residence in under 4 milliseconds.
+              </p>
+
+              <div className="space-y-4 pt-4 border-t border-[#E2E8F0]">
+                <div className="flex items-start gap-3">
+                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
+                      Continuous Inductive Heavy Motor Support
+                    </h3>
+                    <p className="text-xs text-[#5C5E62] mt-0.5">
+                      High surge capability effortlessly starts and operates 4–5 heavy Inverter AC compressors, water lift pumps, and EV chargers without voltage dips.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
+                      100% Silent & Zero Diesel Fumes
+                    </h3>
+                    <p className="text-xs text-[#5C5E62] mt-0.5">
+                      Eliminate noisy, vibrating diesel generator maintenance, toxic exhaust fumes, and manual fuel procurement entirely.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
+                      Sub-4ms Transition (Zero Flicker)
+                    </h3>
+                    <p className="text-xs text-[#5C5E62] mt-0.5">
+                      Faster than an eye blink. Sensitive high-end audio gear, gaming PCs, smart lighting systems, and security servers never drop power.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 3: Time-of-Day (ToD) Tariff Optimization (Studio Gray #F8F8FA)
+          ========================================================================= */}
+      <section className="w-full bg-[#F8F8FA] py-20 lg:py-28 border-t border-b border-[#E2E8F0]">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+              INTELLIGENT ENERGY ARBITRAGE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+              Never Pay Peak Electricity Rates
+            </h2>
+            <p className="text-sm sm:text-base text-[#5C5E62]">
+              State electricity distribution boards in India increasingly penalize peak evening consumption (6 PM to 10 PM) with heavy tariff surcharges. Omnigrid neutralizes peak penalties automatically.
+            </p>
+          </motion.div>
+
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <Clock className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                Time-Based Tariff Arbitrage
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Omnigrid automatically charges using free rooftop solar during the day, then powers your estate throughout peak evening tariff windows to eliminate high DISCOM rates.
+              </p>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <Zap className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                100% Self-Powered Mode
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Minimize reliance on the external grid. Maximize consumption of your own clean solar generation day and night, keeping your estate completely carbon-neutral.
+              </p>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                Emergency Backup Reserve
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Set a guaranteed energy reserve percentage (e.g. 20% to 50%) that is permanently preserved exclusively for sudden weather emergencies and grid outages.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 4: Modular Scalability & Technical Specifications (Pure White #FFFFFF)
+          ========================================================================= */}
+      <section className="w-full bg-[#FFFFFF] py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+              ENGINEERING SPECIFICATIONS
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+              Modular Architecture & Specifications
+            </h2>
+            <p className="text-sm sm:text-base text-[#5C5E62]">
+              Stack multiple Omnigrid units seamlessly to match your estate's exact power capacity and continuous runtime requirements.
+            </p>
+          </motion.div>
+
+          {/* Stacking Options */}
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {STACK_OPTIONS.map((stack) => (
+              <button
+                key={stack.units}
+                type="button"
+                onClick={() => setSelectedUnits(stack.units)}
+                className={`p-5 rounded-2xl border text-left transition-all cursor-pointer ${
+                  selectedUnits === stack.units
+                    ? "border-[#171A20] bg-[#171A20] text-white shadow-sm"
+                    : "border-[#E2E8F0] bg-[#F8F8FA] text-[#171A20] hover:border-[#171A20]/30"
+                }`}
+              >
+                <div className="text-xs font-semibold opacity-70">
+                  {stack.units} {stack.units === 1 ? "Unit" : "Units"}
+                </div>
+                <div className="mt-1 text-2xl font-bold tracking-tight">
+                  {stack.capacity}
+                </div>
+                <div className={`mt-1 text-xs font-medium ${
+                  selectedUnits === stack.units ? "text-white" : "text-[#171A20]"
+                }`}>
+                  {stack.desc}
+                </div>
+                <div className={`mt-3 text-[11px] leading-relaxed ${
+                  selectedUnits === stack.units ? "text-white/70" : "text-[#5C5E62]"
+                }`}>
+                  {stack.loads}
+                </div>
+              </button>
             ))}
           </div>
-        </motion.div>
 
-        <motion.div {...fadeUp} className="relative w-full overflow-hidden">
-          <img
-            src={ogModule}
-            alt="Studio render of the monolithic Omnigrid tower standing in a black void"
-            width={1088}
-            height={1440}
-            loading="lazy"
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function OmnigridCTA() {
-  return (
-    <section className="border-t border-white/10 bg-black px-6 py-24 text-center md:py-36">
-      <div className="mx-auto max-w-4xl">
-        <span className={LABEL}>INTELLIGENT ENERGY ARBITRATION</span>
-        <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
-          DEPLOY OMNIGRID INTELLIGENCE
-        </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/50 md:text-base">
-          Sub-millisecond islanding, military battery telemetry, and autonomous grid arbitrage. Speak with our lead system architect.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => openConsultationDrawer("estate")}
-            className="cursor-pointer rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-[#F57C00] hover:text-black"
-          >
-            REQUEST ARCHITECTURE AUDIT →
-          </button>
+          {/* Specs Table */}
+          <div className="mt-16 max-w-4xl mx-auto border-t border-[#E2E8F0] divide-y divide-[#E2E8F0]">
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Usable Energy Capacity</span>
+              <span className="font-semibold text-[#171A20]">13.5 kWh per unit (100% Depth of Discharge)</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Peak & Continuous Power Output</span>
+              <span className="font-semibold text-[#171A20]">7.0 kW Peak / 5.0 kW Continuous per Unit</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Battery Chemistry</span>
+              <span className="font-semibold text-[#171A20]">Lithium Iron Phosphate (LFP) — Cobalt-Free & Non-Combustible</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Round-Trip AC-to-AC Efficiency</span>
+              <span className="font-semibold text-[#171A20]">92.5% Efficient Conversion</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Operating Temperature Range</span>
+              <span className="font-semibold text-[#171A20]">-10°C to +52°C (Engineered for Extreme Indian Climates)</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Ingress Protection Rating</span>
+              <span className="font-semibold text-[#171A20]">IP67 Certified All-Weather Waterproof (Indoor / Outdoor)</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Certifications & Standards</span>
+              <span className="font-semibold text-[#171A20]">BIS Certified, IEC 62619, UL 9540, CEIG Approved</span>
+            </div>
+            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-[#5C5E62] font-medium">Performance Warranty</span>
+              <span className="font-semibold text-[#171A20]">10-Year Unconditional Full Replacement Warranty</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function OmnigridPage() {
-  return (
-    <main className="min-h-screen w-full bg-black">
-      <Header />
-      <CoreHero />
-      <AutonomyHero />
-      <FailsafeSplit />
-      <LogicBlueprint />
-      <Hardware />
-      <OmnigridCTA />
+      {/* =========================================================================
+          SECTION 5: Next-Generation Storage CTA Bar (Studio Gray #F8F8FA)
+          ========================================================================= */}
+      <section className="w-full bg-[#F8F8FA] py-16 border-t border-[#E2E8F0]">
+        <div className="mx-auto max-w-5xl px-6 lg:px-12 text-center space-y-6">
+          <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171A20]">
+            Take Control of Your Energy Future
+          </h3>
+          <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
+            Calculate exact Omnigrid battery units for your villa or schedule an engineering consultation with our storage specialists.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+              Configure in Design Studio →
+            </Link>
+            <button
+              type="button"
+              onClick={() => openConsultationDrawer("villa")}
+              className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer"
+            >
+              Consult Energy Storage Engineer
+            </button>
+          </div>
+        </div>
+      </section>
+
       <Footer />
-    </main>
+      <ConsultationDrawer />
+    </div>
   );
 }

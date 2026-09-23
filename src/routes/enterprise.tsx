@@ -1,23 +1,27 @@
 import { useState, useMemo } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, TrendingUp, ShieldCheck, Zap, Building2, Factory, Warehouse } from "lucide-react";
+import {
+  Factory,
+  Building2,
+  Warehouse,
+  Car,
+  TrendingUp,
+  ShieldCheck,
+  Zap,
+  ArrowRight,
+  Sparkles,
+  Check,
+  FileSpreadsheet,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
-import { computeSolarYield, SOLAR_SPECS } from "@/config/solar";
+import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 import enterpriseMwRooftop from "@/assets/enterprise_mw_rooftop.jpg";
 import lgScale from "@/assets/lg-scale.jpg";
 import defGrid from "@/assets/def-grid.jpg";
 import eco01Grid from "@/assets/eco-01-grid.jpg";
-
-const ENTERPRISE_ASSETS = {
-  hero: enterpriseMwRooftop,
-  industrialPark: lgScale,
-  warehouse: defGrid,
-  carport: eco01Grid,
-};
 
 export const Route = createFileRoute("/enterprise")({
   head: () => ({
@@ -26,9 +30,9 @@ export const Route = createFileRoute("/enterprise")({
       {
         name: "description",
         content:
-          "Turn idle industrial rooftops into high-yield capital assets. Accelerated 40% tax depreciation, zero-downtime microgrids, and guaranteed 25-year performance.",
+          "Turn idle industrial rooftops into high-yield capital assets. 40% accelerated tax depreciation under Section 32, zero-downtime microgrids, and guaranteed 25-year performance.",
       },
-      { property: "og:title", content: `Commercial & Industrial Solar — ${BRAND_CONFIG.name}` },
+      { property: "og:title", content: `Commercial & Industrial Megawatt Solar — ${BRAND_CONFIG.name}` },
       {
         property: "og:description",
         content:
@@ -43,505 +47,448 @@ export const Route = createFileRoute("/enterprise")({
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.3 },
+  viewport: { once: true, amount: 0.25 },
   transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
 };
-
-function EnterpriseHero() {
-  return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-black flex items-center pt-28 pb-20">
-      <img
-        src={ENTERPRISE_ASSETS.hero}
-        alt="Megawatt commercial solar rooftop array on corporate industrial headquarters"
-        className="absolute inset-0 h-full w-full object-cover opacity-35"
-        loading="eager"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black"
-        aria-hidden="true"
-      />
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12 w-full">
-        <motion.div {...fadeUp} className="max-w-3xl">
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
-            COMMERCIAL & INDUSTRIAL INFRASTRUCTURE
-          </span>
-          <h1 className="mt-4 text-4xl font-bold uppercase leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl">
-            MEGAWATT SOLAR ASSETS. ZERO COMPROMISE.
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
-            Convert expansive corporate rooftops and manufacturing facilities into captive power plants.
-            Cut operational electricity expenses by up to 80% while claiming 40% accelerated tax depreciation under Section 32.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={() => openConsultationDrawer("commercial")}
-              className="cursor-pointer rounded-full bg-[#F57C00] px-8 py-4 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-white"
-            >
-              COMMISSION MW FEASIBILITY STUDY →
-            </button>
-            <a
-              href="#commercial-calculator"
-              className="rounded-full border border-white/20 px-8 py-4 text-xs font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:border-white hover:bg-white/5"
-            >
-              ESTIMATE 25-YEAR ROI ↓
-            </a>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
 
 const SECTORS = [
   {
     icon: Factory,
-    title: "Heavy Manufacturing & Plants",
-    desc: "300kW to 5MW captive solar installations designed for continuous 3-phase machinery, heavy peak-load shedding, and grid synchronised inverters.",
-    stat: "Up to 80% Bill Slash",
-  },
-  {
-    icon: Warehouse,
-    title: "Warehousing & Logistics Hubs",
-    desc: "Lightweight standing-seam clamp solar arrays engineered without roof penetration. Water-tight structural integrity guaranteed for 25 years.",
-    stat: "Zero Roof Penetration",
+    title: "Heavy Manufacturing & Automotive",
+    desc: "300 kW to 5 MW captive installations engineered for continuous 3-phase inductive machinery, heavy peak load shaving, and zero power factor penalties.",
+    image: lgScale,
   },
   {
     icon: Building2,
-    title: "Corporate Tech Parks & Hospitals",
-    desc: "Aesthetic glass-glass BIPV architectural solar facades and elevated solar carports with integrated EV supercharging stations.",
-    stat: "40% Year 1 Tax Shield",
+    title: "Corporate IT Parks & Towers",
+    desc: "High-efficiency bifacial glass rooftop installations designed with zero glare for aviation safety and seamless integration into corporate ESG disclosures.",
+    image: defGrid,
+  },
+  {
+    icon: Warehouse,
+    title: "Logistics & Cold Storage Hubs",
+    desc: "Non-penetrative seam clamp systems engineered for expansive PEB sheet rooftops, offsetting 24/7 refrigeration power requirements.",
+    image: enterpriseMwRooftop,
+  },
+  {
+    icon: Car,
+    title: "Enterprise Solar EV Carports",
+    desc: "Architectural dual-purpose parking canopies generating clean megawatt energy while offering shaded parking and Level 3 DC fast-charging for employee and fleet EVs.",
+    image: eco01Grid,
   },
 ];
 
-function SectorMatrix() {
-  return (
-    <section className="bg-black py-24 md:py-36 border-t border-white/10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div {...fadeUp} className="max-w-2xl">
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
-            DEPLOYMENT PROFILES
-          </span>
-          <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
-            BUILT FOR INDUSTRIAL HEAVYWEIGHTS
-          </h2>
-          <p className="mt-4 text-sm text-white/60 md:text-base">
-            Engineered to meet the stringent power stability and safety standards of Fortune 500 manufacturing plants and commercial real estate.
-          </p>
-        </motion.div>
+function EnterprisePage() {
+  // Commercial Calculator State
+  const [roofAreaSqFt, setRoofAreaSqFt] = useState(50000);
+  const [commercialTariff, setCommercialTariff] = useState(10.5);
 
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-          {SECTORS.map((s, idx) => {
-            const Icon = s.icon;
-            return (
-              <motion.div
-                key={s.title}
-                {...fadeUp}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
-                className="group relative border border-white/10 bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[#F57C00]/50 hover:bg-white/[0.04]"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black text-[#F57C00]">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-6 text-xl font-bold uppercase tracking-tight text-white">
-                  {s.title}
-                </h3>
-                <p className="mt-4 text-sm leading-relaxed text-white/60">
-                  {s.desc}
-                </p>
-                <div className="mt-8 border-t border-white/10 pt-4">
-                  <span className="font-mono text-xs font-semibold tracking-wider text-[#F57C00]">
-                    {s.stat}
-                  </span>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
+  // Math model
+  // 100 sq.ft generates approx 1 kWp of commercial solar
+  const capacityKw = useMemo(() => Math.round(roofAreaSqFt / 100), [roofAreaSqFt]);
+  const capacityMw = useMemo(() => (capacityKw / 1000).toFixed(2), [capacityKw]);
+  const annualUnitsKwh = useMemo(() => Math.round(capacityKw * 1550), [capacityKw]);
+  const annualSavingsInr = useMemo(() => Math.round(annualUnitsKwh * commercialTariff), [annualUnitsKwh, commercialTariff]);
+  
+  // Capex approx ₹42,000 per kW for commercial megawatt scale
+  const estCapexInr = useMemo(() => Math.round(capacityKw * 42000), [capacityKw]);
+  // 40% Section 32 tax depreciation in Year 1 (assuming corporate tax rate ~25.17%)
+  const year1TaxShieldInr = useMemo(() => Math.round(estCapexInr * 0.40 * 0.2517), [estCapexInr]);
+  const twentyFiveYearNetInr = useMemo(() => Math.round(annualSavingsInr * 25 - estCapexInr), [annualSavingsInr, estCapexInr]);
+  const twentyFiveYearCrores = (twentyFiveYearNetInr / 10000000).toFixed(2);
 
-function Section32TaxBenefit() {
+  const handleWhatsAppRfp = () => {
+    const text = encodeURIComponent(
+      `*WAVENOX COMMERCIAL & INDUSTRIAL MEGAWATT RFP*\n` +
+      `--------------------------------------\n` +
+      `*Roof Area:* ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft\n` +
+      `*Estimated Capacity:* ${capacityMw} MWp (${capacityKw} kWp)\n` +
+      `*Commercial Tariff:* ₹${commercialTariff} / kWh\n` +
+      `*Estimated Annual Generation:* ${annualUnitsKwh.toLocaleString("en-IN")} kWh / yr\n` +
+      `*Section 32 Year 1 Tax Shield:* ₹${(year1TaxShieldInr / 100000).toFixed(1)} Lakhs\n` +
+      `*25-Year Corporate Net Gain:* ₹${twentyFiveYearCrores} Crores\n` +
+      `--------------------------------------\n` +
+      `We require a formal corporate feasibility survey and PPA / CAPEX financial comparison.`
+    );
+    window.open(`${BRAND_CONFIG.contact.whatsappLink}?text=${text}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <section className="relative overflow-hidden bg-black py-24 md:py-36 border-t border-white/10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-          <motion.div {...fadeUp}>
-            <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
-              CORPORATE TAX ADVANTAGE
-            </span>
-            <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
-              SECTION 32 ACCELERATED DEPRECIATION
-            </h2>
-            <p className="mt-6 text-sm leading-relaxed text-white/70 md:text-base">
-              Under Section 32 of the Indian Income Tax Act, commercial & industrial businesses can claim up to{" "}
-              <strong className="text-white font-semibold">40% Accelerated Depreciation</strong> on commercial solar asset investments in Year 1.
-            </p>
-            <div className="mt-8 space-y-4">
-              {[
-                "Substantial immediate reduction in corporate income tax liability.",
-                "Capital expenditure recovered within 3.2 to 3.8 operational years.",
-                "Zero tariff escalation risk against state utility rate hikes for 25 years.",
-                "Eligible for 100% Green Energy Open Access and ESG accreditation.",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-[#F57C00] mt-0.5" />
-                  <span className="text-sm text-white/80">{item}</span>
+    <div className="min-h-screen w-full bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-white">
+      <Header />
+
+      {/* =========================================================================
+          HERO: 100vh Full-Bleed Megawatt Industrial Rooftop
+          ========================================================================= */}
+      <section className="relative min-h-screen w-full overflow-hidden bg-[#171A20]">
+        <img
+          src={enterpriseMwRooftop}
+          alt="Megawatt commercial solar rooftop array on corporate industrial headquarters"
+          className="absolute inset-0 h-full w-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50" />
+
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-between px-6 pt-32 pb-16 text-center lg:px-12">
+          {/* Centered Typography */}
+          <div className="my-auto max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/75">
+                COMMERCIAL & INDUSTRIAL SOLAR INFRASTRUCTURE
+              </span>
+              <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
+                Commercial Megawatt Solar
+              </h1>
+              <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-2xl mx-auto leading-relaxed">
+                Turn idle factory and corporate rooftops into high-yield capital assets. Slash electricity tariffs by up to 80% while claiming 40% accelerated tax depreciation under Section 32.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Bottom Floating Specs Dock & Dual Pills */}
+          <div className="w-full max-w-4xl space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
+            >
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">300 kW – 5 MW+</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  Deployment Scale
                 </div>
-              ))}
-            </div>
-            <div className="mt-10">
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">40%</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  Sec 32 Tax Shield
+                </div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">2.8 Years</div>
+                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
+                  CAPEX Payback
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Dual CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
               <button
                 type="button"
                 onClick={() => openConsultationDrawer("commercial")}
-                className="cursor-pointer rounded-full border border-white/30 bg-transparent px-8 py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:border-[#F57C00] hover:bg-[#F57C00] hover:text-black"
+                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
               >
-                REQUEST CORPORATE TAX SCHEDULE →
+                Commission MW Feasibility Study
               </button>
-            </div>
-          </motion.div>
-
-          <motion.div {...fadeUp} className="border border-white/10 bg-white/[0.02] p-8 md:p-12">
-            <h3 className="text-xs font-mono uppercase tracking-[0.3em] text-white/50">
-              ILLUSTRATIVE MW-TIER CAPITAL MODEL
-            </h3>
-            <div className="mt-8 space-y-6">
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <span className="text-sm text-white/60">Asset Capacity</span>
-                <span className="font-mono text-sm font-bold text-white">500 kW Rooftop Array</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <span className="text-sm text-white/60">Annual Generation</span>
-                <span className="font-mono text-sm font-bold text-white">~800,000 Units (kWh)</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <span className="text-sm text-white/60">Annual Power Cost Savings</span>
-                <span className="font-mono text-sm font-bold text-[#F57C00]">₹72,00,000 / Year</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <span className="text-sm text-white/60">Year 1 Tax Shield (40% Dep.)</span>
-                <span className="font-mono text-sm font-bold text-white">₹78,00,000 Write-off</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <span className="text-sm text-white/60">Estimated Payback Period</span>
-                <span className="font-mono text-sm font-bold text-emerald-400">3.4 Years</span>
-              </div>
-              <div className="flex justify-between pt-2">
-                <span className="text-sm text-white/60">25-Year Net Corporate Gain</span>
-                <span className="font-mono text-lg font-bold text-[#F57C00]">₹18.4+ Crores</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const FINANCING_MODELS = [
-  {
-    id: "capex",
-    title: "Direct CAPEX Ownership",
-    tagline: "Maximum Long-Term Wealth & Tax Shield",
-    upfront: "100% Upfront Capital",
-    depreciation: "40% Year 1 Section 32",
-    payback: "3.2 – 3.8 Years",
-    lcoe: "₹2.20 / kWh (Ultra-Low)",
-    ownership: "100% Asset Ownership Day 1",
-    benefits: [
-      "Immediate 40% accelerated depreciation corporate tax write-off",
-      "All future state DISCOM electricity tariff hikes completely neutralized",
-      "Generates free captive clean electricity for 21+ years post-payback",
-      "100% Green Energy certificates & carbon credits retained by company",
-    ],
-  },
-  {
-    id: "resco",
-    title: "RESCO / Corporate PPA",
-    tagline: "Zero Upfront Capital Investment",
-    upfront: "₹0 (Zero Initial Investment)",
-    depreciation: "Claimed by RESCO partner",
-    payback: "Instant Day 1 Savings",
-    lcoe: "25-35% Below DISCOM Grid Tariff",
-    ownership: "Transfers to Company at Year 15/20",
-    benefits: [
-      "Zero capital diverted from core manufacturing or business growth",
-      "Immediate 25% to 35% reduction on monthly commercial electricity bill",
-      "WAVENOX assumes 100% O&M, panel cleaning, and inverter maintenance liability",
-      "Guaranteed performance metrics with minimum generation uptime penalties",
-    ],
-  },
-  {
-    id: "hybrid",
-    title: "Debt Amortized Green Loan",
-    tagline: "Cash-Flow Positive from Month 1",
-    upfront: "15-20% Equity Margin",
-    depreciation: "40% Year 1 Section 32 Retained",
-    payback: "Self-Liquidating via Bill Savings",
-    lcoe: "₹2.85 / kWh",
-    ownership: "100% Company Ownership",
-    benefits: [
-      "Monthly power cost savings exceed corporate EMI loan amortization",
-      "Retain full 40% Section 32 accelerated depreciation tax shield",
-      "Accelerated loan settlement typically completed within 48 months",
-      "Supported by SIDBI / SBI World Bank green rooftop financing programs",
-    ],
-  },
-];
-
-function FinancingModelSelector() {
-  const [selectedModel, setSelectedModel] = useState("capex");
-  const model = FINANCING_MODELS.find((m) => m.id === selectedModel) || FINANCING_MODELS[0];
-
-  return (
-    <section className="bg-black py-24 md:py-36 border-t border-white/10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="max-w-2xl">
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
-            CAPITAL STRUCTURING
-          </span>
-          <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
-            CAPEX VS RESCO FINANCING ARCHITECTURE
-          </h2>
-          <p className="mt-4 text-sm text-white/60 md:text-base">
-            Choose the financial structure best suited for your corporate balance sheet and cash flow objectives.
-          </p>
-        </div>
-
-        {/* 3 Model Tabs */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {FINANCING_MODELS.map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => setSelectedModel(m.id)}
-              className={`p-6 border text-left transition-all duration-300 cursor-pointer ${
-                selectedModel === m.id
-                  ? "border-[#F57C00] bg-white/[0.04] shadow-lg shadow-[#F57C00]/10"
-                  : "border-white/10 bg-black/40 hover:border-white/30"
-              }`}
-            >
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#F57C00]">
-                MODEL {m.id.toUpperCase()}
-              </span>
-              <h3 className="mt-2 text-base font-bold uppercase tracking-tight text-white">
-                {m.title}
-              </h3>
-              <p className="mt-1 text-xs text-white/50">{m.tagline}</p>
-            </button>
-          ))}
-        </div>
-
-        {/* Selected Model Deep Dive */}
-        <div className="mt-8 border border-white/10 bg-white/[0.02] p-8 md:p-12">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 border-b border-white/10 pb-8">
-            <div>
-              <span className="text-[10px] font-mono uppercase text-white/50">UPFRONT CAPITAL</span>
-              <div className="mt-2 font-mono text-sm font-bold text-white">{model.upfront}</div>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono uppercase text-white/50">TAX DEPRECIATION</span>
-              <div className="mt-2 font-mono text-sm font-bold text-[#F57C00]">{model.depreciation}</div>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono uppercase text-white/50">ESTIMATED PAYBACK</span>
-              <div className="mt-2 font-mono text-sm font-bold text-emerald-400">{model.payback}</div>
-            </div>
-            <div>
-              <span className="text-[10px] font-mono uppercase text-white/50">ASSET OWNERSHIP</span>
-              <div className="mt-2 font-mono text-sm font-bold text-white">{model.ownership}</div>
-            </div>
+              <a
+                href="#commercial-calculator"
+                className="tesla-pill-glass w-full sm:w-auto text-sm cursor-pointer"
+              >
+                Calculate Commercial ROI ↓
+              </a>
+            </motion.div>
           </div>
+        </div>
+      </section>
 
-          <div className="mt-8">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-white/70">
-              STRATEGIC CORPORATE ADVANTAGES
-            </h4>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {model.benefits.map((b) => (
-                <div key={b} className="flex items-start gap-3">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-[#F57C00] mt-0.5" />
-                  <span className="text-xs text-white/80 leading-relaxed">{b}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-            <span className="text-xs text-white/60">
-              * Custom PPA tariff models and bank consortium syndication available for installations exceeding 1 MW.
+      {/* =========================================================================
+          SECTION 2: High-Yield Corporate Benefits (Pure White #FFFFFF)
+          ========================================================================= */}
+      <section className="w-full bg-[#FFFFFF] py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+              FINANCIAL ENGINEERING
             </span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+              Capital Allocation for India's Industrial Leaders
+            </h2>
+            <p className="text-sm sm:text-base text-[#5C5E62]">
+              Rooftop solar is no longer just a sustainability pledge; it is one of the highest internal rate of return (IRR) balance sheet investments available to Indian enterprises today.
+            </p>
+          </motion.div>
+
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <FileSpreadsheet className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                40% Accelerated Tax Depreciation
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Under Section 32 of the Indian Income Tax Act, write off 40% of the entire solar capital expenditure in Year 1, creating immediate balance sheet cash tax shields.
+              </p>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                Up to 80% Power Bill Reduction
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Replace commercial utility tariffs of ₹10.00–₹12.50 per kWh with an effective levelized cost of energy (LCOE) under ₹2.50 per unit over 25 years.
+              </p>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                SEBI BRSR & ESG Mandate
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Empower listed enterprises to meet SEBI's Business Responsibility & Sustainability Reporting (BRSR) directives and international RE100 zero-carbon commitments.
+              </p>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
+                <Zap className="h-5 w-5" />
+              </div>
+              <h3 className="text-base font-semibold text-[#171A20]">
+                Zero Production Downtime
+              </h3>
+              <p className="text-xs text-[#5C5E62] leading-relaxed">
+                Grid-synchronized high-voltage industrial inverters smoothly integrate with your on-site diesel generators, slashing expensive fuel burn during load shedding.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 3: Industrial Deployment Sectors (Studio Gray #F8F8FA)
+          ========================================================================= */}
+      <section className="w-full bg-[#F8F8FA] py-20 lg:py-28 border-t border-b border-[#E2E8F0]">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+              SECTOR ARCHITECTURE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+              Engineered for High-Demand Industries
+            </h2>
+            <p className="text-sm sm:text-base text-[#5C5E62]">
+              Customized mechanical mounting brackets and high-voltage line synchronization for every industrial roof topology.
+            </p>
+          </motion.div>
+
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {SECTORS.map((sector) => {
+              const Icon = sector.icon;
+              return (
+                <motion.div
+                  key={sector.title}
+                  {...fadeUp}
+                  className="rounded-2xl overflow-hidden border border-[#E2E8F0] bg-white shadow-xs group"
+                >
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#171A20]">
+                    <img
+                      src={sector.image}
+                      alt={sector.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                  <div className="p-6 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-[#171A20] text-white flex items-center justify-center shrink-0">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#171A20]">{sector.title}</h3>
+                    </div>
+                    <p className="text-xs sm:text-sm text-[#5C5E62] leading-relaxed">
+                      {sector.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 4: Interactive Commercial Sizing & ROI Engine (Pure White #FFFFFF)
+          ========================================================================= */}
+      <section id="commercial-calculator" className="w-full bg-[#FFFFFF] py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Controls */}
+            <motion.div {...fadeUp} className="lg:col-span-6 space-y-8">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
+                  INTERACTIVE FINANCIAL ENGINE
+                </span>
+                <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
+                  Model Your Megawatt Solar Yield
+                </h2>
+                <p className="mt-3 text-sm text-[#5C5E62]">
+                  Adjust your industrial rooftop area and current commercial utility tariff to calculate your immediate tax deduction and 25-year cumulative wealth creation.
+                </p>
+              </div>
+
+              {/* Roof Footprint Slider */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <label className="text-xs font-medium text-[#5C5E62]">
+                    Usable Industrial Rooftop Area
+                  </label>
+                  <span className="text-lg font-bold text-[#171A20]">
+                    {roofAreaSqFt.toLocaleString("en-IN")} sq.ft
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="10000"
+                  max="150000"
+                  step="5000"
+                  value={roofAreaSqFt}
+                  onChange={(e) => setRoofAreaSqFt(Number(e.target.value))}
+                  className="w-full accent-[#171A20] cursor-pointer"
+                />
+                <div className="flex justify-between text-[11px] text-[#5C5E62]">
+                  <span>10,000 sq.ft (100 kWp)</span>
+                  <span>1,50,000 sq.ft (1.5 MWp)</span>
+                </div>
+              </div>
+
+              {/* Commercial Tariff Selector */}
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-[#5C5E62]">
+                  Current Commercial / Industrial DISCOM Tariff (₹/kWh)
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[9.0, 10.5, 12.0].map((rate) => (
+                    <button
+                      key={rate}
+                      type="button"
+                      onClick={() => setCommercialTariff(rate)}
+                      className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                        commercialTariff === rate
+                          ? "border-[#171A20] bg-[#171A20] text-white"
+                          : "border-[#E2E8F0] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/30"
+                      }`}
+                    >
+                      ₹{rate.toFixed(1)} / unit
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={handleWhatsAppRfp}
+                  className="tesla-pill-primary text-xs cursor-pointer"
+                >
+                  Dispatch RFP Proposal via WhatsApp →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openConsultationDrawer("commercial")}
+                  className="tesla-pill-secondary text-xs cursor-pointer"
+                >
+                  Book On-Site Engineering Audit
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Results Card */}
+            <motion.div {...fadeUp} className="lg:col-span-6">
+              <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] p-8 space-y-6">
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C5E62]">
+                    PROJECTED MEGAWATT METRICS
+                  </span>
+                  <div className="mt-1 text-3xl font-bold tracking-tight text-[#171A20]">
+                    {capacityMw} MWp <span className="text-base font-normal text-[#5C5E62]">({capacityKw} kWp)</span>
+                  </div>
+                </div>
+
+                <div className="border-t border-b border-[#E2E8F0] py-5 space-y-3 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#5C5E62]">Est. Annual Clean Output</span>
+                    <span className="font-semibold text-[#171A20]">
+                      ~{annualUnitsKwh.toLocaleString("en-IN")} kWh / yr
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-emerald-700 font-medium">
+                    <span>Year 1 Section 32 Tax Shield</span>
+                    <span className="font-bold">
+                      ₹{(year1TaxShieldInr / 100000).toFixed(1)} Lakhs
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#5C5E62]">Annual Electricity Bill Savings</span>
+                    <span className="font-semibold text-[#171A20]">
+                      ₹{(annualSavingsInr / 100000).toFixed(1)} Lakhs / yr
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#5C5E62]">Estimated Payback Period</span>
+                    <span className="font-semibold text-[#171A20]">2.8 to 3.2 Years</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-baseline pt-1">
+                  <div>
+                    <div className="text-xs font-semibold text-[#5C5E62] uppercase tracking-wider">
+                      25-Year Corporate Net Wealth
+                    </div>
+                    <div className="text-[11px] text-[#5C5E62]">After full amortization of equipment & maintenance</div>
+                  </div>
+                  <div className="text-3xl font-bold text-emerald-700">
+                    ₹{twentyFiveYearCrores} <span className="text-sm font-semibold">Cr</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 5: Executive Feasibility Bar (Studio Gray #F8F8FA)
+          ========================================================================= */}
+      <section className="w-full bg-[#F8F8FA] py-16 border-t border-[#E2E8F0]">
+        <div className="mx-auto max-w-5xl px-6 lg:px-12 text-center space-y-6">
+          <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171A20]">
+            Empower Your Balance Sheet with Clean Energy
+          </h3>
+          <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
+            WAVENOX in-house engineering team handles turnkey CEIG high-voltage synchronization, DISCOM net-metering & open-access approvals with guaranteed 25-year performance ratios.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
               type="button"
               onClick={() => openConsultationDrawer("commercial")}
-              className="cursor-pointer rounded-full bg-[#F57C00] px-6 py-3 text-xs font-bold uppercase tracking-wider text-black transition-all duration-300 hover:bg-white"
+              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
             >
-              REQUEST PPA / CAPEX COMPARISON MEMO →
+              Request Commercial Feasibility Survey
             </button>
+            <Link to="/deploy" className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer">
+              Launch Design Studio →
+            </Link>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function CommercialCalculator() {
-  const [roofArea, setRoofArea] = useState(25000); // 25,000 sq.ft default commercial roof
-  const [tariff, setTariff] = useState(9.5); // ₹9.5/kWh industrial average
-
-  const metrics = useMemo(() => {
-    return computeSolarYield({
-      roofAreaSqFt: roofArea,
-      tariffRatePerKwh: tariff,
-    });
-  }, [roofArea, tariff]);
-
-  const annualSavingsLakhs = (metrics.annualUnitsGenerated * tariff) / 100000;
-  const twentyFiveYearCrores = (metrics.twentyFiveYearNetSavingsInr / 10000000).toFixed(2);
-
-  return (
-    <section id="commercial-calculator" className="bg-black py-24 md:py-36 border-t border-white/10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto">
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
-            DYNAMIC MW FINANCIAL ENGINE
-          </span>
-          <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
-            CALCULATE YOUR INDUSTRIAL RETURN
-          </h2>
-          <p className="mt-4 text-sm text-white/60 md:text-base">
-            Slide your industrial rooftop or warehouse footprint to see instantaneous capacity, annual unit output, and 25-year corporate wealth generated.
-          </p>
-        </motion.div>
-
-        <motion.div {...fadeUp} className="mt-16 grid grid-cols-1 gap-12 lg:grid-cols-12">
-          {/* Controls */}
-          <div className="lg:col-span-6 border border-white/10 bg-white/[0.02] p-8 md:p-10">
-            <div>
-              <div className="flex justify-between items-baseline">
-                <label className="text-xs font-mono uppercase tracking-widest text-white/70">
-                  Rooftop / Shed Surface Area
-                </label>
-                <span className="font-mono text-lg font-bold text-[#F57C00]">
-                  {roofArea.toLocaleString("en-IN")} sq.ft
-                </span>
-              </div>
-              <input
-                type="range"
-                min="5000"
-                max="100000"
-                step="2500"
-                value={roofArea}
-                onChange={(e) => setRoofArea(Number(e.target.value))}
-                className="mt-6 w-full accent-[#F57C00] cursor-pointer"
-              />
-              <div className="mt-2 flex justify-between text-[10px] font-mono text-white/40">
-                <span>5,000 sq.ft</span>
-                <span>50,000 sq.ft</span>
-                <span>100,000 sq.ft</span>
-              </div>
-            </div>
-
-            <div className="mt-12">
-              <div className="flex justify-between items-baseline">
-                <label className="text-xs font-mono uppercase tracking-widest text-white/70">
-                  Commercial Tariff Rate
-                </label>
-                <span className="font-mono text-lg font-bold text-white">
-                  ₹{tariff.toFixed(1)} / kWh
-                </span>
-              </div>
-              <input
-                type="range"
-                min="7.0"
-                max="14.0"
-                step="0.5"
-                value={tariff}
-                onChange={(e) => setTariff(Number(e.target.value))}
-                className="mt-6 w-full accent-[#F57C00] cursor-pointer"
-              />
-              <div className="mt-2 flex justify-between text-[10px] font-mono text-white/40">
-                <span>₹7.0/kWh</span>
-                <span>₹10.5/kWh</span>
-                <span>₹14.0/kWh</span>
-              </div>
-            </div>
-
-            <div className="mt-12 border-t border-white/10 pt-6">
-              <p className="text-xs leading-relaxed text-white/50">
-                * Based on {SOLAR_SPECS.annualSunlightHours} effective solar radiation hours/yr in Central & South India with {SOLAR_SPECS.annualDegradationPct}% annual cell degradation over 25 years.
-              </p>
-            </div>
-          </div>
-
-          {/* Results Display */}
-          <div className="lg:col-span-6 flex flex-col justify-between border border-[#F57C00]/30 bg-black p-8 md:p-10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 h-40 w-40 bg-[#F57C00]/10 blur-3xl pointer-events-none" />
-
-            <div>
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#F57C00]">
-                PROJECTED METRICS
-              </span>
-              <div className="mt-8 grid grid-cols-2 gap-6 border-b border-white/10 pb-8">
-                <div>
-                  <span className="text-[11px] font-mono uppercase text-white/50">Array Capacity</span>
-                  <div className="mt-2 font-mono text-3xl font-bold text-white">
-                    {metrics.capacityKw.toFixed(1)} <span className="text-sm font-normal text-white/60">kWp</span>
-                  </div>
-                </div>
-                <div>
-                  <span className="text-[11px] font-mono uppercase text-white/50">Annual Generation</span>
-                  <div className="mt-2 font-mono text-3xl font-bold text-white">
-                    {Math.round(metrics.annualUnitsGenerated).toLocaleString("en-IN")}{" "}
-                    <span className="text-sm font-normal text-white/60">kWh</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 space-y-4">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm text-white/70">Annual Electricity Savings</span>
-                  <span className="font-mono text-lg font-bold text-[#F57C00]">
-                    ₹{annualSavingsLakhs.toFixed(2)} Lakhs / yr
-                  </span>
-                </div>
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm text-white/70">25-Year Cumulative Wealth</span>
-                  <span className="font-mono text-2xl font-bold text-white">
-                    ₹{twentyFiveYearCrores} Crores
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 pt-6 border-t border-white/10">
-              <button
-                type="button"
-                onClick={() => openConsultationDrawer("commercial")}
-                className="w-full cursor-pointer rounded-full bg-[#F57C00] py-4 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-white"
-              >
-                REQUEST FORMAL EPC FEASIBILITY DOSSIER →
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function EnterprisePage() {
-  return (
-    <main className="min-h-screen w-full bg-black">
-      <Header />
-      <EnterpriseHero />
-      <SectorMatrix />
-      <Section32TaxBenefit />
-      <FinancingModelSelector />
-      <CommercialCalculator />
       <Footer />
-    </main>
+      <ConsultationDrawer />
+    </div>
   );
 }
