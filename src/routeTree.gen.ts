@@ -9,34 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResidentialRouteImport } from './routes/residential'
-import { Route as OmnigridRouteImport } from './routes/omnigrid'
-import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as BrandRouteImport } from './routes/brand'
 import { Route as DefenseRouteImport } from './routes/defense'
+import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as IntelligenceRouteImport } from './routes/intelligence'
-import { Route as BrandRouteImport } from './routes/brand'
-import { Route as DeployRouteImport } from './routes/deploy'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
+import { Route as OmnigridRouteImport } from './routes/omnigrid'
+import { Route as ResidentialRouteImport } from './routes/residential'
 
-const ResidentialRoute = ResidentialRouteImport.update({
-  id: '/residential',
-  path: '/residential',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OmnigridRoute = OmnigridRouteImport.update({
-  id: '/omnigrid',
-  path: '/omnigrid',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiquidGlassRoute = LiquidGlassRouteImport.update({
-  id: '/liquid-glass',
-  path: '/liquid-glass',
+const BrandRoute = BrandRouteImport.update({
+  id: '/brand',
+  path: '/brand',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DefenseRoute = DefenseRouteImport.update({
   id: '/defense',
   path: '/defense',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeployRoute = DeployRouteImport.update({
+  id: '/deploy',
+  path: '/deploy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnterpriseRoute = EnterpriseRouteImport.update({
@@ -49,19 +49,19 @@ const IntelligenceRoute = IntelligenceRouteImport.update({
   path: '/intelligence',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BrandRoute = BrandRouteImport.update({
-  id: '/brand',
-  path: '/brand',
+const LiquidGlassRoute = LiquidGlassRouteImport.update({
+  id: '/liquid-glass',
+  path: '/liquid-glass',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DeployRoute = DeployRouteImport.update({
-  id: '/deploy',
-  path: '/deploy',
+const OmnigridRoute = OmnigridRouteImport.update({
+  id: '/omnigrid',
+  path: '/omnigrid',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ResidentialRoute = ResidentialRouteImport.update({
+  id: '/residential',
+  path: '/residential',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -149,25 +149,32 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/residential': {
-      id: '/residential'
-      path: '/residential'
-      fullPath: '/residential'
-      preLoaderRoute: typeof ResidentialRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/omnigrid': {
-      id: '/omnigrid'
-      path: '/omnigrid'
-      fullPath: '/omnigrid'
-      preLoaderRoute: typeof OmnigridRouteImport
+    '/brand': {
+      id: '/brand'
+      path: '/brand'
+      fullPath: '/brand'
+      preLoaderRoute: typeof BrandRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/liquid-glass': {
-      id: '/liquid-glass'
-      path: '/liquid-glass'
-      fullPath: '/liquid-glass'
-      preLoaderRoute: typeof LiquidGlassRouteImport
+    '/defense': {
+      id: '/defense'
+      path: '/defense'
+      fullPath: '/defense'
+      preLoaderRoute: typeof DefenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deploy': {
+      id: '/deploy'
+      path: '/deploy'
+      fullPath: '/deploy'
+      preLoaderRoute: typeof DeployRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/enterprise': {
@@ -184,32 +191,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IntelligenceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/defense': {
-      id: '/defense'
-      path: '/defense'
-      fullPath: '/defense'
-      preLoaderRoute: typeof DefenseRouteImport
+    '/liquid-glass': {
+      id: '/liquid-glass'
+      path: '/liquid-glass'
+      fullPath: '/liquid-glass'
+      preLoaderRoute: typeof LiquidGlassRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/brand': {
-      id: '/brand'
-      path: '/brand'
-      fullPath: '/brand'
-      preLoaderRoute: typeof BrandRouteImport
+    '/omnigrid': {
+      id: '/omnigrid'
+      path: '/omnigrid'
+      fullPath: '/omnigrid'
+      preLoaderRoute: typeof OmnigridRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/deploy': {
-      id: '/deploy'
-      path: '/deploy'
-      fullPath: '/deploy'
-      preLoaderRoute: typeof DeployRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/residential': {
+      id: '/residential'
+      path: '/residential'
+      fullPath: '/residential'
+      preLoaderRoute: typeof ResidentialRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -229,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

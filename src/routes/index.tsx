@@ -1,33 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { Features } from "@/components/Features";
-import { Comparison } from "@/components/Comparison";
-import { DataMatrix } from "@/components/DataMatrix";
-import { Ecosystem } from "@/components/Ecosystem";
-import { RoiEngine } from "@/components/RoiEngine";
-import { Process } from "@/components/Process";
-import { Portfolio } from "@/components/Portfolio";
-import { Press } from "@/components/Press";
-import { Certifications } from "@/components/Certifications";
-import { Faq } from "@/components/Faq";
-import { TileAnatomy } from "@/components/TileAnatomy";
 import { Footer } from "@/components/Footer";
+import { ConsultationDrawer } from "@/components/ConsultationDrawer";
+import { BRAND_CONFIG } from "@/config/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "WAVENOX — Absolute Power. Zero Compromise." },
+      { title: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
       {
         name: "description",
         content:
-          "Wavenox deploys world-class residential and commercial solar infrastructure across Hyderabad. Tier-1 performance, 25-year warranty, absolute energy independence.",
+          "Wavenox deploys world-class low-profile residential and commercial architectural solar across India. Guaranteed lowest price, 25-year warranty, and 24/7 outage protection.",
       },
-      { property: "og:title", content: "WAVENOX — Absolute Power. Zero Compromise." },
+      { property: "og:title", content: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
       {
         property: "og:description",
         content:
-          "Ultra-premium solar infrastructure for homes and businesses. Engineered for the future.",
+          "Ultra-luxury solar infrastructure for homes and businesses. Guaranteed lowest price, 25-year warranty, and 24/7 outage protection.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -38,26 +29,11 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main
-      className="bg-black"
-      style={{ backgroundImage: "none", backgroundColor: "#000000" }}
-    >
+    <main className="min-h-screen bg-white text-[#171A20] selection:bg-[#171A20] selection:text-white">
       <Header />
       <Hero />
-      <Features />
-      <Comparison />
-      <TileAnatomy />
-      <DataMatrix />
-      <Ecosystem />
-      <RoiEngine />
-      <Process />
-      <Portfolio />
-      <Press />
-      <Certifications />
-      <Faq />
       <Footer />
+      <ConsultationDrawer />
     </main>
   );
 }
-
-

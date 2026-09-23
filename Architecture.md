@@ -4,7 +4,7 @@
 
 ## 1. High-Level Architecture Overview
 
-WAVENOX is engineered as a modern, high-performance, full-stack reusable web application leveraging the **TanStack Start** meta-framework. It decouples the visual presentation layer from business specifics through a centralized configuration engine, enabling rapid rebranding and multi-client deployments.
+WAVENOX is engineered as a high-performance, full-stack, reusable web platform built on the **TanStack Start** meta-framework. It marries **Tesla Solar's showroom design system (`https://www.tesla.com/solarpanels` & `https://www.tesla.com/energy/design`)** with an Indian localized financial and regulatory engine, decoupled via a centralized configuration system.
 
 ```
                               ┌──────────────────────────────────────────────┐
@@ -13,147 +13,116 @@ WAVENOX is engineered as a modern, high-performance, full-stack reusable web app
                               │    src/config/business.ts (Hubs/Reviews)     │
                               │    src/config/solar.ts   (Tariffs/Specs)     │
                               └──────────────────────┬───────────────────────┘
-                                                     │ Type-Safe Config Context
+                                                     │ Type-Safe Config
                                                      ▼
                               ┌──────────────────────────────────────────────┐
-                              │                 CLIENT TIER                  │
-                              │  React 19 • Framer Motion 12 • Radix UI      │
-                              │  Dynamic Branding • Responsive Micro-Interactions
+                              │           TESLA SHOWROOM UI TIER             │
+                              │  React 19 • Framer Motion 12 • Tailwind v4   │
+                              │  Pure White (#FFFFFF) & Studio Gray (#F8F8FA)│
+                              │  Carbon Dark Typography • Tesla Pill Buttons │
                               └──────────────────────┬───────────────────────┘
                                                      │ HTTP / Hydration
                                                      ▼
                               ┌──────────────────────────────────────────────┐
                               │            ROUTING & SSR ENGINE              │
                               │    TanStack Router (File-based routes)       │
-                              │    Dynamic JSON-LD Schema & SEO Headers      │
+                              │    Dynamic JSON-LD Schema & Meta Tags        │
                               └──────────────────────┬───────────────────────┘
                                                      │ Vite SSR Bundle
                                                      ▼
                               ┌──────────────────────────────────────────────┐
-                              │                 SERVER TIER                  │
-                              │          Nitro Engine / H3 Runtime           │
-                              │    TanStack Server Functions (createServerFn)│
-                              │    Zod Validation • Anti-Burst Rate Limits   │
+                              │           SYSTEM DESIGN STUDIO               │
+                              │   6-Step Interactive Configurator (/deploy)  │
+                              │   Stateful System Sizing, Battery & Subsidy  │
                               └──────────────────────┬───────────────────────┘
-                                                     │ Service Role Persistence
+                                                     │ Direct Connect
                                                      ▼
                               ┌──────────────────────────────────────────────┐
-                              │            DATA & INTEGRATION TIER           │
-                              │    Supabase PostgreSQL (Advisory Locks)      │
-                              │    Meta WhatsApp Cloud API (Owner Alerts)    │
-                              │    Google Ads Consent Mode v2 Attributions  │
+                              │            COMMUNICATION TIER                │
+                              │    WhatsApp Direct Link (Pre-filled Dossier) │
+                              │    Optional Supabase Lead Storage            │
                               └──────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Configuration & Reusability Architecture
+## 2. Configuration & Reusability Engine (`src/config/`)
 
-The platform follows the proven configuration pattern established in the founder's prior enterprise project (`InvisProtect`), decoupling all owner-specific and regional attributes into three strict TypeScript modules in `src/config/`:
+To guarantee that any solar EPC contractor in India can acquire and rebrand this platform within 30 minutes, all business-specific, geographic, and solar physics variables are centralized:
 
-### 2.1 `src/config/brand.ts` (Brand Identity & Communications)
-- **Purpose**: Single source of truth for the company name, website origin, phone numbers, WhatsApp, email, social URLs, and logo wordmark.
-- **Environment Overrides**: Automatically reads `VITE_BRAND_NAME`, `VITE_SITE_URL`, `VITE_BUSINESS_PHONE_*`, and `VITE_BUSINESS_WHATSAPP_*` from `.env`, falling back to safe defaults.
-- **Dial Normalization**: Built-in helper functions (`normalizedDial`, `normalizedWhatsAppDial`, `validWhatsAppLink`) ensure that invalid numbers never break UI links or generate malformed `tel:` / `https://wa.me/` URLs.
+### 2.1 `src/config/brand.ts`
+- Single source of truth for: Brand name, legal entity, phone numbers (display and dialable E.164), WhatsApp links, email addresses, social profiles, and domain.
+- Built-in validation and normalization helpers (`validSiteUrl`, `normalizedDial`, `normalizedWhatsAppDial`, `validWhatsAppLink`).
 
-### 2.2 `src/config/business.ts` (Geographic Coverage & Proof)
-- **Purpose**: Defines regional coverage, primary operating city, geo coordinates for Google LocalBusiness schema, and verified service hubs (e.g., Hyderabad & Secunderabad, Bengaluru, Vijayawada, Delhi-NCR).
-- **Customer Reviews**: Dynamic review registry. Sections automatically hide if the array is empty, ensuring adherence to consumer protection standards (no invented testimonials).
+### 2.2 `src/config/business.ts`
+- Primary operating city (Hyderabad HQ), regional coverage, GPS coordinates for Schema.org LocalBusiness microdata, and verified service hubs across India (Bengaluru, Mumbai, Vijayawada, Delhi-NCR).
+- Customer review registry (auto-hides when empty to comply with consumer protection laws).
 
-### 2.3 `src/config/solar.ts` (Solar Physics & Financial Engine Constants)
-- **Purpose**: Centralizes all mathematical and financial parameters for the ROI engine and energy calculators:
-  - `WATTS_PER_SQFT_WAVENOX`: Energy density rating (default 13 W/sq.ft).
-  - `WATTS_PER_SQFT_CONV`: Baseline conventional density (10 W/sq.ft).
-  - `GEN_HOURS_PER_YEAR`: Effective solar insolation hours (default 1,600 hrs/yr).
-  - `TARIFF_INR_PER_KWH`: Local utility tariff (default ₹9.5/kWh).
-  - `DISCOM_SCHEDULES`: Tariff tables for state electricity boards (TSSPDCL, TSNPDCL, BESCOM, MSEDCL, TANGEDCO).
-  - `SUBSIDY_SLABS`: Government subsidy calculations under the PM Surya Ghar scheme.
-  - `WARRANTY_YEARS`: Structural and performance warranty terms (25 Years).
+### 2.3 `src/config/solar.ts`
+- Complete solar physics and Indian financial models:
+  - Energy density: `WATTS_PER_SQFT_WAVENOX = 13` W/sq.ft.
+  - Annual effective solar hours: `GEN_HOURS_PER_YEAR = 1600` hrs.
+  - State utility tariff schedules: TSSPDCL (Telangana), BESCOM (Karnataka), MSEDCL (Maharashtra), TANGEDCO (Tamil Nadu), BSES (Delhi).
+  - Central Government Subsidies: PM Surya Ghar Muft Bijli Yojana calculation rules (up to ₹78,000 direct credit).
+  - Robust calculation function `computeSolarYield` supporting both object parameters and positional numbers.
 
 ---
 
-## 3. Directory Layout & Modular Structure
+## 3. Directory Layout & 3-Layer Component Hierarchy
 
 ```
 wavenox/
-├── docs/                     # Handover & Architecture Documentation
-│   ├── CUSTOMIZE.md          # 15-minute rebranding guide for new solar owners
-│   ├── LEAD_GENERATION_ARCHITECTURE.md # Lead capture, attribution & CRM pipeline
-│   └── SEO_ARCHITECTURE.md   # Schema.org, canonicalization & local indexing
-├── public/                   # Static assets (favicons, robots.txt, sitemap.xml)
 ├── src/
-│   ├── assets/               # Photographic placeholders & high-res renders
-│   ├── config/               # Single-source-of-truth configuration files
-│   │   ├── brand.ts          # Identity, phone, WhatsApp, email, socials
-│   │   ├── business.ts       # Service hubs, regions, reviews, coverage
-│   │   └── solar.ts          # Solar physics, tariffs, subsidy models
-│   ├── components/           # UI components
-│   │   ├── BrandLogo.tsx     # Reusable dynamic brand wordmark
-│   │   ├── Header.tsx        # Sticky glass header with mobile menu
-│   │   ├── Hero.tsx          # 4-slide storytelling carousel + Ghost CTA
-│   │   ├── Features.tsx      # Core advantage cards with conic-border glow
-│   │   ├── Comparison.tsx    # Split-screen conventional vs Wavenox
-│   │   ├── DataMatrix.tsx    # 7-row technical benchmark table
-│   │   ├── Ecosystem.tsx     # Horizontal parallax rail
-│   │   ├── RoiEngine.tsx     # Live financial calculator (reads from solar.ts)
-│   │   ├── Process.tsx       # 3-phase deployment timeline with energy pulse
-│   │   ├── Portfolio.tsx     # Genesis deployment showcase
-│   │   ├── Press.tsx         # Media marquee & feature articles
-│   │   ├── Certifications.tsx# Holographic compliance seals
-│   │   ├── Faq.tsx           # 10-item spring-accordion FAQ
-│   │   ├── Footer.tsx        # Global ultra-luxury 4-column footer
-│   │   ├── ConsultationDrawer.tsx # Lead inquiry & VIP proposal drawer
-│   │   └── ui/               # Radix UI / shadcn headless primitives
-│   ├── routes/               # TanStack Router file-based pages
-│   │   ├── __root.tsx        # Root HTML shell & dynamic branding meta
-│   │   ├── index.tsx         # Homepage orchestrating 12 core sections
-│   │   ├── liquid-glass.tsx  # Liquid Glass roofing product line
-│   │   ├── residential.tsx   # Residential luxury estate configurations
-│   │   ├── defense.tsx       # High-security storm & EMP fortitude
-│   │   ├── omnigrid.tsx      # Central intelligence unit & failsafe specs
-│   │   ├── enterprise.tsx    # Commercial & industrial megawatt solar
-│   │   ├── intelligence.tsx  # AI telemetry & smart routing
-│   │   ├── brand.tsx         # Wavenox vision, R&D lab & manifesto
-│   │   └── deploy.tsx        # Interactive roof quote configurator
-│   ├── server.ts             # SSR server entry with error normalizer
-│   ├── start.ts              # TanStack Start initialization & CSRF middleware
-│   └── styles.css            # Tailwind CSS v4 tokens, animations & void masks
-├── supabase/                 # Database migrations for lead persistence
-│   └── migrations/           # PostgreSQL schemas with advisory locks & audit history
-├── package.json              # Dependencies and npm scripts
-└── vite.config.ts            # Vite 8 config with Lovable TanStack preset
+│   ├── assets/               # High-res cinema-grade renders
+│   │   ├── luxury_solar_villa.jpg     # 100vh Hero background
+│   │   ├── liquid_glass_macro.jpg     # Sleek low-profile macro
+│   │   └── enterprise_mw_rooftop.jpg  # Enterprise rooftop render
+│   ├── config/               # Single-source-of-truth configuration
+│   │   ├── brand.ts          # Identity & communication links
+│   │   ├── business.ts       # Service hubs & Indian regions
+│   │   └── solar.ts          # Tariffs, DISCOMs & subsidy engine
+│   ├── components/           # Tesla Solar UI Component Tree
+│   │   │                     # --- LAYER 1: SHOWCASE MODULES ---
+│   │   ├── Header.tsx        # Floating blur header with navigation links & pills
+│   │   ├── Hero.tsx          # 100vh full-bleed hero with bottom dock & dual pills
+│   │   ├── SleekDesign.tsx   # Sleek low-profile design & concealed hardware (White)
+│   │   ├── OutageProtection.tsx # 24/7 Outage protection with Omnigrid (Studio Gray)
+│   │   ├── BillSavingsSlider.tsx # Interactive monthly bill slider for India (White)
+│   │   ├── EfficiencyTech.tsx # Efficiency & all-weather cascading cells (Studio Gray)
+│   │   ├── EnergyControl.tsx # Monitor and optimize (Mobile app telemetry) (White)
+│   │   ├── TechSpecs.tsx     # Built to last: Tesla-style 2-column specs drawer
+│   │   ├── OrderProcess.tsx  # Order to power on: 5-step timeline (Studio Gray)
+│   │   ├── ConsultationModal.tsx # Tesla Energy Advisor virtual consultation modal
+│   │   ├── SupportFaq.tsx    # Comprehensive Indian rooftop solar FAQ
+│   │   ├── Footer.tsx        # Sleek 1-line Tesla-style showroom footer
+│   │   │                     # --- LAYER 2: DESIGN STUDIO ---
+│   │   └── SystemConfigurator.tsx # 6-Step interactive solar & storage configurator
+│   └── routes/               # TanStack file-based routes
+│       ├── __root.tsx        # Root HTML layout & dynamic metadata
+│       ├── index.tsx         # Layer 1: Tesla Solar Panels Showcase
+│       ├── deploy.tsx        # Layer 2: Interactive System Design Studio (/energy/design)
+│       ├── residential.tsx   # Layer 3: Solar for Homes
+│       ├── enterprise.tsx    # Layer 3: Commercial & Industrial Solar (MW scale)
+│       └── omnigrid.tsx      # Layer 3: Omnigrid Battery Storage
 ```
 
 ---
 
-## 4. Full-Stack Lead Generation & Attribution Pipeline
+## 4. Route Architecture & Page Mapping
 
-The lead generation pipeline is built for high-value enterprise and estate inquiries:
-
-1. **Client Capture**:
-   - The user opens the `ConsultationDrawer` from any CTA or visits `/deploy`.
-   - Captures property tier, roof footprint / monthly bill, solar objectives, full name, phone number, and location.
-   - Preserves traffic attribution: `gclid`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, and initial landing URL.
-2. **Server-Side Validation & Normalization**:
-   - TanStack Server Function validates payload using Zod.
-   - Normalizes mobile numbers to Indian standard `+91XXXXXXXXXX`.
-   - In-memory burst rate limiting prevents spam flooding.
-3. **Database Concurrency & Deduplication**:
-   - Executes a transaction-scoped advisory lock in PostgreSQL based on the normalized phone number.
-   - Rejects duplicate inquiries submitted within 10 minutes to prevent double-entries across multiple browser tabs or rapid clicks.
-   - Persists the lead with initial status `new` in `consultations` table with stage timestamp audit history.
-4. **Instant Owner Notification**:
-   - Dispatches a formatted notification via Meta WhatsApp Cloud API or Email to the solar business owner with client name, phone, roof size, and attribution source.
-   - Runs asynchronously via `waitUntil` to guarantee the visitor receives a sub-500ms confirmation response without waiting for third-party network roundtrips.
-5. **Conversion Measurement**:
-   - Fires Google Ads conversion event only after Supabase returns the persisted lead UUID, passing the UUID as the unique `transaction_id`.
+| Route | Page Name | Primary Focus & Tesla Equivalent |
+| :--- | :--- | :--- |
+| `/` | **Solar Panels Showcase** | Exact replica of `https://www.tesla.com/solarpanels` section hierarchy on Pure White & Studio Gray canvas. |
+| `/deploy` | **System Design Studio** | Interactive 6-step configurator mirroring `https://www.tesla.com/energy/design` with custom kW sizing, Omnigrid battery count, and PM Surya Ghar subsidy credits. |
+| `/residential` | **Solar for Homes** | Architectural solar for luxury villas, independent houses, and penthouses. |
+| `/enterprise` | **Commercial & Industrial** | Megawatt-scale solar, Section 32 40% Year-1 tax depreciation, corporate campuses. |
+| `/omnigrid` | **Omnigrid Battery Storage** | Whole-home outage backup, seamless sub-millisecond islanding, compact wall-mounted battery. |
 
 ---
 
-## 5. Technical SEO & Dynamic Structured Data
+## 5. Security, Performance & Code Quality
 
-All pages dynamically inject JSON-LD structured data derived from `src/config/`:
-- **`Organization` & `SolarInstallationBusiness`**: Dynamic company name, URL, logo, telephone, address, and geo-coordinates from `brand.ts` and `business.ts`.
-- **`areaServed`**: Dynamically mapped from `BUSINESS.serviceHubs`.
-- **`FAQPage`**: Dynamic structured data for the accordion FAQ, boosting rich search snippets on Google.
-- **Canonical URLs & Open Graph**: Derives canonical origins dynamically from `BRAND_CONFIG.domain`, avoiding duplicate content penalties.
+1. **Strict TypeScript (Zero `any`)**: All props, states, and solar calculator interfaces are strongly typed.
+2. **Defensive Programming**: Functions like `computeSolarYield` handle edge cases gracefully, preventing any client-side runtime errors.
+3. **Hardware-Accelerated Animation**: Framer Motion transitions operate strictly on `opacity` and `transform` (`y`, `scale`).
+4. **Instant 200 OK Response**: All routes build and hydrate without SSR mismatches or hydration glitches.

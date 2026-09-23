@@ -7,15 +7,15 @@
 ```
 ┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
 │        PHASE 1          │     │        PHASE 2          │     │        PHASE 3          │
-│   Foundation & Audit    │ ──► │  Reusable Config Engine │ ──► │    Missing Subpages     │
-│       (COMPLETED)       │     │     & Conversion UI     │     │     & Configurator      │
+│   Foundation & Audit    │ ──► │  Config & Bespoke Assets│ ──► │ Layer 1: Tesla Showcase │
+│       (COMPLETED)       │     │       (COMPLETED)       │     │     (ACTIVE SPRINT)     │
 └─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
                                                                              │
                                                                              ▼
 ┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
 │        PHASE 6          │     │        PHASE 5          │     │        PHASE 4          │
-│   Launch & Handover     │ ◄── │   Production QA         │ ◄── │ Full-Stack Lead Engine  │
-│     (Sale-Ready)        │     │   & Optimization        │     │  & Server Functions     │
+│   Production Audit      │ ◄── │ Layer 3: Ecosystem      │ ◄── │ Layer 2: Design Studio  │
+│   & Git Remote Push     │     │ Subpages Refactor       │     │  Configurator (/deploy) │
 └─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
 ```
 
@@ -24,113 +24,94 @@
 ## 2. Phase 1: Codebase Audit & Reference Scanning (Status: COMPLETED ✅)
 
 - [x] Clone and deep scan GitHub repository (`https://github.com/wavenoxx/wavenox.git`).
-- [x] Inspect founder's reference masterpiece project (`InvisProtect` at `/scratch/invisprotect`).
-- [x] Extract core reusability pattern: Centralized configuration engine (`brand.ts`, `business.ts`), 15-minute rebranding guide (`CUSTOMIZE.md`), lead generation pipeline, and dynamic SEO schema.
-- [x] Document placeholder imagery strategy and owner-agnostic business configuration.
-- [x] Generate updated foundational documents: `pmd.md`, `Architecture.md`, `Rules.md`, `design.md`, `Tasks.md`, `Memory.md`.
+- [x] Inspect founder's reference project (`InvisProtect`) at `/scratch/invisprotect`.
+- [x] Analyze live Tesla Solar website (`tesla.com/solarpanels` & `tesla.com/energy/design`) structure, typography, and color tokens.
+- [x] Identify root causes of previous prototype rejection (unfocused AI-style clutter, busy glowing cards, bloated footer).
 
 ---
 
-## 3. Phase 2: Centralized Configuration & Core Interface (Current Sprint - Priority: CRITICAL 🔴)
+## 3. Phase 2: Configuration & Asset Generation (Status: COMPLETED ✅)
 
-### Task 2.1: Centralized Configuration Engine (`src/config/`)
-- [x] Create `src/config/brand.ts`:
-  - Brand identity, default brand name, fallback URLs, phone display/dial, WhatsApp display/dial/link, email, socials.
-  - Safe URL and E.164 dial normalization helpers (`validSiteUrl`, `normalizedDial`, `normalizedWhatsAppDial`, `validWhatsAppLink`).
-- [x] Create `src/config/business.ts`:
-  - Primary operating city, region label, geo coordinates for structured data.
-  - Service hubs (Hyderabad & Secunderabad, Bengaluru, Vijayawada, Delhi-NCR, Mumbai).
-  - Verified reviews registry (auto-hiding when empty to adhere to consumer protection laws).
-- [x] Create `src/config/solar.ts`:
-  - Energy density constants (Watts/sq.ft), annual effective sunlight hours.
-  - State utility tariff schedules (TSSPDCL, TSNPDCL, BESCOM, MSEDCL, TANGEDCO).
-  - PM Surya Ghar Muft Bijli Yojana subsidy formulas.
-  - Structural and performance warranty terms (25-year ironclad warranty).
-
-### Task 2.2: Dynamic Brand Logo Component (`BrandLogo.tsx`)
-- [x] Create `src/components/BrandLogo.tsx`:
-  - Reads brand wordmark dynamically from `BRAND_CONFIG.name`.
-  - Luxury typographic treatment (`font-bold uppercase tracking-[0.35em]`).
-  - Optional SVG logo slot for future client branding.
-
-### Task 2.3: Restore Missing Hero CTA Button
-- [x] Update `src/components/Hero.tsx`:
-  - Re-introduce Ghost CTA button below slide H2: `"UNLOCK ENERGY INDEPENDENCE →"`.
-  - Transparent 1px white border, uppercase tracking, Sunburst Orange right arrow.
-  - White background with black text on hover; flash Sunburst Orange on active.
-  - Fluid mobile width (`w-full sm:w-auto`).
-  - Wire click handler to open the `ConsultationDrawer`.
-
-### Task 2.4: Build Global Ultra-Luxury Footer
-- [x] Create `src/components/Footer.tsx`:
-  - Architectural 4-column layout reading directly from `BRAND_CONFIG` and `BUSINESS`.
-  - Column 1: Brand wordmark, Hyderabad HQ tag, BIS/TÜV/UL compliance badges.
-  - Column 2: Architecture & Products (Liquid Glass, Omni-Grid, Quantum Inverters).
-  - Column 3: Sectors (Residential Villas, Commercial & Industrial, Defense).
-  - Column 4: Direct contact links (Click-to-Call, Click-to-WhatsApp, Email, VIP consultation trigger).
-  - Bottom bar: Dynamic copyright string, Privacy Policy, Terms of Deployment.
-  - Integrate across `index.tsx`, `residential.tsx`, `liquid-glass.tsx`, `defense.tsx`, `omnigrid.tsx`.
-
-### Task 2.5: Build Interactive Consultation & Solar Proposal Drawer
-- [x] Create `src/components/ConsultationDrawer.tsx`:
-  - Built with Framer Motion slide-over modal with obsidian glassmorphic backdrop blur.
-  - 3-step interactive inquiry:
-    1. Select Sector: Luxury Villa, Private Estate, Commercial Asset, Defense/Compound.
-    2. Sizing Metric: Usable Roof Area (sq.ft) with live 25-yr financial return calculation.
-    3. Contact Details: Name, WhatsApp/Phone (+91 format), City / Hub.
-  - One-click direct WhatsApp connection pre-populated with lead details.
-  - Global triggerable state accessible from any CTA button on the website.
-
-### Task 2.6: Metadata & Branding Hardening
-- [x] Update `src/routes/__root.tsx`:
-  - Derive title, description, canonical domain, and OpenGraph tags dynamically from `BRAND_CONFIG`.
-  - Inject Schema.org JSON-LD LocalBusiness microdata for Indian service hubs.
-  - Eliminate placeholder `"Lovable App"` tags.
+- [x] Create centralized decoupled configuration engine (`src/config/brand.ts`, `business.ts`, `solar.ts`).
+- [x] Resolve critical runtime bug in `computeSolarYield` in `src/config/solar.ts` (preventing error boundaries).
+- [x] Generate cinema-grade bespoke visual assets in `src/assets/`:
+  - `luxury_solar_villa.jpg`: Modern concrete villa with seamless black solar roof at golden hour.
+  - `liquid_glass_macro.jpg`: Macro shot of hexagonal N-type TOPCon silicon cells under tempered diamond glass.
+  - `enterprise_mw_rooftop.jpg`: High-angle aerial render of 1MW monolithic black solar roof.
 
 ---
 
-## 4. Phase 3: Missing Subpages & Architectural Configurator (Status: COMPLETED ✅)
+## 4. Phase 3: Layer 1 — The Main Tesla Solar Showcase (`src/routes/index.tsx`) (Active Sprint 🔴)
 
-### Task 3.1: Enterprise Scale Page (`/enterprise`)
-- [x] Create `src/routes/enterprise.tsx`:
-  - Industrial rooftop solar, megawatt-scale carports, floating arrays.
-  - Accelerated depreciation tax benefits under Indian IT Act Section 32 (40% Year 1 write-off).
-  - Dynamic MW Financial Engine with reactive roof area and tariff slider.
-
-### Task 3.2: System Intelligence Page (`/intelligence`)
-- [x] Create `src/routes/intelligence.tsx`:
-  - AI-driven energy arbitration, predictive weather forecasting, and micro-inverter telemetry.
-  - Interactive live telemetry simulator with real-time solar harvest, battery SOC, home load, and grid export meters.
-
-### Task 3.3: The Brand Page (`/brand`)
-- [x] Create `src/routes/brand.tsx`:
-  - The WAVENOX Genesis: Hyderabad engineering laboratory, aerospace materials research.
-  - The Monolithic Manifesto: Why traditional bolt-on solar is an obsolete liability.
-  - Global certification matrix (BIS, TÜV Rheinland, UL Class A Fire, ASTM E330).
-
-### Task 3.4: Interactive Solar Deploy Configurator (`/deploy`)
-- [x] Create `src/routes/deploy.tsx`:
-  - Multi-step interactive roof configurator.
-  - City selector (`BUSINESS.serviceHubs`), roof profile (Villa, Estate, Commercial), battery storage tier (Omnigrid 20/40/100kWh).
-  - Instant preliminary capacity, PM Surya Ghar subsidy credit, and 25-year financial yield projection.
-  - Direct WhatsApp dossier generation and consultation booking.
+- [ ] **Step 3.1: Floating Blur Header (`Header.tsx`)**
+  - Left: Monolithic `WAVENOX` logo.
+  - Center: Clean links (`Solar Roof`, `Solar Panels`, `Omnigrid`, `Commercial`).
+  - Right: Sleek `Schedule Consultation` pill & `Menu` drawer trigger.
+- [ ] **Step 3.2: 100vh Full-Bleed Hero Section (`Hero.tsx`)**
+  - Full-screen `luxury_solar_villa.jpg` background.
+  - Centered clean title (`Solar for Existing Roofs` / `Solar Panels`).
+  - Subtitle link (`Schedule a Virtual Consultation →`).
+  - Bottom floating dock with 3 key specs (`Guaranteed Lowest Price`, `25-Year Warranty`, `24/7 Outage Protection`).
+  - Dual Tesla pill buttons (`Order Now` solid Carbon Dark pill + `Schedule Consultation` dark glass pill).
+- [ ] **Step 3.3: Sleek Low-Profile Design Section (`SleekDesign.tsx`)**
+  - Pure White `#FFFFFF` backdrop.
+  - Concealed mounting hardware, zero visible conduits, monolithic all-black styling.
+  - Macro visual (`liquid_glass_macro.jpg`).
+- [ ] **Step 3.4: 24/7 Outage Protection Section (`OutageProtection.tsx`)**
+  - Studio Gray `#F8F8FA` backdrop.
+  - Omnigrid battery storage integration for uninterrupted power during Indian grid blackouts.
+  - Interactive status simulator (Day: Solar Charging / Night: Battery / Grid Outage: Instant Islanding).
+- [ ] **Step 3.5: Pay Less for Electricity Section (`BillSavingsSlider.tsx`)**
+  - Pure White `#FFFFFF` backdrop.
+  - Interactive monthly electricity bill slider (₹3,000 to ₹75,000+ per month).
+  - Indian state DISCOM selector (TSSPDCL, BESCOM, MSEDCL, TANGEDCO, BSES).
+  - Live reactive calculations: System size (kW), annual savings, 25-yr net wealth, and PM Surya Ghar subsidy credit.
+- [ ] **Step 3.6: Efficiency & All-Weather Reliability (`EfficiencyTech.tsx`)**
+  - Studio Gray `#F8F8FA` backdrop.
+  - N-type TOPCon cascading cell tech, shade resilience, 50°C Indian heat resistance.
+- [ ] **Step 3.7: Monitor and Optimize Section (`EnergyControl.tsx`)**
+  - Pure White `#FFFFFF` backdrop.
+  - Sleek mobile phone mockup with animated energy flow telemetry (Solar ➔ Battery ➔ Home ➔ Grid).
+- [ ] **Step 3.8: Built to Last: Technical Specs Drawer (`TechSpecs.tsx`)**
+  - Expandable 2-column minimalist engineering specs table matching Tesla's spec drawer.
+- [ ] **Step 3.9: Order to Power On Section (`OrderProcess.tsx`)**
+  - Studio Gray `#F8F8FA` backdrop.
+  - 5-step installation timeline (Virtual Design ➔ Permitting ➔ Installation ➔ CEIG Inspection ➔ Power On & Subsidies).
+- [ ] **Step 3.10: Schedule a Virtual Consultation Modal (`ConsultationModal.tsx`)**
+  - Tesla Energy Advisor booking drawer for 1-on-1 virtual design reviews.
+- [ ] **Step 3.11: Comprehensive FAQ & Support Accordion (`SupportFaq.tsx`)**
+  - High-trust Indian rooftop solar Q&A on net-metering, subsidies, warranties.
+- [ ] **Step 3.12: Minimalist 1-Line Showroom Footer (`Footer.tsx`)**
+  - Replaces 4-column footer with Tesla's iconic 1-line understated footer.
+- [ ] **Step 3.13: Assemble Homepage (`src/routes/index.tsx`)**
+  - Orchestrate all 12 modules into the seamless Tesla Solar Showcase flow.
 
 ---
 
-## 5. Phase 4: Full-Stack Lead Engine & Backend (Status: IN PROGRESS 🔵)
+## 5. Phase 4: Layer 2 — Interactive System Design Studio (`/deploy`)
 
-### Task 4.1: Database Migrations (Supabase PostgreSQL)
-- [x] Create `supabase/migrations/20260923_consultations.sql`:
-  - `consultations` table with status lifecycle (`new`, `contacted`, `qualified`, `survey_booked`, `quoted`, `contract_signed`, `installed`).
-  - Row Level Security (RLS) with public rate-limited insert and authenticated admin access.
-  - Anti-spam database trigger rejecting double submissions within 60 seconds from same phone number.
-  - Full marketing telemetry columns (`utm_source`, `utm_medium`, `utm_campaign`, `landing_url`).
+- [ ] **Step 4.1**: Build `SystemConfigurator.tsx` with 6-step interactive flow:
+  1. *Location & Bill*: City/PIN code + Monthly power bill (₹3k to ₹75k+).
+  2. *System Sizing*: Small (4.8 kW), Medium (9.6 kW), Large (14.4 kW), Extra Large (19.2 kW+).
+  3. *Battery Storage (Omnigrid)*: 0, 1, 2, or 3 units with Whole Home vs Essential Load backup toggle.
+  4. *Roof Type Selector*: RCC Flat Terrace vs Sloped Mangalore Tile vs Metal Sheet.
+  5. *Financial Breakdown*: Gross price, PM Surya Ghar subsidy credit (up to ₹78,000), Net payable cost, Cash vs Loan EMI.
+  6. *One-Click WhatsApp Reservation*: Direct dossier dispatch.
+- [ ] **Step 4.2**: Mount into `src/routes/deploy.tsx` with showroom styling.
 
 ---
 
-## 6. Phase 5: Handover Documentation & Sale-Ready Packaging (Status: COMPLETED ✅)
+## 6. Phase 5: Layer 3 — Ecosystem Subpages Refactor
 
-- [x] Create `docs/CUSTOMIZE.md` (Step-by-step 15-minute rebranding guide for a new solar business owner).
-- [x] Create `docs/LEAD_GENERATION_ARCHITECTURE.md` (Detailed lead capture & attribution documentation).
-- [x] Create `docs/SEO_ARCHITECTURE.md` (Solar installation schema & indexing registry).
+- [ ] **Step 5.1**: Refactor `/residential` (Solar for Homes) with Tesla showroom styling and spec docks.
+- [ ] **Step 5.2**: Refactor `/enterprise` (Commercial & Industrial MW) with Section 32 40% depreciation engine.
+- [ ] **Step 5.3**: Refactor `/omnigrid` (Storage) with whole-home backup and sub-millisecond islanding.
 
+---
+
+## 7. Phase 6: Production Audit, Verification & Git Remote Push
+
+- [ ] Execute `npm run build` to verify clean compilation.
+- [ ] Confirm local development server is active on `http://localhost:8080/`.
+- [ ] Commit all changes with clean atomic git messages.
+- [ ] Push to GitHub remote `https://github.com/wavenoxx/wavenox.git`.

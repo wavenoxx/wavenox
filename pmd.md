@@ -4,80 +4,61 @@
 
 ## 1. Executive Summary & Product Vision
 
-**WAVENOX** is a category-defining, full-stack, reusable architectural solar technology web platform. It elevates solar power from an unsightly utilitarian bolt-on into an elite, monolithic luxury asset designed for luxury residences, commercial headquarters, and high-security industrial installations.
+**WAVENOX** is a category-defining clean-tech web platform engineered to bring the **complete Tesla Solar Panels & Energy Design Studio experience (`https://www.tesla.com/solarpanels` & `https://www.tesla.com/energy/design`)** to **India**.
+
+It eliminates the amateur, cluttered, and clichéd tropes of conventional Indian solar websites, replacing them with Tesla's world-renowned showroom design discipline, radical subtraction, pure white & studio-gray aesthetics, and seamless multi-layer user experience.
 
 ### 1.1 The Reusable "Sale-Ready" Masterpiece Business Model
 WAVENOX is architected from day one as a **turnkey, white-label, sale-ready business asset**. 
-- **Owner-Agnostic Core**: The platform is not hardcoded to a single business entity. It is decoupled through a centralized configuration engine (`src/config/brand.ts`, `src/config/business.ts`, `src/config/solar.ts`).
-- **15-Minute Rebranding**: When sold to a real-world solar EPC contractor, rooftop solar installer, or green-tech conglomerate, the buyer's company name, logo, phone, WhatsApp, email, service hubs, warranty claims, DISCOM tariffs, and pricing can be rebranded in under 30 minutes without touching UI markup.
-- **Placeholder Visuals Policy**: The initial photographic and render assets are high-aesthetic placeholders generated to establish the luxury design language. They can be replaced progressively with the buyer's real drone footage, rooftop installation photography, and actual client project media.
+- **Owner-Agnostic Core**: The platform is decoupled through a centralized configuration engine (`src/config/brand.ts`, `src/config/business.ts`, `src/config/solar.ts`).
+- **15-Minute Rebranding**: When sold to a real-world solar EPC contractor, rooftop solar installer, or renewable energy conglomerate in India, the buyer's company name, logo, phone, WhatsApp, email, service hubs, warranty claims, DISCOM tariffs, and pricing can be rebranded in under 30 minutes without touching UI markup.
+- **Cinema-Grade Placeholder Visuals**: All photography and renders are high-aesthetic placeholders in `src/assets/`, structured with standardized aspect ratios for instant zero-breakage replacement with actual client media.
 
 ---
 
-## 2. Core Value Proposition & Market Need
+## 2. Market Problem & Strategic Positioning
 
-### 2.1 The Solar Market Paradox
-1. **Low-End Competition**: 98% of solar installers in India look identical—amateur websites with clichéd green leaves, stock panels, and low-trust branding competing in a race to the bottom on price.
-2. **The Luxury & Enterprise Vacuum**: High-net-worth estate owners (Jubilee Hills, Banjara Hills, Gachibowli, Goa, Delhi-NCR) and corporate headquarters refuse to install ugly bolt-on aluminum rails that ruin architectural aesthetics and risk roof leaks.
-3. **The WAVENOX Opportunity**: WAVENOX positions the buyer as a **billion-dollar luxury clean-tech atelier**, selling monolithic Liquid Glass solar architecture, 25-year structural warranties, and day-one financial wealth generation.
+### 2.1 The Indian Solar Landscape Problem
+1. **The Race to the Bottom**: 99% of Indian rooftop solar websites are chaotic, low-trust pages with clichéd green foliage, low-res stock panels, and confusing government jargon.
+2. **The Luxury & Premium Void**: High-net-worth estate owners (Jubilee Hills, Kokapet, Indiranagar, South Delhi, Goa) and corporate headquarters demand clean, concealed, all-black solar architecture that enhances property value rather than destroying roof aesthetics with ugly silver rails and messy conduits.
+3. **The Power Cut Reality**: Unlike Western grids, Indian households face frequent voltage fluctuations and power outages during peak summers. Solar alone is incomplete without battery storage (Omnigrid / Powerwall) for 24/7 outage protection.
+4. **The Subsidy Confusion**: Homeowners find government subsidies (PM Surya Ghar Muft Bijli Yojana) complicated and opaque. WAVENOX integrates instant, transparent subsidy calculations upfront.
 
----
-
-## 3. Target Buyer & End-Customer Personas
-
-### 3.1 Platform Buyer (The Solar Business Owner)
-- **Profile**: Ambitious Solar EPC contractors, rooftop solar developers, or industrial renewable energy companies looking to dominate the premium residential and commercial solar market.
-- **Need**: An institutional-grade website and lead conversion engine that commands 30–50% higher price premiums over conventional solar vendors.
-
-### 3.2 End Customers (The Solar Asset Buyers)
-- **UHNWI Luxury Villa & Estate Owners**: 30kW–120kW autonomous systems with zero visual clutter, silent battery backup, and 14+ day grid independence.
-- **Commercial & Industrial Conglomerates**: Megawatt-scale industrial rooftops, solar carports, and corporate headquarters looking for rapid 2.5–3 year ROI and 40% Year-1 accelerated tax depreciation.
-- **High-Security & Critical Infrastructure**: Government buildings, data centers, and off-grid command nodes requiring EMP shielding, ballistic impact ratings, and < 0.1ms instant blackout islanding.
+### 2.2 The WAVENOX Solution (The Tesla Blueprint for India)
+WAVENOX delivers:
+- **Sleek, Low-Profile All-Black Panels**: Concealed mounting hardware, zero visible conduits, flush aesthetic.
+- **Showroom Cleanliness**: Pure White (`#FFFFFF`) and Studio Light Gray (`#F8F8FA`) canvas with deep Carbon Dark (`#171A20`) typography.
+- **24/7 Outage Protection**: Seamless battery backup (Omnigrid) that islands the home in under 4ms during Indian power cuts.
+- **Pay Less for Electricity Calculator**: Instant monthly electricity bill slider (₹3k to ₹75k+) with real-time state DISCOM net-metering math and upfront PM Surya Ghar Muft Bijli Yojana subsidy credits.
+- **The System Design Studio (`/deploy`)**: A 6-step online configurator mirroring `tesla.com/energy/design` with custom sizing, battery options, and instant WhatsApp booking.
 
 ---
 
-## 4. Reusable Feature Matrix
+## 3. The 3-Layer Product Feature Matrix
 
-### 4.1 Centralized Brand & Business Configuration (`src/config/`)
-- `brand.ts`: Brand name, legal entity, tagline, phone (display & E.164 dial), WhatsApp (display & link), email, social channels, domain.
-- `business.ts`: Region coverage, primary city, geo coordinates, service hubs, customer reviews, pricing guides.
-- `solar.ts`: DISCOM tariff rates (e.g., TSSPDCL ₹9.5/kWh), Watts/sqft density, solar generation hours, subsidy slabs (PM Surya Ghar Muft Bijli Yojana), warranty terms.
+### 3.1 LAYER 1: The Main Solar Panels Showcase (`/` or `/solarpanels`)
+1. **Floating Blur Header**: Monolithic brand wordmark | `Solar Roof` | `Solar Panels` | `Omnigrid` | `Commercial` | `Schedule Consultation` pill & `Menu`.
+2. **100vh Full-Bleed Hero**: Centered clean title (`Solar for Existing Roofs` / `Solar Panels`), subtitle link (`Schedule a Virtual Consultation →`), bottom floating dock with 3 key specs (`Guaranteed Lowest Price`, `25-Year Warranty`, `24/7 Outage Protection`) and dual pills (`Order Now` / `Schedule Consultation`).
+3. **Clean Energy & Architectural Integration**: Flush aesthetic, concealed mounting hardware, zero visible conduits, all-black aesthetic.
+4. **24/7 Outage Protection (Omnigrid)**: Integrated battery storage for Indian grid blackouts with interactive Day / Night / Outage flow simulator.
+5. **Pay Less for Electricity**: Interactive monthly electricity bill slider (₹3k to ₹75k+) with instant system sizing, annual savings, and PM Surya Ghar subsidy credit in Indian rupees (₹).
+6. **Efficiency & All-Weather Reliability**: High-yield N-type TOPCon dual-glass cells, cascading cell architecture, shade resilience, and extreme temperature tolerance.
+7. **Monitor and Optimize**: Sleek mobile app mockup with live animated energy flow telemetry (Solar ➔ Battery ➔ Home ➔ Grid).
+8. **Built to Last (Specs Drawer)**: Expandable 2-column minimalist engineering specs matching Tesla's drawer.
+9. **Order to Power On (5-Step Timeline)**: 1. Virtual 3D Design ➔ 2. DISCOM Net-Metering Feasibility ➔ 3. 1-Day Installation ➔ 4. CEIG Inspection ➔ 5. Power On & Subsidy Credit.
+10. **Schedule a Virtual Consultation**: Energy advisor booking modal for 1-on-1 virtual design reviews.
+11. **Comprehensive FAQ & Support**: Clear answers on net-metering, roofs, warranties, and PM Surya Ghar subsidies.
+12. **Minimalist 1-Line Showroom Footer**: `WAVENOX © 2026 | Privacy & Legal | Consumer Disclosures | PM Surya Ghar Guidelines | Locations | Contact`.
 
-### 4.2 Core Frontend Engine (Completed 50% Milestone)
-- **Hero Storytelling Carousel**: 4 dynamic slides with fluid typography, Sunburst Orange (`#F57C00`) accents, slide counter, and active-state navigation.
-- **Advantage Matrix (`Features.tsx`)**: 4 tier-1 cards with continuous rotating conic border glow (`card-glow-spin`).
-- **Conventional vs Wavenox (`Comparison.tsx`)**: Interactive split-screen comparison highlighting liabilities vs advantages.
-- **Benchmark Data Grid (`DataMatrix.tsx`)**: 7-criteria technical comparison between conventional solar and Wavenox.
-- **Omni-Grid Parallax Rail (`Ecosystem.tsx`)**: Horizontal scroll rail showcasing 6 modular solar applications.
-- **Interactive Financial Engine (`RoiEngine.tsx`)**: Live reactive calculator with area slider (1,000–100,000 sq.ft), spring-animated CountUp numbers, and physics comparison bars.
-- **Integration Protocol (`Process.tsx`)**: 3-stage deployment timeline with animated SVG energy packet pulse.
-- **Genesis Deployments (`Portfolio.tsx`)**: 6 showcase cards across Government, Aviation, Logistics, and Hospitality.
-- **Media & Proof (`Press.tsx` & `Certifications.tsx`)**: Draggable publication marquee and holographic compliance seals.
-- **System Intelligence FAQ (`Faq.tsx`)**: 10-item spring-animated accordion FAQ.
-- **Dedicated Solution Pages**: `/liquid-glass`, `/residential`, `/defense`, `/omnigrid`.
+### 3.2 LAYER 2: The Interactive System Design Studio (`/deploy` or `/energy/design`)
+- **Step 1: Property Location & Monthly Power Bill**: City/PIN code and monthly bill slider (₹5,000 to ₹75,000+).
+- **Step 2: Recommended System Sizing**: Small (4.8 kW / 12 panels), Medium (9.6 kW / 24 panels), Large (14.4 kW / 36 panels), Extra Large (19.2 kW+ / 48 panels).
+- **Step 3: Battery Storage (Omnigrid)**: Select 0, 1, 2, or 3 units (Whole Home vs Partial Backup).
+- **Step 4: Roof Type Selector**: RCC Flat Terrace vs Sloped Mangalore Tile vs Metal Sheet.
+- **Step 5: Financial Breakdown & PM Surya Ghar Subsidy**: Gross price, Upfront government subsidy credit (up to ₹78,000), Net payable cost, 25-yr wealth generated, Cash vs 5-year loan EMI options.
+- **Step 6: One-Click WhatsApp Reservation**: Direct dossier dispatch to the solar business owner.
 
-### 4.3 High-Converting Lead Generation Architecture (Phase 2 & 3)
-- **Multi-Touchpoints**:
-  1. Primary Hero CTA button (`"UNLOCK ENERGY INDEPENDENCE →"`).
-  2. Slide-over Consultation Drawer (`ConsultationDrawer.tsx`) accessible from all pages.
-  3. Direct VIP WhatsApp Link (`https://wa.me/...`) with pre-filled solar quote request text.
-- **Solar Qualification Inputs**:
-  - Property Type: Luxury Villa, Commercial Estate, Industrial Plant, Defense/Compound.
-  - Sizing Metric: Roof Footprint (sq.ft) OR Average Monthly Electricity Bill (₹).
-  - Energy Objective: Bill Elimination, Failsafe Battery Backup, Luxury Architectural Aesthetic.
-  - Contact Details: Name, WhatsApp/Phone (+91 format), City / PIN code.
-- **Backend Flow**:
-  - Server function with Zod validation, Indian phone normalization, and anti-spam burst limiting.
-  - Database persistence via Supabase with transaction-scoped advisory locks.
-  - Automated WhatsApp Cloud API or Email alert sent directly to the business owner.
-  - Google Ads Consent Mode v2 integration with duplicate-proof transaction tracking.
-
----
-
-## 5. Implementation Roadmap
-
-- **Phase 1 (Completed)**: Visual design foundation, landing page sections, subpage prototypes, deep scan.
-- **Phase 2 (Current Sprint)**: Reusable config layer (`src/config/`), Global Footer, Consultation Drawer, Hero CTA restoration, Root metadata branding.
-- **Phase 3 (Subpages & Configurator)**: `/enterprise`, `/intelligence`, `/brand`, and interactive `/deploy` roof configurator.
-- **Phase 4 (Lead Engine & Backend)**: Supabase lead migrations, server functions, owner WhatsApp alert, PDF assessment generator.
-- **Phase 5 (Documentation & Handover)**: `docs/CUSTOMIZE.md`, `docs/LEAD_GENERATION_ARCHITECTURE.md`, `docs/SEO_ARCHITECTURE.md`.
+### 3.3 LAYER 3: Dedicated Ecosystem Sub-Pages
+- **Solar for Homes (`/residential`)**: Deep dive into luxury residential architectural solar.
+- **Commercial & Megawatt Industrial (`/enterprise`)**: Commercial solar, factory rooftops, Section 32 40% Year-1 tax depreciation calculator with [`enterprise_mw_rooftop.jpg`](file:///Users/bunny/.gemini/antigravity/scratch/wavenox/src/assets/enterprise_mw_rooftop.jpg).
+- **Omnigrid Storage (`/omnigrid`)**: Whole-home battery storage, sub-millisecond islanding during Indian summer blackouts.

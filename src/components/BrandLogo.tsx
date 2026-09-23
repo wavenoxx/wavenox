@@ -8,19 +8,19 @@ interface BrandLogoProps {
 }
 
 export function BrandLogo({
-  className = "",
+  className = "text-white",
   asLink = true,
   size = "md",
 }: BrandLogoProps) {
   const sizeClasses = {
-    sm: "text-base tracking-[0.3em]",
-    md: "text-lg lg:text-xl tracking-[0.35em]",
-    lg: "text-2xl lg:text-3xl tracking-[0.4em]",
+    sm: "text-base tracking-[0.28em]",
+    md: "text-lg lg:text-xl tracking-[0.32em]",
+    lg: "text-2xl lg:text-3xl tracking-[0.35em]",
   };
 
   const content = (
     <span
-      className={`inline-block font-bold uppercase select-none text-white transition-opacity duration-300 hover:opacity-90 ${sizeClasses[size]} ${className}`}
+      className={`inline-block font-bold uppercase select-none transition-colors duration-200 hover:opacity-85 ${sizeClasses[size]} ${className}`}
     >
       {BRAND_CONFIG.name}
     </span>

@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
-import { TileAnatomy } from "@/components/TileAnatomy";
 import lgHero01 from "@/assets/lg-hero-01.jpg";
 import lgHero02 from "@/assets/lg-hero-02.jpg";
 import lgCard01 from "@/assets/lg-card-01.jpg";
@@ -199,7 +198,6 @@ function LiquidGlassPage() {
         sub="Invisible integration. Transform ultra-luxury estates and massive skyscrapers into autonomous power plants without the visual noise of traditional solar grids."
       />
 
-      <TileAnatomy />
 
       <OmniGridCards />
 

@@ -86,16 +86,63 @@ export const SOLAR_CONFIG: SolarConfig = {
 /**
  * Computes energy yield and lifetime financial output for a given roof footprint.
  */
+export interface SolarYieldParams {
+  roofAreaSqFt?: number;
+  sqft?: number;
+  tariffRatePerKwh?: number;
+  tariff?: number;
+  wattsPerSqft?: number;
+  years?: number;
+}
+
+export interface SolarYieldResult {
+  kw: number;
+  capacityKw: number;
+  annualKwh: number;
+  annualUnitsGenerated: number;
+  lifetimeInr: number;
+  twentyFiveYearNetSavingsInr: number;
+  estimatedSubsidyInr: number;
+}
+
+/**
+ * Computes energy yield and lifetime financial output for a given roof footprint.
+ * Supports both object params and positional params for 100% runtime safety.
+ */
 export function computeSolarYield(
-  sqft: number,
-  wattsPerSqft = SOLAR_CONFIG.wattsPerSqftWavenox,
-  tariff = SOLAR_CONFIG.defaultTariffInrPerKwh,
-  years = SOLAR_CONFIG.warrantyYears,
-) {
-  const kw = (sqft * wattsPerSqft) / 1000;
-  const annualKwh = kw * SOLAR_CONFIG.effectiveSunHoursPerYear;
-  const lifetimeInr = annualKwh * tariff * years;
-  return { kw, annualKwh, lifetimeInr };
+  arg1: number | SolarYieldParams,
+  arg2 = SOLAR_CONFIG.wattsPerSqftWavenox,
+  arg3 = SOLAR_CONFIG.defaultTariffInrPerKwh,
+  arg4 = SOLAR_CONFIG.warrantyYears,
+): SolarYieldResult {
+  let sqft = 2500;
+  let wattsPerSqft = arg2;
+  let tariff = arg3;
+  let years = arg4;
+
+  if (typeof arg1 === "object" && arg1 !== null) {
+    sqft = Number(arg1.roofAreaSqFt ?? arg1.sqft ?? 2500);
+    wattsPerSqft = Number(arg1.wattsPerSqft ?? SOLAR_CONFIG.wattsPerSqftWavenox);
+    tariff = Number(arg1.tariffRatePerKwh ?? arg1.tariff ?? SOLAR_CONFIG.defaultTariffInrPerKwh);
+    years = Number(arg1.years ?? SOLAR_CONFIG.warrantyYears);
+  } else if (typeof arg1 === "number") {
+    sqft = arg1;
+  }
+
+  const kw = Number(((sqft * wattsPerSqft) / 1000).toFixed(2));
+  const annualKwh = Math.round(kw * SOLAR_CONFIG.effectiveSunHoursPerYear);
+  const lifetimeInr = Math.round(annualKwh * tariff * years);
+  const estimatedSubsidyInr = calculateGovtSubsidyInr(kw);
+
+  return {
+    kw,
+    capacityKw: kw,
+    annualKwh,
+    annualUnitsGenerated: annualKwh,
+    lifetimeInr,
+    twentyFiveYearNetSavingsInr: lifetimeInr,
+    estimatedSubsidyInr,
+  };
 }
 
 /**
@@ -110,3 +157,6 @@ export function calculateGovtSubsidyInr(kw: number): number {
   if (kw < 3) return 60000 + Math.round((kw - 2) * 18000);
   return 78000;
 }
+
+/** Backward compatibility alias */
+export const SOLAR_SPECS = SOLAR_CONFIG;

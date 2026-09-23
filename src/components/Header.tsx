@@ -1,149 +1,198 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { X, ChevronRight, Phone, MessageSquare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { BrandLogo } from "./BrandLogo";
 import { openConsultationDrawer } from "./ConsultationDrawer";
+import { BRAND_CONFIG } from "@/config/brand";
 
-type NavItem = { label: string; to?: string; href?: string };
+const MAIN_NAV = [
+  { label: "Solar Roof", to: "/residential" },
+  { label: "Solar Panels", to: "/" },
+  { label: "Omnigrid", to: "/omnigrid" },
+  { label: "Commercial", to: "/enterprise" },
+];
 
-const NAV_ITEMS: NavItem[] = [
-  { label: "LIQUID GLASS", to: "/liquid-glass" },
-  { label: "RESIDENTIAL", to: "/residential" },
-  { label: "ENTERPRISE", to: "/enterprise" },
-  { label: "OMNIGRID", to: "/omnigrid" },
-  { label: "INTELLIGENCE", to: "/intelligence" },
-  { label: "DEFENSE", to: "/defense" },
-  { label: "BRAND", to: "/brand" },
-  { label: "CONFIGURATOR", to: "/deploy" },
-  { label: "VIP CONSULTATION", href: "#consultation" },
+const DRAWER_NAV = [
+  { label: "Solar Panels (Showcase)", to: "/" },
+  { label: "Solar for Homes", to: "/residential" },
+  { label: "Omnigrid Energy Storage", to: "/omnigrid" },
+  { label: "Commercial & Industrial Solar", to: "/enterprise" },
+  { label: "System Design Studio", to: "/deploy" },
 ];
 
 export function Header() {
-  const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 40);
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [drawerOpen]);
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 lg:px-10 py-5">
-        <BrandLogo size="md" />
+      <header
+        className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+          isScrolled
+            ? "bg-white/85 backdrop-blur-md border-b border-black/5 text-[#171A20] shadow-xs py-3.5 px-6 lg:px-12"
+            : "bg-transparent text-white py-5 px-6 lg:px-12"
+        } flex items-center justify-between`}
+      >
+        {/* Left: Brand Logo */}
+        <div className="flex items-center">
+          <BrandLogo
+            size="md"
+            className={isScrolled ? "text-[#171A20]" : "text-white"}
+          />
+        </div>
 
-        <nav className="hidden xl:flex items-center space-x-8 2xl:space-x-12">
-          {NAV_ITEMS.map((item) => {
-            const cls =
-              "relative text-white/90 text-[11px] font-bold uppercase tracking-[0.25em] transition-colors duration-300 hover:text-white group";
-            const inner = (
-              <>
-                {item.label}
-                <span className="absolute left-0 -bottom-1 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
-              </>
-            );
-            return item.to ? (
-              <Link key={item.label} to={item.to} className={cls}>
-                {inner}
-              </Link>
-            ) : item.href === "#consultation" ? (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => openConsultationDrawer()}
-                className={`${cls} cursor-pointer`}
-              >
-                {inner}
-              </button>
-            ) : (
-              <a key={item.label} href={item.href || "#"} className={cls}>
-                {inner}
-              </a>
-            );
-          })}
+        {/* Center: Tesla-style Minimalist Links */}
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          {MAIN_NAV.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                isScrolled
+                  ? "text-[#171A20] hover:bg-black/5"
+                  : "text-white/95 hover:bg-white/10"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        <button
-          aria-label="Open menu"
-          onClick={() => setOpen(true)}
-          className="xl:hidden flex flex-col gap-[6px] p-2 -mr-2"
-        >
-          <span className="block h-[1.5px] w-7 bg-white" />
-          <span className="block h-[1.5px] w-7 bg-white" />
-        </button>
+        {/* Right: Consultation Pill & Menu */}
+        <div className="flex items-center space-x-3">
+          <button
+            type="button"
+            onClick={() => openConsultationDrawer()}
+            className={`hidden sm:inline-flex items-center justify-center px-4 py-1.5 text-xs font-medium rounded-full transition-all cursor-pointer ${
+              isScrolled
+                ? "bg-[#171A20] text-white hover:bg-black"
+                : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30"
+            }`}
+          >
+            Schedule Consultation
+          </button>
+
+          <button
+            type="button"
+            aria-label="Open navigation menu"
+            onClick={() => setDrawerOpen(true)}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
+              isScrolled
+                ? "text-[#171A20] hover:bg-black/5"
+                : "text-white hover:bg-white/10"
+            }`}
+          >
+            Menu
+          </button>
+        </div>
       </header>
 
+      {/* Tesla Slide-Over Side Drawer */}
       <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 bg-black z-50 pt-20 px-8 overflow-y-auto"
-          >
-            <div className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 border-b border-white/10 bg-black">
-              <BrandLogo size="md" asLink={false} />
-              <button
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="relative h-8 w-8"
-              >
-                <span className="absolute inset-x-1 top-1/2 h-[1.5px] bg-white rotate-45" />
-                <span className="absolute inset-x-1 top-1/2 h-[1.5px] bg-white -rotate-45" />
-              </button>
-            </div>
+        {drawerOpen && (
+          <div className="fixed inset-0 z-50 overflow-hidden">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setDrawerOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            />
 
-            <nav className="flex flex-col">
-              {NAV_ITEMS.map((item, i) => {
-                const cls =
-                  "w-full py-5 border-b border-gray-800 text-white text-sm font-semibold uppercase tracking-widest flex justify-between items-center";
-                const motionProps = {
-                  initial: { opacity: 0, y: 10 },
-                  animate: { opacity: 1, y: 0 },
-                  transition: {
-                    duration: 0.4,
-                    delay: 0.08 + i * 0.04,
-                    ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-                  },
-                  onClick: () => setOpen(false),
-                  className: cls,
-                };
-                const inner = (
-                  <>
-                    <span>{item.label}</span>
-                    <ChevronDown size={16} className="text-gray-400" />
-                  </>
-                );
-                return item.to ? (
-                  <motion.div key={item.label} {...motionProps}>
-                    <Link to={item.to} onClick={() => setOpen(false)} className="contents">
-                      {inner}
-                    </Link>
-                  </motion.div>
-                ) : item.href === "#consultation" ? (
-                  <motion.button
-                    key={item.label}
+            {/* Right Drawer Sheet */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 280 }}
+              className="absolute top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col justify-between p-6 sm:p-8"
+            >
+              {/* Top: Close trigger */}
+              <div>
+                <div className="flex items-center justify-between pb-6 border-b border-[#E2E8F0]">
+                  <BrandLogo size="sm" className="text-[#171A20]" />
+                  <button
                     type="button"
-                    {...motionProps}
-                    onClick={() => {
-                      setOpen(false);
-                      openConsultationDrawer();
-                    }}
-                    className={`${cls} text-left cursor-pointer`}
+                    aria-label="Close menu"
+                    onClick={() => setDrawerOpen(false)}
+                    className="p-1.5 rounded-full text-[#5C5E62] hover:text-[#171A20] hover:bg-[#EEEEEE] transition-colors cursor-pointer"
                   >
-                    {inner}
-                  </motion.button>
-                ) : (
-                  <motion.a key={item.label} href={item.href || "#"} {...motionProps}>
-                    {inner}
-                  </motion.a>
-                );
-              })}
-            </nav>
-          </motion.div>
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Navigation Links */}
+                <nav className="mt-6 space-y-1">
+                  {DRAWER_NAV.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      onClick={() => setDrawerOpen(false)}
+                      className="flex items-center justify-between px-3 py-3 text-sm font-medium text-[#171A20] rounded-lg hover:bg-[#F8F8FA] transition-colors"
+                    >
+                      <span>{item.label}</span>
+                      <ChevronRight size={16} className="text-[#5C5E62]" />
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Bottom: Contact & Direct Actions */}
+              <div className="pt-6 border-t border-[#E2E8F0] space-y-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    openConsultationDrawer();
+                  }}
+                  className="w-full py-2.5 px-4 rounded-full bg-[#171A20] text-white text-sm font-medium hover:bg-black transition-colors text-center cursor-pointer shadow-xs"
+                >
+                  Schedule Consultation
+                </button>
+
+                <div className="flex items-center justify-between text-xs text-[#5C5E62] px-2 pt-2">
+                  <a
+                    href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
+                    className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors"
+                  >
+                    <Phone size={13} />
+                    <span>{BRAND_CONFIG.contact.phone.display}</span>
+                  </a>
+                  <a
+                    href={BRAND_CONFIG.contact.whatsapp.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors"
+                  >
+                    <MessageSquare size={13} />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>
