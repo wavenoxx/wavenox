@@ -1,18 +1,20 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import defHero01 from "@/assets/def-hero-01.jpg";
+import defHero02 from "@/assets/def-hero-02.jpg";
+import defTile from "@/assets/def-tile.jpg";
+import defGrid from "@/assets/def-grid.jpg";
+import ogCore from "@/assets/og-core.jpg";
 
 const IMG = {
-  hero: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=80",
-  cardA:
-    "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1400&q=80",
-  cardB:
-    "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1400&q=80",
-  storm:
-    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2400&q=80",
-  hardware:
-    "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1600&q=80",
+  hero: defHero01,
+  cardA: defTile,
+  cardB: defGrid,
+  storm: defHero02,
+  hardware: ogCore,
 };
 
 export const Route = createFileRoute("/defense")({
@@ -206,6 +208,92 @@ function SpecificationsMatrix() {
   );
 }
 
+const DEFENSE_STANDARDS = [
+  {
+    id: "impact",
+    title: "Class 4 Ballistic & Hail Strike",
+    protocol: "ASTM FM 4473 / UL 2218",
+    rating: "ZERO CRACKING @ 160 KM/H",
+    desc: "Engineered to withstand 50mm (2-inch) ice balls traveling at terminal velocity and stray high-velocity debris with zero glass fracture or performance drop.",
+  },
+  {
+    id: "wind",
+    title: "Category 5 Wind Uplift",
+    protocol: "ASTM E330 / TAS 108",
+    rating: "TESTED TO 320 KM/H (200 MPH)",
+    desc: "Patented titanium interlocks lock directly to roof substructures, resisting extreme negative pressure suction during severe tropical cyclones.",
+  },
+  {
+    id: "emp",
+    title: "EMP Military Faraday Shielding",
+    protocol: "MIL-STD-188-125-1",
+    rating: "ATTENUATION > 80 dB (10 kHz - 1 GHz)",
+    desc: "Enclosed Faraday shielding surrounds the micro-inverter matrix and battery core, guaranteeing survival against coronal mass ejections (CME) and high-altitude electromagnetic pulses.",
+  },
+  {
+    id: "fire",
+    title: "Class A Fire Imperviousness",
+    protocol: "UL 790 / ASTM E108",
+    rating: "NON-COMBUSTIBLE MONOLITHIC GLASS",
+    desc: "Unlike traditional polymer backsheets which ignite and propagate roof fires, WAVENOX dual-tempered glass provides an unyielding barrier against flying embers and extreme heat.",
+  },
+];
+
+function ArmorToleranceComparator() {
+  const [activeStandard, setActiveStandard] = useState("impact");
+  const current = DEFENSE_STANDARDS.find((s) => s.id === activeStandard) || DEFENSE_STANDARDS[0];
+
+  return (
+    <section className="bg-black py-20 md:py-36 border-t border-white/10">
+      <div className="mx-auto max-w-7xl px-6 md:px-16">
+        <div className="max-w-3xl">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
+            STRUCTURAL VERIFICATION MATRIX
+          </span>
+          <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
+            MILITARY TESTING PROTOCOLS
+          </h2>
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {DEFENSE_STANDARDS.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setActiveStandard(s.id)}
+              className={`p-6 border text-left transition-all duration-300 cursor-pointer ${
+                activeStandard === s.id
+                  ? "border-[#F57C00] bg-white/[0.04] shadow-lg shadow-[#F57C00]/10"
+                  : "border-white/10 bg-black/40 hover:border-white/30"
+              }`}
+            >
+              <span className="text-[10px] font-mono uppercase text-[#F57C00]">
+                {s.protocol}
+              </span>
+              <h3 className="mt-2 text-sm font-bold uppercase text-white">
+                {s.title}
+              </h3>
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 border border-white/10 bg-white/[0.02] p-8 md:p-12">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-white/10 pb-6">
+            <div>
+              <span className="text-xs font-mono uppercase text-white/50">{current.protocol}</span>
+              <h3 className="text-2xl font-bold uppercase text-white mt-1">{current.title}</h3>
+            </div>
+            <div className="font-mono text-sm font-bold text-[#F57C00]">{current.rating}</div>
+          </div>
+          <p className="mt-6 text-sm leading-relaxed text-white/80 max-w-3xl">
+            {current.desc}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DefenseCTA() {
   return (
     <section className="border-t border-white/10 bg-black px-6 py-24 text-center md:py-36">
@@ -242,6 +330,7 @@ function DefensePage() {
       <ClimateHero />
       <ShieldProtocol />
       <SpecificationsMatrix />
+      <ArmorToleranceComparator />
       <DefenseCTA />
       <Footer />
     </main>

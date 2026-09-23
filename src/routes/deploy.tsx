@@ -1,13 +1,16 @@
 import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Check, Shield, Zap, Sparkles, Building, Home, BatteryCharging, ArrowRight } from "lucide-react";
+import { Check, Shield, Zap, Sparkles, Building, Home, BatteryCharging, ArrowRight, Compass, SunMedium } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BUSINESS } from "@/config/business";
 import { computeSolarYield, SOLAR_SPECS } from "@/config/solar";
+import luxurySolarVilla from "@/assets/luxury_solar_villa.jpg";
+import resHero02 from "@/assets/res-hero-02.jpg";
+import enterpriseMwRooftop from "@/assets/enterprise_mw_rooftop.jpg";
 
 export const Route = createFileRoute("/deploy")({
   head: () => ({
@@ -43,6 +46,12 @@ const PROPERTY_TYPES = [
   { id: "commercial", name: "Commercial Asset", icon: Building, avgSqFt: 25000, desc: "MW-scale corporate roof or carport" },
 ];
 
+const ROOF_PROFILES = [
+  { id: "monolithic", name: "Monolithic Flush Glass", desc: "Seamless obsidian tiles replacing traditional roof" },
+  { id: "standing-seam", name: "Standing Seam Clamp", desc: "Zero-penetration clamp on premium metal roofing" },
+  { id: "pergola", name: "Elevated Solar Pergola", desc: "Usable outdoor living terrace with bifacial solar canopy" },
+];
+
 const BATTERY_TIERS = [
   { id: "grid-tied", name: "Grid-Tied (No Battery)", capKwh: 0, desc: "Net-metering export with existing utility grid" },
   { id: "omnigrid-20", name: "Omnigrid 20 kWh", capKwh: 20, desc: "Essential overnight backup & sub-4ms islanding" },
@@ -53,6 +62,7 @@ const BATTERY_TIERS = [
 function DeployPage() {
   const [selectedCity, setSelectedCity] = useState(BUSINESS.primaryCity);
   const [propertyType, setPropertyType] = useState("villa");
+  const [roofProfile, setRoofProfile] = useState("monolithic");
   const [roofArea, setRoofArea] = useState(3000);
   const [batteryTier, setBatteryTier] = useState("omnigrid-20");
 
@@ -66,6 +76,13 @@ function DeployPage() {
   const subsidyInr = metrics.estimatedSubsidyInr;
   const twentyFiveYearLakhs = (metrics.twentyFiveYearNetSavingsInr / 100000).toFixed(1);
 
+  const previewImage =
+    propertyType === "villa"
+      ? luxurySolarVilla
+      : propertyType === "estate"
+      ? resHero02
+      : enterpriseMwRooftop;
+
   const handleLaunchConsultation = () => {
     openConsultationDrawer(
       propertyType === "villa" ? "villa" : propertyType === "estate" ? "estate" : "commercial"
@@ -77,7 +94,8 @@ function DeployPage() {
       `Hello ${BRAND_CONFIG.name}, I configured a custom solar system on your website:\n\n` +
       `• City: ${selectedCity}\n` +
       `• Property: ${propertyType.toUpperCase()}\n` +
-      `• Roof Footprint: ${roofArea.toLocaleString("en-IN")} sq.ft\n` +
+      `• Roof Architecture: ${roofProfile.toUpperCase()}\n` +
+      `• Usable Roof Area: ${roofArea.toLocaleString("en-IN")} sq.ft\n` +
       `• Array Capacity: ${metrics.capacityKw.toFixed(1)} kWp\n` +
       `• Storage Tier: ${batteryTier}\n` +
       `• Estimated 25-Yr Net Gain: ₹${twentyFiveYearLakhs} Lakhs\n\n` +
@@ -189,10 +207,37 @@ function DeployPage() {
                 </div>
               </div>
 
-              {/* Step 3: Energy Storage Tier */}
+              {/* Step 3: Roof Architecture Style */}
               <div className="border border-white/10 bg-white/[0.02] p-8">
                 <span className="font-mono text-xs uppercase tracking-widest text-[#F57C00]">
-                  STEP 03 / OMNIGRID STORAGE TIER
+                  STEP 03 / ROOF ARCHITECTURAL PROFILE
+                </span>
+                <h3 className="mt-2 text-xl font-bold uppercase text-white">
+                  Integration Style
+                </h3>
+                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {ROOF_PROFILES.map((rp) => (
+                    <button
+                      key={rp.id}
+                      type="button"
+                      onClick={() => setRoofProfile(rp.id)}
+                      className={`cursor-pointer rounded-lg border p-4 text-left transition-all duration-300 ${
+                        roofProfile === rp.id
+                          ? "border-[#F57C00] bg-[#F57C00]/10 text-white"
+                          : "border-white/10 bg-black/40 text-white/70 hover:border-white/30"
+                      }`}
+                    >
+                      <div className="text-xs font-bold uppercase text-white">{rp.name}</div>
+                      <div className="mt-1 text-[10px] text-white/50 leading-relaxed">{rp.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 4: Energy Storage Tier */}
+              <div className="border border-white/10 bg-white/[0.02] p-8">
+                <span className="font-mono text-xs uppercase tracking-widest text-[#F57C00]">
+                  STEP 04 / OMNIGRID STORAGE TIER
                 </span>
                 <h3 className="mt-2 text-xl font-bold uppercase text-white">
                   Battery Autonomy Reserve
@@ -222,73 +267,95 @@ function DeployPage() {
 
             {/* Right: Live Reactive Proposal Summary (Col 5) */}
             <div className="lg:col-span-5">
-              <div className="sticky top-28 border border-[#F57C00]/40 bg-black p-8 md:p-10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 h-48 w-48 bg-[#F57C00]/10 blur-3xl pointer-events-none" />
+              <div className="sticky top-28 border border-[#F57C00]/40 bg-black overflow-hidden relative">
+                {/* Visual Estate Render Preview Card */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-black">
+                  <img
+                    src={previewImage}
+                    alt="Configured estate architectural render"
+                    className="h-full w-full object-cover transition-all duration-700"
+                    loading="lazy"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30" />
+                  <div className="absolute bottom-3 left-3 rounded-full bg-black/80 px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-white backdrop-blur-md border border-white/10">
+                    {propertyType.toUpperCase()} • {roofArea.toLocaleString("en-IN")} SQ.FT
+                  </div>
+                </div>
 
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#F57C00]">
-                  ESTIMATED SYSTEM DOSSIER
-                </span>
-                <h3 className="mt-2 text-2xl font-bold uppercase text-white">
-                  {BRAND_CONFIG.name} Architecture
-                </h3>
+                <div className="p-8 md:p-10 relative">
+                  <div className="absolute top-0 right-0 h-48 w-48 bg-[#F57C00]/10 blur-3xl pointer-events-none" />
 
-                <div className="mt-8 space-y-5 border-t border-b border-white/10 py-6">
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-xs font-mono uppercase text-white/60">Deployment Hub</span>
-                    <span className="font-mono text-sm font-bold text-white">{selectedCity}</span>
-                  </div>
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-xs font-mono uppercase text-white/60">Estimated System Capacity</span>
-                    <span className="font-mono text-lg font-bold text-white">
-                      {metrics.capacityKw.toFixed(1)} kWp
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-xs font-mono uppercase text-white/60">Annual Energy Output</span>
-                    <span className="font-mono text-sm font-bold text-white">
-                      {Math.round(metrics.annualUnitsGenerated).toLocaleString("en-IN")} kWh / yr
-                    </span>
-                  </div>
-                  {subsidyInr > 0 && (
+                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#F57C00]">
+                    ESTIMATED SYSTEM DOSSIER
+                  </span>
+                  <h3 className="mt-2 text-2xl font-bold uppercase text-white">
+                    {BRAND_CONFIG.name} Architecture
+                  </h3>
+
+                  <div className="mt-8 space-y-4 border-t border-b border-white/10 py-6">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-xs font-mono uppercase text-emerald-400">
-                        PM Surya Ghar Subsidy
-                      </span>
-                      <span className="font-mono text-sm font-bold text-emerald-400">
-                        ₹{subsidyInr.toLocaleString("en-IN")} Direct Credit
+                      <span className="text-xs font-mono uppercase text-white/60">Deployment Hub</span>
+                      <span className="font-mono text-sm font-bold text-white">{selectedCity}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs font-mono uppercase text-white/60">Roof Profile</span>
+                      <span className="font-mono text-xs font-bold text-[#F57C00]">
+                        {ROOF_PROFILES.find((r) => r.id === roofProfile)?.name}
                       </span>
                     </div>
-                  )}
-                  <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
-                    <span className="text-xs font-mono uppercase text-[#F57C00]">
-                      25-Year Estimated Net Return
-                    </span>
-                    <span className="font-mono text-2xl font-bold text-[#F57C00]">
-                      ₹{twentyFiveYearLakhs} Lakhs
-                    </span>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs font-mono uppercase text-white/60">Estimated System Capacity</span>
+                      <span className="font-mono text-lg font-bold text-white">
+                        {metrics.capacityKw.toFixed(1)} kWp
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs font-mono uppercase text-white/60">Annual Energy Output</span>
+                      <span className="font-mono text-sm font-bold text-white">
+                        {Math.round(metrics.annualUnitsGenerated).toLocaleString("en-IN")} kWh / yr
+                      </span>
+                    </div>
+                    {subsidyInr > 0 && (
+                      <div className="flex justify-between items-baseline">
+                        <span className="text-xs font-mono uppercase text-emerald-400">
+                          PM Surya Ghar Subsidy
+                        </span>
+                        <span className="font-mono text-sm font-bold text-emerald-400">
+                          ₹{subsidyInr.toLocaleString("en-IN")} Direct Credit
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
+                      <span className="text-xs font-mono uppercase text-[#F57C00]">
+                        25-Year Estimated Net Return
+                      </span>
+                      <span className="font-mono text-2xl font-bold text-[#F57C00]">
+                        ₹{twentyFiveYearLakhs} Lakhs
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mt-8 space-y-3">
-                  <button
-                    type="button"
-                    onClick={handleLaunchConsultation}
-                    className="w-full cursor-pointer rounded-full bg-[#F57C00] py-4 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-white"
-                  >
-                    BOOK SITE ARCHITECTURAL AUDIT →
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDirectWhatsApp}
-                    className="w-full cursor-pointer rounded-full border border-white/20 bg-white/[0.04] py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-white hover:text-black"
-                  >
-                    DISPATCH VIA WHATSAPP →
-                  </button>
-                </div>
+                  <div className="mt-8 space-y-3">
+                    <button
+                      type="button"
+                      onClick={handleLaunchConsultation}
+                      className="w-full cursor-pointer rounded-full bg-[#F57C00] py-4 text-xs font-bold uppercase tracking-[0.25em] text-black transition-all duration-300 hover:bg-white"
+                    >
+                      BOOK SITE ARCHITECTURAL AUDIT →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDirectWhatsApp}
+                      className="w-full cursor-pointer rounded-full border border-white/20 bg-white/[0.04] py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-white hover:text-black"
+                    >
+                      DISPATCH VIA WHATSAPP →
+                    </button>
+                  </div>
 
-                <p className="mt-6 text-[11px] leading-relaxed text-center text-white/40">
-                  Includes 25-Year Generational Warranty and 100% turnkey grid net-metering approvals.
-                </p>
+                  <p className="mt-6 text-[11px] leading-relaxed text-center text-white/40">
+                    Includes 25-Year Generational Warranty and 100% turnkey grid net-metering approvals.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

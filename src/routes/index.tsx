@@ -11,6 +11,7 @@ import { Portfolio } from "@/components/Portfolio";
 import { Press } from "@/components/Press";
 import { Certifications } from "@/components/Certifications";
 import { Faq } from "@/components/Faq";
+import { TileAnatomy } from "@/components/TileAnatomy";
 import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
@@ -45,6 +46,7 @@ function Index() {
       <Hero />
       <Features />
       <Comparison />
+      <TileAnatomy />
       <DataMatrix />
       <Ecosystem />
       <RoiEngine />

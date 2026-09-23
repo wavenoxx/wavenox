@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { openConsultationDrawer } from "./ConsultationDrawer";
+import luxurySolarVilla from "@/assets/luxury_solar_villa.jpg";
 import slide1 from "@/assets/slide-01.jpg";
 import slide2 from "@/assets/slide-02.jpg";
 import slide3 from "@/assets/slide-03.jpg";
@@ -20,8 +21,8 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    desktopImage: slide1,
-    mobileImage: slide1Mobile,
+    desktopImage: luxurySolarVilla,
+    mobileImage: luxurySolarVilla,
     headline: (
       <>
         <span style={{ color: "#F57C00" }}>Absolute</span> power

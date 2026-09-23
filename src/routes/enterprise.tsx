@@ -7,12 +7,16 @@ import { Footer } from "@/components/Footer";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { computeSolarYield, SOLAR_SPECS } from "@/config/solar";
 import { BRAND_CONFIG } from "@/config/brand";
+import enterpriseMwRooftop from "@/assets/enterprise_mw_rooftop.jpg";
+import lgScale from "@/assets/lg-scale.jpg";
+import defGrid from "@/assets/def-grid.jpg";
+import eco01Grid from "@/assets/eco-01-grid.jpg";
 
 const ENTERPRISE_ASSETS = {
-  hero: "https://images.unsplash.com/photo-1548337138-e87d889cc369?auto=format&fit=crop&w=2400&q=80",
-  industrialPark: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1600&q=80",
-  warehouse: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80",
-  carport: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1600&q=80",
+  hero: enterpriseMwRooftop,
+  industrialPark: lgScale,
+  warehouse: defGrid,
+  carport: eco01Grid,
 };
 
 export const Route = createFileRoute("/enterprise")({
@@ -236,6 +240,153 @@ function Section32TaxBenefit() {
   );
 }
 
+const FINANCING_MODELS = [
+  {
+    id: "capex",
+    title: "Direct CAPEX Ownership",
+    tagline: "Maximum Long-Term Wealth & Tax Shield",
+    upfront: "100% Upfront Capital",
+    depreciation: "40% Year 1 Section 32",
+    payback: "3.2 – 3.8 Years",
+    lcoe: "₹2.20 / kWh (Ultra-Low)",
+    ownership: "100% Asset Ownership Day 1",
+    benefits: [
+      "Immediate 40% accelerated depreciation corporate tax write-off",
+      "All future state DISCOM electricity tariff hikes completely neutralized",
+      "Generates free captive clean electricity for 21+ years post-payback",
+      "100% Green Energy certificates & carbon credits retained by company",
+    ],
+  },
+  {
+    id: "resco",
+    title: "RESCO / Corporate PPA",
+    tagline: "Zero Upfront Capital Investment",
+    upfront: "₹0 (Zero Initial Investment)",
+    depreciation: "Claimed by RESCO partner",
+    payback: "Instant Day 1 Savings",
+    lcoe: "25-35% Below DISCOM Grid Tariff",
+    ownership: "Transfers to Company at Year 15/20",
+    benefits: [
+      "Zero capital diverted from core manufacturing or business growth",
+      "Immediate 25% to 35% reduction on monthly commercial electricity bill",
+      "WAVENOX assumes 100% O&M, panel cleaning, and inverter maintenance liability",
+      "Guaranteed performance metrics with minimum generation uptime penalties",
+    ],
+  },
+  {
+    id: "hybrid",
+    title: "Debt Amortized Green Loan",
+    tagline: "Cash-Flow Positive from Month 1",
+    upfront: "15-20% Equity Margin",
+    depreciation: "40% Year 1 Section 32 Retained",
+    payback: "Self-Liquidating via Bill Savings",
+    lcoe: "₹2.85 / kWh",
+    ownership: "100% Company Ownership",
+    benefits: [
+      "Monthly power cost savings exceed corporate EMI loan amortization",
+      "Retain full 40% Section 32 accelerated depreciation tax shield",
+      "Accelerated loan settlement typically completed within 48 months",
+      "Supported by SIDBI / SBI World Bank green rooftop financing programs",
+    ],
+  },
+];
+
+function FinancingModelSelector() {
+  const [selectedModel, setSelectedModel] = useState("capex");
+  const model = FINANCING_MODELS.find((m) => m.id === selectedModel) || FINANCING_MODELS[0];
+
+  return (
+    <section className="bg-black py-24 md:py-36 border-t border-white/10">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12">
+        <div className="max-w-2xl">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#F57C00]">
+            CAPITAL STRUCTURING
+          </span>
+          <h2 className="mt-4 text-3xl font-bold uppercase tracking-tight text-white md:text-5xl">
+            CAPEX VS RESCO FINANCING ARCHITECTURE
+          </h2>
+          <p className="mt-4 text-sm text-white/60 md:text-base">
+            Choose the financial structure best suited for your corporate balance sheet and cash flow objectives.
+          </p>
+        </div>
+
+        {/* 3 Model Tabs */}
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {FINANCING_MODELS.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => setSelectedModel(m.id)}
+              className={`p-6 border text-left transition-all duration-300 cursor-pointer ${
+                selectedModel === m.id
+                  ? "border-[#F57C00] bg-white/[0.04] shadow-lg shadow-[#F57C00]/10"
+                  : "border-white/10 bg-black/40 hover:border-white/30"
+              }`}
+            >
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#F57C00]">
+                MODEL {m.id.toUpperCase()}
+              </span>
+              <h3 className="mt-2 text-base font-bold uppercase tracking-tight text-white">
+                {m.title}
+              </h3>
+              <p className="mt-1 text-xs text-white/50">{m.tagline}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Selected Model Deep Dive */}
+        <div className="mt-8 border border-white/10 bg-white/[0.02] p-8 md:p-12">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 border-b border-white/10 pb-8">
+            <div>
+              <span className="text-[10px] font-mono uppercase text-white/50">UPFRONT CAPITAL</span>
+              <div className="mt-2 font-mono text-sm font-bold text-white">{model.upfront}</div>
+            </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase text-white/50">TAX DEPRECIATION</span>
+              <div className="mt-2 font-mono text-sm font-bold text-[#F57C00]">{model.depreciation}</div>
+            </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase text-white/50">ESTIMATED PAYBACK</span>
+              <div className="mt-2 font-mono text-sm font-bold text-emerald-400">{model.payback}</div>
+            </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase text-white/50">ASSET OWNERSHIP</span>
+              <div className="mt-2 font-mono text-sm font-bold text-white">{model.ownership}</div>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-white/70">
+              STRATEGIC CORPORATE ADVANTAGES
+            </h4>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {model.benefits.map((b) => (
+                <div key={b} className="flex items-start gap-3">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-[#F57C00] mt-0.5" />
+                  <span className="text-xs text-white/80 leading-relaxed">{b}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+            <span className="text-xs text-white/60">
+              * Custom PPA tariff models and bank consortium syndication available for installations exceeding 1 MW.
+            </span>
+            <button
+              type="button"
+              onClick={() => openConsultationDrawer("commercial")}
+              className="cursor-pointer rounded-full bg-[#F57C00] px-6 py-3 text-xs font-bold uppercase tracking-wider text-black transition-all duration-300 hover:bg-white"
+            >
+              REQUEST PPA / CAPEX COMPARISON MEMO →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CommercialCalculator() {
   const [roofArea, setRoofArea] = useState(25000); // 25,000 sq.ft default commercial roof
   const [tariff, setTariff] = useState(9.5); // ₹9.5/kWh industrial average
@@ -388,6 +539,7 @@ function EnterprisePage() {
       <EnterpriseHero />
       <SectorMatrix />
       <Section32TaxBenefit />
+      <FinancingModelSelector />
       <CommercialCalculator />
       <Footer />
     </main>
