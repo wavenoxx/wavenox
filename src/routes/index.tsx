@@ -5,6 +5,8 @@ import { SleekDesign } from "@/components/SleekDesign";
 import { OutageProtection } from "@/components/OutageProtection";
 import { BillSavingsSlider } from "@/components/BillSavingsSlider";
 import { EfficiencyTech } from "@/components/EfficiencyTech";
+import { EnergyControl } from "@/components/EnergyControl";
+import { TechSpecs } from "@/components/TechSpecs";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -40,6 +42,8 @@ function Index() {
       <OutageProtection />
       <BillSavingsSlider />
       <EfficiencyTech />
+      <EnergyControl />
+      <TechSpecs />
       <Footer />
       <ConsultationDrawer />
     </main>
