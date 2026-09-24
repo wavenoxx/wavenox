@@ -68,7 +68,12 @@ export const BUSINESS: BusinessConfig = {
       tag: "HEADQUARTERS & R&D LAB",
       description:
         "Primary engineering hub, 24/7 technical monitoring command center, and residential villa deployment crews.",
-      keyProjects: ["Jubilee Hills Estates", "Banjara Hills Villas", "Financial District Tech Parks", "Gachibowli High-Rises"],
+      keyProjects: [
+        "Jubilee Hills Estates",
+        "Banjara Hills Villas",
+        "Financial District Tech Parks",
+        "Gachibowli High-Rises",
+      ],
     },
     {
       city: "Bengaluru",
@@ -78,7 +83,11 @@ export const BUSINESS: BusinessConfig = {
       tag: "INNOVATION & ENTERPRISE",
       description:
         "Enterprise commercial rooftop solar, data centers, and luxury tech estate architectures.",
-      keyProjects: ["Whitefield Commercial Hubs", "Indiranagar Luxury Estates", "Electronic City Campuses"],
+      keyProjects: [
+        "Whitefield Commercial Hubs",
+        "Indiranagar Luxury Estates",
+        "Electronic City Campuses",
+      ],
     },
     {
       city: "Vijayawada & Amaravati",
@@ -88,7 +97,11 @@ export const BUSINESS: BusinessConfig = {
       tag: "COASTAL & AGRI-SOLAR",
       description:
         "Cyclone-resilient Category 5 coastal installations, riverfront villas, and industrial cold storage solar roofs.",
-      keyProjects: ["Bhavanipuram Commercial Hub", "Benz Circle Residences", "Amaravati Institutional Capital"],
+      keyProjects: [
+        "Bhavanipuram Commercial Hub",
+        "Benz Circle Residences",
+        "Amaravati Institutional Capital",
+      ],
     },
     {
       city: "Mumbai & Pune",
@@ -108,7 +121,11 @@ export const BUSINESS: BusinessConfig = {
       tag: "GOVERNMENT & DIPLOMATIC",
       description:
         "High-security diplomatic compound solar, farmhouse estates, and Gurgaon corporate towers.",
-      keyProjects: ["Lutyens' Delhi Residences", "Gurgaon DLF Villas", "Noida Expressway Tech Parks"],
+      keyProjects: [
+        "Lutyens' Delhi Residences",
+        "Gurgaon DLF Villas",
+        "Noida Expressway Tech Parks",
+      ],
     },
   ],
 

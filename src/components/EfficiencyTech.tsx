@@ -24,7 +24,7 @@ const TECH_SPECS = [
 
 export function EfficiencyTech() {
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -55,7 +55,9 @@ export function EfficiencyTech() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            WAVENOX solar panels are designed with advanced cell architecture that maximizes energy production across every square foot of your roof. Even in complex roof angles, high summer temperatures, or partial shade, our panels out-produce conventional solar arrays.
+            WAVENOX solar panels are designed with advanced cell architecture that maximizes energy
+            production across every square foot of your roof. Even in complex roof angles, high
+            summer temperatures, or partial shade, our panels out-produce conventional solar arrays.
           </motion.p>
         </div>
 

@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -37,7 +38,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -121,12 +122,12 @@ function RootShell({ children }: { children: ReactNode }) {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: BUSINESS.geo.lat,
-      longitude: BUSINESS.geo.lng,
+      latitude: BUSINESS.geo.latitude,
+      longitude: BUSINESS.geo.longitude,
     },
     areaServed: BUSINESS.serviceHubs.map((hub) => ({
       "@type": "City",
-      name: hub.city,
+      name: hub.schemaName || hub.city,
     })),
   };
 

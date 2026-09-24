@@ -43,7 +43,7 @@ export function SupportFaq() {
   };
 
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-4xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto">
@@ -74,7 +74,8 @@ export function SupportFaq() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-3 leading-relaxed"
           >
-            Clear, transparent answers to the most common questions about switching to architectural solar in India.
+            Clear, transparent answers to the most common questions about switching to architectural
+            solar in India.
           </motion.p>
         </div>
 

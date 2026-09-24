@@ -18,7 +18,11 @@ type Mode = "day" | "night" | "outage";
 const MODES: { id: Mode; label: string; sub: string }[] = [
   { id: "day", label: "Day: Solar Charging", sub: "Sunlight generates power & charges battery" },
   { id: "night", label: "Night: Battery Power", sub: "Stored solar sustains home appliances" },
-  { id: "outage", label: "Grid Outage: Failsafe Islanding", sub: "< 4ms instant blackout protection" },
+  {
+    id: "outage",
+    label: "Grid Outage: Failsafe Islanding",
+    sub: "< 4ms instant blackout protection",
+  },
 ];
 
 export function OutageProtection() {
@@ -58,7 +62,7 @@ export function OutageProtection() {
   }[activeMode];
 
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -89,7 +93,11 @@ export function OutageProtection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            Grid outages and severe summer voltage fluctuations are a daily reality across Indian cities. Omnigrid stores excess solar energy generated during the day and provides seamless, uninterrupted backup power at night or during blackouts. Keep your air conditioners, refrigeration, and security systems running without a split-second flicker.
+            Grid outages and severe summer voltage fluctuations are a daily reality across Indian
+            cities. Omnigrid stores excess solar energy generated during the day and provides
+            seamless, uninterrupted backup power at night or during blackouts. Keep your air
+            conditioners, refrigeration, and security systems running without a split-second
+            flicker.
           </motion.p>
         </div>
 
@@ -206,9 +214,12 @@ export function OutageProtection() {
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>
-                  {activeMode === "day" && "Omnigrid charges silently while home runs 100% on clean rooftop solar."}
-                  {activeMode === "night" && "Omnigrid powers all air conditioning and lighting without drawing costly peak-hour grid units."}
-                  {activeMode === "outage" && "Grid blackout isolated in under 4ms. No equipment restart or light flicker."}
+                  {activeMode === "day" &&
+                    "Omnigrid charges silently while home runs 100% on clean rooftop solar."}
+                  {activeMode === "night" &&
+                    "Omnigrid powers all air conditioning and lighting without drawing costly peak-hour grid units."}
+                  {activeMode === "outage" &&
+                    "Grid blackout isolated in under 4ms. No equipment restart or light flicker."}
                 </span>
               </div>
               <span className="font-semibold text-[#171A20] shrink-0">Sub-4ms Islanding</span>
@@ -245,9 +256,7 @@ export function OutageProtection() {
               </div>
 
               <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0]">
-                <span className="block text-xl font-bold text-[#171A20] tabular-nums">
-                  10-Year
-                </span>
+                <span className="block text-xl font-bold text-[#171A20] tabular-nums">10-Year</span>
                 <span className="block text-[11px] text-[#5C5E62] mt-0.5">Warranty</span>
               </div>
             </div>

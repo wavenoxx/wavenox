@@ -32,7 +32,10 @@ export const Route = createFileRoute("/enterprise")({
         content:
           "Turn idle industrial rooftops into high-yield capital assets. 40% accelerated tax depreciation under Section 32, zero-downtime microgrids, and guaranteed 25-year performance.",
       },
-      { property: "og:title", content: `Commercial & Industrial Megawatt Solar — ${BRAND_CONFIG.name}` },
+      {
+        property: "og:title",
+        content: `Commercial & Industrial Megawatt Solar — ${BRAND_CONFIG.name}`,
+      },
       {
         property: "og:description",
         content:
@@ -88,29 +91,39 @@ function EnterprisePage() {
   const capacityKw = useMemo(() => Math.round(roofAreaSqFt / 100), [roofAreaSqFt]);
   const capacityMw = useMemo(() => (capacityKw / 1000).toFixed(2), [capacityKw]);
   const annualUnitsKwh = useMemo(() => Math.round(capacityKw * 1550), [capacityKw]);
-  const annualSavingsInr = useMemo(() => Math.round(annualUnitsKwh * commercialTariff), [annualUnitsKwh, commercialTariff]);
-  
+  const annualSavingsInr = useMemo(
+    () => Math.round(annualUnitsKwh * commercialTariff),
+    [annualUnitsKwh, commercialTariff],
+  );
+
   // Capex approx ₹42,000 per kW for commercial megawatt scale
   const estCapexInr = useMemo(() => Math.round(capacityKw * 42000), [capacityKw]);
   // 40% Section 32 tax depreciation in Year 1 (assuming corporate tax rate ~25.17%)
-  const year1TaxShieldInr = useMemo(() => Math.round(estCapexInr * 0.40 * 0.2517), [estCapexInr]);
-  const twentyFiveYearNetInr = useMemo(() => Math.round(annualSavingsInr * 25 - estCapexInr), [annualSavingsInr, estCapexInr]);
+  const year1TaxShieldInr = useMemo(() => Math.round(estCapexInr * 0.4 * 0.2517), [estCapexInr]);
+  const twentyFiveYearNetInr = useMemo(
+    () => Math.round(annualSavingsInr * 25 - estCapexInr),
+    [annualSavingsInr, estCapexInr],
+  );
   const twentyFiveYearCrores = (twentyFiveYearNetInr / 10000000).toFixed(2);
 
   const handleWhatsAppRfp = () => {
     const text = encodeURIComponent(
       `*WAVENOX COMMERCIAL & INDUSTRIAL MEGAWATT RFP*\n` +
-      `--------------------------------------\n` +
-      `*Roof Area:* ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft\n` +
-      `*Estimated Capacity:* ${capacityMw} MWp (${capacityKw} kWp)\n` +
-      `*Commercial Tariff:* ₹${commercialTariff} / kWh\n` +
-      `*Estimated Annual Generation:* ${annualUnitsKwh.toLocaleString("en-IN")} kWh / yr\n` +
-      `*Section 32 Year 1 Tax Shield:* ₹${(year1TaxShieldInr / 100000).toFixed(1)} Lakhs\n` +
-      `*25-Year Corporate Net Gain:* ₹${twentyFiveYearCrores} Crores\n` +
-      `--------------------------------------\n` +
-      `We require a formal corporate feasibility survey and PPA / CAPEX financial comparison.`
+        `--------------------------------------\n` +
+        `*Roof Area:* ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft\n` +
+        `*Estimated Capacity:* ${capacityMw} MWp (${capacityKw} kWp)\n` +
+        `*Commercial Tariff:* ₹${commercialTariff} / kWh\n` +
+        `*Estimated Annual Generation:* ${annualUnitsKwh.toLocaleString("en-IN")} kWh / yr\n` +
+        `*Section 32 Year 1 Tax Shield:* ₹${(year1TaxShieldInr / 100000).toFixed(1)} Lakhs\n` +
+        `*25-Year Corporate Net Gain:* ₹${twentyFiveYearCrores} Crores\n` +
+        `--------------------------------------\n` +
+        `We require a formal corporate feasibility survey and PPA / CAPEX financial comparison.`,
     );
-    window.open(`${BRAND_CONFIG.contact.whatsappLink}?text=${text}`, "_blank", "noopener,noreferrer");
+    window.open(
+      `${BRAND_CONFIG.contact.whatsappLink}?text=${text}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   return (
@@ -143,7 +156,9 @@ function EnterprisePage() {
                 Commercial Megawatt Solar
               </h1>
               <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-2xl mx-auto leading-relaxed">
-                Turn idle factory and corporate rooftops into high-yield capital assets. Slash electricity tariffs by up to 80% while claiming 40% accelerated tax depreciation under Section 32.
+                Turn idle factory and corporate rooftops into high-yield capital assets. Slash
+                electricity tariffs by up to 80% while claiming 40% accelerated tax depreciation
+                under Section 32.
               </p>
             </motion.div>
           </div>
@@ -157,13 +172,17 @@ function EnterprisePage() {
               className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
             >
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">300 kW – 5 MW+</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                  300 kW – 5 MW+
+                </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   Deployment Scale
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">40%</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">
+                  40%
+                </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   Sec 32 Tax Shield
                 </div>
@@ -214,12 +233,17 @@ function EnterprisePage() {
               Capital Allocation for India's Industrial Leaders
             </h2>
             <p className="text-sm sm:text-base text-[#5C5E62]">
-              Rooftop solar is no longer just a sustainability pledge; it is one of the highest internal rate of return (IRR) balance sheet investments available to Indian enterprises today.
+              Rooftop solar is no longer just a sustainability pledge; it is one of the highest
+              internal rate of return (IRR) balance sheet investments available to Indian
+              enterprises today.
             </p>
           </motion.div>
 
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <FileSpreadsheet className="h-5 w-5" />
               </div>
@@ -227,11 +251,15 @@ function EnterprisePage() {
                 40% Accelerated Tax Depreciation
               </h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Under Section 32 of the Indian Income Tax Act, write off 40% of the entire solar capital expenditure in Year 1, creating immediate balance sheet cash tax shields.
+                Under Section 32 of the Indian Income Tax Act, write off 40% of the entire solar
+                capital expenditure in Year 1, creating immediate balance sheet cash tax shields.
               </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <TrendingUp className="h-5 w-5" />
               </div>
@@ -239,31 +267,36 @@ function EnterprisePage() {
                 Up to 80% Power Bill Reduction
               </h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Replace commercial utility tariffs of ₹10.00–₹12.50 per kWh with an effective levelized cost of energy (LCOE) under ₹2.50 per unit over 25 years.
+                Replace commercial utility tariffs of ₹10.00–₹12.50 per kWh with an effective
+                levelized cost of energy (LCOE) under ₹2.50 per unit over 25 years.
               </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-semibold text-[#171A20]">
-                SEBI BRSR & ESG Mandate
-              </h3>
+              <h3 className="text-base font-semibold text-[#171A20]">SEBI BRSR & ESG Mandate</h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Empower listed enterprises to meet SEBI's Business Responsibility & Sustainability Reporting (BRSR) directives and international RE100 zero-carbon commitments.
+                Empower listed enterprises to meet SEBI's Business Responsibility & Sustainability
+                Reporting (BRSR) directives and international RE100 zero-carbon commitments.
               </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <Zap className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-semibold text-[#171A20]">
-                Zero Production Downtime
-              </h3>
+              <h3 className="text-base font-semibold text-[#171A20]">Zero Production Downtime</h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Grid-synchronized high-voltage industrial inverters smoothly integrate with your on-site diesel generators, slashing expensive fuel burn during load shedding.
+                Grid-synchronized high-voltage industrial inverters smoothly integrate with your
+                on-site diesel generators, slashing expensive fuel burn during load shedding.
               </p>
             </motion.div>
           </div>
@@ -283,7 +316,8 @@ function EnterprisePage() {
               Engineered for High-Demand Industries
             </h2>
             <p className="text-sm sm:text-base text-[#5C5E62]">
-              Customized mechanical mounting brackets and high-voltage line synchronization for every industrial roof topology.
+              Customized mechanical mounting brackets and high-voltage line synchronization for
+              every industrial roof topology.
             </p>
           </motion.div>
 
@@ -337,7 +371,8 @@ function EnterprisePage() {
                   Model Your Megawatt Solar Yield
                 </h2>
                 <p className="mt-3 text-sm text-[#5C5E62]">
-                  Adjust your industrial rooftop area and current commercial utility tariff to calculate your immediate tax deduction and 25-year cumulative wealth creation.
+                  Adjust your industrial rooftop area and current commercial utility tariff to
+                  calculate your immediate tax deduction and 25-year cumulative wealth creation.
                 </p>
               </div>
 
@@ -415,7 +450,8 @@ function EnterprisePage() {
                     PROJECTED MEGAWATT METRICS
                   </span>
                   <div className="mt-1 text-3xl font-bold tracking-tight text-[#171A20]">
-                    {capacityMw} MWp <span className="text-base font-normal text-[#5C5E62]">({capacityKw} kWp)</span>
+                    {capacityMw} MWp{" "}
+                    <span className="text-base font-normal text-[#5C5E62]">({capacityKw} kWp)</span>
                   </div>
                 </div>
 
@@ -449,7 +485,9 @@ function EnterprisePage() {
                     <div className="text-xs font-semibold text-[#5C5E62] uppercase tracking-wider">
                       25-Year Corporate Net Wealth
                     </div>
-                    <div className="text-[11px] text-[#5C5E62]">After full amortization of equipment & maintenance</div>
+                    <div className="text-[11px] text-[#5C5E62]">
+                      After full amortization of equipment & maintenance
+                    </div>
                   </div>
                   <div className="text-3xl font-bold text-emerald-700">
                     ₹{twentyFiveYearCrores} <span className="text-sm font-semibold">Cr</span>
@@ -470,7 +508,8 @@ function EnterprisePage() {
             Empower Your Balance Sheet with Clean Energy
           </h3>
           <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
-            WAVENOX in-house engineering team handles turnkey CEIG high-voltage synchronization, DISCOM net-metering & open-access approvals with guaranteed 25-year performance ratios.
+            WAVENOX in-house engineering team handles turnkey CEIG high-voltage synchronization,
+            DISCOM net-metering & open-access approvals with guaranteed 25-year performance ratios.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
@@ -480,7 +519,10 @@ function EnterprisePage() {
             >
               Request Commercial Feasibility Survey
             </button>
-            <Link to="/deploy" className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer">
+            <Link
+              to="/deploy"
+              className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer"
+            >
               Launch Design Studio →
             </Link>
           </div>

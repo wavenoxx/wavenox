@@ -55,26 +55,30 @@ const STACK_OPTIONS = [
     units: 1,
     capacity: "13.5 kWh",
     desc: "Essential Luxury Backup",
-    loads: "Powers lighting, WiFi, smart automation, refrigeration, and 1 high-tonnage Inverter AC.",
+    loads:
+      "Powers lighting, WiFi, smart automation, refrigeration, and 1 high-tonnage Inverter AC.",
   },
   {
     units: 2,
     capacity: "27.0 kWh",
     desc: "Whole-Home Standard (Recommended)",
-    loads: "Full villa autonomy powering 4 Inverter ACs, home elevator, heated pool pumps, and kitchen.",
+    loads:
+      "Full villa autonomy powering 4 Inverter ACs, home elevator, heated pool pumps, and kitchen.",
     isPopular: true,
   },
   {
     units: 3,
     capacity: "40.5 kWh",
     desc: "Multi-Day Autonomy",
-    loads: "Extended multi-day independence for sprawling estates with multiple central AC chillers.",
+    loads:
+      "Extended multi-day independence for sprawling estates with multiple central AC chillers.",
   },
   {
     units: 4,
     capacity: "54.0 kWh",
     desc: "Commercial Microgrid",
-    loads: "Heavy residential compounds, corporate retreat villas, and high-discharge Level 2 EV charging.",
+    loads:
+      "Heavy residential compounds, corporate retreat villas, and high-discharge Level 2 EV charging.",
   },
 ];
 
@@ -111,7 +115,8 @@ function OmnigridPage() {
                 Omnigrid Clean Storage
               </h1>
               <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-xl mx-auto leading-relaxed">
-                24/7 Outage Defense, Time-of-Day Tariff Optimization, and Absolute Energy Sovereignty.
+                24/7 Outage Defense, Time-of-Day Tariff Optimization, and Absolute Energy
+                Sovereignty.
               </p>
             </motion.div>
           </div>
@@ -131,7 +136,9 @@ function OmnigridPage() {
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">&lt; 4ms</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">
+                  &lt; 4ms
+                </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   Sub-Cycle Islanding
                 </div>
@@ -151,7 +158,10 @@ function OmnigridPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+              <Link
+                to="/deploy"
+                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+              >
                 Configure Omnigrid System
               </Link>
               <button
@@ -192,7 +202,9 @@ function OmnigridPage() {
                 Immunity from the Utility Grid
               </h2>
               <p className="text-sm sm:text-base text-[#5C5E62] leading-relaxed">
-                Indian electrical grids suffer frequent voltage sags, brownouts, and monsoon line breaks. Omnigrid acts as an impenetrable electronic shield, detecting grid disruptions and transferring your entire residence in under 4 milliseconds.
+                Indian electrical grids suffer frequent voltage sags, brownouts, and monsoon line
+                breaks. Omnigrid acts as an impenetrable electronic shield, detecting grid
+                disruptions and transferring your entire residence in under 4 milliseconds.
               </p>
 
               <div className="space-y-4 pt-4 border-t border-[#E2E8F0]">
@@ -205,7 +217,8 @@ function OmnigridPage() {
                       Continuous Inductive Heavy Motor Support
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      High surge capability effortlessly starts and operates 4–5 heavy Inverter AC compressors, water lift pumps, and EV chargers without voltage dips.
+                      High surge capability effortlessly starts and operates 4–5 heavy Inverter AC
+                      compressors, water lift pumps, and EV chargers without voltage dips.
                     </p>
                   </div>
                 </div>
@@ -219,7 +232,8 @@ function OmnigridPage() {
                       100% Silent & Zero Diesel Fumes
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Eliminate noisy, vibrating diesel generator maintenance, toxic exhaust fumes, and manual fuel procurement entirely.
+                      Eliminate noisy, vibrating diesel generator maintenance, toxic exhaust fumes,
+                      and manual fuel procurement entirely.
                     </p>
                   </div>
                 </div>
@@ -233,7 +247,8 @@ function OmnigridPage() {
                       Sub-4ms Transition (Zero Flicker)
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Faster than an eye blink. Sensitive high-end audio gear, gaming PCs, smart lighting systems, and security servers never drop power.
+                      Faster than an eye blink. Sensitive high-end audio gear, gaming PCs, smart
+                      lighting systems, and security servers never drop power.
                     </p>
                   </div>
                 </div>
@@ -256,12 +271,17 @@ function OmnigridPage() {
               Never Pay Peak Electricity Rates
             </h2>
             <p className="text-sm sm:text-base text-[#5C5E62]">
-              State electricity distribution boards in India increasingly penalize peak evening consumption (6 PM to 10 PM) with heavy tariff surcharges. Omnigrid neutralizes peak penalties automatically.
+              State electricity distribution boards in India increasingly penalize peak evening
+              consumption (6 PM to 10 PM) with heavy tariff surcharges. Omnigrid neutralizes peak
+              penalties automatically.
             </p>
           </motion.div>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <Clock className="h-5 w-5" />
               </div>
@@ -269,31 +289,36 @@ function OmnigridPage() {
                 Time-Based Tariff Arbitrage
               </h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Omnigrid automatically charges using free rooftop solar during the day, then powers your estate throughout peak evening tariff windows to eliminate high DISCOM rates.
+                Omnigrid automatically charges using free rooftop solar during the day, then powers
+                your estate throughout peak evening tariff windows to eliminate high DISCOM rates.
               </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <Zap className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-semibold text-[#171A20]">
-                100% Self-Powered Mode
-              </h3>
+              <h3 className="text-base font-semibold text-[#171A20]">100% Self-Powered Mode</h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Minimize reliance on the external grid. Maximize consumption of your own clean solar generation day and night, keeping your estate completely carbon-neutral.
+                Minimize reliance on the external grid. Maximize consumption of your own clean solar
+                generation day and night, keeping your estate completely carbon-neutral.
               </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3">
+            <motion.div
+              {...fadeUp}
+              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+            >
               <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-semibold text-[#171A20]">
-                Emergency Backup Reserve
-              </h3>
+              <h3 className="text-base font-semibold text-[#171A20]">Emergency Backup Reserve</h3>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Set a guaranteed energy reserve percentage (e.g. 20% to 50%) that is permanently preserved exclusively for sudden weather emergencies and grid outages.
+                Set a guaranteed energy reserve percentage (e.g. 20% to 50%) that is permanently
+                preserved exclusively for sudden weather emergencies and grid outages.
               </p>
             </motion.div>
           </div>
@@ -313,7 +338,8 @@ function OmnigridPage() {
               Modular Architecture & Specifications
             </h2>
             <p className="text-sm sm:text-base text-[#5C5E62]">
-              Stack multiple Omnigrid units seamlessly to match your estate's exact power capacity and continuous runtime requirements.
+              Stack multiple Omnigrid units seamlessly to match your estate's exact power capacity
+              and continuous runtime requirements.
             </p>
           </motion.div>
 
@@ -333,17 +359,19 @@ function OmnigridPage() {
                 <div className="text-xs font-semibold opacity-70">
                   {stack.units} {stack.units === 1 ? "Unit" : "Units"}
                 </div>
-                <div className="mt-1 text-2xl font-bold tracking-tight">
-                  {stack.capacity}
-                </div>
-                <div className={`mt-1 text-xs font-medium ${
-                  selectedUnits === stack.units ? "text-white" : "text-[#171A20]"
-                }`}>
+                <div className="mt-1 text-2xl font-bold tracking-tight">{stack.capacity}</div>
+                <div
+                  className={`mt-1 text-xs font-medium ${
+                    selectedUnits === stack.units ? "text-white" : "text-[#171A20]"
+                  }`}
+                >
                   {stack.desc}
                 </div>
-                <div className={`mt-3 text-[11px] leading-relaxed ${
-                  selectedUnits === stack.units ? "text-white/70" : "text-[#5C5E62]"
-                }`}>
+                <div
+                  className={`mt-3 text-[11px] leading-relaxed ${
+                    selectedUnits === stack.units ? "text-white/70" : "text-[#5C5E62]"
+                  }`}
+                >
                   {stack.loads}
                 </div>
               </button>
@@ -354,15 +382,21 @@ function OmnigridPage() {
           <div className="mt-16 max-w-4xl mx-auto border-t border-[#E2E8F0] divide-y divide-[#E2E8F0]">
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Usable Energy Capacity</span>
-              <span className="font-semibold text-[#171A20]">13.5 kWh per unit (100% Depth of Discharge)</span>
+              <span className="font-semibold text-[#171A20]">
+                13.5 kWh per unit (100% Depth of Discharge)
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Peak & Continuous Power Output</span>
-              <span className="font-semibold text-[#171A20]">7.0 kW Peak / 5.0 kW Continuous per Unit</span>
+              <span className="font-semibold text-[#171A20]">
+                7.0 kW Peak / 5.0 kW Continuous per Unit
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Battery Chemistry</span>
-              <span className="font-semibold text-[#171A20]">Lithium Iron Phosphate (LFP) — Cobalt-Free & Non-Combustible</span>
+              <span className="font-semibold text-[#171A20]">
+                Lithium Iron Phosphate (LFP) — Cobalt-Free & Non-Combustible
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Round-Trip AC-to-AC Efficiency</span>
@@ -370,19 +404,27 @@ function OmnigridPage() {
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Operating Temperature Range</span>
-              <span className="font-semibold text-[#171A20]">-10°C to +52°C (Engineered for Extreme Indian Climates)</span>
+              <span className="font-semibold text-[#171A20]">
+                -10°C to +52°C (Engineered for Extreme Indian Climates)
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Ingress Protection Rating</span>
-              <span className="font-semibold text-[#171A20]">IP67 Certified All-Weather Waterproof (Indoor / Outdoor)</span>
+              <span className="font-semibold text-[#171A20]">
+                IP67 Certified All-Weather Waterproof (Indoor / Outdoor)
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Certifications & Standards</span>
-              <span className="font-semibold text-[#171A20]">BIS Certified, IEC 62619, UL 9540, CEIG Approved</span>
+              <span className="font-semibold text-[#171A20]">
+                BIS Certified, IEC 62619, UL 9540, CEIG Approved
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Performance Warranty</span>
-              <span className="font-semibold text-[#171A20]">10-Year Unconditional Full Replacement Warranty</span>
+              <span className="font-semibold text-[#171A20]">
+                10-Year Unconditional Full Replacement Warranty
+              </span>
             </div>
           </div>
         </div>
@@ -397,10 +439,14 @@ function OmnigridPage() {
             Take Control of Your Energy Future
           </h3>
           <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
-            Calculate exact Omnigrid battery units for your villa or schedule an engineering consultation with our storage specialists.
+            Calculate exact Omnigrid battery units for your villa or schedule an engineering
+            consultation with our storage specialists.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+            <Link
+              to="/deploy"
+              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+            >
               Configure in Design Studio →
             </Link>
             <button

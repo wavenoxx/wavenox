@@ -6,7 +6,7 @@ import { openConsultationDrawer } from "./ConsultationDrawer";
 
 export function Hero() {
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black text-white flex flex-col justify-between items-center text-center select-none">
+    <section className="relative h-screen w-full overflow-hidden bg-black text-white flex flex-col justify-between items-center text-center">
       {/* Background Image: Cinema-Grade Luxury Solar Villa */}
       <div className="absolute inset-0 z-0">
         <img

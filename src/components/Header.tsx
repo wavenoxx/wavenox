@@ -55,10 +55,7 @@ export function Header() {
       >
         {/* Left: Brand Logo */}
         <div className="flex items-center">
-          <BrandLogo
-            size="md"
-            className={isScrolled ? "text-[#171A20]" : "text-white"}
-          />
+          <BrandLogo size="md" className={isScrolled ? "text-[#171A20]" : "text-white"} />
         </div>
 
         {/* Center: Tesla-style Minimalist Links */}
@@ -68,9 +65,7 @@ export function Header() {
               key={item.label}
               to={item.to}
               className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                isScrolled
-                  ? "text-[#171A20] hover:bg-black/5"
-                  : "text-white/95 hover:bg-white/10"
+                isScrolled ? "text-[#171A20] hover:bg-black/5" : "text-white/95 hover:bg-white/10"
               }`}
             >
               {item.label}
@@ -97,9 +92,7 @@ export function Header() {
             aria-label="Open navigation menu"
             onClick={() => setDrawerOpen(true)}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-              isScrolled
-                ? "text-[#171A20] hover:bg-black/5"
-                : "text-white hover:bg-white/10"
+              isScrolled ? "text-[#171A20] hover:bg-black/5" : "text-white hover:bg-white/10"
             }`}
           >
             Menu

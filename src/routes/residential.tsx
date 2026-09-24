@@ -1,6 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Check, ShieldCheck, Sun, Zap, Battery, Sparkles, Building2, Home, Layers, ArrowRight } from "lucide-react";
+import {
+  Check,
+  ShieldCheck,
+  Sun,
+  Zap,
+  Battery,
+  Sparkles,
+  Building2,
+  Home,
+  Layers,
+  ArrowRight,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
@@ -69,7 +80,8 @@ function ResidentialPage() {
                 Solar for Luxury Estates
               </h1>
               <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-xl mx-auto leading-relaxed">
-                Architectural elegance meets unyielding energy sovereignty. Zero visible conduits, 100% utility bill offset, and uninterrupted power.
+                Architectural elegance meets unyielding energy sovereignty. Zero visible conduits,
+                100% utility bill offset, and uninterrupted power.
               </p>
             </motion.div>
           </div>
@@ -111,7 +123,10 @@ function ResidentialPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+              <Link
+                to="/deploy"
+                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+              >
                 Design Your System
               </Link>
               <button
@@ -152,7 +167,10 @@ function ResidentialPage() {
                 Engineered for the Modern Villa
               </h2>
               <p className="text-sm sm:text-base text-[#5C5E62] leading-relaxed">
-                WAVENOX residential arrays integrate seamlessly into high-end architectural rooflines. Traditional bolt-on solar panels compromise your facade with exposed wires and silver rail clamps. WAVENOX re-engineers every millimeter for clean, monolithic beauty.
+                WAVENOX residential arrays integrate seamlessly into high-end architectural
+                rooflines. Traditional bolt-on solar panels compromise your facade with exposed
+                wires and silver rail clamps. WAVENOX re-engineers every millimeter for clean,
+                monolithic beauty.
               </p>
 
               <div className="space-y-4 pt-4 border-t border-[#E2E8F0]">
@@ -165,7 +183,8 @@ function ResidentialPage() {
                       Obsidian Monolithic Finish
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Deep all-black glass tiles with concealed micro-busbars that visually mirror tinted architectural glass.
+                      Deep all-black glass tiles with concealed micro-busbars that visually mirror
+                      tinted architectural glass.
                     </p>
                   </div>
                 </div>
@@ -179,7 +198,8 @@ function ResidentialPage() {
                       Non-Penetrative Waterproof Mounting
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Precision structural ballast for RCC concrete terraces and interlocking concealed tile brackets. Zero punctures to your roof's waterproofing membrane.
+                      Precision structural ballast for RCC concrete terraces and interlocking
+                      concealed tile brackets. Zero punctures to your roof's waterproofing membrane.
                     </p>
                   </div>
                 </div>
@@ -193,7 +213,8 @@ function ResidentialPage() {
                       100% Usable Rooftop Terrace Living
                     </h3>
                     <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Elevated canopy engineering preserves complete walkability beneath, enabling luxury rooftop gardens, yoga decks, and sunset lounges.
+                      Elevated canopy engineering preserves complete walkability beneath, enabling
+                      luxury rooftop gardens, yoga decks, and sunset lounges.
                     </p>
                   </div>
                 </div>
@@ -218,19 +239,25 @@ function ResidentialPage() {
                 Uninterrupted Luxury Living
               </h2>
               <p className="text-sm sm:text-base text-[#5C5E62] leading-relaxed">
-                Indian grid infrastructure is susceptible to extreme weather interruptions and peak-hour brownouts. Pair your residential solar with Omnigrid battery storage to achieve autonomous backup that transfers in under 4 milliseconds.
+                Indian grid infrastructure is susceptible to extreme weather interruptions and
+                peak-hour brownouts. Pair your residential solar with Omnigrid battery storage to
+                achieve autonomous backup that transfers in under 4 milliseconds.
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="p-4 rounded-xl border border-[#E2E8F0] bg-white">
                   <div className="text-2xl font-bold tracking-tight text-[#171A20]">&lt; 4ms</div>
                   <div className="text-xs font-medium text-[#5C5E62] mt-1">Sub-Cycle Islanding</div>
-                  <div className="text-[11px] text-[#5C5E62]/80 mt-0.5">No flicker on servers or automation</div>
+                  <div className="text-[11px] text-[#5C5E62]/80 mt-0.5">
+                    No flicker on servers or automation
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl border border-[#E2E8F0] bg-white">
                   <div className="text-2xl font-bold tracking-tight text-[#171A20]">4–5 ACs</div>
                   <div className="text-xs font-medium text-[#5C5E62] mt-1">Continuous Cooling</div>
-                  <div className="text-[11px] text-[#5C5E62]/80 mt-0.5">Powers high-load inverter compressors</div>
+                  <div className="text-[11px] text-[#5C5E62]/80 mt-0.5">
+                    Powers high-load inverter compressors
+                  </div>
                 </div>
               </div>
 
@@ -271,14 +298,17 @@ function ResidentialPage() {
               Residential Technical Architecture
             </h2>
             <p className="text-sm sm:text-base text-[#5C5E62]">
-              Engineered to surpass international photovoltaic benchmarks and withstand extreme Indian monsoon and summer climates.
+              Engineered to surpass international photovoltaic benchmarks and withstand extreme
+              Indian monsoon and summer climates.
             </p>
           </motion.div>
 
           <div className="mt-12 max-w-4xl mx-auto border-t border-[#E2E8F0] divide-y divide-[#E2E8F0]">
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Cell Technology</span>
-              <span className="font-semibold text-[#171A20]">N-Type TOPCon Monocrystalline Bifacial</span>
+              <span className="font-semibold text-[#171A20]">
+                N-Type TOPCon Monocrystalline Bifacial
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Module Efficiency</span>
@@ -286,27 +316,39 @@ function ResidentialPage() {
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Mechanical Wind & Hail Durability</span>
-              <span className="font-semibold text-[#171A20]">Class 4 Hail Resistance / 250 km/h Cyclone Rated</span>
+              <span className="font-semibold text-[#171A20]">
+                Class 4 Hail Resistance / 250 km/h Cyclone Rated
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Inverter Conversion Efficiency</span>
-              <span className="font-semibold text-[#171A20]">98.6% European Weighted Multi-MPPT</span>
+              <span className="font-semibold text-[#171A20]">
+                98.6% European Weighted Multi-MPPT
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Grid Net-Metering Compliance</span>
-              <span className="font-semibold text-[#171A20]">100% Turnkey CEIG & State DISCOM Approval</span>
+              <span className="font-semibold text-[#171A20]">
+                100% Turnkey CEIG & State DISCOM Approval
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Central Government Subsidy</span>
-              <span className="font-semibold text-emerald-700">PM Surya Ghar Muft Bijli Yojana (Up to ₹78,000)</span>
+              <span className="font-semibold text-emerald-700">
+                PM Surya Ghar Muft Bijli Yojana (Up to ₹78,000)
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Fire & Safety Rating</span>
-              <span className="font-semibold text-[#171A20]">Class A Fire Rating / BIS & IEC 61215 Certified</span>
+              <span className="font-semibold text-[#171A20]">
+                Class A Fire Rating / BIS & IEC 61215 Certified
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Comprehensive Warranty</span>
-              <span className="font-semibold text-[#171A20]">25-Year Linear Performance & 25-Year Workmanship</span>
+              <span className="font-semibold text-[#171A20]">
+                25-Year Linear Performance & 25-Year Workmanship
+              </span>
             </div>
           </div>
         </div>
@@ -321,10 +363,14 @@ function ResidentialPage() {
             Experience Energy Sovereignty
           </h3>
           <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
-            Design your estate solar array in our interactive studio or speak directly with our senior architectural advisors.
+            Design your estate solar array in our interactive studio or speak directly with our
+            senior architectural advisors.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link to="/deploy" className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer">
+            <Link
+              to="/deploy"
+              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+            >
               Launch Design Studio →
             </Link>
             <button

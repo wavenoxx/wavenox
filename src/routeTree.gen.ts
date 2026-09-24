@@ -10,28 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BrandRouteImport } from './routes/brand'
-import { Route as DefenseRouteImport } from './routes/defense'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
-import { Route as IntelligenceRouteImport } from './routes/intelligence'
-import { Route as LiquidGlassRouteImport } from './routes/liquid-glass'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as ResidentialRouteImport } from './routes/residential'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrandRoute = BrandRouteImport.update({
-  id: '/brand',
-  path: '/brand',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DefenseRoute = DefenseRouteImport.update({
-  id: '/defense',
-  path: '/defense',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeployRoute = DeployRouteImport.update({
@@ -42,16 +28,6 @@ const DeployRoute = DeployRouteImport.update({
 const EnterpriseRoute = EnterpriseRouteImport.update({
   id: '/enterprise',
   path: '/enterprise',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IntelligenceRoute = IntelligenceRouteImport.update({
-  id: '/intelligence',
-  path: '/intelligence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiquidGlassRoute = LiquidGlassRouteImport.update({
-  id: '/liquid-glass',
-  path: '/liquid-glass',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OmnigridRoute = OmnigridRouteImport.update({
@@ -67,82 +43,39 @@ const ResidentialRoute = ResidentialRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/brand': typeof BrandRoute
-  '/defense': typeof DefenseRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
-  '/intelligence': typeof IntelligenceRoute
-  '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/brand': typeof BrandRoute
-  '/defense': typeof DefenseRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
-  '/intelligence': typeof IntelligenceRoute
-  '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/brand': typeof BrandRoute
-  '/defense': typeof DefenseRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
-  '/intelligence': typeof IntelligenceRoute
-  '/liquid-glass': typeof LiquidGlassRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/brand'
-    | '/defense'
-    | '/deploy'
-    | '/enterprise'
-    | '/intelligence'
-    | '/liquid-glass'
-    | '/omnigrid'
-    | '/residential'
+  fullPaths: '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/brand'
-    | '/defense'
-    | '/deploy'
-    | '/enterprise'
-    | '/intelligence'
-    | '/liquid-glass'
-    | '/omnigrid'
-    | '/residential'
+  to: '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
   id:
-    | '__root__'
-    | '/'
-    | '/brand'
-    | '/defense'
-    | '/deploy'
-    | '/enterprise'
-    | '/intelligence'
-    | '/liquid-glass'
-    | '/omnigrid'
-    | '/residential'
+    '__root__' | '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BrandRoute: typeof BrandRoute
-  DefenseRoute: typeof DefenseRoute
   DeployRoute: typeof DeployRoute
   EnterpriseRoute: typeof EnterpriseRoute
-  IntelligenceRoute: typeof IntelligenceRoute
-  LiquidGlassRoute: typeof LiquidGlassRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
 }
@@ -154,20 +87,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/brand': {
-      id: '/brand'
-      path: '/brand'
-      fullPath: '/brand'
-      preLoaderRoute: typeof BrandRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/defense': {
-      id: '/defense'
-      path: '/defense'
-      fullPath: '/defense'
-      preLoaderRoute: typeof DefenseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/deploy': {
@@ -182,20 +101,6 @@ declare module '@tanstack/react-router' {
       path: '/enterprise'
       fullPath: '/enterprise'
       preLoaderRoute: typeof EnterpriseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/intelligence': {
-      id: '/intelligence'
-      path: '/intelligence'
-      fullPath: '/intelligence'
-      preLoaderRoute: typeof IntelligenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/liquid-glass': {
-      id: '/liquid-glass'
-      path: '/liquid-glass'
-      fullPath: '/liquid-glass'
-      preLoaderRoute: typeof LiquidGlassRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/omnigrid': {
@@ -217,12 +122,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BrandRoute: BrandRoute,
-  DefenseRoute: DefenseRoute,
   DeployRoute: DeployRoute,
   EnterpriseRoute: EnterpriseRoute,
-  IntelligenceRoute: IntelligenceRoute,
-  LiquidGlassRoute: LiquidGlassRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
 }

@@ -21,9 +21,7 @@ export const CONSULTATION_EVENT = "open-wavenox-consultation";
 
 export function openConsultationDrawer(initialTier?: string) {
   if (typeof window !== "undefined") {
-    window.dispatchEvent(
-      new CustomEvent(CONSULTATION_EVENT, { detail: { tier: initialTier } })
-    );
+    window.dispatchEvent(new CustomEvent(CONSULTATION_EVENT, { detail: { tier: initialTier } }));
   }
 }
 
@@ -124,7 +122,7 @@ export function ConsultationDrawer() {
         `• Estimated Subsidy: ₹${subsidyAmount.toLocaleString("en-IN")}\n` +
         `• Name: ${name}\n` +
         `• Phone: ${phone}\n` +
-        `• City: ${city}\n\nPlease confirm my virtual consultation slot.`
+        `• City: ${city}\n\nPlease confirm my virtual consultation slot.`,
     );
 
     const waUrl = `${BRAND_CONFIG.contact.whatsapp.link}?text=${message}`;
@@ -136,7 +134,7 @@ export function ConsultationDrawer() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden select-none">
+        <div className="fixed inset-0 z-50 overflow-hidden">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -207,7 +205,8 @@ export function ConsultationDrawer() {
                         1. Select Your Property Type
                       </h3>
                       <p className="text-xs text-[#5C5E62]">
-                        Choose the asset category to configure optimal structural mounting and inverter sizing.
+                        Choose the asset category to configure optimal structural mounting and
+                        inverter sizing.
                       </p>
 
                       <div className="space-y-3 pt-2">
@@ -226,7 +225,9 @@ export function ConsultationDrawer() {
                             >
                               <div
                                 className={`p-2.5 rounded-lg ${
-                                  isSelected ? "bg-[#171A20] text-white" : "bg-[#EEEEEE] text-[#171A20]"
+                                  isSelected
+                                    ? "bg-[#171A20] text-white"
+                                    : "bg-[#EEEEEE] text-[#171A20]"
                                 }`}
                               >
                                 <Icon size={20} />
@@ -372,7 +373,8 @@ export function ConsultationDrawer() {
                           3. Your Contact Details
                         </h3>
                         <p className="text-xs text-[#5C5E62] mt-0.5">
-                          A clean-tech Energy Advisor will prepare your 3D solar layout prior to the virtual call.
+                          A clean-tech Energy Advisor will prepare your 3D solar layout prior to the
+                          virtual call.
                         </p>
                       </div>
 
@@ -454,7 +456,8 @@ export function ConsultationDrawer() {
                     Consultation Request Dispatched
                   </h3>
                   <p className="text-sm text-[#5C5E62] max-w-sm mx-auto leading-relaxed">
-                    Thank you, {name}. Your WhatsApp consultation dossier has been generated. Our Energy Advisor will review your roof coordinates and connect with you shortly.
+                    Thank you, {name}. Your WhatsApp consultation dossier has been generated. Our
+                    Energy Advisor will review your roof coordinates and connect with you shortly.
                   </p>
                   <div className="pt-6">
                     <button

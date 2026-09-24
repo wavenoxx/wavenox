@@ -74,7 +74,8 @@ const BATTERY_OPTIONS = [
     capacityKwh: 0,
     priceInr: 0,
     autonomyHours: "0 hrs (Daytime Solar Only)",
-    headline: "Net-metered export only. Shuts down during utility blackout for anti-islanding safety.",
+    headline:
+      "Net-metered export only. Shuts down during utility blackout for anti-islanding safety.",
   },
   {
     units: 1,
@@ -82,7 +83,8 @@ const BATTERY_OPTIONS = [
     capacityKwh: 13.5,
     priceInr: 280000,
     autonomyHours: "18+ hrs Essential Backup",
-    headline: "Powers lighting, WiFi, refrigeration, home automation, and 1 high-tonnage Inverter AC.",
+    headline:
+      "Powers lighting, WiFi, refrigeration, home automation, and 1 high-tonnage Inverter AC.",
   },
   {
     units: 2,
@@ -90,7 +92,8 @@ const BATTERY_OPTIONS = [
     capacityKwh: 27.0,
     priceInr: 540000,
     autonomyHours: "36+ hrs Whole-Home Backup",
-    headline: "Whole-home luxury backup. Seamless sub-4ms transfer powering 4 Inverter ACs and water pumps.",
+    headline:
+      "Whole-home luxury backup. Seamless sub-4ms transfer powering 4 Inverter ACs and water pumps.",
     isRecommended: true,
   },
   {
@@ -99,7 +102,8 @@ const BATTERY_OPTIONS = [
     capacityKwh: 40.5,
     priceInr: 790000,
     autonomyHours: "72+ hrs Off-Grid Autonomy",
-    headline: "Extreme multi-day autonomy. Powers entire estate including 6 ACs, heat pumps, and Level 2 EV charging.",
+    headline:
+      "Extreme multi-day autonomy. Powers entire estate including 6 ACs, heat pumps, and Level 2 EV charging.",
   },
 ];
 
@@ -146,12 +150,17 @@ export function SystemConfigurator() {
 
   // Selected DISCOM
   const discom = useMemo(() => {
-    return SOLAR_CONFIG.discoms.find((d) => d.code === selectedDiscomCode) || SOLAR_CONFIG.discoms[0];
+    return (
+      SOLAR_CONFIG.discoms.find((d) => d.code === selectedDiscomCode) || SOLAR_CONFIG.discoms[0]
+    );
   }, [selectedDiscomCode]);
 
   // Sizing calculations (Each panel is 400W = 0.4 kW)
   const systemKw = useMemo(() => Number((panelCount * 0.4).toFixed(1)), [panelCount]);
-  const annualKwh = useMemo(() => Math.round(systemKw * SOLAR_CONFIG.effectiveSunHoursPerYear), [systemKw]);
+  const annualKwh = useMemo(
+    () => Math.round(systemKw * SOLAR_CONFIG.effectiveSunHoursPerYear),
+    [systemKw],
+  );
   const monthlyKwh = useMemo(() => Math.round(annualKwh / 12), [annualKwh]);
 
   // Sizing matching tier identifier
@@ -186,7 +195,9 @@ export function SystemConfigurator() {
     const principal = netPayableInr;
     const monthlyRate = 0.095 / 12;
     const tenureMonths = 60;
-    const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
+    const emi =
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+      (Math.pow(1 + monthlyRate, tenureMonths) - 1);
     return Math.round(emi);
   }, [netPayableInr]);
 
@@ -213,26 +224,30 @@ export function SystemConfigurator() {
   const handleDispatchWhatsApp = () => {
     const text = encodeURIComponent(
       `*WAVENOX ARCHITECTURAL SOLAR PROPOSAL*\n` +
-      `--------------------------------------\n` +
-      `*Client:* ${userName || "Architectural Client"}\n` +
-      `*Phone:* ${userPhone || "Provided on call"}\n` +
-      `*Location:* ${address}\n` +
-      `*Utility Board:* ${discom.code} (${discom.state})\n` +
-      `*Avg Monthly Bill:* ₹${monthlyBill.toLocaleString("en-IN")}\n` +
-      `--------------------------------------\n` +
-      `*Configured System Capacity:* ${systemKw} kW (${panelCount} Liquid Glass Panels)\n` +
-      `*Annual Yield:* ${annualKwh.toLocaleString("en-IN")} kWh / year\n` +
-      `*Omnigrid Storage:* ${battery.label} (${battery.capacityKwh} kWh)\n` +
-      `*Roof Architecture:* ${ROOF_PROFILES.find((r) => r.id === roofProfile)?.name}\n` +
-      `--------------------------------------\n` +
-      `*Gross System Cost:* ₹${totalGrossInr.toLocaleString("en-IN")}\n` +
-      `*PM Surya Ghar Central Subsidy:* -₹${subsidyInr.toLocaleString("en-IN")}\n` +
-      `*Net Payable Investment:* ₹${netPayableInr.toLocaleString("en-IN")}\n` +
-      `*Payment Structure:* ${paymentMode === "loan" ? `5-Year EMI ~₹${monthlyEmiInr.toLocaleString("en-IN")}/mo` : "100% Upfront Direct Purchase"}\n` +
-      `*Est. 25-Year Net Wealth Gain:* ₹${twentyFiveYearLakhs} Lakhs\n\n` +
-      `Please provide the technical line diagram (SLD) and book the priority 3D drone site survey.`
+        `--------------------------------------\n` +
+        `*Client:* ${userName || "Architectural Client"}\n` +
+        `*Phone:* ${userPhone || "Provided on call"}\n` +
+        `*Location:* ${address}\n` +
+        `*Utility Board:* ${discom.code} (${discom.state})\n` +
+        `*Avg Monthly Bill:* ₹${monthlyBill.toLocaleString("en-IN")}\n` +
+        `--------------------------------------\n` +
+        `*Configured System Capacity:* ${systemKw} kW (${panelCount} Liquid Glass Panels)\n` +
+        `*Annual Yield:* ${annualKwh.toLocaleString("en-IN")} kWh / year\n` +
+        `*Omnigrid Storage:* ${battery.label} (${battery.capacityKwh} kWh)\n` +
+        `*Roof Architecture:* ${ROOF_PROFILES.find((r) => r.id === roofProfile)?.name}\n` +
+        `--------------------------------------\n` +
+        `*Gross System Cost:* ₹${totalGrossInr.toLocaleString("en-IN")}\n` +
+        `*PM Surya Ghar Central Subsidy:* -₹${subsidyInr.toLocaleString("en-IN")}\n` +
+        `*Net Payable Investment:* ₹${netPayableInr.toLocaleString("en-IN")}\n` +
+        `*Payment Structure:* ${paymentMode === "loan" ? `5-Year EMI ~₹${monthlyEmiInr.toLocaleString("en-IN")}/mo` : "100% Upfront Direct Purchase"}\n` +
+        `*Est. 25-Year Net Wealth Gain:* ₹${twentyFiveYearLakhs} Lakhs\n\n` +
+        `Please provide the technical line diagram (SLD) and book the priority 3D drone site survey.`,
     );
-    window.open(`${BRAND_CONFIG.contact.whatsappLink}?text=${text}`, "_blank", "noopener,noreferrer");
+    window.open(
+      `${BRAND_CONFIG.contact.whatsappLink}?text=${text}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   // Handle Instant Reservation
@@ -337,19 +352,26 @@ export function SystemConfigurator() {
                     <div className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                       {systemKw} <span className="text-xs font-normal text-white/70">kWp</span>
                     </div>
-                    <div className="text-[10px] uppercase tracking-wider text-white/70">Capacity</div>
+                    <div className="text-[10px] uppercase tracking-wider text-white/70">
+                      Capacity
+                    </div>
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                      {battery.capacityKwh} <span className="text-xs font-normal text-white/70">kWh</span>
+                      {battery.capacityKwh}{" "}
+                      <span className="text-xs font-normal text-white/70">kWh</span>
                     </div>
-                    <div className="text-[10px] uppercase tracking-wider text-white/70">Omnigrid Reserve</div>
+                    <div className="text-[10px] uppercase tracking-wider text-white/70">
+                      Omnigrid Reserve
+                    </div>
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl font-bold tracking-tight text-emerald-400">
                       100%
                     </div>
-                    <div className="text-[10px] uppercase tracking-wider text-white/70">Bill Offset</div>
+                    <div className="text-[10px] uppercase tracking-wider text-white/70">
+                      Bill Offset
+                    </div>
                   </div>
                 </div>
               </div>
@@ -380,9 +402,7 @@ export function SystemConfigurator() {
                   <Battery className="h-4 w-4 text-[#171A20]" />
                   Battery Outage Runtime
                 </span>
-                <span className="font-semibold text-[#171A20]">
-                  {battery.autonomyHours}
-                </span>
+                <span className="font-semibold text-[#171A20]">{battery.autonomyHours}</span>
               </div>
               <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
                 <span className="font-medium text-[#5C5E62]">25-Year Lifetime Net Gain</span>
@@ -396,7 +416,10 @@ export function SystemConfigurator() {
             <div className="rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] p-4 flex items-start gap-3 text-xs text-[#5C5E62]">
               <ShieldCheck className="h-5 w-5 text-[#171A20] shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-[#171A20]">Guaranteed Approval Protocol:</span> WAVENOX certified engineers handle 100% of CEIG electrical safety clearances, DISCOM bi-directional net-meter replacement, and PM Surya Ghar central subsidy documentation.
+                <span className="font-semibold text-[#171A20]">Guaranteed Approval Protocol:</span>{" "}
+                WAVENOX certified engineers handle 100% of CEIG electrical safety clearances, DISCOM
+                bi-directional net-meter replacement, and PM Surya Ghar central subsidy
+                documentation.
               </div>
             </div>
           </div>
@@ -451,7 +474,9 @@ export function SystemConfigurator() {
                       }`}
                     >
                       <div className="font-semibold">{d.code}</div>
-                      <div className={`text-[10px] truncate ${selectedDiscomCode === d.code ? "text-white/70" : "text-[#5C5E62]"}`}>
+                      <div
+                        className={`text-[10px] truncate ${selectedDiscomCode === d.code ? "text-white/70" : "text-[#5C5E62]"}`}
+                      >
                         ₹{d.avgResidentialRateInr}/unit • {d.state}
                       </div>
                     </button>
@@ -466,7 +491,8 @@ export function SystemConfigurator() {
                     Average Monthly Electricity Bill
                   </label>
                   <span className="text-lg font-bold text-[#171A20]">
-                    ₹{monthlyBill.toLocaleString("en-IN")} <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
+                    ₹{monthlyBill.toLocaleString("en-IN")}{" "}
+                    <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
                   </span>
                 </div>
                 <input
@@ -518,7 +544,8 @@ export function SystemConfigurator() {
                 Select System Capacity
               </h2>
               <p className="text-xs sm:text-sm text-[#5C5E62]">
-                Our modular sizing architecture ensures complete aesthetic roof coverage and optimal offset for your utility bill tier.
+                Our modular sizing architecture ensures complete aesthetic roof coverage and optimal
+                offset for your utility bill tier.
               </p>
 
               {/* 4-Tier Grid matching Tesla Solar */}
@@ -535,9 +562,13 @@ export function SystemConfigurator() {
                     }`}
                   >
                     {tier.isPopular && (
-                      <span className={`absolute -top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                        panelCount === tier.panels ? "bg-white text-[#171A20]" : "bg-[#171A20] text-white"
-                      }`}>
+                      <span
+                        className={`absolute -top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                          panelCount === tier.panels
+                            ? "bg-white text-[#171A20]"
+                            : "bg-[#171A20] text-white"
+                        }`}
+                      >
                         Popular
                       </span>
                     )}
@@ -545,7 +576,9 @@ export function SystemConfigurator() {
                     <div className="mt-1 text-base font-bold tracking-tight">
                       {tier.kw} <span className="text-[10px] font-normal opacity-70">kW</span>
                     </div>
-                    <div className={`mt-1 text-[10px] ${panelCount === tier.panels ? "text-white/70" : "text-[#5C5E62]"}`}>
+                    <div
+                      className={`mt-1 text-[10px] ${panelCount === tier.panels ? "text-white/70" : "text-[#5C5E62]"}`}
+                    >
                       {tier.panels} Panels
                     </div>
                   </button>
@@ -555,9 +588,7 @@ export function SystemConfigurator() {
               {/* Custom Panel Stepper */}
               <div className="rounded-xl border border-[#E2E8F0] bg-[#F8F8FA] p-4 flex items-center justify-between">
                 <div>
-                  <div className="text-xs font-semibold text-[#171A20]">
-                    Fine-Tune Panel Count
-                  </div>
+                  <div className="text-xs font-semibold text-[#171A20]">Fine-Tune Panel Count</div>
                   <div className="text-[11px] text-[#5C5E62]">
                     Each 400W Liquid Glass panel adds 0.4 kWp and ~50 kWh/month.
                   </div>
@@ -606,7 +637,8 @@ export function SystemConfigurator() {
                 Omnigrid Battery Storage Units
               </h2>
               <p className="text-xs sm:text-sm text-[#5C5E62]">
-                Stores daytime solar production for zero-interruption power during grid brownouts and night peak tariff hours.
+                Stores daytime solar production for zero-interruption power during grid brownouts
+                and night peak tariff hours.
               </p>
 
               {/* Battery Selector Cards */}
@@ -623,19 +655,27 @@ export function SystemConfigurator() {
                     }`}
                   >
                     {opt.isRecommended && (
-                      <span className={`absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                        selectedBatteryUnits === opt.units ? "bg-white text-[#171A20]" : "bg-[#171A20] text-white"
-                      }`}>
+                      <span
+                        className={`absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                          selectedBatteryUnits === opt.units
+                            ? "bg-white text-[#171A20]"
+                            : "bg-[#171A20] text-white"
+                        }`}
+                      >
                         Recommended
                       </span>
                     )}
                     <div className="text-xs font-semibold">{opt.label}</div>
                     <div className="mt-1 text-sm font-bold">
-                      {opt.priceInr === 0 ? "Included (Grid-Tie Only)" : `+ ₹${(opt.priceInr / 100000).toFixed(2)} Lakhs`}
+                      {opt.priceInr === 0
+                        ? "Included (Grid-Tie Only)"
+                        : `+ ₹${(opt.priceInr / 100000).toFixed(2)} Lakhs`}
                     </div>
-                    <div className={`mt-2 text-[11px] leading-relaxed ${
-                      selectedBatteryUnits === opt.units ? "text-white/80" : "text-[#5C5E62]"
-                    }`}>
+                    <div
+                      className={`mt-2 text-[11px] leading-relaxed ${
+                        selectedBatteryUnits === opt.units ? "text-white/80" : "text-[#5C5E62]"
+                      }`}
+                    >
                       {opt.autonomyHours}
                     </div>
                   </button>
@@ -680,9 +720,11 @@ export function SystemConfigurator() {
                     >
                       <Icon className="h-5 w-5 mb-2" />
                       <div className="text-xs font-semibold">{prof.name}</div>
-                      <div className={`mt-1 text-[10px] leading-relaxed ${
-                        roofProfile === prof.id ? "text-white/70" : "text-[#5C5E62]"
-                      }`}>
+                      <div
+                        className={`mt-1 text-[10px] leading-relaxed ${
+                          roofProfile === prof.id ? "text-white/70" : "text-[#5C5E62]"
+                        }`}
+                      >
                         {prof.desc}
                       </div>
                     </button>
@@ -701,9 +743,7 @@ export function SystemConfigurator() {
                 <div className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
                   STEP 05 / FINANCIAL SUMMARY & SUBSIDY
                 </div>
-                <span className="text-xs font-bold text-emerald-700">
-                  PM Surya Ghar Certified
-                </span>
+                <span className="text-xs font-bold text-emerald-700">PM Surya Ghar Certified</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171A20]">
                 Transparent Investment & Savings
@@ -712,13 +752,21 @@ export function SystemConfigurator() {
               {/* Detailed Breakdown Card */}
               <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8F8FA] p-6 space-y-4">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#5C5E62]">Solar Array Hardware & Turnkey Installation ({systemKw} kW)</span>
-                  <span className="font-semibold text-[#171A20]">₹{solarGrossInr.toLocaleString("en-IN")}</span>
+                  <span className="text-[#5C5E62]">
+                    Solar Array Hardware & Turnkey Installation ({systemKw} kW)
+                  </span>
+                  <span className="font-semibold text-[#171A20]">
+                    ₹{solarGrossInr.toLocaleString("en-IN")}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-[#5C5E62]">Omnigrid Storage Reserve ({battery.capacityKwh} kWh)</span>
+                  <span className="text-[#5C5E62]">
+                    Omnigrid Storage Reserve ({battery.capacityKwh} kWh)
+                  </span>
                   <span className="font-semibold text-[#171A20]">
-                    {battery.priceInr === 0 ? "₹0 (Grid-Tie)" : `₹${battery.priceInr.toLocaleString("en-IN")}`}
+                    {battery.priceInr === 0
+                      ? "₹0 (Grid-Tie)"
+                      : `₹${battery.priceInr.toLocaleString("en-IN")}`}
                   </span>
                 </div>
                 {subsidyInr > 0 && (
@@ -732,8 +780,12 @@ export function SystemConfigurator() {
                 )}
                 <div className="pt-3 border-t border-[#E2E8F0] flex justify-between items-baseline">
                   <div>
-                    <div className="text-sm font-semibold text-[#171A20]">Net Investment After Subsidy</div>
-                    <div className="text-[11px] text-[#5C5E62]">Includes all BIS-certified inverters, mounting, and net-metering liaison</div>
+                    <div className="text-sm font-semibold text-[#171A20]">
+                      Net Investment After Subsidy
+                    </div>
+                    <div className="text-[11px] text-[#5C5E62]">
+                      Includes all BIS-certified inverters, mounting, and net-metering liaison
+                    </div>
                   </div>
                   <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#171A20]">
                     ₹{netPayableInr.toLocaleString("en-IN")}
@@ -784,7 +836,8 @@ export function SystemConfigurator() {
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-bold text-emerald-700">
-                          ~₹{monthlyEmiInr.toLocaleString("en-IN")} <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
+                          ~₹{monthlyEmiInr.toLocaleString("en-IN")}{" "}
+                          <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
                         </div>
                         <div className="text-[10px] text-[#5C5E62]">
                           replaces ₹{monthlyBill.toLocaleString("en-IN")}/mo bill
@@ -793,7 +846,9 @@ export function SystemConfigurator() {
                     </div>
                   ) : (
                     <div className="rounded-xl bg-white border border-[#E2E8F0] p-4 text-xs text-[#5C5E62]">
-                      Direct 100% turnkey purchase. Estimated payback period: <span className="font-semibold text-[#171A20]">2.8 to 3.2 Years</span> with net-metering credit.
+                      Direct 100% turnkey purchase. Estimated payback period:{" "}
+                      <span className="font-semibold text-[#171A20]">2.8 to 3.2 Years</span> with
+                      net-metering credit.
                     </div>
                   )}
                 </div>
@@ -813,7 +868,8 @@ export function SystemConfigurator() {
                 Reserve Your Architectural System
               </h2>
               <p className="text-xs sm:text-sm text-[#5C5E62]">
-                Lock in your installation slot and receive a personalized 3D solar irradiance model and turnkey feasibility survey. Zero deposit required.
+                Lock in your installation slot and receive a personalized 3D solar irradiance model
+                and turnkey feasibility survey. Zero deposit required.
               </p>
 
               {isReserved ? (
@@ -821,11 +877,11 @@ export function SystemConfigurator() {
                   <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
                     <Check className="h-6 w-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-[#171A20]">
-                    Reservation Slot Confirmed
-                  </h3>
+                  <h3 className="text-lg font-bold text-[#171A20]">Reservation Slot Confirmed</h3>
                   <p className="text-xs text-[#5C5E62] max-w-md mx-auto">
-                    Thank you, {userName}. A senior WAVENOX architectural solar engineer will contact you on {userPhone} within 4 business hours with your 3D digital roof layout and DISCOM feasibility report.
+                    Thank you, {userName}. A senior WAVENOX architectural solar engineer will
+                    contact you on {userPhone} within 4 business hours with your 3D digital roof
+                    layout and DISCOM feasibility report.
                   </p>
                   <div className="pt-3">
                     <button

@@ -37,7 +37,7 @@ export function BillSavingsSlider() {
   const subsidyInr = calculateGovtSubsidyInr(recommendedKw);
 
   return (
-    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -68,7 +68,9 @@ export function BillSavingsSlider() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            See how much you can save each year by switching to WAVENOX architectural solar. Select your local electricity board and average monthly power bill to view instant system sizing, 25-year net wealth generated, and Central Government PM Surya Ghar subsidies.
+            See how much you can save each year by switching to WAVENOX architectural solar. Select
+            your local electricity board and average monthly power bill to view instant system
+            sizing, 25-year net wealth generated, and Central Government PM Surya Ghar subsidies.
           </motion.p>
         </div>
 
@@ -172,7 +174,8 @@ export function BillSavingsSlider() {
                 {recommendedKw} kW
               </div>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                N-Type TOPCon dual-glass architecture generating ~{annualSolarGenKwh.toLocaleString("en-IN")} units/yr.
+                N-Type TOPCon dual-glass architecture generating ~
+                {annualSolarGenKwh.toLocaleString("en-IN")} units/yr.
               </p>
             </div>
 

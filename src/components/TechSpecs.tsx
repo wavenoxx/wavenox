@@ -25,7 +25,7 @@ const ELECTRICAL_SPECS = [
 
 export function TechSpecs() {
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -56,7 +56,9 @@ export function TechSpecs() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            Engineered with uncompromising precision. Every WAVENOX architectural panel undergoes rigorous testing to exceed Indian BIS and international IEC standards for mechanical loading, thermal shock, and long-term durability.
+            Engineered with uncompromising precision. Every WAVENOX architectural panel undergoes
+            rigorous testing to exceed Indian BIS and international IEC standards for mechanical
+            loading, thermal shock, and long-term durability.
           </motion.p>
         </div>
 
@@ -104,7 +106,8 @@ export function TechSpecs() {
           <div className="flex items-center gap-2 text-xs text-[#5C5E62]">
             <ShieldCheck size={18} className="text-[#171A20] shrink-0" />
             <span>
-              Certified under Bureau of Indian Standards (BIS IS 14286) & IEC 61215/61730 for residential installations.
+              Certified under Bureau of Indian Standards (BIS IS 14286) & IEC 61215/61730 for
+              residential installations.
             </span>
           </div>
 

@@ -55,7 +55,7 @@ export function EnergyControl() {
   }[activeMode];
 
   return (
-    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -86,7 +86,10 @@ export function EnergyControl() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            With the WAVENOX App, monitor your energy production and consumption in real time from anywhere in the world. Set your preferences to optimize for energy independence, outage protection or utility tariff savings. View daily generation analytics, battery state of charge, and historical DISCOM net-metering credits with zero lag.
+            With the WAVENOX App, monitor your energy production and consumption in real time from
+            anywhere in the world. Set your preferences to optimize for energy independence, outage
+            protection or utility tariff savings. View daily generation analytics, battery state of
+            charge, and historical DISCOM net-metering credits with zero lag.
           </motion.p>
         </div>
 
@@ -124,12 +127,8 @@ export function EnergyControl() {
               <span className="text-xs font-semibold uppercase tracking-wider text-[#5C5E62]">
                 Active Control Profile
               </span>
-              <h3 className="text-lg font-semibold text-[#171A20]">
-                {modeData.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-[#5C5E62] leading-relaxed">
-                {modeData.desc}
-              </p>
+              <h3 className="text-lg font-semibold text-[#171A20]">{modeData.title}</h3>
+              <p className="text-xs sm:text-sm text-[#5C5E62] leading-relaxed">{modeData.desc}</p>
             </div>
 
             {/* 3 Core App Capabilities */}
@@ -143,7 +142,8 @@ export function EnergyControl() {
                     Real-Time Sub-Second Telemetry
                   </h4>
                   <p className="text-xs text-[#5C5E62] mt-0.5 leading-relaxed">
-                    Sensors sample energy generation and domestic load 10 times per second with instant cloud sync.
+                    Sensors sample energy generation and domestic load 10 times per second with
+                    instant cloud sync.
                   </p>
                 </div>
               </div>
@@ -157,7 +157,8 @@ export function EnergyControl() {
                     Outage & Frequency Sensing
                   </h4>
                   <p className="text-xs text-[#5C5E62] mt-0.5 leading-relaxed">
-                    Detects voltage sags on local DISCOM feeders and pre-emptively isolates your home before blackouts occur.
+                    Detects voltage sags on local DISCOM feeders and pre-emptively isolates your
+                    home before blackouts occur.
                   </p>
                 </div>
               </div>
@@ -171,7 +172,8 @@ export function EnergyControl() {
                     DISCOM Net-Metering Audit
                   </h4>
                   <p className="text-xs text-[#5C5E62] mt-0.5 leading-relaxed">
-                    Tracks exported surplus units and calculates accrued net-metering rupee credits on your monthly billing cycle.
+                    Tracks exported surplus units and calculates accrued net-metering rupee credits
+                    on your monthly billing cycle.
                   </p>
                 </div>
               </div>
