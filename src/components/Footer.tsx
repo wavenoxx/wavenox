@@ -113,6 +113,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/net-metering" className="hover:text-[#171A20] transition-colors">
+                  DISCOM Net-Metering &amp; Sanctions
+                </Link>
+              </li>
+              <li>
                 <Link to="/faq" className="hover:text-[#171A20] transition-colors">
                   Frequently Asked Questions (FAQ)
                 </Link>

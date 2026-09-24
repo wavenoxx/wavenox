@@ -10,6 +10,7 @@ import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow, Button, TextLink } from "@/components/system";
 import { media } from "@/config/media";
 import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
+import { WealthCurveVisualizer } from "./WealthCurveVisualizer";
 
 export interface SystemConfiguratorProps {
   initialBill?: number;
@@ -595,6 +596,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </span>
               </div>
             </div>
+
+            {/* Interactive 25-Year Compounding Wealth Visualizer */}
+            <WealthCurveVisualizer
+              annualBillInr={monthlyBill * 12}
+              annualSavingsInr={calculation.annualSavingsInr}
+              netInvestmentInr={netPayableInr}
+              paybackYears={calculation.paybackYears}
+              tariffPerKwh={discom.residentialTariffInr}
+            />
           </div>
 
           {/* Section 6: Proposal Request Form */}

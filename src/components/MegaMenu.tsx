@@ -60,7 +60,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Why WAVENOX Solar", to: "/residential" },
           { label: "PM Surya Ghar Subsidy Guide (₹78,000)", to: "/legal/disclosures" },
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
-          { label: "DISCOM Net-Metering & Sanctions", to: "/legal/disclosures" },
+          { label: "DISCOM Net-Metering & Sanctions", to: "/net-metering" },
           { label: "Calculate Savings", to: "/deploy" },
           { label: "Technology Atelier & Specifications", to: "/technology" },
         ],

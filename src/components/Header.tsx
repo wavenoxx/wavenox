@@ -310,6 +310,14 @@ export function Header() {
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
                 <Link
+                  to="/net-metering"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>DISCOM Net-Metering</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
+                <Link
                   to="/faq"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"

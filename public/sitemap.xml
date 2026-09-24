@@ -43,6 +43,12 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://wavenox.in/net-metering</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://wavenox.in/faq</loc>
     <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
