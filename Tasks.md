@@ -34,6 +34,7 @@ Branch: `phase-1-foundation` (Merged into `main` via PR #1 `1ef5d0d`)
 Branch: `phase-2-design`
 
 ### Step 0: Carry-overs from Phase 1 Review
+
 - [x] Hero buttons nowrap fix (`whitespace-nowrap min-w-[200px]`) in `Hero.tsx`.
 - [x] Removed "guaranteed 25-year performance" from `enterprise.tsx` metadata.
 - [x] Friendly customer error message on missing server configuration in `src/functions/leads.ts`.
@@ -43,6 +44,7 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 0): carry-overs from phase 1 review` (`e31eb06`).
 
 ### Step 1: Baseline Captures, Design Tokens & Inter Variable Typeface
+
 - [x] Captured 10 baseline full-page screenshots into `qa-artifacts/phase2/before/` across Desktop (1440×900) and Mobile (390×844).
 - [x] Added `qa-artifacts/` to `.gitignore`.
 - [x] Installed `@fontsource-variable/inter` and set up fluid clamp typography in `src/styles.css`.
@@ -51,6 +53,7 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 1): baseline screenshots, inter variable typeface, and design tokens` (`318b5ea`).
 
 ### Step 2: Design-System Components
+
 - [x] Created `src/components/system/Button.tsx`: Poly-component (Link/a/button) with light/dark tones, 40px height, 4px radius.
 - [x] Created `src/components/system/Media.tsx`: Responsive picture element with AVIF/WebP/JPG sources, mobile portrait crops, priority loading, 0 CLS.
 - [x] Created `src/components/system/Panel.tsx`: 100svh showroom panel with top title/lead and bottom stat/button dock.
@@ -64,6 +67,7 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 2): design-system components` (`a929068`).
 
 ### Step 3: Responsive Image Pipeline & Master Shot Manifest
+
 - [x] Installed `sharp` dev dependency.
 - [x] Documented `docs/SHOT_LIST.md` defining all 8 authentic Indian clean-tech shots.
 - [x] Created `scripts/build-images.mjs`: Multi-resolution builder outputting AVIF, WebP, JPG at [640w, 1080w, 1600w, 2400w] plus 4:5 mobile portrait crops into `public/media/`.
@@ -76,12 +80,14 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 3): responsive image pipeline and shot manifest` (`8da00b6`).
 
 ### Step 4: Showroom Header, Menu Sheet & Single-Line Footer
+
 - [x] Rebuilt `src/components/Header.tsx`: 56px height, soft hover pills, right "Consultation" text link, transparent over dark panels, switches to white glass on scroll.
 - [x] Added Radix Dialog full-height right sheet menu with direct links, consultation action, phone and WhatsApp.
 - [x] Rebuilt `src/components/Footer.tsx`: Single centered 12px line (`WAVENOX © {year} · Privacy · Terms · Disclosures · PM Surya Ghar · Contact`).
 - [x] Commit: `phase2(step 4): showroom header, full-height menu sheet, and single-line footer` (`14c1553`).
 
 ### Step 5: Flagship Home Page Rebuild (`/`)
+
 - [x] Assembled 10-item showroom sequence in `src/routes/index.tsx`:
   1. `PANEL home-hero`: "Solar Panels" + stats (₹78,000 subsidy / 25 Years warranty / 24/7 outage protection) + Order / Consultation CTAs.
   2. `PANEL home-design`: "Clean, All-Black Design" + stats + Order / Learn More CTAs.
@@ -97,12 +103,14 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 5): showroom home page rebuild` (`c1fabd8`).
 
 ### Step 6: Subpages Rebuild (`/residential`, `/omnigrid`, `/enterprise`)
+
 - [x] Rebuilt `/residential`: Showroom panel sequence (Hero, Terrace Mount, Whole-Home Backup, Turnkey Team, Consultation).
 - [x] Rebuilt `/omnigrid`: Showroom panel sequence (Hero, Outage Protection, Sunset Power) + Backup Hours Estimator widget.
 - [x] Rebuilt `/enterprise`: Commercial hero, Lower Operating Costs panel, unboxed commercial yield calculator, and DPDP-compliant lead intake form.
 - [x] Commit: `phase2(step 6): showroom subpages for residential, omnigrid, and enterprise` (`d43e5fa`).
 
 ### Step 7: Studio (`/deploy`), Drawer, Legal, Order Alignment
+
 - [x] Rebuilt `SystemConfigurator.tsx`: 58% sticky left media + StatRow, 42% scrolling configurator on right, segmented controls with 1.5px ink border, pre-fill from `?bill` and `?discom`, sticky mobile bottom bar.
 - [x] Rebuilt `ConsultationDrawer.tsx`: Design tokens, 4px radius, clean inputs, zero text < 12px.
 - [x] Rebuilt `src/routes/order/received.tsx`: Minimal confirmation screen with reference code, next steps, WhatsApp link.
@@ -110,6 +118,7 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 7): studio configurator visual cleanup and legal pages styling` (`b973ac9`).
 
 ### Step 8: Automated QA Verification & Comparison Captures
+
 - [x] Created `scripts/qa-metrics.mjs` running in Playwright.
 - [x] Automated measurement results:
   - **Home Page Word Count:** 440 desktop / 434 mobile (Budget: ≤ 450 words) -> **PASS**
@@ -127,6 +136,7 @@ Branch: `phase-2-design`
 - [x] Commit: `phase2(step 8): automated qa metrics script and verification` (`a319cfd`).
 
 ### Step 9: Documentation & Pull Request
+
 - [x] Rewrote `design.md` as the definitive WAVENOX design system manual.
 - [x] Updated `Tasks.md` with complete Phase 2 deliverables and QA metrics table.
 - [x] Pushed branch `phase-2-design` to GitHub and opened Pull Request to `main`.

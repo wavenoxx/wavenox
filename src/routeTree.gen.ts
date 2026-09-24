@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
+import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as ResidentialRouteImport } from './routes/residential'
+import { Route as ServiceAreasRouteImport } from './routes/service-areas'
+import { Route as TechnologyRouteImport } from './routes/technology'
+import { Route as WarrantyRouteImport } from './routes/warranty'
 import { Route as LegalDisclosuresRouteImport } from './routes/legal/disclosures'
 import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal/terms'
@@ -34,14 +39,39 @@ const EnterpriseRoute = EnterpriseRouteImport.update({
   path: '/enterprise',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OmnigridRoute = OmnigridRouteImport.update({
   id: '/omnigrid',
   path: '/omnigrid',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResidentialRoute = ResidentialRouteImport.update({
   id: '/residential',
   path: '/residential',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceAreasRoute = ServiceAreasRouteImport.update({
+  id: '/service-areas',
+  path: '/service-areas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TechnologyRoute = TechnologyRouteImport.update({
+  id: '/technology',
+  path: '/technology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WarrantyRoute = WarrantyRouteImport.update({
+  id: '/warranty',
+  path: '/warranty',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalDisclosuresRoute = LegalDisclosuresRouteImport.update({
@@ -69,8 +99,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
+  '/service-areas': typeof ServiceAreasRoute
+  '/technology': typeof TechnologyRoute
+  '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -80,8 +115,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
+  '/service-areas': typeof ServiceAreasRoute
+  '/technology': typeof TechnologyRoute
+  '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -92,8 +132,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
+  '/service-areas': typeof ServiceAreasRoute
+  '/technology': typeof TechnologyRoute
+  '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -105,8 +150,13 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
+    | '/service-areas'
+    | '/technology'
+    | '/warranty'
     | '/legal/disclosures'
     | '/legal/privacy'
     | '/legal/terms'
@@ -116,8 +166,13 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
+    | '/service-areas'
+    | '/technology'
+    | '/warranty'
     | '/legal/disclosures'
     | '/legal/privacy'
     | '/legal/terms'
@@ -127,8 +182,13 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
+    | '/service-areas'
+    | '/technology'
+    | '/warranty'
     | '/legal/disclosures'
     | '/legal/privacy'
     | '/legal/terms'
@@ -139,8 +199,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DeployRoute: typeof DeployRoute
   EnterpriseRoute: typeof EnterpriseRoute
+  FaqRoute: typeof FaqRoute
   OmnigridRoute: typeof OmnigridRoute
+  OurStoryRoute: typeof OurStoryRoute
   ResidentialRoute: typeof ResidentialRoute
+  ServiceAreasRoute: typeof ServiceAreasRoute
+  TechnologyRoute: typeof TechnologyRoute
+  WarrantyRoute: typeof WarrantyRoute
   LegalDisclosuresRoute: typeof LegalDisclosuresRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -170,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnterpriseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/omnigrid': {
       id: '/omnigrid'
       path: '/omnigrid'
@@ -177,11 +249,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmnigridRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/residential': {
       id: '/residential'
       path: '/residential'
       fullPath: '/residential'
       preLoaderRoute: typeof ResidentialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-areas': {
+      id: '/service-areas'
+      path: '/service-areas'
+      fullPath: '/service-areas'
+      preLoaderRoute: typeof ServiceAreasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/technology': {
+      id: '/technology'
+      path: '/technology'
+      fullPath: '/technology'
+      preLoaderRoute: typeof TechnologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/warranty': {
+      id: '/warranty'
+      path: '/warranty'
+      fullPath: '/warranty'
+      preLoaderRoute: typeof WarrantyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal/disclosures': {
@@ -219,8 +319,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeployRoute: DeployRoute,
   EnterpriseRoute: EnterpriseRoute,
+  FaqRoute: FaqRoute,
   OmnigridRoute: OmnigridRoute,
+  OurStoryRoute: OurStoryRoute,
   ResidentialRoute: ResidentialRoute,
+  ServiceAreasRoute: ServiceAreasRoute,
+  TechnologyRoute: TechnologyRoute,
+  WarrantyRoute: WarrantyRoute,
   LegalDisclosuresRoute: LegalDisclosuresRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,

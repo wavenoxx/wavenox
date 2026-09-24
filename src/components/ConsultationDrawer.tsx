@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft, Building2, Home, Factory } from "lucide-react";
+import { ChevronRight, ChevronLeft, Building2, Home, Factory, ShieldCheck, AlertCircle } from "lucide-react";
 import { estimate } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
@@ -119,6 +119,12 @@ export function ConsultationDrawer() {
     e.preventDefault();
     if (!consentGiven) {
       setSubmitError("Please confirm your consent to be contacted.");
+      return;
+    }
+
+    const cleanPin = pinCode.trim();
+    if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
+      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
       return;
     }
 
@@ -334,63 +340,75 @@ export function ConsultationDrawer() {
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
                   Full Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Your Name"
+                  placeholder="First and last name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
                   Mobile Phone / WhatsApp (+91) *
                 </label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="+91 98765 43210"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
-                />
+                <div className="relative flex items-center">
+                  <span className="absolute left-3.5 text-[13px] font-medium text-[#5C5E62] select-none pointer-events-none border-r border-[#E5E7EB] pr-2.5">
+                    +91
+                  </span>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="10-digit mobile number"
+                    maxLength={14}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full h-11 pl-16 pr-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
-                    City *
+                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                    City / Locality *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Hyderabad"
+                    placeholder="e.g. Hyderabad, Bengaluru"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
-                    PIN Code
+                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                    6-Digit PIN Code *
                   </label>
                   <input
                     type="text"
-                    placeholder="500033"
+                    required
                     maxLength={6}
+                    pattern="[1-9][0-9]{5}"
+                    inputMode="numeric"
+                    placeholder="e.g. 500033"
                     value={pinCode}
-                    onChange={(e) => setPinCode(e.target.value)}
-                    className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    onChange={(e) => setPinCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
                   />
                 </div>
               </div>
+              <p className="text-[11px] text-[#5C5E62]/80">
+                PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar clearance.
+              </p>
 
               {/* Bot suppression */}
               <input
@@ -405,27 +423,28 @@ export function ConsultationDrawer() {
               />
 
               {/* DPDP Consent */}
-              <div className="flex items-start gap-2.5 pt-1">
+              <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="drawer-consent"
                   required
                   checked={consentGiven}
                   onChange={(e) => setConsentGiven(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
+                  className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="drawer-consent"
-                  className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
-                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers
-                  under our DPDP Act 2023 privacy policy.
+                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX engineers
+                  in accordance with the <strong>DPDP Act 2023</strong>. Zero spam guarantee.
                 </label>
               </div>
 
               {submitError && (
-                <div className="p-3 rounded-[4px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px]">
-                  {submitError}
+                <div className="p-3.5 rounded-[6px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{submitError}</span>
                 </div>
               )}
             </div>
@@ -435,7 +454,7 @@ export function ConsultationDrawer() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={isSubmitting}
-                className="h-10 px-4 rounded-[4px] text-[13px] font-medium text-[#5C5E62] hover:bg-[#F4F4F4] transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                className="h-11 px-4 rounded-[4px] text-[13px] font-medium text-[#5C5E62] hover:bg-[#F4F4F4] transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -443,9 +462,10 @@ export function ConsultationDrawer() {
               <button
                 type="submit"
                 disabled={isSubmitting || !consentGiven}
-                className="h-10 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+                className="h-11 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Schedule Consultation"}
+                <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
+                <span>{isSubmitting ? "Submitting..." : "Schedule Engineering Consultation"}</span>
               </button>
             </div>
           </form>

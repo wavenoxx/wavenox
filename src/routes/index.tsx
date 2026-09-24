@@ -36,6 +36,100 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: BRAND_CONFIG.name,
+          url: "https://wavenox.in",
+          logo: "https://wavenox.in/favicon.ico",
+          description:
+            "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: BRAND_CONFIG.contact.phone.dial,
+            contactType: "customer service",
+            areaServed: "IN",
+            availableLanguage: ["English", "Telugu", "Hindi"],
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "How does the PM Surya Ghar subsidy work?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Eligible homes receive up to ₹78,000 direct benefit transfer from the central government for systems 3 kW or larger. WAVENOX files all national portal documentation and coordinates the DISCOM net-metering inspection end-to-end.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Will my solar panels work during a power outage?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Standard grid-tied systems shut off during blackouts for utility safety. When paired with Omnigrid battery storage, your home switches to stored solar in under 20 milliseconds, keeping lights, appliances, and air conditioning running without interruption.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Can Omnigrid battery run 1.5-ton air conditioners during blackouts?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Omnigrid delivers 6.0 kW continuous output with 10.0 kW peak surge capability, effortlessly starting and powering 1.5-ton and 2.0-ton 5-star inverter air conditioners, water borewell pumps, and refrigeration.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Can I still use my terrace after installing solar?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Our elevated pergola structures maintain 7 to 9 feet of clear headroom, transforming your terrace into a shaded outdoor living space while bifacial panels produce clean power overhead.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Will installing solar on my terrace cause roof leakage or slab damage?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Never. WAVENOX enforces a strict Zero Slab Damage protocol utilizing non-penetrating ballasted blocks or chemical-anchor pedestals sealed with marine-grade elastomeric waterproofing membranes, covered by a 5-year guarantee.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "How does commercial Section 32 40% accelerated depreciation work?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under Section 32 of the Income Tax Act, commercial and industrial enterprises can claim 40% accelerated depreciation in Year 1 on rooftop solar capital assets, delivering immediate corporate tax savings.",
+              },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: IndexPage,
 });
@@ -54,16 +148,28 @@ const FAQ_ITEMS: FaqItem[] = [
       "Standard grid-tied systems shut off during blackouts for utility safety. When paired with Omnigrid battery storage, your home switches to stored solar in under 20 milliseconds, keeping lights, appliances, and air conditioning running without interruption.",
   },
   {
-    id: "timeline",
-    question: "How long does installation and net metering take?",
+    id: "ac-run",
+    question: "Can Omnigrid battery run 1.5-ton air conditioners during blackouts?",
     answer:
-      "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 3 to 4 weeks depending on your state distribution utility.",
+      "Yes. Omnigrid delivers 6.0 kW continuous output with 10.0 kW peak surge capability, effortlessly starting and powering 1.5-ton and 2.0-ton 5-star inverter air conditioners, water pumps, and luxury appliances.",
   },
   {
     id: "terrace",
     question: "Can I still use my terrace after installing solar?",
     answer:
       "Yes. Our elevated pergola structures maintain 7 to 9 feet of clear headroom, transforming your terrace into a shaded outdoor living space while bifacial panels produce clean power overhead.",
+  },
+  {
+    id: "waterproofing",
+    question: "Will installing solar on my terrace cause roof leakage or slab damage?",
+    answer:
+      "Never. WAVENOX enforces a strict Zero Slab Damage protocol utilizing non-penetrating ballasted blocks or chemical-anchor pedestals sealed with marine-grade elastomeric waterproofing membranes, covered by a 5-year guarantee.",
+  },
+  {
+    id: "timeline",
+    question: "How long does installation and net metering take?",
+    answer:
+      "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 3 to 4 weeks depending on your state distribution utility.",
   },
 ];
 
@@ -448,7 +554,10 @@ function IndexPage() {
       >
         <div className="max-w-2xl mx-auto space-y-8">
           <Faq items={FAQ_ITEMS} defaultValue="subsidy" />
-          <div className="text-center pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-2">
+            <TextLink to="/faq" arrow>
+              Browse complete Knowledge Base (26 Topics)
+            </TextLink>
             <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
               Talk to a WAVENOX solar advisor
             </TextLink>

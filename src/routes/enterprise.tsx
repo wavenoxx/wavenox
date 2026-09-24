@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ShieldCheck, AlertCircle, MessageSquare } from "lucide-react";
 import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -26,6 +27,22 @@ export const Route = createFileRoute("/enterprise")({
       { property: "og:image", content: "/media/commercial-hero-1600w.jpg" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/commercial-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/commercial-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
     ],
   }),
   component: EnterprisePage,
@@ -170,10 +187,10 @@ function EnterprisePage() {
         disclaimer="*Accelerated depreciation under Section 32 of Income Tax Act. Consult your financial advisor."
       />
 
-      {/* 2. PANEL: home-heat */}
+      {/* 2. PANEL: commercial-industrial */}
       <Panel
         id="operating-costs"
-        media={media["home-heat"]}
+        media={media["commercial-industrial"]}
         tone="dark"
         title="Lower Operating Costs"
         lead="Produce your own clean power during high peak daytime commercial tariff hours."
@@ -300,13 +317,14 @@ function EnterprisePage() {
         <div className="max-w-xl mx-auto">
           <form onSubmit={handleSubmitRfp} className="space-y-5">
             {submitError && (
-              <div className="p-4 bg-[#B42318]/10 border border-[#B42318]/30 rounded-[4px] text-[#B42318] text-[13px]">
-                {submitError}
+              <div className="p-3.5 bg-[#B42318]/10 border border-[#B42318]/30 rounded-[6px] text-[#B42318] text-[13px] flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{submitError}</span>
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label htmlFor="rfp-name" className="text-[13px] font-medium text-[#5C5E62]">
+            <div>
+              <label htmlFor="rfp-name" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
                 Full Name *
               </label>
               <input
@@ -315,29 +333,35 @@ function EnterprisePage() {
                 required
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                placeholder="Ramesh Varma"
-                className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                placeholder="First and last name"
+                className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="rfp-phone" className="text-[13px] font-medium text-[#5C5E62]">
-                Mobile Phone (+91) *
+            <div>
+              <label htmlFor="rfp-phone" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                Mobile Phone / WhatsApp (+91) *
               </label>
-              <input
-                id="rfp-phone"
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
-              />
+              <div className="relative flex items-center">
+                <span className="absolute left-3.5 text-[13px] font-medium text-[#5C5E62] select-none pointer-events-none border-r border-[#E5E7EB] pr-2.5">
+                  +91
+                </span>
+                <input
+                  id="rfp-phone"
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="10-digit mobile number"
+                  maxLength={14}
+                  className="w-full h-11 pl-16 pr-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
+                />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label htmlFor="rfp-company" className="text-[13px] font-medium text-[#5C5E62]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label htmlFor="rfp-company" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
                   Company / Facility Name
                 </label>
                 <input
@@ -345,13 +369,13 @@ function EnterprisePage() {
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="Apex Manufacturing Ltd"
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  placeholder="e.g. Commercial facility or business name"
+                  className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label htmlFor="rfp-website" className="text-[13px] font-medium text-[#5C5E62]">
+              <div>
+                <label htmlFor="rfp-website" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
                   Company Website (Optional)
                 </label>
                 <input
@@ -359,43 +383,50 @@ function EnterprisePage() {
                   type="text"
                   value={companyWebsite}
                   onChange={(e) => setCompanyWebsite(e.target.value)}
-                  placeholder="apexmanufacturing.in"
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  placeholder="e.g. company.in"
+                  className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                 />
               </div>
             </div>
 
             {/* DPDP Act 2023 Consent */}
-            <div className="pt-2 flex items-start gap-3">
+            <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
               <input
                 id="rfp-consent"
                 type="checkbox"
                 required
                 checked={consentGiven}
                 onChange={(e) => setConsentGiven(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
+                className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
               />
               <label
                 htmlFor="rfp-consent"
-                className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+                className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
               >
-                I authorize WAVENOX engineers to contact me via phone, WhatsApp, and email regarding
-                commercial rooftop solar feasibility under our DPDP Act 2023 privacy policy.
+                I authorize WAVENOX commercial solar engineers to evaluate facility interconnection and
+                contact me in accordance with the <strong>DPDP Act 2023</strong>. Zero spam guarantee.
               </label>
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting || !consentGiven}
-              className="w-full h-10 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Submitting Request..." : "Request Commercial Proposal"}
+              <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
+              <span>{isSubmitting ? "Generating Assessment..." : "Request Commercial Proposal"}</span>
             </button>
 
-            <div className="text-center pt-2">
-              <TextLink href={BRAND_CONFIG.contact.whatsapp.link} arrow>
-                Or chat with commercial advisor on WhatsApp
-              </TextLink>
+            <div className="pt-2 text-center">
+              <a
+                href={BRAND_CONFIG.contact.whatsapp.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[13px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
+              >
+                <MessageSquare className="w-4 h-4 text-[#F57C00]" />
+                <span>Prefer direct commercial advisor discussion? Chat on WhatsApp →</span>
+              </a>
             </div>
           </form>
         </div>

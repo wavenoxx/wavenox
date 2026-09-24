@@ -36,6 +36,22 @@ export const Route = createFileRoute("/omnigrid")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/omnigrid-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/omnigrid-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
+    ],
   }),
   component: OmnigridPage,
 });
@@ -145,10 +161,10 @@ function OmnigridPage() {
         }
       />
 
-      {/* 2. PANEL: home-outage */}
+      {/* 2. PANEL: omnigrid-switchover */}
       <Panel
         id="outage-defense"
-        media={media["home-outage"]}
+        media={media["omnigrid-switchover"]}
         tone="dark"
         title="Outage Protection"
         lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
@@ -182,10 +198,10 @@ function OmnigridPage() {
         }
       />
 
-      {/* 3. PANEL: home-final */}
+      {/* 3. PANEL: omnigrid-night */}
       <Panel
         id="sunset-power"
-        media={media["home-final"]}
+        media={media["omnigrid-night"]}
         tone="dark"
         title="Use Solar After Sunset"
         lead="Store daytime excess generation to power nighttime air conditioning and appliances."
