@@ -109,7 +109,7 @@ function FaqPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search subsidies, net metering, battery runtime..."
-                className="w-full h-12 pl-12 pr-10 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4]/70 text-[15px] text-[#171A20] placeholder:text-[#5C5E62] focus:bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#171A20] transition-all"
+                className="w-full h-12 pl-12 pr-10 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4]/70 text-[15px] text-[#171A20] placeholder:text-[#9CA3AF] focus:bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#171A20] transition-all"
                 aria-label="Search questions and answers"
               />
               {searchQuery && (

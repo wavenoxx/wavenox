@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, ShieldCheck, AlertCircle, MessageSquare, CheckCircle2 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
@@ -68,7 +68,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const navigate = useNavigate();
 
   // State
-  const [address, setAddress] = React.useState("Jubilee Hills, Hyderabad 500033");
+  const [address, setAddress] = React.useState("");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(
     initialDiscom || DISCOMS[0].code,
   );
@@ -136,6 +136,12 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     e.preventDefault();
     if (!consentGiven) {
       setSubmitError("Please confirm your consent to receive your proposal.");
+      return;
+    }
+
+    const cleanPin = pinCode.trim();
+    if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
+      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
       return;
     }
 
@@ -522,26 +528,35 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           </div>
 
           {/* Section 6: Proposal Request Form */}
-          <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
+          <div className="space-y-5 pt-8 border-t border-[#E3E4E6]">
             <div>
-              <h2 className="text-[18px] font-medium text-[#171A20]">6. Request Formal Proposal</h2>
-              <p className="text-[12px] text-[#5C5E62] mt-0.5">
-                Our solar engineering team will review satellite roof geometry and generate your 3D
-                proposal dossier.
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
+                  Bespoke Dossier
+                </span>
+                <span className="text-[11px] text-[#5C5E62]">· 24-Hour Engineering Review</span>
+              </div>
+              <h2 className="text-[20px] font-medium tracking-tight text-[#171A20]">
+                6. Request Architectural Feasibility Dossier
+              </h2>
+              <p className="text-[13px] text-[#5C5E62] mt-1 leading-relaxed">
+                Our solar structural engineers review rooftop satellite irradiance, shadow profile,
+                and DISCOM feeder capacity to generate your custom 3D proposal dossier.
               </p>
             </div>
 
             <form onSubmit={handleReserve} className="space-y-4">
               {submitError && (
-                <div className="p-3 rounded-[4px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px]">
-                  {submitError}
+                <div className="p-3.5 rounded-[6px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[13px] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{submitError}</span>
                 </div>
               )}
 
               <div>
                 <label
                   htmlFor="user-name"
-                  className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Full Name *
                 </label>
@@ -551,36 +566,42 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   required
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Ramesh Varma"
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  placeholder="First and last name"
+                  className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="user-phone"
-                  className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
-                <input
-                  id="user-phone"
-                  type="tel"
-                  required
-                  value={userPhone}
-                  onChange={(e) => setUserPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
-                />
+                <div className="relative flex items-center">
+                  <span className="absolute left-3.5 text-[13px] font-medium text-[#5C5E62] select-none pointer-events-none border-r border-[#E5E7EB] pr-2.5">
+                    +91
+                  </span>
+                  <input
+                    id="user-phone"
+                    type="tel"
+                    required
+                    value={userPhone}
+                    onChange={(e) => setUserPhone(e.target.value)}
+                    placeholder="10-digit mobile number"
+                    maxLength={14}
+                    className="w-full h-11 pl-16 pr-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label
                     htmlFor="user-address"
-                    className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
-                    City / Neighborhood *
+                    City / Locality *
                   </label>
                   <input
                     id="user-address"
@@ -588,28 +609,34 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                     required
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Jubilee Hills, Hyderabad"
-                    className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    placeholder="e.g. Hyderabad, Bengaluru"
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="user-pin"
-                    className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
-                    PIN Code (Optional)
+                    6-Digit PIN Code *
                   </label>
                   <input
                     id="user-pin"
                     type="text"
+                    required
                     maxLength={6}
+                    pattern="[1-9][0-9]{5}"
+                    inputMode="numeric"
                     value={pinCode}
-                    onChange={(e) => setPinCode(e.target.value)}
-                    placeholder="500033"
-                    className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    onChange={(e) => setPinCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="e.g. 500033"
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
                   />
                 </div>
               </div>
+              <p className="text-[11px] text-[#5C5E62]/80">
+                PIN code is required to verify local DISCOM substation transformer capacity and PM Surya Ghar feeder clearance.
+              </p>
 
               {/* Bot honeypot */}
               <input
@@ -624,36 +651,46 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               />
 
               {/* DPDP Consent */}
-              <div className="flex items-start gap-2.5 pt-1">
+              <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="studio-consent"
                   required
                   checked={consentGiven}
                   onChange={(e) => setConsentGiven(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
+                  className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
                 />
                 <label
                   htmlFor="studio-consent"
-                  className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
-                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers
-                  under our DPDP Act 2023 privacy policy.
+                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX solar
+                  structural engineers in accordance with the <strong>Digital Personal Data
+                  Protection (DPDP) Act 2023</strong>. Zero spam guarantee.
                 </label>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting || !consentGiven}
-                className="w-full h-10 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors flex items-center justify-center cursor-pointer disabled:opacity-40"
+                className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting Request..." : "Request Sizing Proposal"}
+                <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
+                <span>
+                  {isSubmitting ? "Generating Dossier..." : "Request Engineering Proposal Dossier"}
+                </span>
               </button>
 
-              <div className="text-center pt-2">
-                <TextLink href={BRAND_CONFIG.contact.whatsapp.link} arrow>
-                  Or discuss configuration directly on WhatsApp
-                </TextLink>
+              <div className="pt-2 text-center">
+                <a
+                  href={BRAND_CONFIG.contact.whatsapp.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[13px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#F57C00]" />
+                  <span>Prefer direct advisor assistance? Chat on WhatsApp →</span>
+                </a>
               </div>
             </form>
           </div>
