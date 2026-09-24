@@ -14,6 +14,9 @@ import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as ResidentialRouteImport } from './routes/residential'
+import { Route as LegalDisclosuresRouteImport } from './routes/legal/disclosures'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LegalTermsRouteImport } from './routes/legal/terms'
 import { Route as OrderReceivedRouteImport } from './routes/order/received'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +44,21 @@ const ResidentialRoute = ResidentialRouteImport.update({
   path: '/residential',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalDisclosuresRoute = LegalDisclosuresRouteImport.update({
+  id: '/legal/disclosures',
+  path: '/legal/disclosures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrderReceivedRoute = OrderReceivedRouteImport.update({
   id: '/order/received',
   path: '/order/received',
@@ -53,6 +71,9 @@ export interface FileRoutesByFullPath {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/legal/disclosures': typeof LegalDisclosuresRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +82,9 @@ export interface FileRoutesByTo {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/legal/disclosures': typeof LegalDisclosuresRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRoutesById {
@@ -70,6 +94,9 @@ export interface FileRoutesById {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/legal/disclosures': typeof LegalDisclosuresRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +107,9 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/omnigrid'
     | '/residential'
+    | '/legal/disclosures'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/order/received'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +118,9 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/omnigrid'
     | '/residential'
+    | '/legal/disclosures'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/order/received'
   id:
     | '__root__'
@@ -96,6 +129,9 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/omnigrid'
     | '/residential'
+    | '/legal/disclosures'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/order/received'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +141,9 @@ export interface RootRouteChildren {
   EnterpriseRoute: typeof EnterpriseRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
+  LegalDisclosuresRoute: typeof LegalDisclosuresRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
   OrderReceivedRoute: typeof OrderReceivedRoute
 }
 
@@ -145,6 +184,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResidentialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legal/disclosures': {
+      id: '/legal/disclosures'
+      path: '/legal/disclosures'
+      fullPath: '/legal/disclosures'
+      preLoaderRoute: typeof LegalDisclosuresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/order/received': {
       id: '/order/received'
       path: '/order/received'
@@ -161,6 +221,9 @@ const rootRouteChildren: RootRouteChildren = {
   EnterpriseRoute: EnterpriseRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
+  LegalDisclosuresRoute: LegalDisclosuresRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
   OrderReceivedRoute: OrderReceivedRoute,
 }
 export const routeTree = rootRouteImport

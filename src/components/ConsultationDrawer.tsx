@@ -1,14 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import {
-  ChevronRight,
-  ChevronLeft,
-  Building2,
-  Home,
-  Factory,
-  ShieldCheck,
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, Building2, Home, Factory, ShieldCheck } from "lucide-react";
 import { estimate } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
@@ -343,7 +336,9 @@ export function ConsultationDrawer() {
 
               <div className="p-3.5 rounded-xl bg-[#F8F8FA] border border-[#E2E8F0] flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-medium text-[#5C5E62]">Estimated Year-1 Savings</span>
+                  <span className="text-[11px] font-medium text-[#5C5E62]">
+                    Estimated Year-1 Savings
+                  </span>
                   <div className="text-base font-bold text-[#171A20] tabular-nums">
                     ₹{estimatedAnnualSavings.toLocaleString("en-IN")} / year
                   </div>
@@ -397,7 +392,8 @@ export function ConsultationDrawer() {
                   3. Contact & Proposal Dispatch
                 </h3>
                 <p className="text-xs text-[#5C5E62] mt-0.5">
-                  An engineering advisor will review satellite roof geometry and generate your 3D dossier.
+                  An engineering advisor will review satellite roof geometry and generate your 3D
+                  dossier.
                 </p>
               </div>
 
