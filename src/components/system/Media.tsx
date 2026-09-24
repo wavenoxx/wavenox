@@ -85,8 +85,8 @@ export function Media({
       {descriptor.mobileSrc && <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />}
 
       {/* Desktop / Default sources */}
-      {descriptor.avif && <source srcSet={descriptor.avif} type="image/avif" />}
-      {descriptor.webp && <source srcSet={descriptor.webp} type="image/webp" />}
+      {descriptor.avif && <source srcSet={descriptor.avif} sizes="100vw" type="image/avif" />}
+      {descriptor.webp && <source srcSet={descriptor.webp} sizes="100vw" type="image/webp" />}
 
       {/* Fallback img */}
       <img

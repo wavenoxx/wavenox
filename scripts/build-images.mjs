@@ -11,25 +11,25 @@ const manifestPath = path.resolve(rootDir, "src/config/media.ts");
 const shots = [
   {
     slug: "home-hero",
-    source: path.resolve(rootDir, "src/assets/luxury_solar_villa.jpg"),
+    source: path.resolve(rootDir, "src/assets/home-hero-master.jpg"),
     alt: "Contemporary residential villa with low-profile monocrystalline solar panels on flat terrace roof",
     isHero: true,
   },
   {
     slug: "home-design",
-    source: path.resolve(rootDir, "src/assets/res-tile.jpg"),
+    source: path.resolve(rootDir, "src/assets/home-design-master.jpg"),
     alt: "Concealed mounting structure and seamless black solar panels integrated into rooftop terrace",
     isHero: false,
   },
   {
     slug: "home-outage",
-    source: path.resolve(rootDir, "src/assets/def-tile.jpg"),
+    source: path.resolve(rootDir, "src/assets/home-outage-master.jpg"),
     alt: "Warmly illuminated residential home powered by Omnigrid battery storage during an evening grid disruption",
     isHero: false,
   },
   {
     slug: "home-heat",
-    source: path.resolve(rootDir, "src/assets/eco-01-grid.jpg"),
+    source: path.resolve(rootDir, "src/assets/og-hero-01.jpg"),
     alt: "High-efficiency N-type TOPCon bifacial solar cells capturing midday sunlight in extreme temperatures",
     isHero: false,
   },
@@ -59,7 +59,7 @@ const shots = [
   },
 ];
 
-const breakpoints = [640, 1080, 1600, 2400];
+const breakpoints = [640, 1080, 1600, 1920];
 
 async function main() {
   await fs.mkdir(outDir, { recursive: true });
@@ -70,8 +70,8 @@ async function main() {
     console.log(`Processing shot: ${shot.slug}...`);
     const imgBuffer = await fs.readFile(shot.source);
     const metadata = await sharp(imgBuffer).metadata();
-    const origWidth = metadata.width || 2400;
-    const origHeight = metadata.height || 1350;
+    const origWidth = metadata.width || 1920;
+    const origHeight = metadata.height || 1080;
     const aspectRatio = origWidth / origHeight;
 
     const desktopAvifList = [];
@@ -79,7 +79,6 @@ async function main() {
     const desktopJpgList = [];
 
     for (const w of breakpoints) {
-      if (w > origWidth && w !== 640) continue;
       const h = Math.round(w / aspectRatio);
 
       // AVIF
@@ -140,7 +139,7 @@ async function main() {
       .jpeg({ quality: 82, mozjpeg: true })
       .toFile(path.join(outDir, mobileJpgFile));
 
-    // Master default jpg (1600w or orig)
+    // Master default jpg guaranteed to exist on disk
     const defaultJpg = `/media/${shot.slug}-1600w.jpg`;
 
     manifestEntries.push({

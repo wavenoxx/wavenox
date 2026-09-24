@@ -38,16 +38,16 @@ export function Panel({
   objectPosition = "center",
 }: PanelProps) {
   const isDark = tone === "dark";
-  const textColor = isDark ? "text-[#FFFFFF]" : "text-[#171A20]";
+  const toneClasses = isDark ? "bg-[#171A20] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#171A20]";
 
   return (
     <section
       id={id}
       data-theme={tone}
-      className={`relative w-full h-[100svh] min-h-[600px] flex flex-col justify-between overflow-hidden select-none ${textColor} ${className}`}
+      className={`relative w-full h-[100svh] min-h-[600px] flex flex-col justify-between overflow-hidden select-none ${toneClasses} ${className}`}
     >
       {/* Background Media */}
-      <div className="absolute inset-0 -z-10 w-full h-full pointer-events-none">
+      <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
         {(media || mediaSrc) && (
           <Media
             media={media}
@@ -70,7 +70,7 @@ export function Panel({
       </div>
 
       {/* Top Section: Title & Lead */}
-      <div className="pt-24 sm:pt-28 md:pt-32 px-6 text-center z-10">
+      <div className="relative pt-24 sm:pt-28 md:pt-32 px-6 text-center z-10">
         <Reveal>
           {title && (
             <h2 className="text-[34px] sm:text-[40px] md:text-[48px] font-medium tracking-tight leading-[1.1] text-inherit">
@@ -88,11 +88,11 @@ export function Panel({
 
       {/* Middle Custom Content if any */}
       {children && (
-        <div className="flex-1 flex items-center justify-center px-6 z-10">{children}</div>
+        <div className="relative flex-1 flex items-center justify-center px-6 z-10">{children}</div>
       )}
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
-      <div className="pb-10 sm:pb-12 md:pb-14 px-6 flex flex-col items-center gap-5 sm:gap-6 z-10 w-full max-w-4xl mx-auto text-center">
+      <div className="relative pb-10 sm:pb-12 md:pb-14 px-6 flex flex-col items-center gap-5 sm:gap-6 z-10 w-full max-w-4xl mx-auto text-center">
         {stats && <Reveal delay={0.1}>{stats}</Reveal>}
 
         {actions && (

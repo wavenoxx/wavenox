@@ -23,16 +23,16 @@ Defined in `src/styles.css` with Tailwind v4 `@theme` integration:
 
 ### 2.1 Colors
 
-| Token | Hex Value | Purpose |
-| :--- | :--- | :--- |
-| `--ink` | `#171A20` | Primary display headlines, dark buttons, deep contrast |
-| `--ink-2` | `#393C41` | Secondary headings, borders on dark panels |
-| `--muted` | `#5C5E62` | Descriptive leads, metadata, stat labels, disclaimers |
-| `--line` | `#E3E4E6` | Subtle dividers, segmented control borders |
-| `--surface` | `#F4F4F4` | Quiet section backgrounds, neutral interactive pads |
-| `--white` | `#FFFFFF` | Canvas backdrop, primary card containers, light buttons |
-| `--accent` | `#F57C00` | Energy flow marks, battery telemetry, real-time pulses |
-| `--danger` | `#B42318` | Validation errors and statutory warnings |
+| Token       | Hex Value | Purpose                                                 |
+| :---------- | :-------- | :------------------------------------------------------ |
+| `--ink`     | `#171A20` | Primary display headlines, dark buttons, deep contrast  |
+| `--ink-2`   | `#393C41` | Secondary headings, borders on dark panels              |
+| `--muted`   | `#5C5E62` | Descriptive leads, metadata, stat labels, disclaimers   |
+| `--line`    | `#E3E4E6` | Subtle dividers, segmented control borders              |
+| `--surface` | `#F4F4F4` | Quiet section backgrounds, neutral interactive pads     |
+| `--white`   | `#FFFFFF` | Canvas backdrop, primary card containers, light buttons |
+| `--accent`  | `#F57C00` | Energy flow marks, battery telemetry, real-time pulses  |
+| `--danger`  | `#B42318` | Validation errors and statutory warnings                |
 
 ### 2.2 Fluid Clamp Typography Scale
 
@@ -57,17 +57,17 @@ Scale interpolates smoothly between 390px mobile viewports and 1440px desktop di
 
 ## 3. System Components Directory (`src/components/system/`)
 
-| Component | File | Description |
-| :--- | :--- | :--- |
-| `<Button>` | `Button.tsx` | Showroom poly-component rendering TanStack `<Link>`, `<a>`, or `<button>`. Supports `primary` \| `secondary` variants across `light` and `dark` image tones with 2px offset focus rings. |
-| `<Media>` | `Media.tsx` | Responsive `<picture>` rendering AVIF, WebP, and JPG source sets across breakpoints [640w, 1080w, 1600w, 2400w] with 4:5 mobile portrait crops and explicit dimensions for 0 CLS. |
-| `<Panel>` | `Panel.tsx` | Full-bleed 100svh showroom panel with top title/lead, background photography, subtle directional scrims, and bottom docked `<StatRow>` + buttons. |
-| `<QuietSection>` | `QuietSection.tsx` | Generously padded section (`py-20 md:py-32`) with `--white` or `--surface` backdrop for calculators, steps, and interactive widgets. |
-| `<StatRow>` | `StatRow.tsx` | Unboxed horizontal sequence of 1 to 3 clean numbers with value positioned directly above label. |
-| `<Reveal>` | `Reveal.tsx` | Subtle viewport entrance animation (+12px rise and fade) that respects `prefers-reduced-motion`. |
-| `<TextLink>` | `TextLink.tsx` | Minimal text link with 4px underline offset and optional trailing arrow (`→`). |
-| `<SpecsDrawer>` | `SpecsDrawer.tsx` | Full-height Radix Dialog right sheet displaying verified hardware datasheets and engineering specs. |
-| `<Faq>` | `Faq.tsx` | Hairline Radix Accordion with 16px weight 500 questions and concise answers (≤ 60 words). |
+| Component        | File               | Description                                                                                                                                                                              |
+| :--------------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<Button>`       | `Button.tsx`       | Showroom poly-component rendering TanStack `<Link>`, `<a>`, or `<button>`. Supports `primary` \| `secondary` variants across `light` and `dark` image tones with 2px offset focus rings. |
+| `<Media>`        | `Media.tsx`        | Responsive `<picture>` rendering AVIF, WebP, and JPG source sets across breakpoints [640w, 1080w, 1600w, 2400w] with 4:5 mobile portrait crops and explicit dimensions for 0 CLS.        |
+| `<Panel>`        | `Panel.tsx`        | Full-bleed 100svh showroom panel with top title/lead, background photography, subtle directional scrims, and bottom docked `<StatRow>` + buttons.                                        |
+| `<QuietSection>` | `QuietSection.tsx` | Generously padded section (`py-20 md:py-32`) with `--white` or `--surface` backdrop for calculators, steps, and interactive widgets.                                                     |
+| `<StatRow>`      | `StatRow.tsx`      | Unboxed horizontal sequence of 1 to 3 clean numbers with value positioned directly above label.                                                                                          |
+| `<Reveal>`       | `Reveal.tsx`       | Subtle viewport entrance animation (+12px rise and fade) that respects `prefers-reduced-motion`.                                                                                         |
+| `<TextLink>`     | `TextLink.tsx`     | Minimal text link with 4px underline offset and optional trailing arrow (`→`).                                                                                                           |
+| `<SpecsDrawer>`  | `SpecsDrawer.tsx`  | Full-height Radix Dialog right sheet displaying verified hardware datasheets and engineering specs.                                                                                      |
+| `<Faq>`          | `Faq.tsx`          | Hairline Radix Accordion with 16px weight 500 questions and concise answers (≤ 60 words).                                                                                                |
 
 ---
 
@@ -96,16 +96,16 @@ All imagery reflects authentic Indian clean-technology environments. Documented 
 
 Automated verification is enforced via `scripts/qa-metrics.mjs` running in Playwright across Desktop (1440×900) and Mobile (390×844):
 
-| Metric | Budget / Threshold | Verification Tool |
-| :--- | :--- | :--- |
-| **Home Page Word Count** | ≤ 450 words | `qa-metrics.mjs` (Actual: 440 desktop / 434 mobile) |
-| **Subpage Word Count** | ≤ 350 words | `qa-metrics.mjs` (Actual: 167 – 216 words) |
-| **Home Page Icon Count** | ≤ 8 icons | `qa-metrics.mjs` (Actual: 4 icons) |
-| **CTA Count** | Order CTAs ≤ 6, Consultation CTAs ≤ 3 | `qa-metrics.mjs` (Actual: 6 Order, 2 Consultation) |
-| **Minimum Text Size** | 0 elements < 12px computed font size | `qa-metrics.mjs` (Actual: 0 violations) |
-| **Horizontal Overflow** | `scrollWidth <= clientWidth` | `qa-metrics.mjs` (Actual: 0 overflow) |
-| **Typeface** | Inter Variable loaded | `document.fonts.check()` |
-| **Unit Test Suite** | 100% passing tests | `vitest run` (9/9 tests pass) |
-| **Type Check** | 0 TypeScript errors | `npx tsc --noEmit` |
-| **Linter** | 0 ESLint errors | `npm run lint` |
-| **Production Build** | Nitro Cloudflare target | `npm run build` |
+| Metric                   | Budget / Threshold                    | Verification Tool                                   |
+| :----------------------- | :------------------------------------ | :-------------------------------------------------- |
+| **Home Page Word Count** | ≤ 450 words                           | `qa-metrics.mjs` (Actual: 440 desktop / 434 mobile) |
+| **Subpage Word Count**   | ≤ 350 words                           | `qa-metrics.mjs` (Actual: 167 – 216 words)          |
+| **Home Page Icon Count** | ≤ 8 icons                             | `qa-metrics.mjs` (Actual: 4 icons)                  |
+| **CTA Count**            | Order CTAs ≤ 6, Consultation CTAs ≤ 3 | `qa-metrics.mjs` (Actual: 6 Order, 2 Consultation)  |
+| **Minimum Text Size**    | 0 elements < 12px computed font size  | `qa-metrics.mjs` (Actual: 0 violations)             |
+| **Horizontal Overflow**  | `scrollWidth <= clientWidth`          | `qa-metrics.mjs` (Actual: 0 overflow)               |
+| **Typeface**             | Inter Variable loaded                 | `document.fonts.check()`                            |
+| **Unit Test Suite**      | 100% passing tests                    | `vitest run` (9/9 tests pass)                       |
+| **Type Check**           | 0 TypeScript errors                   | `npx tsc --noEmit`                                  |
+| **Linter**               | 0 ESLint errors                       | `npm run lint`                                      |
+| **Production Build**     | Nitro Cloudflare target               | `npm run build`                                     |
