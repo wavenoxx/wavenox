@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sun,
@@ -23,6 +24,8 @@ import { BUSINESS } from "@/config/business";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { submitLead } from "@/functions/leads";
+import { getStoredTelemetry } from "@/lib/telemetry";
 import luxurySolarVilla from "@/assets/luxury_solar_villa.jpg";
 import resHero02 from "@/assets/res-hero-02.jpg";
 
@@ -93,6 +96,8 @@ const ROOF_PROFILES = [
 const BILL_PRESETS = [8000, 15000, 25000, 50000];
 
 export function SystemConfigurator() {
+  const navigate = useNavigate();
+
   // Configurator state
   const [address, setAddress] = useState("Jubilee Hills, Hyderabad 500033");
   const [selectedDiscomCode, setSelectedDiscomCode] = useState(DISCOMS[0].code);
@@ -106,7 +111,11 @@ export function SystemConfigurator() {
   // Reservation form state
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("");
-  const [isReserved, setIsReserved] = useState(false);
+  const [pinCode, setPinCode] = useState("");
+  const [consentGiven, setConsentGiven] = useState(false);
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Selected DISCOM
   const discom = useMemo(() => {
@@ -196,14 +205,55 @@ export function SystemConfigurator() {
     );
   };
 
-  // Handle Instant Reservation
-  const handleReserve = (e: React.FormEvent) => {
+  // Handle Instant Proposal Submission
+  const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userName || !userPhone) {
-      openConsultationDrawer("villa");
+    if (!consentGiven) {
+      setSubmitError("Please confirm your consent to receive your proposal.");
       return;
     }
-    setIsReserved(true);
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const telemetry = getStoredTelemetry();
+      const res = await submitLead({
+        data: {
+          name: userName,
+          phone: userPhone,
+          city: address,
+          pin_code: pinCode.trim() || undefined,
+          property_tier: "villa",
+          discom_code: selectedDiscomCode,
+          monthly_bill_inr: monthlyBill,
+          system_kw: systemKw,
+          battery_units: selectedBatteryUnits,
+          net_price_inr: netPayableInr,
+          source: "studio",
+          consent_given: true,
+          consent_version: "2026-09-v1",
+          company_website: companyWebsite.trim() || undefined,
+          ...telemetry,
+        },
+      });
+
+      if (!res.success) {
+        setSubmitError(res.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      navigate({
+        to: "/order/received",
+        search: { ref: res.referenceCode || "WNX-PROPOSAL" },
+      });
+    } catch (err: unknown) {
+      console.error("[SystemConfigurator] Submit error:", err);
+      setSubmitError("Failed to submit proposal request. Please reach us via WhatsApp.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -863,75 +913,106 @@ export function SystemConfigurator() {
                 commitment required.
               </p>
 
-              {isReserved ? (
-                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50 p-6 text-center space-y-3">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
-                    <Check className="h-6 w-6" />
+              <form onSubmit={handleReserve} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[#5C5E62] mb-1">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      placeholder="e.g. Dr. Rajesh Reddy"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
+                    />
                   </div>
-                  <h3 className="text-lg font-bold text-[#171A20]">Proposal Request Received</h3>
-                  <p className="text-xs text-[#5C5E62] max-w-md mx-auto">
-                    Thank you, {userName}. Our solar advisory team will review your property
-                    configuration and contact you on {userPhone} with your customized system
-                    proposal and feasibility assessment.
-                  </p>
-                  <div className="pt-3">
-                    <button
-                      type="button"
-                      onClick={handleDispatchWhatsApp}
-                      className="btn-primary text-xs cursor-pointer"
-                    >
-                      Open Proposal on WhatsApp →
-                    </button>
+                  <div>
+                    <label className="block text-xs font-medium text-[#5C5E62] mb-1">
+                      WhatsApp Number (+91)
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={userPhone}
+                      onChange={(e) => setUserPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
+                    />
                   </div>
                 </div>
-              ) : (
-                <form onSubmit={handleReserve} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-[#5C5E62] mb-1">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        placeholder="e.g. Dr. Rajesh Reddy"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-[#5C5E62] mb-1">
-                        WhatsApp Number (+91)
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={userPhone}
-                        onChange={(e) => setUserPhone(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                      type="submit"
-                      className="flex-1 btn-primary py-3.5 text-xs font-semibold cursor-pointer"
+                {/* Honeypot field for bot suppression */}
+                <input
+                  type="text"
+                  name="company_website"
+                  value={companyWebsite}
+                  onChange={(e) => setCompanyWebsite(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden"
+                  aria-hidden="true"
+                />
+
+                {/* DPDP Act 2023 Consent Checkbox */}
+                <div className="flex items-start gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="studio-consent"
+                    required
+                    checked={consentGiven}
+                    onChange={(e) => setConsentGiven(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-[#E2E8F0] accent-[#171A20] cursor-pointer"
+                  />
+                  <label
+                    htmlFor="studio-consent"
+                    className="text-xs text-[#5C5E62] leading-relaxed cursor-pointer"
+                  >
+                    I agree to receive my customized solar proposal and be contacted by WAVENOX
+                    advisors as outlined in the{" "}
+                    <a
+                      href="/legal/privacy"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline hover:text-[#171A20]"
                     >
-                      Request System Proposal
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDispatchWhatsApp}
-                      className="flex-1 btn-secondary py-3.5 text-xs font-semibold cursor-pointer"
-                    >
-                      Share via WhatsApp →
-                    </button>
+                      Privacy Policy
+                    </a>
+                    .
+                  </label>
+                </div>
+
+                {submitError && (
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+                    {submitError}
                   </div>
-                </form>
-              )}
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !consentGiven}
+                    className="flex-1 btn-primary py-3.5 text-xs font-semibold cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <span>Request my proposal</span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDispatchWhatsApp}
+                    className="flex-1 btn-secondary py-3.5 text-xs font-semibold cursor-pointer text-center"
+                  >
+                    Chat on WhatsApp →
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

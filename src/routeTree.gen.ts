@@ -14,6 +14,7 @@ import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as ResidentialRouteImport } from './routes/residential'
+import { Route as OrderReceivedRouteImport } from './routes/order/received'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ResidentialRoute = ResidentialRouteImport.update({
   path: '/residential',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderReceivedRoute = OrderReceivedRouteImport.update({
+  id: '/order/received',
+  path: '/order/received',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,14 +70,33 @@ export interface FileRoutesById {
   '/enterprise': typeof EnterpriseRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
+  '/order/received': typeof OrderReceivedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
+  fullPaths:
+    | '/'
+    | '/deploy'
+    | '/enterprise'
+    | '/omnigrid'
+    | '/residential'
+    | '/order/received'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
+  to:
+    | '/'
+    | '/deploy'
+    | '/enterprise'
+    | '/omnigrid'
+    | '/residential'
+    | '/order/received'
   id:
-    '__root__' | '/' | '/deploy' | '/enterprise' | '/omnigrid' | '/residential'
+    | '__root__'
+    | '/'
+    | '/deploy'
+    | '/enterprise'
+    | '/omnigrid'
+    | '/residential'
+    | '/order/received'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,6 +105,7 @@ export interface RootRouteChildren {
   EnterpriseRoute: typeof EnterpriseRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
+  OrderReceivedRoute: typeof OrderReceivedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResidentialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order/received': {
+      id: '/order/received'
+      path: '/order/received'
+      fullPath: '/order/received'
+      preLoaderRoute: typeof OrderReceivedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -126,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnterpriseRoute: EnterpriseRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
+  OrderReceivedRoute: OrderReceivedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

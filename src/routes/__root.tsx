@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BRAND_CONFIG } from "../config/brand";
 import { BUSINESS } from "../config/business";
 import { ConsultationDrawer } from "../components/ConsultationDrawer";
+import { initTelemetry } from "../lib/telemetry";
 
 function NotFoundComponent() {
   return (
@@ -150,6 +151,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    initTelemetry();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
