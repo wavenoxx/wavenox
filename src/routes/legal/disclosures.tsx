@@ -182,7 +182,7 @@ function DisclosuresPage() {
                 </tbody>
               </table>
             </div>
-            <p className="text-[11px] text-[#5C5E62]">
+            <p className="text-[12px] text-[#5C5E62]">
               Note: Slab rates reflect blended high-consumption tiers (typical for residences
               consuming &gt;500 kWh/month). Actual bills include fixed meter charges, electricity
               duty, and fuel surcharge adjustments (FSA).

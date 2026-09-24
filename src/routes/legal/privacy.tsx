@@ -255,7 +255,7 @@ function PrivacyPage() {
                   {BRAND_CONFIG.contact.phone.display}
                 </a>
               </div>
-              <div className="text-[11px] text-[#5C5E62] pt-1">
+              <div className="text-[12px] text-[#5C5E62] pt-1">
                 Grievances are acknowledged within 24 hours and redressed within 15 working days.
               </div>
             </div>
