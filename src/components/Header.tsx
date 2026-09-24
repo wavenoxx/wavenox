@@ -1,39 +1,45 @@
 import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Phone, MessageSquare } from "lucide-react";
+import { X, Phone, MessageSquare, HelpCircle, Globe, User, ChevronRight } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
+import { BrandLogo } from "./BrandLogo";
+import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
 import { openConsultationDrawer } from "./ConsultationDrawer";
 
-const MAIN_NAV = [
-  { label: "Solar Panels", to: "/" },
-  { label: "Homes", to: "/residential" },
-  { label: "Omnigrid", to: "/omnigrid" },
-  { label: "Commercial", to: "/enterprise" },
-];
+interface NavItem {
+  key: Exclude<MegaMenuCategory, null>;
+  label: string;
+  to: string;
+}
 
-const MENU_NAV = [
-  { label: "Solar Panels", to: "/" },
-  { label: "Solar for Homes", to: "/residential" },
-  { label: "Omnigrid Storage", to: "/omnigrid" },
-  { label: "Commercial Solar", to: "/enterprise" },
-  { label: "Design Studio", to: "/deploy" },
+const NAV_ITEMS: NavItem[] = [
+  { key: "solar", label: "Solar Panels", to: "/" },
+  { key: "homes", label: "Homes", to: "/residential" },
+  { key: "omnigrid", label: "Omnigrid", to: "/omnigrid" },
+  { key: "commercial", label: "Commercial", to: "/enterprise" },
+  { key: "discover", label: "Discover", to: "/deploy" },
 ];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [activeCategory, setActiveCategory] = React.useState<MegaMenuCategory>(null);
+  const [regionModalOpen, setRegionModalOpen] = React.useState(false);
+
+  const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
 
-  // Static light routes that do not have full-bleed hero photos
   const isLightPage =
     pathname.startsWith("/deploy") ||
     pathname.startsWith("/legal") ||
     pathname.startsWith("/order");
 
-  // Auto-close menu on route navigation
+  // Auto-close menus on route navigation
   React.useEffect(() => {
+    setActiveCategory(null);
     setMenuOpen(false);
   }, [pathname]);
 
@@ -45,75 +51,201 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const showSolidHeader = isScrolled || isLightPage;
+  const handleMouseEnter = (key: Exclude<MegaMenuCategory, null>) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setActiveCategory(key);
+  };
+
+  const handleMouseLeave = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+    closeTimerRef.current = setTimeout(() => {
+      setActiveCategory(null);
+    }, 150);
+  };
+
+  const handleMenuContainerEnter = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const isMenuVisible = activeCategory !== null;
+  const showSolidHeader = isScrolled || isLightPage || isMenuVisible;
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 h-14 z-40 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 ${
+        onMouseLeave={handleMouseLeave}
+        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 select-none ${
           showSolidHeader
-            ? "bg-[#FFFFFF]/90 backdrop-blur-md text-[#171A20] border-b border-[#E3E4E6]"
+            ? "bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6]"
             : "bg-transparent text-[#FFFFFF]"
         }`}
       >
-        {/* Left: Brand Name / Wordmark */}
-        <Link
-          to="/"
-          className="text-[15px] font-medium tracking-[0.2em] uppercase select-none transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
-          aria-label="WAVENOX Home"
-        >
-          {BRAND_CONFIG.name}
-        </Link>
+        {/* Left: Brand Geometric Wordmark */}
+        <div className="flex items-center">
+          <BrandLogo size="md" className={showSolidHeader ? "text-[#171A20]" : "text-[#FFFFFF]"} />
+        </div>
 
-        {/* Center: Minimalist Showroom Links */}
+        {/* Center: Tesla-Style Minimal Navigation Items */}
         <nav className="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
-          {MAIN_NAV.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              className="px-3.5 py-1.5 rounded-[4px] text-[14px] font-medium transition-colors hover:bg-current/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const isHovered = activeCategory === item.key;
+            return (
+              <Link
+                key={item.key}
+                to={item.to}
+                onMouseEnter={() => handleMouseEnter(item.key)}
+                className={`relative px-4 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+                  isHovered
+                    ? "bg-[#F4F4F4] text-[#171A20]"
+                    : showSolidHeader
+                      ? "hover:bg-[#F4F4F4] text-[#171A20]"
+                      : "hover:bg-white/10 text-[#FFFFFF]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Right: Consultation Text & Menu Button */}
-        <div className="flex items-center space-x-2">
+        {/* Right: Tesla-Style Utility Icons & Actions */}
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          {/* Help / Consultation Icon */}
           <button
             type="button"
             onClick={() => openConsultationDrawer()}
-            className="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-[4px] text-[14px] font-medium transition-colors hover:bg-current/10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+            title="Schedule Consultation"
+            aria-label="Schedule Consultation"
+            className={`p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+            }`}
           >
-            Consultation
+            <HelpCircle className="w-[18px] h-[18px]" />
           </button>
 
+          {/* Region / Grid Icon */}
+          <button
+            type="button"
+            onClick={() => setRegionModalOpen(true)}
+            title="Supported States & DISCOMs"
+            aria-label="Regional Grid"
+            className={`p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+            }`}
+          >
+            <Globe className="w-[18px] h-[18px]" />
+          </button>
+
+          {/* Account / Design Studio Icon */}
+          <Link
+            to="/deploy"
+            title="Design Studio"
+            aria-label="Design Studio"
+            className={`p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+            }`}
+          >
+            <User className="w-[18px] h-[18px]" />
+          </Link>
+
+          {/* Mobile / Compact Menu Trigger */}
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
-            className="px-3.5 py-1.5 rounded-[4px] text-[14px] font-medium transition-colors hover:bg-current/10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+            aria-label="Open navigation menu"
+            className={`px-3 py-1.5 rounded-[4px] text-[14px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current md:hidden ${
+              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+            }`}
           >
             Menu
           </button>
         </div>
       </header>
 
-      {/* Radix Dialog Full-Height Menu Sheet */}
+      {/* Tesla-Grade Full-Width Mega Menu Flyout */}
+      <MegaMenu
+        activeCategory={activeCategory}
+        onClose={() => setActiveCategory(null)}
+        onMouseEnter={handleMenuContainerEnter}
+        onMouseLeave={handleMouseLeave}
+      />
+
+      {/* Regional Grid Dialog */}
+      <Dialog.Root open={regionModalOpen} onOpenChange={setRegionModalOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-[#FFFFFF] text-[#171A20] rounded-[8px] p-6 shadow-2xl focus:outline-none">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E3E4E6]">
+              <Dialog.Title className="text-[16px] font-medium">
+                Active Solar Grid Jurisdictions
+              </Dialog.Title>
+              <Dialog.Close asChild>
+                <button
+                  type="button"
+                  className="p-1 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </Dialog.Close>
+            </div>
+            <div className="py-4 space-y-3 text-[14px]">
+              <div className="p-3 bg-[#F4F4F4] rounded-[4px]">
+                <div className="font-medium text-[#171A20]">Telangana (TGSPDCL / TSNPDCL)</div>
+                <div className="text-[12px] text-[#5C5E62]">
+                  Hyderabad, Secunderabad, Rangareddy, Warangal. PM Surya Ghar ready.
+                </div>
+              </div>
+              <div className="p-3 bg-[#F4F4F4] rounded-[4px]">
+                <div className="font-medium text-[#171A20]">
+                  Andhra Pradesh (APEPDCL / APSPDCL / APCPDCL)
+                </div>
+                <div className="text-[12px] text-[#5C5E62]">
+                  Visakhapatnam, Vijayawada, Guntur, Tirupati. Direct subsidy sanctioning.
+                </div>
+              </div>
+              <div className="p-3 bg-[#F4F4F4] rounded-[4px]">
+                <div className="font-medium text-[#171A20]">Karnataka (BESCOM)</div>
+                <div className="text-[12px] text-[#5C5E62]">
+                  Bengaluru Urban & Rural. Turnkey net-metering synchronization.
+                </div>
+              </div>
+            </div>
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setRegionModalOpen(false);
+                  openConsultationDrawer();
+                }}
+                className="w-full h-10 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors"
+              >
+                Schedule Site Feasibility Check
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {/* Full-Height Mobile Drawer */}
       <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-          <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-sm bg-[#FFFFFF] text-[#171A20] shadow-2xl flex flex-col justify-between p-8 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-200">
-            {/* Top Close Row */}
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-sm bg-[#FFFFFF] text-[#171A20] shadow-2xl flex flex-col justify-between p-6 sm:p-8 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-200">
             <div>
               <div className="flex items-center justify-between pb-8">
-                <Dialog.Title className="text-[14px] font-medium tracking-[0.2em] uppercase text-[#5C5E62]">
-                  {BRAND_CONFIG.name}
-                </Dialog.Title>
+                <BrandLogo size="sm" asLink={false} />
                 <Dialog.Close asChild>
                   <button
                     type="button"
-                    className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none"
                     aria-label="Close navigation menu"
                   >
                     <X className="w-5 h-5" />
@@ -121,22 +253,29 @@ export function Header() {
                 </Dialog.Close>
               </div>
 
-              {/* Navigation Items */}
               <nav className="flex flex-col space-y-4" aria-label="Menu Items">
-                {MENU_NAV.map((item) => (
+                {NAV_ITEMS.map((item) => (
                   <Link
-                    key={item.label}
+                    key={item.key}
                     to={item.to}
                     onClick={() => setMenuOpen(false)}
-                    className="text-[18px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                    className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                   >
-                    {item.label}
+                    <span>{item.label}</span>
+                    <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                   </Link>
                 ))}
+                <Link
+                  to="/deploy"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>Design Studio</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
               </nav>
             </div>
 
-            {/* Bottom Contact & Consultation Area */}
             <div className="pt-8 border-t border-[#E3E4E6] space-y-4">
               <button
                 type="button"
@@ -167,10 +306,6 @@ export function Header() {
                   <span>WhatsApp: {BRAND_CONFIG.contact.whatsapp.display}</span>
                 </a>
               </div>
-
-              <p className="text-[12px] text-[#5C5E62]/70 leading-normal pt-2">
-                Turnkey residential & commercial solar across Telangana, Andhra Pradesh & Bengaluru.
-              </p>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

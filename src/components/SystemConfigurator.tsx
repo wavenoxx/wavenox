@@ -182,7 +182,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     }
   };
 
-  const activeMedia = estateView === "villa" ? media["home-hero"] : media["homes-hero"];
+  const activeMedia = estateView === "villa" ? media["res-hero"] : media["studio-estate"];
 
   return (
     <div className="w-full bg-[#FFFFFF] text-[#171A20]">
@@ -191,7 +191,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         {/* LEFT COLUMN: 58% Sticky Media Showroom */}
         <div className="w-full lg:w-[58%] relative min-h-[480px] lg:h-[calc(100svh-56px)] lg:sticky lg:top-14 flex flex-col justify-between p-6 sm:p-10 text-[#FFFFFF] overflow-hidden select-none bg-[#171A20]">
           {/* Background image with subtle scrims */}
-          <div className="absolute inset-0 -z-10 w-full h-full pointer-events-none">
+          <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
             <Media
               media={activeMedia}
               alt="Architectural residential solar showroom render"
@@ -204,7 +204,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           </div>
 
           {/* Top Info & View Toggle */}
-          <div className="flex items-start justify-between gap-4 z-10">
+          <div className="relative flex items-start justify-between gap-4 z-10">
             <div>
               <span className="text-[12px] font-medium uppercase tracking-widest text-[#FFFFFF]/70">
                 Design Studio
@@ -242,7 +242,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           </div>
 
           {/* Bottom Dock: Live Stats & Disclaimers */}
-          <div className="z-10 space-y-4 pt-8">
+          <div className="relative z-10 space-y-4 pt-8">
             <StatRow
               align="start"
               stats={[

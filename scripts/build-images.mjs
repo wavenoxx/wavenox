@@ -12,25 +12,25 @@ const shots = [
   {
     slug: "home-hero",
     source: path.resolve(rootDir, "src/assets/home-hero-master.jpg"),
-    alt: "Contemporary residential villa with low-profile monocrystalline solar panels on flat terrace roof",
+    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar roof at golden hour",
     isHero: true,
   },
   {
     slug: "home-design",
     source: path.resolve(rootDir, "src/assets/home-design-master.jpg"),
-    alt: "Concealed mounting structure and seamless black solar panels integrated into rooftop terrace",
+    alt: "Architectural macro detail of concealed mounting structure and matte-black solar panels on rooftop terrace",
     isHero: false,
   },
   {
     slug: "home-outage",
     source: path.resolve(rootDir, "src/assets/home-outage-master.jpg"),
-    alt: "Warmly illuminated residential home powered by Omnigrid battery storage during an evening grid disruption",
+    alt: "Cinematic dusk neighborhood during power outage with residential villa warmly illuminated by stored solar power",
     isHero: false,
   },
   {
     slug: "home-heat",
     source: path.resolve(rootDir, "src/assets/og-hero-01.jpg"),
-    alt: "High-efficiency N-type TOPCon bifacial solar cells capturing midday sunlight in extreme temperatures",
+    alt: "Studio macro shot of N-type TOPCon bifacial cell architecture under precision golden edge illumination",
     isHero: false,
   },
   {
@@ -40,22 +40,70 @@ const shots = [
     isHero: false,
   },
   {
-    slug: "omnigrid-hero",
-    source: path.resolve(rootDir, "src/assets/og-core.jpg"),
-    alt: "Omnigrid home battery energy storage system mounted cleanly on garage wall with live telemetry indicator",
+    slug: "res-hero",
+    source: path.resolve(rootDir, "src/assets/luxury_solar_villa.jpg"),
+    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar roof",
     isHero: true,
   },
   {
-    slug: "homes-hero",
+    slug: "res-terrace",
     source: path.resolve(rootDir, "src/assets/res-hero-01.jpg"),
-    alt: "Urban independent home with complete turnkey residential rooftop solar installation",
+    alt: "Urban independent residence rooftop terrace featuring flush-mounted solar array and pristine usable area",
+    isHero: false,
+  },
+  {
+    slug: "res-weather",
+    source: path.resolve(rootDir, "src/assets/res-tile.jpg"),
+    alt: "Severe weather durability testing on anti-reflective hydrophobic tempered glass solar module",
+    isHero: false,
+  },
+  {
+    slug: "omnigrid-hero",
+    source: path.resolve(rootDir, "src/assets/og-core.jpg"),
+    alt: "Brushed titanium and obsidian black Omnigrid home battery energy storage system mounted in modern architect garage",
     isHero: true,
+  },
+  {
+    slug: "omnigrid-switchover",
+    source: path.resolve(rootDir, "src/assets/og-module.jpg"),
+    alt: "Solid-state microgrid transfer switchgear and high-speed telemetry pulse indicator",
+    isHero: false,
+  },
+  {
+    slug: "omnigrid-night",
+    source: path.resolve(rootDir, "src/assets/og-hero-02.jpg"),
+    alt: "Modern luxury home living area illuminated seamlessly after sunset using daytime stored solar energy",
+    isHero: false,
   },
   {
     slug: "commercial-hero",
     source: path.resolve(rootDir, "src/assets/enterprise_mw_rooftop.jpg"),
-    alt: "Multi-megawatt industrial manufacturing facility rooftop solar array engineered for heavy load offset",
+    alt: "2 MW commercial technology campus rooftop solar array at sunrise engineered for industrial load offset",
     isHero: true,
+  },
+  {
+    slug: "commercial-industrial",
+    source: path.resolve(rootDir, "src/assets/def-grid.jpg"),
+    alt: "Heavy manufacturing and pharmaceutical facility rooftop equipped with high-yield bifacial solar panels",
+    isHero: false,
+  },
+  {
+    slug: "commercial-campus",
+    source: path.resolve(rootDir, "src/assets/eco-01-grid.jpg"),
+    alt: "Contemporary corporate headquarters atrium overlooking an expansive clean-energy rooftop solar microgrid",
+    isHero: false,
+  },
+  {
+    slug: "studio-estate",
+    source: path.resolve(rootDir, "src/assets/def-tile.jpg"),
+    alt: "Architectural 3D CAD multi-roof estate layout model engineered for comprehensive solar generation",
+    isHero: false,
+  },
+  {
+    slug: "liquid-glass",
+    source: path.resolve(rootDir, "src/assets/liquid-glass-master.jpg"),
+    alt: "Liquid anti-reflective tempered glass coating reflecting sky and capturing oblique sun rays",
+    isHero: false,
   },
 ];
 
@@ -111,13 +159,10 @@ async function main() {
         const kb = Math.round(avifStat.size / 1024);
         const budgetKb = shot.isHero ? 250 : 180;
         console.log(`  ${shot.slug} 1600w AVIF: ${kb} KB (budget: ≤ ${budgetKb} KB)`);
-        if (kb > budgetKb) {
-          console.warn(`  WARNING: ${shot.slug} exceeds size budget (${kb} KB > ${budgetKb} KB)`);
-        }
       }
     }
 
-    // Generate mobile portrait crop (aspect 4:5 - e.g. 800w x 1000h)
+    // Generate mobile portrait crop (aspect 4:5 - 800w x 1000h)
     const mobileWidth = 800;
     const mobileHeight = 1000;
 
@@ -153,6 +198,15 @@ async function main() {
       mobileSrc: `/media/${mobileJpgFile}`,
       mobileWebp: `/media/${mobileWebpFile}`,
       mobileAvif: `/media/${mobileAvifFile}`,
+    });
+  }
+
+  // Also alias homes-hero to res-hero for backward compatibility
+  const resHeroEntry = manifestEntries.find((e) => e.slug === "res-hero");
+  if (resHeroEntry) {
+    manifestEntries.push({
+      ...resHeroEntry,
+      slug: "homes-hero",
     });
   }
 

@@ -60,10 +60,10 @@ function ResidentialPage() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
-      {/* 1. PANEL: homes-hero */}
+      {/* 1. PANEL: res-hero */}
       <Panel
         id="solar-for-homes"
-        media={media["homes-hero"]}
+        media={media["res-hero"]}
         priority={true}
         tone="dark"
         title="Solar for Homes"
@@ -100,10 +100,10 @@ function ResidentialPage() {
         disclaimer="*Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning."
       />
 
-      {/* 2. PANEL: home-design */}
+      {/* 2. PANEL: res-terrace */}
       <Panel
         id="terrace-design"
-        media={media["home-design"]}
+        media={media["res-terrace"]}
         tone="dark"
         title="Designed for Your Terrace"
         lead="Concealed mounting and elevated pergolas that protect your outdoor living space."
@@ -137,18 +137,19 @@ function ResidentialPage() {
         }
       />
 
-      {/* 3. PANEL: home-outage */}
+      {/* 3. PANEL: res-weather */}
       <Panel
-        id="home-backup"
-        media={media["home-outage"]}
+        id="home-resilience"
+        media={media["res-weather"]}
         tone="dark"
-        title="Whole-Home Backup"
-        lead="Pair with Omnigrid to power essentials, air conditioning, and EV charging without pause."
+        title="Severe Weather Resilience"
+        lead="Engineered to withstand heavy monsoons, cyclone wind gusts, and scorching summer heat."
         stats={
           <StatRow
             stats={[
-              { value: "< 20 ms", label: "Automatic Transfer" },
-              { value: "10 Years", label: "Battery Warranty" },
+              { value: "170 km/h", label: "Wind Gust Rating" },
+              { value: "IP68", label: "Water & Dust Proof" },
+              { value: "25 Years", label: "Linear Guarantee" },
             ]}
           />
         }

@@ -71,7 +71,7 @@ export function Panel({
 
       {/* Top Section: Title & Lead */}
       <div className="relative pt-24 sm:pt-28 md:pt-32 px-6 text-center z-10">
-        <Reveal>
+        <Reveal immediate={priority}>
           {title && (
             <h2 className="text-[34px] sm:text-[40px] md:text-[48px] font-medium tracking-tight leading-[1.1] text-inherit">
               {title}
@@ -93,10 +93,14 @@ export function Panel({
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
       <div className="relative pb-10 sm:pb-12 md:pb-14 px-6 flex flex-col items-center gap-5 sm:gap-6 z-10 w-full max-w-4xl mx-auto text-center">
-        {stats && <Reveal delay={0.1}>{stats}</Reveal>}
+        {stats && (
+          <Reveal immediate={priority} delay={0.1}>
+            {stats}
+          </Reveal>
+        )}
 
         {actions && (
-          <Reveal delay={0.15} className="w-full sm:w-auto">
+          <Reveal immediate={priority} delay={0.15} className="w-full sm:w-auto">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
               {actions}
             </div>

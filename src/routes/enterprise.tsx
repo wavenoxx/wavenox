@@ -170,10 +170,10 @@ function EnterprisePage() {
         disclaimer="*Accelerated depreciation under Section 32 of Income Tax Act. Consult your financial advisor."
       />
 
-      {/* 2. PANEL: home-heat */}
+      {/* 2. PANEL: commercial-industrial */}
       <Panel
         id="operating-costs"
-        media={media["home-heat"]}
+        media={media["commercial-industrial"]}
         tone="dark"
         title="Lower Operating Costs"
         lead="Produce your own clean power during high peak daytime commercial tariff hours."

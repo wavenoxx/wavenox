@@ -145,10 +145,10 @@ function OmnigridPage() {
         }
       />
 
-      {/* 2. PANEL: home-outage */}
+      {/* 2. PANEL: omnigrid-switchover */}
       <Panel
         id="outage-defense"
-        media={media["home-outage"]}
+        media={media["omnigrid-switchover"]}
         tone="dark"
         title="Outage Protection"
         lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
@@ -182,10 +182,10 @@ function OmnigridPage() {
         }
       />
 
-      {/* 3. PANEL: home-final */}
+      {/* 3. PANEL: omnigrid-night */}
       <Panel
         id="sunset-power"
-        media={media["home-final"]}
+        media={media["omnigrid-night"]}
         tone="dark"
         title="Use Solar After Sunset"
         lead="Store daytime excess generation to power nighttime air conditioning and appliances."
