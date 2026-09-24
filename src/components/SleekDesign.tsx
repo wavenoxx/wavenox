@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck, EyeOff, Layers } from "lucide-react";
-import liquidGlassMacro from "@/assets/liquid_glass_macro.jpg";
+const liquidGlassMacro = "/media/home-design-1600w.jpg";
 import { openConsultationDrawer } from "./ConsultationDrawer";
 
 const FEATURES = [

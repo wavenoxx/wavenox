@@ -67,6 +67,8 @@ export interface BrandConfig {
   description: string;
   domain: string;
   domainHost: string;
+  hasMonitoringApp?: boolean;
+  installDaysTypical?: number;
   contact: BrandContactConfig;
   socials: BrandSocialsConfig;
 }
@@ -160,6 +162,8 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
     description,
     domain,
     domainHost,
+    hasMonitoringApp: true,
+    installDaysTypical: 3,
     contact: {
       enabled: contactEnabled,
       phoneDisplay,
