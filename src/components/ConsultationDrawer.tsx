@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
@@ -15,7 +15,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
-import { computeSolarYield, SOLAR_CONFIG } from "@/config/solar";
+import { estimate } from "@/config/solar";
 
 export const CONSULTATION_EVENT = "open-wavenox-consultation";
 
@@ -59,12 +59,17 @@ export function ConsultationDrawer() {
   const [city, setCity] = useState("Hyderabad");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Derived financial calculation based on monthly bill
-  // Approximate tariff ₹9.5 / kWh
-  const estimatedMonthlyUnits = Math.round(monthlyBill / 9.5);
-  const estimatedKw = Math.max(3, Math.round((estimatedMonthlyUnits / 120) * 10) / 10);
-  const estimatedAnnualSavings = Math.round(monthlyBill * 12 * 0.95);
-  const subsidyAmount = estimatedKw <= 3 ? estimatedKw * 26000 : 78000;
+  const calculation = useMemo(
+    () =>
+      estimate({
+        monthlyBillInr: monthlyBill,
+        segment: selectedTier === "commercial" ? "commercial" : "residential",
+      }),
+    [monthlyBill, selectedTier],
+  );
+  const estimatedKw = calculation.recommendedKw;
+  const estimatedAnnualSavings = calculation.annualSavingsInr;
+  const subsidyAmount = calculation.subsidyInr;
 
   useEffect(() => {
     function handleEvent(e: Event) {
@@ -337,6 +342,18 @@ export function ConsultationDrawer() {
                         </div>
                         <ShieldCheck size={28} className="text-[#171A20]" />
                       </div>
+
+                      <p className="text-[11px] text-[#5C5E62] text-center">
+                        Estimate only.{" "}
+                        <a
+                          href="/legal/disclosures"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline hover:text-[#171A20]"
+                        >
+                          See how we calculate
+                        </a>
+                      </p>
 
                       <div className="pt-4 flex items-center justify-between">
                         <button

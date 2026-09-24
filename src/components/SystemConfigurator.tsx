@@ -20,52 +20,11 @@ import {
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BUSINESS } from "@/config/business";
-import { SOLAR_CONFIG, calculateGovtSubsidyInr } from "@/config/solar";
+import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import luxurySolarVilla from "@/assets/luxury_solar_villa.jpg";
 import resHero02 from "@/assets/res-hero-02.jpg";
-
-// System Sizing Presets matching modular tier architecture
-const SYSTEM_TIERS = [
-  {
-    id: "small",
-    label: "Small",
-    panels: 12,
-    kw: 4.8,
-    monthlyKwh: 600,
-    idealBill: "₹4,000 – ₹6,000",
-    description: "Compact luxury residences, penthouses, and low daytime loads.",
-  },
-  {
-    id: "medium",
-    label: "Medium",
-    panels: 24,
-    kw: 9.6,
-    monthlyKwh: 1200,
-    idealBill: "₹8,000 – ₹12,000",
-    description: "Recommended standard for 3–4 BHK luxury villas with continuous AC.",
-    isPopular: true,
-  },
-  {
-    id: "large",
-    label: "Large",
-    panels: 36,
-    kw: 14.4,
-    monthlyKwh: 1800,
-    idealBill: "₹14,000 – ₹18,000",
-    description: "Expansive luxury villas, home elevators, and private pools.",
-  },
-  {
-    id: "xlarge",
-    label: "Extra Large",
-    panels: 48,
-    kw: 19.2,
-    monthlyKwh: 2400,
-    idealBill: "₹20,000+",
-    description: "Multi-acre estates, continuous HVAC cooling, and heavy dual EV charging.",
-  },
-];
 
 // Battery Storage Options (Omnigrid Units)
 const BATTERY_OPTIONS = [
@@ -80,18 +39,18 @@ const BATTERY_OPTIONS = [
   },
   {
     units: 1,
-    label: "1 Omnigrid (13.5 kWh)",
-    capacityKwh: 13.5,
-    priceInr: 280000,
+    label: `1 Omnigrid (${SOLAR_ASSUMPTIONS.battery.unitCapacityKwh} kWh)`,
+    capacityKwh: SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
+    priceInr: SOLAR_ASSUMPTIONS.battery.unitPriceInr,
     autonomyHours: "18+ hrs Essential Backup",
     headline:
       "Powers lighting, WiFi, refrigeration, home automation, and 1 high-tonnage Inverter AC.",
   },
   {
     units: 2,
-    label: "2 Omnigrid (27.0 kWh)",
-    capacityKwh: 27.0,
-    priceInr: 540000,
+    label: `2 Omnigrid (${SOLAR_ASSUMPTIONS.battery.unitCapacityKwh * 2} kWh)`,
+    capacityKwh: SOLAR_ASSUMPTIONS.battery.unitCapacityKwh * 2,
+    priceInr: SOLAR_ASSUMPTIONS.battery.unitPriceInr * 2,
     autonomyHours: "36+ hrs Whole-Home Backup",
     headline:
       "Whole-home luxury backup. Seamless sub-4ms transfer powering 4 Inverter ACs and water pumps.",
@@ -99,9 +58,9 @@ const BATTERY_OPTIONS = [
   },
   {
     units: 3,
-    label: "3 Omnigrid (40.5 kWh)",
-    capacityKwh: 40.5,
-    priceInr: 790000,
+    label: `3 Omnigrid (${SOLAR_ASSUMPTIONS.battery.unitCapacityKwh * 3} kWh)`,
+    capacityKwh: SOLAR_ASSUMPTIONS.battery.unitCapacityKwh * 3,
+    priceInr: SOLAR_ASSUMPTIONS.battery.unitPriceInr * 3,
     autonomyHours: "72+ hrs Off-Grid Autonomy",
     headline:
       "Extreme multi-day autonomy. Powers entire estate including 6 ACs, heat pumps, and Level 2 EV charging.",
@@ -136,7 +95,7 @@ const BILL_PRESETS = [8000, 15000, 25000, 50000];
 export function SystemConfigurator() {
   // Configurator state
   const [address, setAddress] = useState("Jubilee Hills, Hyderabad 500033");
-  const [selectedDiscomCode, setSelectedDiscomCode] = useState(SOLAR_CONFIG.discoms[0].code);
+  const [selectedDiscomCode, setSelectedDiscomCode] = useState(DISCOMS[0].code);
   const [monthlyBill, setMonthlyBill] = useState(12000);
   const [panelCount, setPanelCount] = useState(24);
   const [selectedBatteryUnits, setSelectedBatteryUnits] = useState(2);
@@ -151,18 +110,32 @@ export function SystemConfigurator() {
 
   // Selected DISCOM
   const discom = useMemo(() => {
-    return (
-      SOLAR_CONFIG.discoms.find((d) => d.code === selectedDiscomCode) || SOLAR_CONFIG.discoms[0]
-    );
+    return DISCOMS.find((d) => d.code === selectedDiscomCode) || DISCOMS[0];
   }, [selectedDiscomCode]);
 
-  // Sizing calculations (Each panel is 400W = 0.4 kW)
-  const systemKw = useMemo(() => Number((panelCount * 0.4).toFixed(1)), [panelCount]);
-  const annualKwh = useMemo(
-    () => Math.round(systemKw * SOLAR_CONFIG.effectiveSunHoursPerYear),
-    [systemKw],
-  );
-  const monthlyKwh = useMemo(() => Math.round(annualKwh / 12), [annualKwh]);
+  // Unified Solar Engine Calculation
+  const calculation = useMemo(() => {
+    return estimate({
+      monthlyBillInr: monthlyBill,
+      discomCode: selectedDiscomCode,
+      segment: "residential",
+      panels: panelCount,
+      batteryUnits: selectedBatteryUnits,
+      paymentMode,
+    });
+  }, [monthlyBill, selectedDiscomCode, panelCount, selectedBatteryUnits, paymentMode]);
+
+  const systemKw = calculation.systemKw;
+  const annualKwh = calculation.annualGenKwh;
+  const monthlyKwh = Math.round(annualKwh / 12);
+  const billCoveragePct = calculation.billCoveragePct;
+  const subsidyInr = calculation.subsidyInr;
+  const netPayableInr = calculation.netInr;
+  const totalGrossInr = calculation.grossInr;
+  const monthlyEmiInr = calculation.monthlyEmiInr;
+  const solarGrossInr = Math.round(systemKw * SOLAR_ASSUMPTIONS.pricePerKwInr);
+  const twentyFiveYearWealthInr = calculation.netGain25YearsInr;
+  const twentyFiveYearLakhs = (twentyFiveYearWealthInr / 100000).toFixed(1);
 
   // Sizing matching tier identifier
   const matchingTier = useMemo(() => {
@@ -174,37 +147,9 @@ export function SystemConfigurator() {
     return BATTERY_OPTIONS.find((b) => b.units === selectedBatteryUnits) || BATTERY_OPTIONS[2];
   }, [selectedBatteryUnits]);
 
-  // Pricing Model
-  // Solar array hardware + certified engineering installation: ~₹62,000 per kW
-  const solarGrossInr = useMemo(() => Math.round(systemKw * 62000), [systemKw]);
-  const batteryGrossInr = battery.priceInr;
-  const totalGrossInr = solarGrossInr + batteryGrossInr;
-
-  // Direct Government Subsidy: PM Surya Ghar Muft Bijli Yojana
-  const subsidyInr = useMemo(() => calculateGovtSubsidyInr(systemKw), [systemKw]);
-  const netPayableInr = Math.max(0, totalGrossInr - subsidyInr);
-
-  // Savings & Loan EMI
-  const tariffRate = discom.avgResidentialRateInr;
-  const annualSavingsInr = Math.round(annualKwh * tariffRate);
-  const monthlySavingsInr = Math.round(annualSavingsInr / 12);
-  const twentyFiveYearWealthInr = Math.round(annualSavingsInr * 25 - netPayableInr);
-  const twentyFiveYearLakhs = (twentyFiveYearWealthInr / 100000).toFixed(1);
-
-  // 5-Year Green Energy Loan EMI Calculation (approx 9.5% per annum on net payable)
-  const monthlyEmiInr = useMemo(() => {
-    const principal = netPayableInr;
-    const monthlyRate = 0.095 / 12;
-    const tenureMonths = 60;
-    const emi =
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
-      (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-    return Math.round(emi);
-  }, [netPayableInr]);
-
   // Adjust panel count via buttons
   const handlePanelIncrement = (amount: number) => {
-    setPanelCount((prev) => Math.min(60, Math.max(8, prev + amount)));
+    setPanelCount((prev) => Math.min(60, Math.max(6, prev + amount)));
   };
 
   // Select a preset tier
@@ -215,10 +160,10 @@ export function SystemConfigurator() {
   // Adjust bill slider & auto-suggest tier
   const handleBillChange = (val: number) => {
     setMonthlyBill(val);
-    if (val <= 6000) setPanelCount(12);
-    else if (val <= 12000) setPanelCount(24);
-    else if (val <= 18000) setPanelCount(36);
-    else setPanelCount(48);
+    if (val <= 6000) setPanelCount(SYSTEM_TIERS[0].panels);
+    else if (val <= 11000) setPanelCount(SYSTEM_TIERS[1].panels);
+    else if (val <= 18000) setPanelCount(SYSTEM_TIERS[2].panels);
+    else setPanelCount(SYSTEM_TIERS[3].panels);
   };
 
   // Handle WhatsApp Dossier dispatch
@@ -232,7 +177,7 @@ export function SystemConfigurator() {
         `*Utility Board:* ${discom.code} (${discom.state})\n` +
         `*Avg Monthly Bill:* ₹${monthlyBill.toLocaleString("en-IN")}\n` +
         `--------------------------------------\n` +
-        `*Configured System Capacity:* ${systemKw} kW (${panelCount} Liquid Glass Panels)\n` +
+        `*Configured System Capacity:* ${systemKw} kW (${panelCount} High-Efficiency Modules)\n` +
         `*Annual Yield:* ${annualKwh.toLocaleString("en-IN")} kWh / year\n` +
         `*Omnigrid Storage:* ${battery.label} (${battery.capacityKwh} kWh)\n` +
         `*Roof Architecture:* ${ROOF_PROFILES.find((r) => r.id === roofProfile)?.name}\n` +
@@ -241,8 +186,8 @@ export function SystemConfigurator() {
         `*PM Surya Ghar Central Subsidy:* -₹${subsidyInr.toLocaleString("en-IN")}\n` +
         `*Net Payable Investment:* ₹${netPayableInr.toLocaleString("en-IN")}\n` +
         `*Payment Structure:* ${paymentMode === "loan" ? `5-Year EMI ~₹${monthlyEmiInr.toLocaleString("en-IN")}/mo` : "100% Upfront Direct Purchase"}\n` +
-        `*Est. 25-Year Net Wealth Gain:* ₹${twentyFiveYearLakhs} Lakhs\n\n` +
-        `Please provide the technical line diagram (SLD) and book the priority 3D drone site survey.`,
+        `*Est. 25-Year Net Savings after System Cost:* ₹${twentyFiveYearLakhs} Lakhs\n\n` +
+        `Please provide the technical line diagram (SLD) and book the priority site survey.`,
     );
     window.open(
       `${BRAND_CONFIG.contact.whatsappLink}?text=${text}`,
@@ -368,7 +313,7 @@ export function SystemConfigurator() {
                   </div>
                   <div>
                     <div className="text-xl sm:text-2xl font-bold tracking-tight text-emerald-400">
-                      100%
+                      ~{billCoveragePct}%
                     </div>
                     <div className="text-[10px] uppercase tracking-wider text-white/70">
                       Bill Offset
@@ -406,11 +351,19 @@ export function SystemConfigurator() {
                 <span className="font-semibold text-[#171A20]">{battery.autonomyHours}</span>
               </div>
               <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
-                <span className="font-medium text-[#5C5E62]">25-Year Lifetime Net Gain</span>
+                <span className="font-medium text-[#5C5E62]">
+                  25-year savings after system cost
+                </span>
                 <span className="font-bold text-emerald-700 text-sm">
                   ₹{twentyFiveYearLakhs} Lakhs
                 </span>
               </div>
+              <p className="text-[11px] text-[#5C5E62] pt-2 border-t border-[#E2E8F0]">
+                * Estimate only.{" "}
+                <a href="/legal/disclosures" className="underline hover:text-[#171A20]">
+                  See how we calculate
+                </a>
+              </p>
             </div>
 
             {!PRODUCTS_CONFIG.specsVerified && (
@@ -467,7 +420,7 @@ export function SystemConfigurator() {
                   Select State Electricity Distribution Board (DISCOM)
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {SOLAR_CONFIG.discoms.map((d) => (
+                  {DISCOMS.map((d) => (
                     <button
                       key={d.code}
                       type="button"
@@ -482,7 +435,7 @@ export function SystemConfigurator() {
                       <div
                         className={`text-[10px] truncate ${selectedDiscomCode === d.code ? "text-white/70" : "text-[#5C5E62]"}`}
                       >
-                        ₹{d.avgResidentialRateInr}/unit • {d.state}
+                        ₹{d.residentialTariffInr}/unit • {d.state}
                       </div>
                     </button>
                   ))}
@@ -579,7 +532,7 @@ export function SystemConfigurator() {
                     )}
                     <div className="text-xs font-semibold">{tier.label}</div>
                     <div className="mt-1 text-base font-bold tracking-tight">
-                      {tier.kw} <span className="text-[10px] font-normal opacity-70">kW</span>
+                      {tier.systemKw} <span className="text-[10px] font-normal opacity-70">kW</span>
                     </div>
                     <div
                       className={`mt-1 text-[10px] ${panelCount === tier.panels ? "text-white/70" : "text-[#5C5E62]"}`}
@@ -595,14 +548,19 @@ export function SystemConfigurator() {
                 <div>
                   <div className="text-xs font-semibold text-[#171A20]">Fine-Tune Panel Count</div>
                   <div className="text-[11px] text-[#5C5E62]">
-                    Each 400W Liquid Glass panel adds 0.4 kWp and ~50 kWh/month.
+                    Each {SOLAR_ASSUMPTIONS.panelWatt}W module adds{" "}
+                    {(SOLAR_ASSUMPTIONS.panelWatt / 1000).toFixed(2)} kWp and ~
+                    {Math.round(
+                      (SOLAR_ASSUMPTIONS.panelWatt * SOLAR_ASSUMPTIONS.yieldKwhPerKwYear) / 12000,
+                    )}{" "}
+                    kWh/month.
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => handlePanelIncrement(-2)}
-                    disabled={panelCount <= 8}
+                    disabled={panelCount <= 6}
                     className="h-8 w-8 rounded-full border border-[#E2E8F0] bg-white flex items-center justify-center text-[#171A20] hover:bg-[#EEEEEE] disabled:opacity-30 cursor-pointer"
                     aria-label="Decrease panels"
                   >
@@ -834,15 +792,26 @@ export function SystemConfigurator() {
                   {paymentMode === "loan" ? (
                     <div className="rounded-xl bg-white border border-[#E2E8F0] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs font-semibold text-[#171A20]">
-                          Estimated Monthly EMI:
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-[#171A20]">
+                            Estimated Monthly EMI:
+                          </span>
+                          {calculation.emiBelowBill && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                              EMI lower than your bill
+                            </span>
+                          )}
                         </div>
                         <div className="text-[11px] text-[#5C5E62]">
                           Indicative 60-month solar financing at 9.5% p.a.
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-bold text-emerald-700">
+                        <div
+                          className={`text-xl font-bold ${
+                            calculation.emiBelowBill ? "text-emerald-700" : "text-[#171A20]"
+                          }`}
+                        >
                           ~₹{monthlyEmiInr.toLocaleString("en-IN")}{" "}
                           <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
                         </div>
@@ -853,12 +822,27 @@ export function SystemConfigurator() {
                     </div>
                   ) : (
                     <div className="rounded-xl bg-white border border-[#E2E8F0] p-4 text-xs text-[#5C5E62]">
-                      Direct 100% turnkey purchase. Typical estimated payback period:{" "}
-                      <span className="font-semibold text-[#171A20]">3 to 5 Years</span> depending
-                      on consumption and DISCOM net-metering tariff.
+                      Direct 100% turnkey purchase. Estimated simple payback:{" "}
+                      <span className="font-semibold text-[#171A20]">
+                        {calculation.paybackYears > 0
+                          ? `~${calculation.paybackYears} Years`
+                          : "3 to 5 Years"}
+                      </span>{" "}
+                      depending on consumption and DISCOM net-metering tariff.{" "}
+                      <a href="/legal/disclosures" className="underline hover:text-[#171A20]">
+                        See assumptions
+                      </a>
                     </div>
                   )}
                 </div>
+
+                <p className="text-[11px] text-[#5C5E62] pt-2">
+                  * Estimate only. Final sizing and yield depends on physical roof shading,
+                  orientation, and DISCOM sanctions.{" "}
+                  <a href="/legal/disclosures" className="underline hover:text-[#171A20]">
+                    See how we calculate
+                  </a>
+                </p>
               </div>
             </div>
 

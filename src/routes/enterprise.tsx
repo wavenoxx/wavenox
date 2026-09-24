@@ -192,7 +192,7 @@ function EnterprisePage() {
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">2.8 Years</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">~3–4 Years</div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   CAPEX Payback
                 </div>
@@ -487,7 +487,7 @@ function EnterprisePage() {
                 <div className="flex justify-between items-baseline pt-1">
                   <div>
                     <div className="text-xs font-semibold text-[#5C5E62] uppercase tracking-wider">
-                      25-Year Corporate Net Wealth
+                      25-year savings after system cost
                     </div>
                     <div className="text-[11px] text-[#5C5E62]">
                       After full amortization of equipment & maintenance
@@ -497,6 +497,14 @@ function EnterprisePage() {
                     ₹{twentyFiveYearCrores} <span className="text-sm font-semibold">Cr</span>
                   </div>
                 </div>
+
+                <p className="text-[11px] text-[#5C5E62] pt-3 border-t border-[#E2E8F0]">
+                  * Note on Section 32: Depreciation is halved if the asset is used for less than
+                  180 days in the year. Confirm with your CA.{" "}
+                  <a href="/legal/disclosures" className="underline hover:text-[#171A20]">
+                    See how we calculate
+                  </a>
+                </p>
               </div>
             </motion.div>
           </div>
@@ -513,7 +521,7 @@ function EnterprisePage() {
           </h3>
           <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
             WAVENOX in-house engineering team handles turnkey CEIG high-voltage synchronization,
-            DISCOM net-metering & open-access approvals with guaranteed 25-year performance ratios.
+            DISCOM net-metering & open-access approvals with 25-year performance warranties.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
