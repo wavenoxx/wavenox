@@ -223,7 +223,14 @@ export function Header() {
                 </div>
               </div>
             </div>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col gap-2">
+              <Link
+                to="/service-areas"
+                onClick={() => setRegionModalOpen(false)}
+                className="w-full h-10 rounded-[4px] border border-[#171A20] text-[#171A20] text-[13px] font-medium flex items-center justify-center hover:bg-[#F4F4F4] transition-colors"
+              >
+                View Full Jurisdictions &amp; Net-Metering Details
+              </Link>
               <button
                 type="button"
                 onClick={() => {
@@ -292,6 +299,14 @@ export function Header() {
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                 >
                   <span>Asset Warranty</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
+                <Link
+                  to="/service-areas"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>Service Areas &amp; DISCOMs</span>
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
                 <Link

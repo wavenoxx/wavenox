@@ -192,7 +192,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "PM Surya Ghar Subsidy Guide", to: "/legal/disclosures" },
           { label: "Customer Stories & Installations", to: "/residential" },
           { label: "Safety & Cyclone Wind Standards", to: "/residential" },
-          { label: "Net Metering Regulations", to: "/legal/disclosures" },
+          { label: "Regional Jurisdictions & DISCOMs", to: "/service-areas" },
         ],
       },
       {
