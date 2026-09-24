@@ -32,7 +32,7 @@ export const Route = createFileRoute("/enterprise")({
       {
         name: "description",
         content:
-          "Turn idle industrial rooftops into high-yield capital assets. 40% accelerated tax depreciation under Section 32, zero-downtime microgrids, and guaranteed 25-year performance.",
+          "Turn idle industrial rooftops into high-yield capital assets. 40% accelerated tax depreciation under Section 32, zero-downtime microgrids, and 25-year OEM-backed linear warranties.",
       },
       {
         property: "og:title",

@@ -95,7 +95,7 @@ export function Hero() {
             {/* Primary Pill: Order Now */}
             <Link
               to="/deploy"
-              className="w-full sm:w-auto px-8 py-2.5 rounded-full bg-white text-[#171A20] text-sm font-medium hover:bg-neutral-200 transition-all text-center shadow-md cursor-pointer"
+              className="w-full sm:w-auto min-w-[200px] whitespace-nowrap px-8 py-2.5 rounded-full bg-white text-[#171A20] text-sm font-medium hover:bg-neutral-200 transition-all text-center shadow-md cursor-pointer"
             >
               Order Now
             </Link>
@@ -104,7 +104,7 @@ export function Hero() {
             <button
               type="button"
               onClick={() => openConsultationDrawer()}
-              className="w-full sm:w-auto px-8 py-2.5 rounded-full bg-black/50 backdrop-blur-md text-white text-sm font-medium border border-white/20 hover:bg-black/75 transition-all text-center cursor-pointer"
+              className="w-full sm:w-auto min-w-[200px] whitespace-nowrap px-8 py-2.5 rounded-full bg-black/50 backdrop-blur-md text-white text-sm font-medium border border-white/20 hover:bg-black/75 transition-all text-center cursor-pointer"
             >
               Schedule Consultation
             </button>
