@@ -100,7 +100,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           },
           { label: "Zero Terrace Damage Guarantee", to: "/residential" },
           { label: "Utility Sanctions (TGSPDCL / APSPDCL)", to: "/legal/disclosures" },
-          { label: "25-Year Linear Power Warranty", to: "/residential" },
+          { label: "25-Year Linear Power Warranty", to: "/warranty" },
           { label: "Residential Financing & Subsidies", to: "/deploy" },
         ],
       },
@@ -201,7 +201,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "N-Type TOPCon Cell Architecture", to: "/technology" },
           { label: "Omnigrid Solid-State Islanding", to: "/omnigrid" },
           { label: "Realtime Mobile Telemetry", to: "/#monitoring" },
-          { label: "Linear 25-Year Performance Curve", to: "/residential" },
+          { label: "Linear 25-Year Performance Curve", to: "/warranty" },
         ],
       },
       {
