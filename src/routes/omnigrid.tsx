@@ -17,6 +17,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
+import { PRODUCTS_CONFIG } from "@/config/products";
 import ogHero01 from "@/assets/og-hero-01.jpg";
 import ogHero02 from "@/assets/og-hero-02.jpg";
 import ogCore from "@/assets/og-core.jpg";
@@ -130,23 +131,27 @@ function OmnigridPage() {
               className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
             >
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">13.5 kWh</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                  {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh
+                </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   Capacity / Unit
                 </div>
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">
-                  &lt; 4ms
+                  {PRODUCTS_CONFIG.battery.islandingTransferSpeedMs}
                 </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
                   Sub-Cycle Islanding
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">10-Year</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                  {PRODUCTS_CONFIG.battery.warrantyYears}-Year
+                </div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
-                  Unconditional Warranty
+                  Warranty
                 </div>
               </div>
             </motion.div>
@@ -158,16 +163,13 @@ function OmnigridPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link
-                to="/deploy"
-                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
-              >
+              <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
                 Configure Omnigrid System
               </Link>
               <button
                 type="button"
                 onClick={() => openConsultationDrawer("villa")}
-                className="tesla-pill-glass w-full sm:w-auto text-sm cursor-pointer"
+                className="btn-glass w-full sm:w-auto text-sm cursor-pointer"
               >
                 Consult Storage Engineer
               </button>
@@ -383,50 +385,53 @@ function OmnigridPage() {
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Usable Energy Capacity</span>
               <span className="font-semibold text-[#171A20]">
-                13.5 kWh per unit (100% Depth of Discharge)
+                {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh per unit
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Peak & Continuous Power Output</span>
               <span className="font-semibold text-[#171A20]">
-                7.0 kW Peak / 5.0 kW Continuous per Unit
+                {PRODUCTS_CONFIG.battery.peakPowerKw} kW Peak /{" "}
+                {PRODUCTS_CONFIG.battery.continuousPowerKw} kW Continuous per Unit
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Battery Chemistry</span>
               <span className="font-semibold text-[#171A20]">
-                Lithium Iron Phosphate (LFP) — Cobalt-Free & Non-Combustible
+                {PRODUCTS_CONFIG.battery.chemistry}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Round-Trip AC-to-AC Efficiency</span>
-              <span className="font-semibold text-[#171A20]">92.5% Efficient Conversion</span>
+              <span className="text-[#5C5E62] font-medium">Round-Trip Efficiency</span>
+              <span className="font-semibold text-[#171A20]">
+                {PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}% AC-to-AC
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Operating Temperature Range</span>
               <span className="font-semibold text-[#171A20]">
-                -10°C to +52°C (Engineered for Extreme Indian Climates)
+                {PRODUCTS_CONFIG.battery.operatingTempRangeC}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Ingress Protection Rating</span>
               <span className="font-semibold text-[#171A20]">
-                IP67 Certified All-Weather Waterproof (Indoor / Outdoor)
-              </span>
-            </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Certifications & Standards</span>
-              <span className="font-semibold text-[#171A20]">
-                BIS Certified, IEC 62619, UL 9540, CEIG Approved
+                {PRODUCTS_CONFIG.battery.protectionRating}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Performance Warranty</span>
               <span className="font-semibold text-[#171A20]">
-                10-Year Unconditional Full Replacement Warranty
+                {PRODUCTS_CONFIG.battery.warrantyYears}-Year Warranty
               </span>
             </div>
           </div>
+
+          {!PRODUCTS_CONFIG.specsVerified && (
+            <p className="mt-4 text-center text-xs text-[#5C5E62] italic">
+              {PRODUCTS_CONFIG.indicativeDisclaimer}
+            </p>
+          )}
         </div>
       </section>
 
@@ -443,16 +448,13 @@ function OmnigridPage() {
             consultation with our storage specialists.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link
-              to="/deploy"
-              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
-            >
+            <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
               Configure in Design Studio →
             </Link>
             <button
               type="button"
               onClick={() => openConsultationDrawer("villa")}
-              className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer"
+              className="btn-secondary w-full sm:w-auto text-sm cursor-pointer"
             >
               Consult Energy Storage Engineer
             </button>

@@ -21,11 +21,12 @@ import {
 import { BRAND_CONFIG } from "@/config/brand";
 import { BUSINESS } from "@/config/business";
 import { SOLAR_CONFIG, calculateGovtSubsidyInr } from "@/config/solar";
+import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import luxurySolarVilla from "@/assets/luxury_solar_villa.jpg";
 import resHero02 from "@/assets/res-hero-02.jpg";
 
-// System Sizing Presets matching Tesla's modular tier architecture
+// System Sizing Presets matching modular tier architecture
 const SYSTEM_TIERS = [
   {
     id: "small",
@@ -280,7 +281,7 @@ export function SystemConfigurator() {
             <button
               type="button"
               onClick={() => openConsultationDrawer("villa")}
-              className="tesla-pill-secondary text-xs cursor-pointer"
+              className="btn-secondary text-xs cursor-pointer"
             >
               Request Advisor Call
             </button>
@@ -412,6 +413,12 @@ export function SystemConfigurator() {
               </div>
             </div>
 
+            {!PRODUCTS_CONFIG.specsVerified && (
+              <p className="text-[11px] text-[#5C5E62] italic px-1">
+                {PRODUCTS_CONFIG.indicativeDisclaimer}
+              </p>
+            )}
+
             {/* Turnkey Assurance Card */}
             <div className="rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] p-4 flex items-start gap-3 text-xs text-[#5C5E62]">
               <ShieldCheck className="h-5 w-5 text-[#171A20] shrink-0 mt-0.5" />
@@ -425,7 +432,7 @@ export function SystemConfigurator() {
           </div>
 
           {/* =========================================================================
-              RIGHT COLUMN: Interactive Control Deck (Tesla 6-Step Studio)
+              RIGHT COLUMN: Interactive Control Deck (6-Step Studio)
               ========================================================================= */}
           <div className="lg:col-span-7 space-y-10">
             {/* -----------------------------------------------------------------------
@@ -529,7 +536,7 @@ export function SystemConfigurator() {
             <hr className="border-[#E2E8F0]" />
 
             {/* -----------------------------------------------------------------------
-                STEP 2: System Sizing (Tesla 4-Tier Matrix + Stepper)
+                STEP 2: System Sizing (4-Tier Matrix + Stepper)
                 ----------------------------------------------------------------------- */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -548,7 +555,7 @@ export function SystemConfigurator() {
                 offset for your utility bill tier.
               </p>
 
-              {/* 4-Tier Grid matching Tesla Solar */}
+              {/* 4-Tier Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {SYSTEM_TIERS.map((tier) => (
                   <button
@@ -887,7 +894,7 @@ export function SystemConfigurator() {
                     <button
                       type="button"
                       onClick={handleDispatchWhatsApp}
-                      className="tesla-pill-primary text-xs cursor-pointer"
+                      className="btn-primary text-xs cursor-pointer"
                     >
                       Open Proposal on WhatsApp →
                     </button>
@@ -927,14 +934,14 @@ export function SystemConfigurator() {
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <button
                       type="submit"
-                      className="flex-1 tesla-pill-primary py-3.5 text-xs font-semibold cursor-pointer"
+                      className="flex-1 btn-primary py-3.5 text-xs font-semibold cursor-pointer"
                     >
                       Reserve System — ₹0 Down
                     </button>
                     <button
                       type="button"
                       onClick={handleDispatchWhatsApp}
-                      className="flex-1 tesla-pill-secondary py-3.5 text-xs font-semibold cursor-pointer"
+                      className="flex-1 btn-secondary py-3.5 text-xs font-semibold cursor-pointer"
                     >
                       Dispatch Proposal via WhatsApp →
                     </button>

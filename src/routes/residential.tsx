@@ -16,6 +16,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
+import { PRODUCTS_CONFIG } from "@/config/products";
 import resHero01 from "@/assets/res-hero-01.jpg";
 import resHero02 from "@/assets/res-hero-02.jpg";
 import resTile from "@/assets/res-tile.jpg";
@@ -59,7 +60,7 @@ function ResidentialPage() {
       <section className="relative min-h-screen w-full overflow-hidden bg-[#171A20]">
         <img
           src={resHero01}
-          alt="Ultra-modern luxury villa at twilight with seamless integrated solar roof"
+          alt="Ultra-modern luxury villa at twilight with seamless integrated solar panels"
           className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
@@ -123,16 +124,13 @@ function ResidentialPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link
-                to="/deploy"
-                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
-              >
+              <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
                 Design Your System
               </Link>
               <button
                 type="button"
                 onClick={() => openConsultationDrawer("villa")}
-                className="tesla-pill-glass w-full sm:w-auto text-sm cursor-pointer"
+                className="btn-glass w-full sm:w-auto text-sm cursor-pointer"
               >
                 Schedule Virtual Consultation
               </button>
@@ -262,10 +260,10 @@ function ResidentialPage() {
               </div>
 
               <div className="pt-4 flex gap-4">
-                <Link to="/deploy" className="tesla-pill-primary text-xs cursor-pointer">
+                <Link to="/deploy" className="btn-primary text-xs cursor-pointer">
                   Configure Battery Storage
                 </Link>
-                <Link to="/omnigrid" className="tesla-pill-secondary text-xs cursor-pointer">
+                <Link to="/omnigrid" className="btn-secondary text-xs cursor-pointer">
                   Explore Omnigrid →
                 </Link>
               </div>
@@ -307,50 +305,59 @@ function ResidentialPage() {
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Cell Technology</span>
               <span className="font-semibold text-[#171A20]">
-                N-Type TOPCon Monocrystalline Bifacial
+                {PRODUCTS_CONFIG.module.cellType}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Module Efficiency</span>
-              <span className="font-semibold text-[#171A20]">24.8% Peak Output Efficiency</span>
+              <span className="font-semibold text-[#171A20]">
+                {PRODUCTS_CONFIG.module.efficiencyPct}% STC Efficiency
+              </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Mechanical Wind & Hail Durability</span>
+              <span className="text-[#5C5E62] font-medium">Static Load Resilience</span>
               <span className="font-semibold text-[#171A20]">
-                Class 4 Hail Resistance / 250 km/h Cyclone Rated
+                {PRODUCTS_CONFIG.module.maxStaticLoadPa}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Inverter Conversion Efficiency</span>
               <span className="font-semibold text-[#171A20]">
-                98.6% European Weighted Multi-MPPT
+                {PRODUCTS_CONFIG.inverter.efficiencyPct}% European Weighted
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Grid Net-Metering Compliance</span>
               <span className="font-semibold text-[#171A20]">
-                100% Turnkey CEIG & State DISCOM Approval
+                State DISCOM & CEIG Application Filing
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Central Government Subsidy</span>
               <span className="font-semibold text-emerald-700">
-                PM Surya Ghar Muft Bijli Yojana (Up to ₹78,000)
+                PM Surya Ghar Muft Bijli Yojana (Up to ₹78,000 for eligible homes)
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Fire & Safety Rating</span>
               <span className="font-semibold text-[#171A20]">
-                Class A Fire Rating / BIS & IEC 61215 Certified
+                {PRODUCTS_CONFIG.module.fireRating}
               </span>
             </div>
             <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
               <span className="text-[#5C5E62] font-medium">Comprehensive Warranty</span>
               <span className="font-semibold text-[#171A20]">
-                25-Year Linear Performance & 25-Year Workmanship
+                {PRODUCTS_CONFIG.module.performanceWarrantyYears}-Year Linear Performance &{" "}
+                {PRODUCTS_CONFIG.module.productWarrantyYears}-Year Workmanship
               </span>
             </div>
           </div>
+
+          {!PRODUCTS_CONFIG.specsVerified && (
+            <p className="mt-4 text-center text-xs text-[#5C5E62] italic">
+              {PRODUCTS_CONFIG.indicativeDisclaimer}
+            </p>
+          )}
         </div>
       </section>
 
@@ -367,16 +374,13 @@ function ResidentialPage() {
             senior architectural advisors.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link
-              to="/deploy"
-              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
-            >
+            <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
               Launch Design Studio →
             </Link>
             <button
               type="button"
               onClick={() => openConsultationDrawer("villa")}
-              className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer"
+              className="btn-secondary w-full sm:w-auto text-sm cursor-pointer"
             >
               Book Site Architectural Audit
             </button>

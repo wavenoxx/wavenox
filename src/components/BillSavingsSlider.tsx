@@ -129,7 +129,7 @@ export function BillSavingsSlider() {
                 step={1000}
                 value={monthlyBill}
                 onChange={(e) => setMonthlyBill(Number(e.target.value))}
-                className="tesla-slider"
+                className="range-slider"
               />
               <div className="flex justify-between text-xs text-[#5C5E62] font-medium">
                 <span>₹3,000 / mo</span>

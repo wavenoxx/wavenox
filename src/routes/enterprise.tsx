@@ -136,7 +136,7 @@ function EnterprisePage() {
       <section className="relative min-h-screen w-full overflow-hidden bg-[#171A20]">
         <img
           src={enterpriseMwRooftop}
-          alt="Megawatt commercial solar rooftop array on corporate industrial headquarters"
+          alt="Megawatt commercial solar array on corporate industrial headquarters"
           className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50" />
@@ -205,13 +205,13 @@ function EnterprisePage() {
               <button
                 type="button"
                 onClick={() => openConsultationDrawer("commercial")}
-                className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+                className="btn-primary w-full sm:w-auto text-sm cursor-pointer"
               >
                 Commission MW Feasibility Study
               </button>
               <a
                 href="#commercial-calculator"
-                className="tesla-pill-glass w-full sm:w-auto text-sm cursor-pointer"
+                className="btn-glass w-full sm:w-auto text-sm cursor-pointer"
               >
                 Calculate Commercial ROI ↓
               </a>
@@ -428,14 +428,14 @@ function EnterprisePage() {
                 <button
                   type="button"
                   onClick={handleWhatsAppRfp}
-                  className="tesla-pill-primary text-xs cursor-pointer"
+                  className="btn-primary text-xs cursor-pointer"
                 >
                   Dispatch RFP Proposal via WhatsApp →
                 </button>
                 <button
                   type="button"
                   onClick={() => openConsultationDrawer("commercial")}
-                  className="tesla-pill-secondary text-xs cursor-pointer"
+                  className="btn-secondary text-xs cursor-pointer"
                 >
                   Book On-Site Engineering Audit
                 </button>
@@ -515,14 +515,11 @@ function EnterprisePage() {
             <button
               type="button"
               onClick={() => openConsultationDrawer("commercial")}
-              className="tesla-pill-primary w-full sm:w-auto text-sm cursor-pointer"
+              className="btn-primary w-full sm:w-auto text-sm cursor-pointer"
             >
               Request Commercial Feasibility Survey
             </button>
-            <Link
-              to="/deploy"
-              className="tesla-pill-secondary w-full sm:w-auto text-sm cursor-pointer"
-            >
+            <Link to="/deploy" className="btn-secondary w-full sm:w-auto text-sm cursor-pointer">
               Launch Design Studio →
             </Link>
           </div>

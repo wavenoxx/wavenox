@@ -25,7 +25,7 @@ export function Hero() {
         />
       </div>
 
-      {/* Top Content: Clean Tesla-Grade Typography */}
+      {/* Top Content: Clean Typography */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -92,7 +92,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Dual Tesla-Style Pill Action Buttons */}
+          {/* Dual Pill Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             {/* Primary Pill: Order Now */}
             <Link

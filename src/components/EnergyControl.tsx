@@ -179,7 +179,7 @@ export function EnergyControl() {
               </div>
             </div>
 
-            {/* Dual Tesla-Style Pill Buttons */}
+            {/* Dual Pill Buttons */}
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               <Link
                 to="/deploy"
@@ -197,7 +197,7 @@ export function EnergyControl() {
             </div>
           </div>
 
-          {/* Right Column: Realistic Tesla-Grade Smartphone Frame */}
+          {/* Right Column: Realistic Smartphone Frame */}
           <div className="lg:col-span-6 flex justify-center order-1 lg:order-2">
             <div className="relative w-full max-w-[340px] sm:max-w-[360px] rounded-[44px] bg-[#171A20] p-3.5 shadow-2xl border-4 border-[#393C41]">
               {/* Dynamic Island / Bezel Top */}

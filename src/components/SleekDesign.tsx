@@ -110,7 +110,7 @@ export function SleekDesign() {
               );
             })}
 
-            {/* Dual Tesla-Style Pill Buttons */}
+            {/* Dual Pill Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}

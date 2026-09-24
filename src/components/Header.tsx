@@ -7,8 +7,8 @@ import { openConsultationDrawer } from "./ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 
 const MAIN_NAV = [
-  { label: "Solar Roof", to: "/residential" },
   { label: "Solar Panels", to: "/" },
+  { label: "Homes", to: "/residential" },
   { label: "Omnigrid", to: "/omnigrid" },
   { label: "Commercial", to: "/enterprise" },
 ];
@@ -18,7 +18,7 @@ const DRAWER_NAV = [
   { label: "Solar for Homes", to: "/residential" },
   { label: "Omnigrid Energy Storage", to: "/omnigrid" },
   { label: "Commercial & Industrial Solar", to: "/enterprise" },
-  { label: "System Design Studio", to: "/deploy" },
+  { label: "Design Studio", to: "/deploy" },
 ];
 
 export function Header() {
@@ -58,7 +58,7 @@ export function Header() {
           <BrandLogo size="md" className={isScrolled ? "text-[#171A20]" : "text-white"} />
         </div>
 
-        {/* Center: Tesla-style Minimalist Links */}
+        {/* Center: Minimalist Links */}
         <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
           {MAIN_NAV.map((item) => (
             <Link
@@ -100,7 +100,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Tesla Slide-Over Side Drawer */}
+      {/* Slide-Over Side Drawer */}
       <AnimatePresence>
         {drawerOpen && (
           <div className="fixed inset-0 z-50 overflow-hidden">

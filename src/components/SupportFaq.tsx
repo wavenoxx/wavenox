@@ -79,7 +79,7 @@ export function SupportFaq() {
           </motion.p>
         </div>
 
-        {/* Clean Tesla-Style Accordion List */}
+        {/* Clean Minimalist Accordion List */}
         <div className="mt-12 sm:mt-16 space-y-3">
           {FAQ_ITEMS.map((item, i) => {
             const isOpen = openIndex === i;

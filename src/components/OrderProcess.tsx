@@ -134,7 +134,7 @@ export function OrderProcess() {
             </div>
           </div>
 
-          {/* Dual Tesla Pill CTAs */}
+          {/* Dual Pill CTAs */}
           <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
             <Link
               to="/deploy"

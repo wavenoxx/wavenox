@@ -157,7 +157,7 @@ export function ConsultationDrawer() {
             <div className="p-6 sm:p-8 border-b border-[#E2E8F0] flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-10">
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-widest text-[#5C5E62]">
-                  Tesla-Grade Energy Advisory
+                  Energy Advisory
                 </span>
                 <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171A20] mt-0.5">
                   Schedule Virtual Consultation
@@ -295,7 +295,7 @@ export function ConsultationDrawer() {
                           step={1000}
                           value={monthlyBill}
                           onChange={(e) => setMonthlyBill(Number(e.target.value))}
-                          className="tesla-slider"
+                          className="range-slider"
                         />
                         <div className="flex justify-between text-[11px] text-[#5C5E62]">
                           <span>₹3,000 / mo</span>
