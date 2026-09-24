@@ -1,10 +1,13 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { Printer, Share2, FileDown } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button, TextLink } from "@/components/system";
 import { BRAND_CONFIG } from "@/config/brand";
+import { ArchitecturalDossierModal, type DossierData } from "@/components/ArchitecturalDossierModal";
+import { PRODUCTS_CONFIG } from "@/config/products";
 
 const orderReceivedSearchSchema = z.object({
   ref: z.string().optional().default("WNX-PROPOSAL"),
@@ -44,6 +47,44 @@ const NEXT_STEPS = [
 
 function OrderReceivedPage() {
   const { ref } = Route.useSearch();
+  const [dossierModalOpen, setDossierModalOpen] = React.useState(false);
+  const [dossierData, setDossierData] = React.useState<DossierData | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = sessionStorage.getItem("wavenox_active_dossier");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setDossierData(parsed);
+          return;
+        }
+      } catch {
+        // fallback
+      }
+    }
+    // Default fallback if directly visited
+    setDossierData({
+      refCode: ref,
+      clientName: "Valued Estate Owner",
+      phone: "",
+      address: "Telangana / Andhra Pradesh",
+      pinCode: "500033",
+      discomName: "TGSPDCL",
+      systemKw: 13.2,
+      panelCount: 24,
+      batteryUnits: 1,
+      batteryKwh: PRODUCTS_CONFIG.battery.usableCapacityKwh,
+      monthlyBill: 12000,
+      grossCapex: 1098400,
+      subsidyInr: 78000,
+      netPayable: 1020400,
+      monthlyEmi: 21450,
+      paybackYears: 4.2,
+      annualSavings: 132480,
+      twentyFiveYearSavings: 4210000,
+    });
+  }, [ref]);
 
   const whatsappHref = `${BRAND_CONFIG.contact.whatsappLink}?text=${encodeURIComponent(
     `Hello WAVENOX Team, I recently requested an architectural solar proposal with reference code ${ref}. I would like to review my technical sizing and schedule an engineering consultation.`,
@@ -103,24 +144,32 @@ function OrderReceivedPage() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6">
+            <button
+              type="button"
+              onClick={() => setDossierModalOpen(true)}
+              className="w-full sm:w-auto min-w-[220px] h-10 px-5 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <FileDown className="w-4 h-4 text-[#F57C00]" />
+              <span>Download Dossier (PDF)</span>
+            </button>
             <Button
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              variant="primary"
+              variant="secondary"
               tone="light"
-              className="w-full sm:w-auto min-w-[200px]"
+              className="w-full sm:w-auto min-w-[180px]"
             >
-              Connect on WhatsApp
+              Chat on WhatsApp
             </Button>
             <Button
               to="/"
               variant="secondary"
               tone="light"
-              className="w-full sm:w-auto min-w-[200px]"
+              className="w-full sm:w-auto min-w-[150px]"
             >
-              Return to Showcase
+              Showcase
             </Button>
           </div>
 
@@ -129,6 +178,15 @@ function OrderReceivedPage() {
           </p>
         </div>
       </main>
+
+      {/* Bespoke Architectural Dossier Modal */}
+      {dossierData && (
+        <ArchitecturalDossierModal
+          isOpen={dossierModalOpen}
+          onClose={() => setDossierModalOpen(false)}
+          data={dossierData}
+        />
+      )}
 
       <Footer />
     </div>

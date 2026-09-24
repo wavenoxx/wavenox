@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Plus, Minus, ShieldCheck, AlertCircle, MessageSquare, CheckCircle2 } from "lucide-react";
+import { Plus, Minus, ShieldCheck, AlertCircle, MessageSquare, CheckCircle2, FileText } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
@@ -9,6 +9,7 @@ import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow, Button, TextLink } from "@/components/system";
 import { media } from "@/config/media";
+import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
 
 export interface SystemConfiguratorProps {
   initialBill?: number;
@@ -87,6 +88,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [companyWebsite, setCompanyWebsite] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [previewDossierOpen, setPreviewDossierOpen] = React.useState(false);
 
   // Selected DISCOM
   const discom = React.useMemo(() => {
@@ -132,6 +134,44 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     else setPanelCount(SYSTEM_TIERS[3].panels);
   };
 
+  const currentDossierData: DossierData = React.useMemo(() => ({
+    refCode: "WNX-PREVIEW",
+    clientName: userName || "Prospective Estate Owner",
+    phone: userPhone,
+    address: address || "Site Assessment Required",
+    pinCode: pinCode || "Verified Local Hub",
+    discomName: discom.name,
+    systemKw: systemKw,
+    panelCount: panelCount,
+    batteryUnits: selectedBatteryUnits,
+    batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
+    monthlyBill: monthlyBill,
+    grossCapex: totalGrossInr,
+    subsidyInr: subsidyInr,
+    netPayable: netPayableInr,
+    monthlyEmi: monthlyEmiInr,
+    paybackYears: calculation.paybackYears,
+    annualSavings: calculation.annualSavingsInr,
+    twentyFiveYearSavings: twentyFiveYearWealthInr,
+  }), [
+    userName,
+    userPhone,
+    address,
+    pinCode,
+    discom.name,
+    systemKw,
+    panelCount,
+    selectedBatteryUnits,
+    monthlyBill,
+    totalGrossInr,
+    subsidyInr,
+    netPayableInr,
+    monthlyEmiInr,
+    calculation.paybackYears,
+    calculation.annualSavingsInr,
+    twentyFiveYearWealthInr,
+  ]);
+
   const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consentGiven) {
@@ -174,6 +214,36 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         setSubmitError(res.message);
         setIsSubmitting(false);
         return;
+      }
+
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem(
+            "wavenox_active_dossier",
+            JSON.stringify({
+              refCode: res.referenceCode || "WNX-PROPOSAL",
+              clientName: userName,
+              phone: userPhone,
+              address: address,
+              pinCode: pinCode.trim(),
+              discomName: discom.name,
+              systemKw: systemKw,
+              panelCount: panelCount,
+              batteryUnits: selectedBatteryUnits,
+              batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
+              monthlyBill: monthlyBill,
+              grossCapex: totalGrossInr,
+              subsidyInr: subsidyInr,
+              netPayable: netPayableInr,
+              monthlyEmi: monthlyEmiInr,
+              paybackYears: calculation.paybackYears,
+              annualSavings: calculation.annualSavingsInr,
+              twentyFiveYearSavings: twentyFiveYearWealthInr,
+            })
+          );
+        } catch {
+          // ignore storage quota errors
+        }
       }
 
       navigate({
@@ -670,16 +740,28 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </label>
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting || !consentGiven}
-                className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-                <span>
-                  {isSubmitting ? "Generating Dossier..." : "Request Engineering Proposal Dossier"}
-                </span>
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !consentGiven}
+                  className="flex-1 h-12 px-5 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
+                  <span>
+                    {isSubmitting ? "Generating Dossier..." : "Request Proposal Dossier"}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPreviewDossierOpen(true)}
+                  className="h-12 px-4 rounded-[6px] border border-[#E5E7EB] bg-[#FFFFFF] text-[#171A20] text-[13px] font-medium hover:bg-[#F9FAFB] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  title="View instant architectural feasibility preview"
+                >
+                  <FileText className="w-4 h-4 text-[#5C5E62]" />
+                  <span>Preview Dossier (PDF)</span>
+                </button>
+              </div>
 
               <div className="pt-2 text-center">
                 <a
@@ -717,6 +799,13 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           Request Proposal
         </button>
       </div>
+
+      {/* Bespoke Architectural Feasibility Dossier Preview Modal */}
+      <ArchitecturalDossierModal
+        isOpen={previewDossierOpen}
+        onClose={() => setPreviewDossierOpen(false)}
+        data={currentDossierData}
+      />
     </div>
   );
 }
