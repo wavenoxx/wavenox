@@ -270,7 +270,7 @@ export function SystemConfigurator() {
             <div className="flex items-center gap-2">
               <span className="inline-block h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
               <span className="text-[11px] font-semibold uppercase tracking-widest text-[#5C5E62]">
-                WAVENOX DESIGN STUDIO • LAYER 2
+                WAVENOX DESIGN STUDIO
               </span>
             </div>
             <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-tight text-[#171A20]">
@@ -342,7 +342,7 @@ export function SystemConfigurator() {
               <div className="absolute top-4 right-4">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-[11px] font-semibold tracking-wide backdrop-blur-md">
                   <Check className="h-3 w-3" />
-                  100% Net-Meter Ready
+                  Net-Metering Compatible
                 </span>
               </div>
 
@@ -423,10 +423,8 @@ export function SystemConfigurator() {
             <div className="rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] p-4 flex items-start gap-3 text-xs text-[#5C5E62]">
               <ShieldCheck className="h-5 w-5 text-[#171A20] shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-[#171A20]">Guaranteed Approval Protocol:</span>{" "}
-                WAVENOX certified engineers handle 100% of CEIG electrical safety clearances, DISCOM
-                bi-directional net-meter replacement, and PM Surya Ghar central subsidy
-                documentation.
+                <span className="font-semibold text-[#171A20]">Regulatory Support:</span> We prepare
+                and file your DISCOM net-metering and PM Surya Ghar applications for you.
               </div>
             </div>
           </div>
@@ -444,7 +442,7 @@ export function SystemConfigurator() {
                   STEP 01 / LOCATION & UTILITY
                 </div>
                 <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                  {discom.state} Approved
+                  {discom.state} Grid-Tied
                 </span>
               </div>
               <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171A20]">
@@ -750,7 +748,9 @@ export function SystemConfigurator() {
                 <div className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
                   STEP 05 / FINANCIAL SUMMARY & SUBSIDY
                 </div>
-                <span className="text-xs font-bold text-emerald-700">PM Surya Ghar Certified</span>
+                <span className="text-xs font-bold text-emerald-700">
+                  PM Surya Ghar Eligible (Residential)
+                </span>
               </div>
               <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171A20]">
                 Transparent Investment & Savings
@@ -835,10 +835,10 @@ export function SystemConfigurator() {
                     <div className="rounded-xl bg-white border border-[#E2E8F0] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
                         <div className="text-xs font-semibold text-[#171A20]">
-                          Instant Net-Positive Cashflow:
+                          Estimated Monthly EMI:
                         </div>
                         <div className="text-[11px] text-[#5C5E62]">
-                          Your monthly loan payment is lower than your current electricity bill.
+                          Indicative 60-month solar financing at 9.5% p.a.
                         </div>
                       </div>
                       <div className="text-right">
@@ -847,15 +847,15 @@ export function SystemConfigurator() {
                           <span className="text-xs font-normal text-[#5C5E62]">/ mo</span>
                         </div>
                         <div className="text-[10px] text-[#5C5E62]">
-                          replaces ₹{monthlyBill.toLocaleString("en-IN")}/mo bill
+                          vs. ₹{monthlyBill.toLocaleString("en-IN")}/mo current bill
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="rounded-xl bg-white border border-[#E2E8F0] p-4 text-xs text-[#5C5E62]">
-                      Direct 100% turnkey purchase. Estimated payback period:{" "}
-                      <span className="font-semibold text-[#171A20]">2.8 to 3.2 Years</span> with
-                      net-metering credit.
+                      Direct 100% turnkey purchase. Typical estimated payback period:{" "}
+                      <span className="font-semibold text-[#171A20]">3 to 5 Years</span> depending
+                      on consumption and DISCOM net-metering tariff.
                     </div>
                   )}
                 </div>
@@ -869,14 +869,14 @@ export function SystemConfigurator() {
                 ----------------------------------------------------------------------- */}
             <div className="space-y-4">
               <div className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
-                STEP 06 / RESERVE & AUDIT
+                STEP 06 / REQUEST PROPOSAL
               </div>
               <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#171A20]">
-                Reserve Your Architectural System
+                Request Your System Proposal
               </h2>
               <p className="text-xs sm:text-sm text-[#5C5E62]">
-                Lock in your installation slot and receive a personalized 3D solar irradiance model
-                and turnkey feasibility survey. Zero deposit required.
+                Receive a personalized solar layout proposal and turnkey feasibility assessment. No
+                commitment required.
               </p>
 
               {isReserved ? (
@@ -884,11 +884,11 @@ export function SystemConfigurator() {
                   <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
                     <Check className="h-6 w-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-[#171A20]">Reservation Slot Confirmed</h3>
+                  <h3 className="text-lg font-bold text-[#171A20]">Proposal Request Received</h3>
                   <p className="text-xs text-[#5C5E62] max-w-md mx-auto">
-                    Thank you, {userName}. A senior WAVENOX architectural solar engineer will
-                    contact you on {userPhone} within 4 business hours with your 3D digital roof
-                    layout and DISCOM feasibility report.
+                    Thank you, {userName}. Our solar advisory team will review your property
+                    configuration and contact you on {userPhone} with your customized system
+                    proposal and feasibility assessment.
                   </p>
                   <div className="pt-3">
                     <button
@@ -936,14 +936,14 @@ export function SystemConfigurator() {
                       type="submit"
                       className="flex-1 btn-primary py-3.5 text-xs font-semibold cursor-pointer"
                     >
-                      Reserve System — ₹0 Down
+                      Request System Proposal
                     </button>
                     <button
                       type="button"
                       onClick={handleDispatchWhatsApp}
                       className="flex-1 btn-secondary py-3.5 text-xs font-semibold cursor-pointer"
                     >
-                      Dispatch Proposal via WhatsApp →
+                      Share via WhatsApp →
                     </button>
                   </div>
                 </form>

@@ -35,9 +35,9 @@ const STEPS = [
   {
     step: "05",
     icon: Zap,
-    title: "Power On & Direct Subsidy Disbursal",
-    desc: "Flip the switch to 100% clean autonomous energy. We submit post-commissioning geo-tagged reports to the National Solar Portal, crediting up to ₹78,000 subsidy directly to your bank account.",
-    timing: "Day 1 Clean Energy",
+    title: "Power On & Subsidy Processing",
+    desc: "Flip the switch to clean solar energy. We submit post-commissioning geo-tagged reports to the National Solar Portal. Subsidies (up to ₹78,000 for eligible residential homes) are typically disbursed by the portal directly to your bank account 1–3 months after commissioning.",
+    timing: "Typically 1–3 months after commissioning",
   },
 ];
 
@@ -126,10 +126,11 @@ export function OrderProcess() {
               <ShieldCheck size={20} />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[#171A20]">Zero Paperwork Hassle</h4>
+              <h4 className="text-sm font-semibold text-[#171A20]">
+                Regulatory & Net-Metering Filing
+              </h4>
               <p className="text-xs text-[#5C5E62] mt-0.5">
-                Our regulatory team coordinates all government DISCOM filings, net-meter
-                installation, and subsidy credits on your behalf.
+                We prepare and file your DISCOM net-metering and PM Surya Ghar applications for you.
               </p>
             </div>
           </div>

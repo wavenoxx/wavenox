@@ -96,7 +96,7 @@ export const BUSINESS: BusinessConfig = {
       state: "Andhra Pradesh",
       tag: "COASTAL & AGRI-SOLAR",
       description:
-        "Cyclone-resilient Category 5 coastal installations, riverfront villas, and industrial cold storage solar systems.",
+        "High-wind resilient coastal installations, riverfront villas, and industrial cold storage solar systems.",
       keyProjects: [
         "Bhavanipuram Commercial Hub",
         "Benz Circle Residences",

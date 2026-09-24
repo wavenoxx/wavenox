@@ -28,7 +28,7 @@ export const Route = createFileRoute("/residential")({
       {
         name: "description",
         content:
-          "Autonomous architectural solar for the world's most exclusive residences. Seamless black-glass aesthetics, 100% net-metering offset, and Omnigrid blackout protection.",
+          "Autonomous architectural solar for exclusive residences. Seamless black-glass aesthetics, net-metering savings, and Omnigrid blackout protection.",
       },
       { property: "og:title", content: `Solar for Luxury Homes & Estates — ${BRAND_CONFIG.name}` },
       {
@@ -82,7 +82,7 @@ function ResidentialPage() {
               </h1>
               <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-xl mx-auto leading-relaxed">
                 Architectural elegance meets unyielding energy sovereignty. Zero visible conduits,
-                100% utility bill offset, and uninterrupted power.
+                high-efficiency clean solar generation, and uninterrupted power.
               </p>
             </motion.div>
           </div>
@@ -96,9 +96,9 @@ function ResidentialPage() {
               className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
             >
               <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">100%</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">Up to 90%+</div>
                 <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
-                  Monthly Bill Offset
+                  Typical Bill Offset
                 </div>
               </div>
               <div>

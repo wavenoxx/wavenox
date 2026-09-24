@@ -36,9 +36,7 @@ export function Hero() {
           Solar for Existing Roofs
         </h1>
         <div className="mt-3 flex items-center justify-center gap-2">
-          <p className="text-sm sm:text-base text-zinc-200 font-normal">
-            Lowest Cost in India — Guaranteed
-          </p>
+          <p className="text-sm sm:text-base text-zinc-200 font-normal">Pay less for electricity</p>
           <span className="text-zinc-400">•</span>
           <button
             type="button"
@@ -64,10 +62,10 @@ export function Hero() {
             {/* Spec 1 */}
             <div className="flex flex-col items-center">
               <span className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-white drop-shadow-sm">
-                Guaranteed
+                ₹78,000
               </span>
               <span className="mt-1 text-[11px] sm:text-xs text-zinc-300 font-normal tracking-wide">
-                Lowest Price in India
+                PM Surya Ghar subsidy (eligible homes)
               </span>
             </div>
 

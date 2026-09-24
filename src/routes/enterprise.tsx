@@ -104,6 +104,10 @@ function EnterprisePage() {
     () => Math.round(annualSavingsInr * 25 - estCapexInr),
     [annualSavingsInr, estCapexInr],
   );
+  const estPaybackYears = useMemo(
+    () => (estCapexInr / Math.max(1, annualSavingsInr)).toFixed(1),
+    [estCapexInr, annualSavingsInr],
+  );
   const twentyFiveYearCrores = (twentyFiveYearNetInr / 10000000).toFixed(2);
 
   const handleWhatsAppRfp = () => {
@@ -476,7 +480,7 @@ function EnterprisePage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[#5C5E62]">Estimated Payback Period</span>
-                    <span className="font-semibold text-[#171A20]">2.8 to 3.2 Years</span>
+                    <span className="font-semibold text-[#171A20]">~{estPaybackYears} Years</span>
                   </div>
                 </div>
 

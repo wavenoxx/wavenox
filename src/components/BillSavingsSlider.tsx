@@ -143,11 +143,11 @@ export function BillSavingsSlider() {
               <div className="flex items-center gap-2">
                 <Zap size={16} className="text-[#F57C00]" />
                 <span className="font-medium text-[#171A20]">
-                  Grid Offset: 100% of your power bill eliminated
+                  Grid Offset: Covers up to 90%+ of daytime power loads
                 </span>
               </div>
               <span className="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                Zero Bill
+                Substantial Savings
               </span>
             </div>
 

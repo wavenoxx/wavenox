@@ -15,23 +15,23 @@ const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: "How do I receive the PM Surya Ghar government subsidy?",
-    a: "Under the PM Surya Ghar Muft Bijli Yojana, residential installations receive direct government subsidies: ₹30,000 per kW up to 2 kW, and ₹78,000 for 3 kW and above. WAVENOX handles the entire digital application, technical feasibility filing, DISCOM inspection, and geo-tagged portal upload. Once your bi-directional net-meter is synchronized, the subsidy is credited directly via Direct Benefit Transfer (DBT) into your bank account within 30 days.",
+    a: "Under the PM Surya Ghar: Muft Bijli Yojana, residential installations receive direct government subsidies: ₹30,000 for 1 kW, ₹60,000 for 2 kW, and ₹78,000 for 3 kW and above (residential only). To qualify, installations must be performed by a registered vendor with ALMM-listed modules. WAVENOX prepares and files your applications. Once your net-meter is commissioned, the subsidy is typically disbursed by the government portal directly via DBT into your bank account within 1–3 months after commissioning.",
   },
   {
     q: "Will panel installation cause roof leaks or void terrace waterproofing?",
-    a: "Never. Conventional solar installers drill directly into terrace RCC slabs, causing micro-fractures and water leakage. WAVENOX utilizes proprietary non-penetrative structural ballast engineering and aerospace-grade chemical anchoring. Every mounting base is sealed with multi-layer UV-stabilized liquid rubber waterproofing barriers, ensuring your roof waterproofing remains 100% intact.",
+    a: "No. Where structural requirements allow, WAVENOX utilizes non-penetrative ballast engineering and specialized weather-resistant chemical anchoring. Every mounting interface is sealed with UV-stabilized waterproofing barriers, protecting the integrity of your terrace.",
   },
   {
     q: "How much electricity do panels produce during Indian monsoons and cloudy days?",
-    a: "WAVENOX N-Type TOPCon bifacial modules operate across the full diffuse light spectrum. Even during overcast monsoon skies or continuous rainfall, the panels capture diffuse ultraviolet and ambient light, generating approximately 35% to 50% of their peak rated capacity. When paired with Omnigrid battery storage, your home maintains continuous uninterrupted power throughout the storm season.",
+    a: "WAVENOX N-Type TOPCon bifacial modules capture diffuse sunlight even on overcast monsoon days, continuing to generate power at reduced capacity. When paired with Omnigrid battery storage, your home maintains continuous power during grid outages.",
   },
   {
-    q: "What is covered under the 25-Year warranty?",
-    a: "Our warranty is divided into two comprehensive tiers: 1) A 25-Year Structural Workmanship Warranty covering all concealed mounting clamps, architectural raceways, framing, and weatherproofing seals against mechanical failure; and 2) A 25-Year Linear Power Warranty guaranteeing that your solar panels will retain at least 89.4% of their original rated power generation capacity at Year 25.",
+    q: "What is covered under the warranty?",
+    a: "WAVENOX provides a multi-tier warranty: a workmanship and equipment warranty covering mounting fixtures, framing, and inverters against manufacturing defects, alongside a 25-Year Linear Performance Warranty on solar modules ensuring long-term generation integrity.",
   },
   {
     q: "What is the typical financial payback (ROI) timeline in India?",
-    a: "With current Indian residential utility tariffs averaging ₹8.5 to ₹11.5 per unit, combined with upfront PM Surya Ghar subsidies, most WAVENOX residential installations achieve complete financial payback within 2.5 to 3.5 years. For commercial assets with accelerated tax depreciation under Section 32, payback is achieved in under 2.5 years, followed by 22+ years of free, compounding wealth generation.",
+    a: "Payback varies based on your DISCOM tariff, system size, and whether your home qualifies for the PM Surya Ghar subsidy. For high-consumption residential villas in India, typical payback ranges between 3 to 5 years, followed by decades of lower electricity costs. You can test your exact numbers in our Design Studio.",
   },
 ];
 

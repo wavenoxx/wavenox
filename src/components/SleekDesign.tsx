@@ -18,7 +18,7 @@ const FEATURES = [
   {
     icon: ShieldCheck,
     title: "Monolithic All-Black Aesthetic",
-    desc: "N-type TOPCon monocrystalline cells under dual-tempered diamond glass create a seamless, non-reflective obsidian plane.",
+    desc: "N-type TOPCon monocrystalline cells under dual-tempered glass create a seamless, non-reflective obsidian plane.",
   },
 ];
 
@@ -75,12 +75,12 @@ export function SleekDesign() {
           >
             <img
               src={liquidGlassMacro}
-              alt="WAVENOX Hexagonal N-Type TOPCon Silicon Cells under Diamond Glass"
+              alt="WAVENOX N-Type TOPCon Silicon Cells under Tempered Glass"
               className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-103"
             />
             {/* Subtle caption watermark */}
             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium tracking-wide">
-              Hexagonal N-Type TOPCon • 24.8% Cell Efficiency
+              N-Type TOPCon Bifacial • All-Black Design
             </div>
           </motion.div>
 
