@@ -8,13 +8,15 @@ export interface TextLinkBaseProps {
 }
 
 export type TextLinkProps =
-  | (TextLinkBaseProps & React.ButtonHTMLAttributes<HTMLButtonElement> & { to?: undefined; href?: undefined })
+  | (TextLinkBaseProps &
+      React.ButtonHTMLAttributes<HTMLButtonElement> & { to?: undefined; href?: undefined })
   | (TextLinkBaseProps & LinkProps & { to: LinkProps["to"]; href?: undefined })
-  | (TextLinkBaseProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; to?: undefined });
+  | (TextLinkBaseProps &
+      React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; to?: undefined });
 
 export const TextLink = React.forwardRef<HTMLElement, TextLinkProps>(function TextLink(
   { className = "", arrow = false, children, ...rest },
-  ref
+  ref,
 ) {
   const baseClasses =
     "inline-flex items-center gap-1.5 text-[14px] font-medium underline underline-offset-4 decoration-current/30 hover:decoration-current transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
@@ -22,7 +24,11 @@ export const TextLink = React.forwardRef<HTMLElement, TextLinkProps>(function Te
   const content = (
     <>
       <span>{children}</span>
-      {arrow && <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>}
+      {arrow && (
+        <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+          →
+        </span>
+      )}
     </>
   );
 
@@ -43,7 +49,9 @@ export const TextLink = React.forwardRef<HTMLElement, TextLinkProps>(function Te
   }
 
   if ("href" in rest && rest.href !== undefined) {
-    const { href, ...anchorRest } = rest as React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
+    const { href, ...anchorRest } = rest as React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+      href: string;
+    };
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}

@@ -2,14 +2,7 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import {
-  Panel,
-  QuietSection,
-  StatRow,
-  Button,
-  TextLink,
-  SpecsDrawer,
-} from "@/components/system";
+import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
@@ -86,7 +79,12 @@ function ResidentialPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
             <Button
@@ -119,7 +117,12 @@ function ResidentialPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
             <Button
@@ -151,10 +154,20 @@ function ResidentialPage() {
         }
         actions={
           <>
-            <Button to="/omnigrid" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/omnigrid"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Explore Omnigrid
             </Button>
-            <Button to="/deploy" variant="secondary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
           </>
@@ -212,7 +225,12 @@ function ResidentialPage() {
             >
               Schedule Consultation
             </Button>
-            <Button to="/deploy" variant="secondary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
           </>

@@ -2,14 +2,7 @@ import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import {
-  Panel,
-  QuietSection,
-  StatRow,
-  Button,
-  TextLink,
-  SpecsDrawer,
-} from "@/components/system";
+import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { submitLead } from "@/functions/leads";
@@ -65,16 +58,16 @@ function EnterprisePage() {
   const annualUnitsKwh = React.useMemo(() => Math.round(capacityKw * 1550), [capacityKw]);
   const annualSavingsInr = React.useMemo(
     () => Math.round(annualUnitsKwh * commercialTariff),
-    [annualUnitsKwh, commercialTariff]
+    [annualUnitsKwh, commercialTariff],
   );
   const estCapexInr = React.useMemo(() => Math.round(capacityKw * 42000), [capacityKw]);
   const year1TaxShieldInr = React.useMemo(
     () => Math.round(estCapexInr * 0.4 * 0.2517),
-    [estCapexInr]
+    [estCapexInr],
   );
   const estPaybackYears = React.useMemo(
     () => (estCapexInr / Math.max(1, annualSavingsInr)).toFixed(1),
-    [estCapexInr, annualSavingsInr]
+    [estCapexInr, annualSavingsInr],
   );
 
   const handleSubmitRfp = async (e: React.FormEvent) => {
@@ -276,9 +269,21 @@ function EnterprisePage() {
           <div className="pt-2">
             <StatRow
               stats={[
-                { value: `${capacityMw} MWp`, label: "Plant Capacity", sublabel: `~${capacityKw} kWp` },
-                { value: `₹${formatInr(year1TaxShieldInr)}`, label: "Year 1 Tax Shield", sublabel: "Sec 32 Depreciation" },
-                { value: `${estPaybackYears} Yrs`, label: "Estimated Payback", sublabel: "Capex Recovery" },
+                {
+                  value: `${capacityMw} MWp`,
+                  label: "Plant Capacity",
+                  sublabel: `~${capacityKw} kWp`,
+                },
+                {
+                  value: `₹${formatInr(year1TaxShieldInr)}`,
+                  label: "Year 1 Tax Shield",
+                  sublabel: "Sec 32 Depreciation",
+                },
+                {
+                  value: `${estPaybackYears} Yrs`,
+                  label: "Estimated Payback",
+                  sublabel: "Capex Recovery",
+                },
               ]}
             />
           </div>
@@ -370,8 +375,12 @@ function EnterprisePage() {
                 onChange={(e) => setConsentGiven(e.target.checked)}
                 className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
               />
-              <label htmlFor="rfp-consent" className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none">
-                I authorize WAVENOX engineers to contact me via phone, WhatsApp, and email regarding commercial rooftop solar feasibility under our DPDP Act 2023 privacy policy.
+              <label
+                htmlFor="rfp-consent"
+                className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+              >
+                I authorize WAVENOX engineers to contact me via phone, WhatsApp, and email regarding
+                commercial rooftop solar feasibility under our DPDP Act 2023 privacy policy.
               </label>
             </div>
 

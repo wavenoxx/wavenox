@@ -46,7 +46,7 @@ function OrderReceivedPage() {
   const { ref } = Route.useSearch();
 
   const whatsappHref = `${BRAND_CONFIG.contact.whatsappLink}?text=${encodeURIComponent(
-    `Hello WAVENOX Team, I recently requested an architectural solar proposal with reference code ${ref}. I would like to review my technical sizing and schedule an engineering consultation.`
+    `Hello WAVENOX Team, I recently requested an architectural solar proposal with reference code ${ref}. I would like to review my technical sizing and schedule an engineering consultation.`,
   )}`;
 
   return (
@@ -63,7 +63,8 @@ function OrderReceivedPage() {
               Request Confirmed
             </h1>
             <p className="text-[15px] text-[#5C5E62] leading-relaxed max-w-lg mx-auto">
-              Thank you for trusting WAVENOX. Your technical configuration is logged in our advisory queue.
+              Thank you for trusting WAVENOX. Your technical configuration is logged in our advisory
+              queue.
             </p>
           </div>
 
@@ -113,7 +114,12 @@ function OrderReceivedPage() {
             >
               Connect on WhatsApp
             </Button>
-            <Button to="/" variant="secondary" tone="light" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/"
+              variant="secondary"
+              tone="light"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Return to Showcase
             </Button>
           </div>

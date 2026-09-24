@@ -48,9 +48,9 @@ export function ConsultationDrawer() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [step, setStep] = React.useState<1 | 2 | 3>(1);
-  const [selectedTier, setSelectedTier] = React.useState<"villa" | "independent_home" | "commercial">(
-    "villa"
-  );
+  const [selectedTier, setSelectedTier] = React.useState<
+    "villa" | "independent_home" | "commercial"
+  >("villa");
   const [monthlyBill, setMonthlyBill] = React.useState(12000);
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -67,7 +67,7 @@ export function ConsultationDrawer() {
         monthlyBillInr: monthlyBill,
         segment: selectedTier === "commercial" ? "commercial" : "residential",
       }),
-    [monthlyBill, selectedTier]
+    [monthlyBill, selectedTier],
   );
   const estimatedKw = calculation.recommendedKw;
   const estimatedAnnualSavings = calculation.annualSavingsInr;
@@ -192,9 +192,7 @@ export function ConsultationDrawer() {
         {step === 1 && (
           <div className="space-y-4 pt-2">
             <div>
-              <h3 className="text-[14px] font-medium text-[#171A20]">
-                1. Select Property Type
-              </h3>
+              <h3 className="text-[14px] font-medium text-[#171A20]">1. Select Property Type</h3>
               <p className="text-[12px] text-[#5C5E62] mt-0.5">
                 Configure structural mounting and inverter sizing for your architecture.
               </p>
@@ -227,9 +225,7 @@ export function ConsultationDrawer() {
                           {tier.capacity}
                         </span>
                       </div>
-                      <p className="text-[12px] text-[#5C5E62] mt-1 leading-normal">
-                        {tier.desc}
-                      </p>
+                      <p className="text-[12px] text-[#5C5E62] mt-1 leading-normal">{tier.desc}</p>
                     </div>
                   </button>
                 );
@@ -332,9 +328,7 @@ export function ConsultationDrawer() {
         {step === 3 && (
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
-              <h3 className="text-[14px] font-medium text-[#171A20]">
-                3. Contact Information
-              </h3>
+              <h3 className="text-[14px] font-medium text-[#171A20]">3. Contact Information</h3>
               <p className="text-[12px] text-[#5C5E62] mt-0.5">
                 A solar engineer will review roof geometry and dispatch your custom 3D model.
               </p>
@@ -342,7 +336,9 @@ export function ConsultationDrawer() {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">Full Name *</label>
+                <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                  Full Name *
+                </label>
                 <input
                   type="text"
                   required
@@ -369,7 +365,9 @@ export function ConsultationDrawer() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">City *</label>
+                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                    City *
+                  </label>
                   <input
                     type="text"
                     required
@@ -380,7 +378,9 @@ export function ConsultationDrawer() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">PIN Code</label>
+                  <label className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                    PIN Code
+                  </label>
                   <input
                     type="text"
                     placeholder="500033"
@@ -414,8 +414,12 @@ export function ConsultationDrawer() {
                   onChange={(e) => setConsentGiven(e.target.checked)}
                   className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
                 />
-                <label htmlFor="drawer-consent" className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none">
-                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers under our DPDP Act 2023 privacy policy.
+                <label
+                  htmlFor="drawer-consent"
+                  className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+                >
+                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers
+                  under our DPDP Act 2023 privacy policy.
                 </label>
               </div>
 

@@ -36,18 +36,14 @@ export function Media({
   objectPosition = "center",
 }: MediaProps) {
   const descriptor: MediaDescriptor =
-    typeof media === "string"
-      ? { src: media, alt }
-      : media || { src: src || "", alt };
+    typeof media === "string" ? { src: media, alt } : media || { src: src || "", alt };
 
   const finalAlt = descriptor.alt || alt || "";
   const loading = priority ? "eager" : "lazy";
   // React 19 supports fetchPriority
   const fetchPriority = priority ? ("high" as const) : ("auto" as const);
 
-  const imgClasses = fill
-    ? `w-full h-full object-cover ${className}`
-    : className;
+  const imgClasses = fill ? `w-full h-full object-cover ${className}` : className;
 
   const style: React.CSSProperties = {
     objectPosition,
@@ -55,10 +51,10 @@ export function Media({
 
   const hasResponsive = Boolean(
     descriptor.mobileAvif ||
-      descriptor.mobileWebp ||
-      descriptor.mobileSrc ||
-      descriptor.avif ||
-      descriptor.webp
+    descriptor.mobileWebp ||
+    descriptor.mobileSrc ||
+    descriptor.avif ||
+    descriptor.webp,
   );
 
   if (!hasResponsive) {
@@ -81,22 +77,12 @@ export function Media({
     <picture className={fill ? "block w-full h-full" : undefined}>
       {/* Mobile crop (<= 768px) */}
       {descriptor.mobileAvif && (
-        <source
-          media="(max-width: 768px)"
-          srcSet={descriptor.mobileAvif}
-          type="image/avif"
-        />
+        <source media="(max-width: 768px)" srcSet={descriptor.mobileAvif} type="image/avif" />
       )}
       {descriptor.mobileWebp && (
-        <source
-          media="(max-width: 768px)"
-          srcSet={descriptor.mobileWebp}
-          type="image/webp"
-        />
+        <source media="(max-width: 768px)" srcSet={descriptor.mobileWebp} type="image/webp" />
       )}
-      {descriptor.mobileSrc && (
-        <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />
-      )}
+      {descriptor.mobileSrc && <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />}
 
       {/* Desktop / Default sources */}
       {descriptor.avif && <source srcSet={descriptor.avif} type="image/avif" />}

@@ -87,7 +87,9 @@ export function Panel({
       </div>
 
       {/* Middle Custom Content if any */}
-      {children && <div className="flex-1 flex items-center justify-center px-6 z-10">{children}</div>}
+      {children && (
+        <div className="flex-1 flex items-center justify-center px-6 z-10">{children}</div>
+      )}
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
       <div className="pb-10 sm:pb-12 md:pb-14 px-6 flex flex-col items-center gap-5 sm:gap-6 z-10 w-full max-w-4xl mx-auto text-center">

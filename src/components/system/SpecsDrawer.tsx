@@ -97,9 +97,7 @@ export function SpecsDrawer({
                       className="py-3 flex items-baseline justify-between gap-4 text-[14px]"
                     >
                       <span className="text-[#5C5E62] font-normal">{item.label}</span>
-                      <span className="text-[#171A20] font-medium text-right">
-                        {item.value}
-                      </span>
+                      <span className="text-[#171A20] font-medium text-right">{item.value}</span>
                     </div>
                   ))}
                 </div>
@@ -107,7 +105,9 @@ export function SpecsDrawer({
             ))}
 
             <p className="text-[12px] text-[#5C5E62] leading-relaxed pt-2">
-              Specifications reflect standard WAVENOX turnkey residential & commercial configurations. Detailed engineering datasheets are provided during site survey and net metering sanctioning.
+              Specifications reflect standard WAVENOX turnkey residential & commercial
+              configurations. Detailed engineering datasheets are provided during site survey and
+              net metering sanctioning.
             </p>
           </div>
         </Dialog.Content>

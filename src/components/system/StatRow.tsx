@@ -26,9 +26,7 @@ export function StatRow({ stats, align = "center", className = "" }: StatRowProp
             {stat.label}
           </span>
           {stat.sublabel && (
-            <span className="text-[12px] font-normal text-inherit/60 mt-0.5">
-              {stat.sublabel}
-            </span>
+            <span className="text-[12px] font-normal text-inherit/60 mt-0.5">{stat.sublabel}</span>
           )}
         </div>
       ))}

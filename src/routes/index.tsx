@@ -135,7 +135,12 @@ function IndexPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
             <Button
@@ -168,10 +173,20 @@ function IndexPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
-            <Button to="/residential" variant="secondary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/residential"
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Learn More
             </Button>
           </>
@@ -195,10 +210,20 @@ function IndexPage() {
         }
         actions={
           <>
-            <Button to="/omnigrid" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/omnigrid"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Explore Omnigrid
             </Button>
-            <Button to="/deploy" variant="secondary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
           </>
@@ -235,7 +260,9 @@ function IndexPage() {
 
             <div className="space-y-3">
               <div className="flex justify-between items-baseline">
-                <span className="text-[13px] font-medium text-[#5C5E62]">Monthly Electricity Bill</span>
+                <span className="text-[13px] font-medium text-[#5C5E62]">
+                  Monthly Electricity Bill
+                </span>
                 <span className="text-[18px] font-medium tabular-nums text-[#171A20]">
                   ₹{formatInr(monthlyBill)}
                 </span>
@@ -264,7 +291,8 @@ function IndexPage() {
             </div>
             <div className="text-[13px] text-[#5C5E62]">Estimated Annual Bill Savings</div>
             <p className="text-[14px] text-[#171A20] pt-1">
-              Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹{formatInr(solarEstimate.subsidyInr)} central subsidy.
+              Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹
+              {formatInr(solarEstimate.subsidyInr)} central subsidy.
             </p>
           </div>
 
@@ -311,7 +339,12 @@ function IndexPage() {
             >
               View Specs
             </Button>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
           </>
@@ -343,7 +376,9 @@ function IndexPage() {
                 <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
                   <div>
                     <div className="text-[12px] text-[#FFFFFF]/60">Solar Production</div>
-                    <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">5.8 kW</div>
+                    <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">
+                      5.8 kW
+                    </div>
                   </div>
                   <div className="w-2.5 h-2.5 rounded-full bg-[#F57C00]" />
                 </div>
@@ -351,18 +386,24 @@ function IndexPage() {
                 <div className="grid grid-cols-2 gap-3 text-[12px]">
                   <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
                     <div className="text-[#FFFFFF]/60">Home Load</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">1.6 kW</div>
+                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
+                      1.6 kW
+                    </div>
                   </div>
                   <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
                     <div className="text-[#FFFFFF]/60">Omnigrid Battery</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">98% (2.2 kW)</div>
+                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
+                      98% (2.2 kW)
+                    </div>
                   </div>
                 </div>
 
                 <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
                   <div>
                     <div className="text-[12px] text-[#FFFFFF]/60">Grid Net Export</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">2.0 kW (Sending)</div>
+                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
+                      2.0 kW (Sending)
+                    </div>
                   </div>
                   <div className="text-[12px] text-[#F57C00] font-medium">+Net Metering</div>
                 </div>
@@ -440,7 +481,12 @@ function IndexPage() {
             >
               Schedule Consultation
             </Button>
-            <Button to="/deploy" variant="secondary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Order Now
             </Button>
           </>

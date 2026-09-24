@@ -49,7 +49,11 @@ const BATTERY_OPTIONS = [
 ];
 
 const ROOF_PROFILES = [
-  { id: "rcc-flat", label: "RCC Flat Slab", desc: "Non-penetrative elevated structural ballast frame." },
+  {
+    id: "rcc-flat",
+    label: "RCC Flat Slab",
+    desc: "Non-penetrative elevated structural ballast frame.",
+  },
   { id: "sloped-tile", label: "Sloped Tile", desc: "Concealed interlocking stainless brackets." },
   { id: "standing-seam", label: "Standing-Seam", desc: "Zero-penetration mechanical seam clamps." },
 ];
@@ -66,7 +70,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   // State
   const [address, setAddress] = React.useState("Jubilee Hills, Hyderabad 500033");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(
-    initialDiscom || DISCOMS[0].code
+    initialDiscom || DISCOMS[0].code,
   );
   const [monthlyBill, setMonthlyBill] = React.useState(initialBill || 12000);
   const [panelCount, setPanelCount] = React.useState(24);
@@ -216,7 +220,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 type="button"
                 onClick={() => setEstateView("villa")}
                 className={`px-3 py-1 rounded-[2px] text-[12px] font-medium transition-colors ${
-                  estateView === "villa" ? "bg-[#FFFFFF] text-[#171A20]" : "text-[#FFFFFF]/80 hover:text-white"
+                  estateView === "villa"
+                    ? "bg-[#FFFFFF] text-[#171A20]"
+                    : "text-[#FFFFFF]/80 hover:text-white"
                 }`}
               >
                 Villa
@@ -225,7 +231,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 type="button"
                 onClick={() => setEstateView("estate")}
                 className={`px-3 py-1 rounded-[2px] text-[12px] font-medium transition-colors ${
-                  estateView === "estate" ? "bg-[#FFFFFF] text-[#171A20]" : "text-[#FFFFFF]/80 hover:text-white"
+                  estateView === "estate"
+                    ? "bg-[#FFFFFF] text-[#171A20]"
+                    : "text-[#FFFFFF]/80 hover:text-white"
                 }`}
               >
                 Estate
@@ -238,9 +246,21 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             <StatRow
               align="start"
               stats={[
-                { value: `${systemKw} kW`, label: "Solar Capacity", sublabel: `${panelCount} Modules` },
-                { value: `₹${formatInr(subsidyInr)}`, label: "Surya Ghar Subsidy", sublabel: "Direct Benefit Transfer" },
-                { value: `₹${formatInr(calculation.annualSavingsInr)}`, label: "Annual Bill Savings", sublabel: "Tariff Offset" },
+                {
+                  value: `${systemKw} kW`,
+                  label: "Solar Capacity",
+                  sublabel: `${panelCount} Modules`,
+                },
+                {
+                  value: `₹${formatInr(subsidyInr)}`,
+                  label: "Surya Ghar Subsidy",
+                  sublabel: "Direct Benefit Transfer",
+                },
+                {
+                  value: `₹${formatInr(calculation.annualSavingsInr)}`,
+                  label: "Annual Bill Savings",
+                  sublabel: "Tariff Offset",
+                },
               ]}
             />
             <p className="text-[12px] text-[#FFFFFF]/60 max-w-xl">
@@ -277,7 +297,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-baseline">
-                <span className="text-[12px] font-medium text-[#5C5E62]">Monthly Electricity Bill</span>
+                <span className="text-[12px] font-medium text-[#5C5E62]">
+                  Monthly Electricity Bill
+                </span>
                 <span className="text-[20px] font-semibold tabular-nums text-[#171A20]">
                   ₹{formatInr(monthlyBill)}
                 </span>
@@ -336,7 +358,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                     }`}
                   >
                     <div className="text-[13px] font-medium leading-none">{tier.label}</div>
-                    <div className={`text-[12px] tabular-nums mt-1 ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                    <div
+                      className={`text-[12px] tabular-nums mt-1 ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                    >
                       {tier.systemKw} kW
                     </div>
                   </button>
@@ -393,7 +417,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                     }`}
                   >
                     <div className="text-[13px] font-medium leading-none">{opt.label}</div>
-                    <div className={`text-[12px] mt-1 ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                    <div
+                      className={`text-[12px] mt-1 ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                    >
                       {opt.sublabel}
                     </div>
                   </button>
@@ -421,7 +447,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                     }`}
                   >
                     <div className="text-[13px] font-medium">{prof.label}</div>
-                    <div className={`text-[12px] mt-1 leading-snug ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                    <div
+                      className={`text-[12px] mt-1 leading-snug ${isActive ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                    >
                       {prof.desc}
                     </div>
                   </button>
@@ -444,7 +472,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 }`}
               >
                 <div className="text-[13px] font-medium">5-Year Financing</div>
-                <div className={`text-[12px] mt-0.5 tabular-nums ${paymentMode === "loan" ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                <div
+                  className={`text-[12px] mt-0.5 tabular-nums ${paymentMode === "loan" ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                >
                   ~₹{formatInr(monthlyEmiInr)} / mo
                 </div>
               </button>
@@ -458,7 +488,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 }`}
               >
                 <div className="text-[13px] font-medium">Direct Purchase</div>
-                <div className={`text-[12px] mt-0.5 tabular-nums ${paymentMode === "cash" ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                <div
+                  className={`text-[12px] mt-0.5 tabular-nums ${paymentMode === "cash" ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                >
                   100% Upfront
                 </div>
               </button>
@@ -476,11 +508,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
                 <span className="font-medium">Net Payable Investment</span>
-                <span className="text-[18px] font-semibold tabular-nums">₹{formatInr(netPayableInr)}</span>
+                <span className="text-[18px] font-semibold tabular-nums">
+                  ₹{formatInr(netPayableInr)}
+                </span>
               </div>
               <div className="pt-1 flex justify-between text-[12px] text-[#5C5E62]">
                 <span>25-Year Est. Net Savings</span>
-                <span className="font-medium tabular-nums text-[#171A20]">₹{twentyFiveYearLakhs} Lakhs</span>
+                <span className="font-medium tabular-nums text-[#171A20]">
+                  ₹{twentyFiveYearLakhs} Lakhs
+                </span>
               </div>
             </div>
           </div>
@@ -490,7 +526,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             <div>
               <h2 className="text-[18px] font-medium text-[#171A20]">6. Request Formal Proposal</h2>
               <p className="text-[12px] text-[#5C5E62] mt-0.5">
-                Our solar engineering team will review satellite roof geometry and generate your 3D proposal dossier.
+                Our solar engineering team will review satellite roof geometry and generate your 3D
+                proposal dossier.
               </p>
             </div>
 
@@ -502,7 +539,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               )}
 
               <div>
-                <label htmlFor="user-name" className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                <label
+                  htmlFor="user-name"
+                  className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                >
                   Full Name *
                 </label>
                 <input
@@ -517,7 +557,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </div>
 
               <div>
-                <label htmlFor="user-phone" className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                <label
+                  htmlFor="user-phone"
+                  className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
                 <input
@@ -533,7 +576,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="user-address" className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                  <label
+                    htmlFor="user-address"
+                    className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                  >
                     City / Neighborhood *
                   </label>
                   <input
@@ -547,7 +593,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   />
                 </div>
                 <div>
-                  <label htmlFor="user-pin" className="block text-[12px] font-medium text-[#5C5E62] mb-1">
+                  <label
+                    htmlFor="user-pin"
+                    className="block text-[12px] font-medium text-[#5C5E62] mb-1"
+                  >
                     PIN Code (Optional)
                   </label>
                   <input
@@ -584,8 +633,12 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   onChange={(e) => setConsentGiven(e.target.checked)}
                   className="mt-1 h-4 w-4 rounded-[4px] border-[#E3E4E6] text-[#171A20] focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
                 />
-                <label htmlFor="studio-consent" className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none">
-                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers under our DPDP Act 2023 privacy policy.
+                <label
+                  htmlFor="studio-consent"
+                  className="text-[12px] text-[#5C5E62] leading-normal cursor-pointer select-none"
+                >
+                  I agree to receive my solar sizing proposal and be contacted by WAVENOX engineers
+                  under our DPDP Act 2023 privacy policy.
                 </label>
               </div>
 

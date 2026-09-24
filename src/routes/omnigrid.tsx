@@ -48,7 +48,10 @@ const OMNIGRID_SPECS: SpecCategory[] = [
       { label: "Continuous Output", value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW` },
       { label: "Peak Output (10s)", value: `${PRODUCTS_CONFIG.battery.peakPowerKw} kW` },
       { label: "Battery Chemistry", value: PRODUCTS_CONFIG.battery.chemistry },
-      { label: "Round-Trip Efficiency", value: `${PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}%` },
+      {
+        label: "Round-Trip Efficiency",
+        value: `${PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}%`,
+      },
     ],
   },
   {
@@ -92,7 +95,7 @@ function OmnigridPage() {
 
   const toggleLoad = (id: string) => {
     setSelectedLoads((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -112,14 +115,22 @@ function OmnigridPage() {
           <StatRow
             stats={[
               { value: `${batteryCap} kWh`, label: "Usable Capacity" },
-              { value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`, label: "Continuous Output" },
+              {
+                value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`,
+                label: "Continuous Output",
+              },
               { value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years`, label: "Warranty" },
             ]}
           />
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Configure Omnigrid
             </Button>
             <Button
@@ -151,7 +162,12 @@ function OmnigridPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Configure Omnigrid
             </Button>
             <Button
@@ -183,7 +199,12 @@ function OmnigridPage() {
         }
         actions={
           <>
-            <Button to="/deploy" variant="primary" tone="dark" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Configure Omnigrid
             </Button>
             <Button
@@ -222,7 +243,9 @@ function OmnigridPage() {
                   }`}
                 >
                   <div className="text-[13px] font-medium leading-snug">{item.label}</div>
-                  <div className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}>
+                  <div
+                    className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                  >
                     ~{item.watts} W
                   </div>
                 </button>
@@ -239,12 +262,18 @@ function OmnigridPage() {
               Estimated Backup Duration ({totalWatts} W average load)
             </div>
             <p className="text-[13px] text-[#5C5E62] pt-1">
-              Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to 4 units for larger estates.
+              Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to 4
+              units for larger estates.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Button to="/deploy" variant="primary" tone="light" className="w-full sm:w-auto min-w-[200px]">
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="light"
+              className="w-full sm:w-auto min-w-[200px]"
+            >
               Configure Omnigrid
             </Button>
             <TextLink to="/residential" arrow>

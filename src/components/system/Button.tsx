@@ -12,13 +12,15 @@ export interface ButtonBaseProps {
 }
 
 export type ButtonProps =
-  | (ButtonBaseProps & React.ButtonHTMLAttributes<HTMLButtonElement> & { to?: undefined; href?: undefined })
+  | (ButtonBaseProps &
+      React.ButtonHTMLAttributes<HTMLButtonElement> & { to?: undefined; href?: undefined })
   | (ButtonBaseProps & LinkProps & { to: LinkProps["to"]; href?: undefined })
-  | (ButtonBaseProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; to?: undefined });
+  | (ButtonBaseProps &
+      React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; to?: undefined });
 
 export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button(
   { variant = "primary", tone = "light", className = "", children, ...rest },
-  ref
+  ref,
 ) {
   const baseClasses =
     "inline-flex items-center justify-center h-10 px-6 rounded-[4px] text-[14px] font-medium leading-none tracking-normal whitespace-nowrap transition-colors duration-150 select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40";
@@ -60,7 +62,9 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   }
 
   if ("href" in rest && rest.href !== undefined) {
-    const { href, ...anchorRest } = rest as React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
+    const { href, ...anchorRest } = rest as React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+      href: string;
+    };
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}
