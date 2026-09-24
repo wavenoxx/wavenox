@@ -5,6 +5,10 @@ import { SystemConfigurator } from "@/components/SystemConfigurator";
 import { BRAND_CONFIG } from "@/config/brand";
 
 export const Route = createFileRoute("/deploy")({
+  validateSearch: (search: Record<string, unknown>): { bill?: number; discom?: string } => ({
+    bill: typeof search.bill === "string" || typeof search.bill === "number" ? Number(search.bill) : undefined,
+    discom: typeof search.discom === "string" ? search.discom : undefined,
+  }),
   head: () => ({
     meta: [
       { title: `Solar System Design Studio & Sizing — ${BRAND_CONFIG.name}` },
