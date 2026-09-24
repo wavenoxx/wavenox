@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   Factory,
@@ -18,6 +18,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
+import { submitLead } from "@/functions/leads";
+import { getStoredTelemetry } from "@/lib/telemetry";
 import enterpriseMwRooftop from "@/assets/enterprise_mw_rooftop.jpg";
 import lgScale from "@/assets/lg-scale.jpg";
 import defGrid from "@/assets/def-grid.jpg";
@@ -82,9 +84,20 @@ const SECTORS = [
 ];
 
 function EnterprisePage() {
+  const navigate = useNavigate();
+
   // Commercial Calculator State
   const [roofAreaSqFt, setRoofAreaSqFt] = useState(50000);
   const [commercialTariff, setCommercialTariff] = useState(10.5);
+
+  // RFP Form State
+  const [clientName, setClientName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consentGiven, setConsentGiven] = useState(false);
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Math model
   // 100 sq.ft generates approx 1 kWp of commercial solar
@@ -110,10 +123,60 @@ function EnterprisePage() {
   );
   const twentyFiveYearCrores = (twentyFiveYearNetInr / 10000000).toFixed(2);
 
+  const handleSubmitRfp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consentGiven) {
+      setSubmitError("Please confirm your consent to receive your commercial proposal.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const telemetry = getStoredTelemetry();
+      const res = await submitLead({
+        data: {
+          name: clientName,
+          phone,
+          city: companyName ? `${companyName} Facility` : "Industrial Rooftop",
+          property_tier: "commercial",
+          roof_area_sqft: roofAreaSqFt,
+          system_kw: capacityKw,
+          net_price_inr: estCapexInr,
+          source: "enterprise",
+          notes: `RFP configured for ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft (~${capacityMw} MWp). Commercial Tariff: ₹${commercialTariff}/unit.`,
+          consent_given: true,
+          consent_version: "2026-09-v1",
+          company_website: companyWebsite.trim() || undefined,
+          ...telemetry,
+        },
+      });
+
+      if (!res.success) {
+        setSubmitError(res.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      navigate({
+        to: "/order/received",
+        search: { ref: res.referenceCode || "WNX-ENTERPRISE" },
+      });
+    } catch (err: unknown) {
+      console.error("[EnterprisePage] RFP submit error:", err);
+      setSubmitError("Failed to submit commercial RFP. Please reach us via WhatsApp.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleWhatsAppRfp = () => {
     const text = encodeURIComponent(
       `*WAVENOX COMMERCIAL & INDUSTRIAL MEGAWATT RFP*\n` +
         `--------------------------------------\n` +
+        `*Organization:* ${companyName || "Industrial Client"}\n` +
+        `*Representative:* ${clientName || "Executive"}\n` +
         `*Roof Area:* ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft\n` +
         `*Estimated Capacity:* ${capacityMw} MWp (${capacityKw} kWp)\n` +
         `*Commercial Tariff:* ₹${commercialTariff} / kWh\n` +
@@ -428,22 +491,125 @@ function EnterprisePage() {
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={handleWhatsAppRfp}
-                  className="btn-primary text-xs cursor-pointer"
-                >
-                  Dispatch RFP Proposal via WhatsApp →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => openConsultationDrawer("commercial")}
-                  className="btn-secondary text-xs cursor-pointer"
-                >
-                  Book On-Site Engineering Audit
-                </button>
-              </div>
+              {/* Enterprise RFP Form */}
+              <form onSubmit={handleSubmitRfp} className="space-y-4 pt-2 border-t border-[#E2E8F0]">
+                <div className="text-xs font-semibold uppercase tracking-wider text-[#5C5E62]">
+                  Request Formal Megawatt Feasibility Proposal
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[#171A20] mb-1">
+                      Organization / Company
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Phoenix Logistics Park"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#171A20] mb-1">
+                      Authorized Officer Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Suresh K. Varma"
+                      value={clientName}
+                      onChange={(e) => setClientName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#171A20] mb-1">
+                    Corporate Phone / WhatsApp (+91)
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+91 98765 43210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-white text-xs text-[#171A20] focus:outline-none focus:border-[#171A20]"
+                  />
+                </div>
+
+                {/* Honeypot field for bot suppression */}
+                <input
+                  type="text"
+                  name="company_website"
+                  value={companyWebsite}
+                  onChange={(e) => setCompanyWebsite(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden"
+                  aria-hidden="true"
+                />
+
+                {/* DPDP Act 2023 Consent Checkbox */}
+                <div className="flex items-start gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="enterprise-consent"
+                    required
+                    checked={consentGiven}
+                    onChange={(e) => setConsentGiven(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-[#E2E8F0] accent-[#171A20] cursor-pointer"
+                  />
+                  <label
+                    htmlFor="enterprise-consent"
+                    className="text-xs text-[#5C5E62] leading-relaxed cursor-pointer"
+                  >
+                    I agree to receive a commercial solar feasibility proposal and be contacted by
+                    WAVENOX industrial energy advisors as outlined in the{" "}
+                    <a
+                      href="/legal/privacy"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline hover:text-[#171A20]"
+                    >
+                      Privacy Policy
+                    </a>
+                    .
+                  </label>
+                </div>
+
+                {submitError && (
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+                    {submitError}
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !consentGiven}
+                    className="flex-1 btn-primary py-3.5 text-xs font-semibold cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <span>Submit Commercial RFP</span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppRfp}
+                    className="flex-1 btn-secondary py-3.5 text-xs font-semibold cursor-pointer text-center"
+                  >
+                    Dispatch RFP via WhatsApp →
+                  </button>
+                </div>
+              </form>
             </motion.div>
 
             {/* Results Card */}

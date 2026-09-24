@@ -101,7 +101,7 @@ export const PRODUCTS_CONFIG: ProductsConfig = {
   battery: {
     modelName: "Omnigrid Residential Storage Unit", // VERIFY(owner): from datasheet
     nominalEnergyKwh: 14.0, // VERIFY(owner): from datasheet
-    usableCapacityKwh: 13.5, // VERIFY(owner): from datasheet
+    usableCapacityKwh: 13.5, // VERIFY(owner): replace placeholder with verified OEM battery capacity (13.5 kWh is legacy Powerwall placeholder)
     continuousPowerKw: 5.0, // VERIFY(owner): from datasheet
     peakPowerKw: 7.0, // VERIFY(owner): from datasheet
     roundTripEfficiencyPct: 90.0, // VERIFY(owner): from datasheet

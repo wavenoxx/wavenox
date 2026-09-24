@@ -77,7 +77,6 @@ export interface LeadSubmissionResponse {
   success: boolean;
   referenceCode?: string;
   message: string;
-  isDemo?: boolean;
 }
 
 /**
@@ -164,16 +163,15 @@ export const submitLead = createServerFn({ method: "POST" })
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
 
-      // If Supabase environment is unconfigured, provide graceful mock return in development
+      // If Supabase environment is unconfigured, return a clear error instead of silent fake success
       if (errMsg.includes("Missing Supabase server configuration")) {
-        console.warn(
-          "[submitLead] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not configured. Running in demo fallback mode.",
+        console.error(
+          "[submitLead] CRITICAL: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not configured.",
         );
         return {
-          success: true,
-          referenceCode,
-          isDemo: true,
-          message: "Your proposal request has been received (demo mode).",
+          success: false,
+          message:
+            "Configuration error: Database connection is not configured on the server. Please contact WAVENOX support directly via phone or WhatsApp.",
         };
       }
 

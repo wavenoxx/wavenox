@@ -44,7 +44,7 @@ ALTER TABLE public.consultations
 -- Backfill reference_code for any existing rows that might lack one
 UPDATE public.consultations 
 SET reference_code = 'WNX-' || upper(substr(encode(gen_random_bytes(4), 'hex'), 1, 6))
-WHERE reference_code IS NULL;
+WHERE reference_code IS NULL OR reference_code = '';
 
 -- Enforce NOT NULL and UNIQUE on reference_code
 ALTER TABLE public.consultations 
@@ -58,6 +58,19 @@ BEGIN
         ALTER TABLE public.consultations ADD CONSTRAINT consultations_reference_code_key UNIQUE (reference_code);
     END IF;
 END $$;
+
+-- Normalize any legacy property_tier values from v1 before enforcing v2 constraint
+UPDATE public.consultations
+SET property_tier = 'villa'
+WHERE property_tier IN ('estate', 'defense');
+
+UPDATE public.consultations
+SET property_tier = 'commercial'
+WHERE property_tier = 'industrial';
+
+UPDATE public.consultations
+SET property_tier = 'villa'
+WHERE property_tier NOT IN ('villa', 'independent_home', 'commercial');
 
 -- Enforce updated check constraint for property_tier: ('villa', 'independent_home', 'commercial')
 ALTER TABLE public.consultations 

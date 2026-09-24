@@ -6,6 +6,7 @@
  * Single source of truth for solar geometry, generation yields, DISCOM tariffs,
  * PM Surya Ghar subsidies, and multi-year financial modeling.
  */
+import { PRODUCTS_CONFIG } from "@/config/products";
 
 export interface DiscomInfo {
   code: string;
@@ -88,16 +89,16 @@ export const DISCOMS: DiscomInfo[] = [
 ];
 
 export const SOLAR_ASSUMPTIONS = {
-  panelWatt: 550, // VERIFY(owner): from module datasheet (550W TOPCon)
+  panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // VERIFY(owner): from module datasheet (550W TOPCon)
   yieldKwhPerKwYear: 1450, // VERIFY(owner): specific generation yield kWh/kWp/yr across Central/Southern India
   selfConsumptionNoBattery: 0.7, // VERIFY(owner): 70% self-consumption without battery
   selfConsumptionWithBattery: 0.9, // VERIFY(owner): 90% self-consumption with battery
-  degradationPerYear: 0.005, // VERIFY(owner): 0.5% annual degradation
+  degradationPerYear: PRODUCTS_CONFIG.module.annualDegradationPct / 100, // VERIFY(owner): from module warranty
   tariffEscalationPerYear: 0.03, // VERIFY(owner): 3.0% annual tariff inflation
   pricePerKwInr: 62000, // VERIFY(owner): turnkey residential capex per kW
   commercialPricePerKwInr: 42000, // VERIFY(owner): turnkey commercial capex per kW
   battery: {
-    unitCapacityKwh: 13.5, // VERIFY(owner): from battery datasheet
+    unitCapacityKwh: PRODUCTS_CONFIG.battery.usableCapacityKwh, // Centralized from PRODUCTS_CONFIG
     unitPriceInr: 280000, // VERIFY(owner): per battery unit turnkey price
   },
   loan: {

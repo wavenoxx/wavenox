@@ -236,7 +236,7 @@ export function OutageProtection() {
                 className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-103"
               />
               <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium border border-white/20">
-                Omnigrid 13.5 kWh Core
+                Omnigrid {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh Core
               </div>
             </div>
 

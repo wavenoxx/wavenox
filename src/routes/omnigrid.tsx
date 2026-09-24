@@ -29,8 +29,7 @@ export const Route = createFileRoute("/omnigrid")({
       { title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
         name: "description",
-        content:
-          "Whole-home battery storage engineered for Indian grid resilience. 13.5 kWh usable capacity per unit, sub-4ms outage islanding, and intelligent Time-of-Day tariff shaving.",
+        content: `Whole-home battery storage engineered for Indian grid resilience. ${PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh usable capacity per unit, sub-4ms outage islanding, and intelligent Time-of-Day tariff shaving.`,
       },
       { property: "og:title", content: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
@@ -51,17 +50,19 @@ const fadeUp = {
   transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
 };
 
+const unitCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
+
 const STACK_OPTIONS = [
   {
     units: 1,
-    capacity: "13.5 kWh",
+    capacity: `${(1 * unitCap).toFixed(1)} kWh`,
     desc: "Essential Luxury Backup",
     loads:
       "Powers lighting, WiFi, smart automation, refrigeration, and 1 high-tonnage Inverter AC.",
   },
   {
     units: 2,
-    capacity: "27.0 kWh",
+    capacity: `${(2 * unitCap).toFixed(1)} kWh`,
     desc: "Whole-Home Standard (Recommended)",
     loads:
       "Full villa autonomy powering 4 Inverter ACs, home elevator, heated pool pumps, and kitchen.",
@@ -69,14 +70,14 @@ const STACK_OPTIONS = [
   },
   {
     units: 3,
-    capacity: "40.5 kWh",
+    capacity: `${(3 * unitCap).toFixed(1)} kWh`,
     desc: "Multi-Day Autonomy",
     loads:
       "Extended multi-day independence for sprawling estates with multiple central AC chillers.",
   },
   {
     units: 4,
-    capacity: "54.0 kWh",
+    capacity: `${(4 * unitCap).toFixed(1)} kWh`,
     desc: "Commercial Microgrid",
     loads:
       "Heavy residential compounds, corporate retreat villas, and high-discharge Level 2 EV charging.",
