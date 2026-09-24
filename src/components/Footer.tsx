@@ -34,6 +34,15 @@ export function Footer() {
           ·
         </span>
         <Link
+          to="/faq"
+          className="hover:text-[#171A20] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171A20]"
+        >
+          FAQ
+        </Link>
+        <span aria-hidden="true" className="text-[#5C5E62]/40">
+          ·
+        </span>
+        <Link
           to="/legal/disclosures"
           className="hover:text-[#171A20] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171A20]"
         >

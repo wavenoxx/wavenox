@@ -59,6 +59,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           },
           { label: "Why WAVENOX Solar", to: "/residential" },
           { label: "PM Surya Ghar Subsidy Guide (₹78,000)", to: "/legal/disclosures" },
+          { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "DISCOM Net-Metering & Sanctions", to: "/legal/disclosures" },
           { label: "Calculate Savings", to: "/deploy" },
           { label: "Technical Specifications", to: "/residential" },
@@ -187,6 +188,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
         title: "Resources",
         links: [
           { label: "Solar Savings Calculator", to: "/deploy" },
+          { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "PM Surya Ghar Subsidy Guide", to: "/legal/disclosures" },
           { label: "Customer Stories & Installations", to: "/residential" },
           { label: "Safety & Cyclone Wind Standards", to: "/residential" },

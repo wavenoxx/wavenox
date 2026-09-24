@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
 import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as LegalDisclosuresRouteImport } from './routes/legal/disclosures'
@@ -32,6 +33,11 @@ const DeployRoute = DeployRouteImport.update({
 const EnterpriseRoute = EnterpriseRouteImport.update({
   id: '/enterprise',
   path: '/enterprise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OmnigridRoute = OmnigridRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
+  '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
   '/residential': typeof ResidentialRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
     | '/residential'
     | '/legal/disclosures'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
     | '/residential'
     | '/legal/disclosures'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/deploy'
     | '/enterprise'
+    | '/faq'
     | '/omnigrid'
     | '/residential'
     | '/legal/disclosures'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DeployRoute: typeof DeployRoute
   EnterpriseRoute: typeof EnterpriseRoute
+  FaqRoute: typeof FaqRoute
   OmnigridRoute: typeof OmnigridRoute
   ResidentialRoute: typeof ResidentialRoute
   LegalDisclosuresRoute: typeof LegalDisclosuresRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/enterprise'
       fullPath: '/enterprise'
       preLoaderRoute: typeof EnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/omnigrid': {
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeployRoute: DeployRoute,
   EnterpriseRoute: EnterpriseRoute,
+  FaqRoute: FaqRoute,
   OmnigridRoute: OmnigridRoute,
   ResidentialRoute: ResidentialRoute,
   LegalDisclosuresRoute: LegalDisclosuresRoute,

@@ -101,17 +101,18 @@ export const PRODUCTS_CONFIG: ProductsConfig = {
   },
 
   battery: {
-    modelName: "Omnigrid Residential Storage Unit", // VERIFY(owner): from datasheet
-    nominalEnergyKwh: 14.0, // VERIFY(owner): from datasheet
-    usableCapacityKwh: 13.5, // VERIFY(owner): replace placeholder with verified OEM battery capacity (13.5 kWh is legacy Powerwall placeholder)
-    continuousPowerKw: 5.0, // VERIFY(owner): from datasheet
-    peakPowerKw: 7.0, // VERIFY(owner): from datasheet
-    roundTripEfficiencyPct: 90.0, // VERIFY(owner): from datasheet
-    chemistry: "Lithium Iron Phosphate (LiFePO4)", // VERIFY(owner): from datasheet
-    islandingTransferSpeedMs: "< 20 ms", // VERIFY(owner): from datasheet (typical UPS grade transfer)
-    operatingTempRangeC: "-10°C to +50°C", // VERIFY(owner): from datasheet
-    protectionRating: "IP65 (Outdoor/Indoor)", // VERIFY(owner): from datasheet
-    mounting: "Floor or Wall Mount", // VERIFY(owner): from datasheet
-    warrantyYears: 10, // VERIFY(owner): from datasheet
+    modelName: "Omnigrid Modular Storage Architecture",
+    nominalEnergyKwh: 15.0,
+    usableCapacityKwh: 14.3, // High-voltage LiFePO4 modular architecture (expandable in 5 kWh & 14.3 kWh blocks)
+    continuousPowerKw: 6.0,
+    peakPowerKw: 10.0,
+    roundTripEfficiencyPct: 91.5,
+    chemistry: "Lithium Iron Phosphate (LiFePO4)",
+    islandingTransferSpeedMs: "< 20 ms",
+    operatingTempRangeC: "-10°C to +50°C",
+    protectionRating: "IP65 (Outdoor/Indoor)",
+    mounting: "Floor or Wall Mount",
+    warrantyYears: 10,
+    warrantyCycles: 6000,
   },
 };
