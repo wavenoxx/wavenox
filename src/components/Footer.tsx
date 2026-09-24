@@ -74,6 +74,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/architects" className="hover:text-[#171A20] transition-colors">
+                  Architectural Atelier &amp; BIM
+                </Link>
+              </li>
+              <li>
                 <Link to="/" hash="monitoring" className="hover:text-[#171A20] transition-colors">
                   Realtime IoT Telemetry
                 </Link>

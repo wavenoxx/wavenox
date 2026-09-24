@@ -15,6 +15,7 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { EnergyFlowSimulator } from "@/components/EnergyFlowSimulator";
 
 const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
 
@@ -259,7 +260,17 @@ function OmnigridPage() {
         }
       />
 
-      {/* 4. QUIET SECTION: Backup Duration Estimator */}
+      {/* 4. KINETIC ENERGY FLOW: 24-Hour Autonomous Simulation */}
+      <QuietSection
+        id="flow-simulation"
+        bg="white"
+        title="24-Hour Kinetic Energy Flow"
+        lead="Experience how solar generation, Omnigrid battery storage, and the DISCOM grid interact seamlessly from dawn to nocturnal autonomy."
+      >
+        <EnergyFlowSimulator />
+      </QuietSection>
+
+      {/* 5. QUIET SECTION: Backup Duration Estimator */}
       <QuietSection
         id="estimator"
         bg="surface"

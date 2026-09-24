@@ -193,6 +193,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Customer Stories & Installations", to: "/residential" },
           { label: "Safety & Cyclone Wind Standards", to: "/residential" },
           { label: "Regional Jurisdictions & DISCOMs", to: "/service-areas" },
+          { label: "Architectural Atelier & BIM", to: "/architects" },
         ],
       },
       {
