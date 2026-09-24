@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import ogHero01 from "@/assets/og-hero-01.jpg";
@@ -464,7 +464,6 @@ function OmnigridPage() {
       </section>
 
       <Footer />
-      <ConsultationDrawer />
     </div>
   );
 }

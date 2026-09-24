@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronRight, Phone, MessageSquare } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandLogo } from "./BrandLogo";
 import { openConsultationDrawer } from "./ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
@@ -24,6 +24,24 @@ const DRAWER_NAV = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const routerState = useRouterState();
+
+  // Auto-close menu on route navigation
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [routerState.location.pathname]);
+
+  // Close menu on ESC key
+  useEffect(() => {
+    if (!drawerOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setDrawerOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [drawerOpen]);
 
   useEffect(() => {
     function handleScroll() {
@@ -90,6 +108,8 @@ export function Header() {
           <button
             type="button"
             aria-label="Open navigation menu"
+            aria-expanded={drawerOpen}
+            aria-controls="mobile-navigation-drawer"
             onClick={() => setDrawerOpen(true)}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
               isScrolled ? "text-[#171A20] hover:bg-black/5" : "text-white hover:bg-white/10"
@@ -116,6 +136,10 @@ export function Header() {
 
             {/* Right Drawer Sheet */}
             <motion.div
+              id="mobile-navigation-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site navigation menu"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}

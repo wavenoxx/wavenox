@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { SystemConfigurator } from "@/components/SystemConfigurator";
 import { BRAND_CONFIG } from "@/config/brand";
 
@@ -34,7 +33,6 @@ function DeployPage() {
         <SystemConfigurator />
       </main>
       <Footer />
-      <ConsultationDrawer />
     </div>
   );
 }

@@ -10,7 +10,6 @@ import { TechSpecs } from "@/components/TechSpecs";
 import { OrderProcess } from "@/components/OrderProcess";
 import { SupportFaq } from "@/components/SupportFaq";
 import { Footer } from "@/components/Footer";
-import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 
 export const Route = createFileRoute("/")({
@@ -49,7 +48,6 @@ function Index() {
       <OrderProcess />
       <SupportFaq />
       <Footer />
-      <ConsultationDrawer />
     </main>
   );
 }

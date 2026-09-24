@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ConsultationDrawer, openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
@@ -705,7 +705,6 @@ function EnterprisePage() {
       </section>
 
       <Footer />
-      <ConsultationDrawer />
     </div>
   );
 }
