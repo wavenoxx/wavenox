@@ -5,7 +5,7 @@ import type { MediaDescriptor } from "@/components/system/Media";
 export const media = {
   "home-hero": {
     src: "/media/home-hero-1600w.jpg",
-    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar roof at golden hour",
+    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar array at golden hour",
     width: 1376,
     height: 768,
     avif: "/media/home-hero-640w.avif 640w, /media/home-hero-1080w.avif 1080w, /media/home-hero-1600w.avif 1600w, /media/home-hero-1920w.avif 1920w",
@@ -60,7 +60,7 @@ export const media = {
   } as MediaDescriptor,
   "res-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar roof",
+    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar array",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",
@@ -181,7 +181,7 @@ export const media = {
   } as MediaDescriptor,
   "homes-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar roof",
+    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar array",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",

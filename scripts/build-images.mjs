@@ -13,7 +13,7 @@ const shots = [
     slug: "home-hero",
     source: path.resolve(rootDir, "src/assets/home-hero-master.jpg"),
     mobileSource: path.resolve(rootDir, "src/assets/home-hero-mobile-master.jpg"),
-    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar roof at golden hour",
+    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar array at golden hour",
     isHero: true,
   },
   {
@@ -45,7 +45,7 @@ const shots = [
   {
     slug: "res-hero",
     source: path.resolve(rootDir, "src/assets/luxury_solar_villa.jpg"),
-    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar roof",
+    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar array",
     isHero: true,
   },
   {
