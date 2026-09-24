@@ -14,6 +14,7 @@ import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as OmnigridRouteImport } from './routes/omnigrid'
+import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as ServiceAreasRouteImport } from './routes/service-areas'
 import { Route as TechnologyRouteImport } from './routes/technology'
@@ -46,6 +47,11 @@ const FaqRoute = FaqRouteImport.update({
 const OmnigridRoute = OmnigridRouteImport.update({
   id: '/omnigrid',
   path: '/omnigrid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResidentialRoute = ResidentialRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/enterprise': typeof EnterpriseRoute
   '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
   '/technology': typeof TechnologyRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/enterprise': typeof EnterpriseRoute
   '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
   '/technology': typeof TechnologyRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/enterprise': typeof EnterpriseRoute
   '/faq': typeof FaqRoute
   '/omnigrid': typeof OmnigridRoute
+  '/our-story': typeof OurStoryRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
   '/technology': typeof TechnologyRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
     | '/service-areas'
     | '/technology'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
     | '/service-areas'
     | '/technology'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/enterprise'
     | '/faq'
     | '/omnigrid'
+    | '/our-story'
     | '/residential'
     | '/service-areas'
     | '/technology'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   EnterpriseRoute: typeof EnterpriseRoute
   FaqRoute: typeof FaqRoute
   OmnigridRoute: typeof OmnigridRoute
+  OurStoryRoute: typeof OurStoryRoute
   ResidentialRoute: typeof ResidentialRoute
   ServiceAreasRoute: typeof ServiceAreasRoute
   TechnologyRoute: typeof TechnologyRoute
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/omnigrid'
       fullPath: '/omnigrid'
       preLoaderRoute: typeof OmnigridRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/residential': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnterpriseRoute: EnterpriseRoute,
   FaqRoute: FaqRoute,
   OmnigridRoute: OmnigridRoute,
+  OurStoryRoute: OurStoryRoute,
   ResidentialRoute: ResidentialRoute,
   ServiceAreasRoute: ServiceAreasRoute,
   TechnologyRoute: TechnologyRoute,

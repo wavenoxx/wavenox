@@ -211,7 +211,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             label: "Speak with Solar Advisor",
             action: () => openConsultationDrawer(),
           },
-          { label: "About WAVENOX", to: "/legal/terms" },
+          { label: "Atelier Story & Philosophy", to: "/our-story" },
           { label: "Terms of Service", to: "/legal/terms" },
           { label: "Privacy Policy", to: "/legal/privacy" },
           { label: "Regulatory Disclosures", to: "/legal/disclosures" },
