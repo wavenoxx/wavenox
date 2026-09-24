@@ -10,6 +10,7 @@
 export interface SolarModuleSpecs {
   modelName: string;
   cellType: string;
+  cellTypeShort?: string;
   ratedPowerW: number;
   efficiencyPct: number;
   dimensionsMm: string;
@@ -70,6 +71,7 @@ export const PRODUCTS_CONFIG: ProductsConfig = {
   module: {
     modelName: "WAVENOX Monocrystalline TOPCon Series", // VERIFY(owner): from datasheet
     cellType: "N-Type TOPCon Half-Cut Bifacial", // VERIFY(owner): from datasheet
+    cellTypeShort: "N-type TOPCon", // VERIFY(owner): from datasheet
     ratedPowerW: 550, // VERIFY(owner): from datasheet
     efficiencyPct: 22.8, // VERIFY(owner): from datasheet (STC module efficiency)
     dimensionsMm: "2278 × 1134 × 30 mm", // VERIFY(owner): from datasheet

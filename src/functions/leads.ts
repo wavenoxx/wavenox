@@ -104,15 +104,16 @@ export const submitLead = createServerFn({ method: "POST" })
       };
     }
 
-    const referenceCode = generateReferenceCode();
+    let finalReferenceCode = generateReferenceCode();
 
     // 2. Check Supabase connection and persist
     try {
       const { getServerSupabaseClient } = await import("@/server/supabase");
+      const { BRAND_CONFIG } = await import("@/config/brand");
       const db = getServerSupabaseClient();
 
-      const { error } = await db.from("consultations").insert({
-        reference_code: referenceCode,
+      const insertPayload = (refCode: string) => ({
+        reference_code: refCode,
         client_name: data.name,
         phone: normalizedPhone,
         city: data.city || "Hyderabad",
@@ -138,6 +139,27 @@ export const submitLead = createServerFn({ method: "POST" })
         referrer: data.referrer || null,
       });
 
+      let { data: insertedRows, error } = await db
+        .from("consultations")
+        .insert(insertPayload(finalReferenceCode))
+        .select("id");
+
+      // Handle reference code unique collision: regenerate and retry once
+      if (
+        error &&
+        error.code === "23505" &&
+        (error.message?.includes("reference_code") || error.details?.includes("reference_code"))
+      ) {
+        console.warn("[submitLead] Reference code collision detected. Retrying with fresh code...");
+        finalReferenceCode = generateReferenceCode();
+        const retryResult = await db
+          .from("consultations")
+          .insert(insertPayload(finalReferenceCode))
+          .select("id");
+        error = retryResult.error;
+        insertedRows = retryResult.data;
+      }
+
       if (error) {
         // Handle 60-second anti-duplicate trigger message
         if (error.message?.includes("less than 60 seconds ago")) {
@@ -155,23 +177,76 @@ export const submitLead = createServerFn({ method: "POST" })
         };
       }
 
+      // 3. Dispatch optional owner notification via Resend REST API
+      const resendApiKey = typeof process !== "undefined" ? process.env?.RESEND_API_KEY : undefined;
+      const ownerNotifyEmail =
+        typeof process !== "undefined" ? process.env?.OWNER_NOTIFY_EMAIL : undefined;
+
+      if (resendApiKey && ownerNotifyEmail && insertedRows?.[0]?.id) {
+        const insertedId = insertedRows[0].id;
+        try {
+          const resendResponse = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${resendApiKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: "WAVENOX Leads <leads@wavenox.com>",
+              to: ownerNotifyEmail,
+              subject: `[New Lead] ${data.name} — ${finalReferenceCode} (${data.property_tier})`,
+              text: [
+                `New WAVENOX Consultation Request`,
+                `---------------------------------`,
+                `Reference: ${finalReferenceCode}`,
+                `Name: ${data.name}`,
+                `Phone: ${normalizedPhone}`,
+                `City: ${data.city || "Hyderabad"} (PIN: ${data.pin_code || "N/A"})`,
+                `Property Tier: ${data.property_tier}`,
+                `Source: ${data.source}`,
+                `System Size: ${data.system_kw ? `${data.system_kw} kW` : "N/A"}`,
+                `Monthly Bill: ${
+                  data.monthly_bill_inr
+                    ? `₹${data.monthly_bill_inr.toLocaleString("en-IN")}`
+                    : "N/A"
+                }`,
+                `Battery Units: ${data.battery_units || 0}`,
+                `Consent Logged: Yes (${data.consent_version})`,
+              ].join("\n"),
+            }),
+          });
+
+          if (resendResponse.ok) {
+            await db
+              .from("consultations")
+              .update({ owner_notified_at: new Date().toISOString() })
+              .eq("id", insertedId);
+          } else {
+            console.warn("[submitLead] Resend API returned non-OK status:", resendResponse.status);
+          }
+        } catch (notifyErr) {
+          console.warn("[submitLead] Failed to dispatch owner notification email:", notifyErr);
+          // Non-blocking: notification failure must never fail the lead submission
+        }
+      }
+
       return {
         success: true,
-        referenceCode,
+        referenceCode: finalReferenceCode,
         message: "Your proposal request has been successfully submitted.",
       };
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
 
-      // If Supabase environment is unconfigured, return a clear error instead of silent fake success
+      // If Supabase environment is unconfigured, return friendly message without technical leak
       if (errMsg.includes("Missing Supabase server configuration")) {
         console.error(
-          "[submitLead] CRITICAL: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not configured.",
+          "[submitLead] CRITICAL: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not configured on the server.",
         );
+        const { BRAND_CONFIG } = await import("@/config/brand");
         return {
           success: false,
-          message:
-            "Configuration error: Database connection is not configured on the server. Please contact WAVENOX support directly via phone or WhatsApp.",
+          message: `We couldn't save your request right now. Please call ${BRAND_CONFIG.contact.phone.display} or WhatsApp us.`,
         };
       }
 

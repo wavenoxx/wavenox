@@ -1,27 +1,22 @@
-import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import {
-  Battery,
-  Zap,
-  ShieldCheck,
-  Check,
-  Sparkles,
-  ArrowRight,
-  Clock,
-  Layers,
-  VolumeX,
-  Gauge,
-} from "lucide-react";
+import * as React from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import {
+  Panel,
+  QuietSection,
+  StatRow,
+  Button,
+  TextLink,
+  SpecsDrawer,
+  type SpecCategory,
+} from "@/components/system";
+import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import ogHero01 from "@/assets/og-hero-01.jpg";
-import ogHero02 from "@/assets/og-hero-02.jpg";
-import ogCore from "@/assets/og-core.jpg";
-import ogModule from "@/assets/og-module.jpg";
+import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+
+const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
 
 export const Route = createFileRoute("/omnigrid")({
   head: () => ({
@@ -29,441 +24,274 @@ export const Route = createFileRoute("/omnigrid")({
       { title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
         name: "description",
-        content: `Whole-home battery storage engineered for Indian grid resilience. ${PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh usable capacity per unit, sub-4ms outage islanding, and intelligent Time-of-Day tariff shaving.`,
+        content: `Whole-home battery storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, instant outage switchover, and intelligent peak-tariff shaving.`,
       },
       { property: "og:title", content: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
       {
         property: "og:description",
         content:
-          "Silent whole-villa energy independence. Zero-flicker blackout protection and modular LFP battery storage.",
+          "Whole-home battery energy storage. Instant blackout protection, zero diesel noise, and 100% solar self-consumption.",
       },
+      { property: "og:image", content: "/media/omnigrid-hero-1600w.jpg" },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OmnigridPage,
 });
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.25 },
-  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
-};
-
-const unitCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
-
-const STACK_OPTIONS = [
+const OMNIGRID_SPECS: SpecCategory[] = [
   {
-    units: 1,
-    capacity: `${(1 * unitCap).toFixed(1)} kWh`,
-    desc: "Essential Luxury Backup",
-    loads:
-      "Powers lighting, WiFi, smart automation, refrigeration, and 1 high-tonnage Inverter AC.",
+    title: "Battery Storage",
+    items: [
+      { label: "Usable Capacity", value: `${batteryCap} kWh per unit`, verify: true },
+      { label: "Continuous Output", value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW` },
+      { label: "Peak Output (10s)", value: `${PRODUCTS_CONFIG.battery.peakPowerKw} kW` },
+      { label: "Battery Chemistry", value: PRODUCTS_CONFIG.battery.chemistry },
+      {
+        label: "Round-Trip Efficiency",
+        value: `${PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}%`,
+      },
+    ],
   },
   {
-    units: 2,
-    capacity: `${(2 * unitCap).toFixed(1)} kWh`,
-    desc: "Whole-Home Standard (Recommended)",
-    loads:
-      "Full villa autonomy powering 4 Inverter ACs, home elevator, heated pool pumps, and kitchen.",
-    isPopular: true,
-  },
-  {
-    units: 3,
-    capacity: `${(3 * unitCap).toFixed(1)} kWh`,
-    desc: "Multi-Day Autonomy",
-    loads:
-      "Extended multi-day independence for sprawling estates with multiple central AC chillers.",
-  },
-  {
-    units: 4,
-    capacity: `${(4 * unitCap).toFixed(1)} kWh`,
-    desc: "Commercial Microgrid",
-    loads:
-      "Heavy residential compounds, corporate retreat villas, and high-discharge Level 2 EV charging.",
+    title: "Operation & Resilience",
+    items: [
+      { label: "Transfer Speed", value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs },
+      { label: "Ingress Protection", value: PRODUCTS_CONFIG.battery.protectionRating },
+      { label: "Operating Temperature", value: PRODUCTS_CONFIG.battery.operatingTempRangeC },
+      { label: "Mounting Options", value: PRODUCTS_CONFIG.battery.mounting },
+      { label: "Warranty", value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years Comprehensive` },
+    ],
   },
 ];
 
+const LOAD_ITEMS = [
+  { id: "wifi", label: "Lights & Wi-Fi", watts: 300 },
+  { id: "fridge", label: "Refrigerator & Fans", watts: 800 },
+  { id: "ac", label: "1.5 Ton AC", watts: 1800 },
+  { id: "heavy", label: "Water Pump / Heavy", watts: 2200 },
+];
+
 function OmnigridPage() {
-  const [selectedUnits, setSelectedUnits] = useState(2);
+  const [specsOpen, setSpecsOpen] = React.useState(false);
+  const [selectedLoads, setSelectedLoads] = React.useState<string[]>(["wifi", "fridge"]);
+
+  const totalWatts = React.useMemo(() => {
+    let sum = 0;
+    for (const load of LOAD_ITEMS) {
+      if (selectedLoads.includes(load.id)) {
+        sum += load.watts;
+      }
+    }
+    return Math.max(sum, 150);
+  }, [selectedLoads]);
+
+  // Usable kWh * 1000 * 0.9 efficiency factor / total watts
+  const backupHours = React.useMemo(() => {
+    const hours = (batteryCap * 1000 * 0.9) / totalWatts;
+    return hours > 24 ? "24+" : hours.toFixed(1);
+  }, [totalWatts]);
+
+  const toggleLoad = (id: string) => {
+    setSelectedLoads((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
 
   return (
-    <div className="min-h-screen w-full bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-white">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
-      {/* =========================================================================
-          HERO: 100vh Full-Bleed Omnigrid Studio Gallery
-          ========================================================================= */}
-      <section className="relative min-h-screen w-full overflow-hidden bg-[#171A20]">
-        <img
-          src={ogHero01}
-          alt="Monolithic Omnigrid clean energy storage unit standing in minimalist architectural gallery"
-          className="absolute inset-0 h-full w-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
-
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-between px-6 pt-32 pb-16 text-center lg:px-12">
-          {/* Centered Typography */}
-          <div className="my-auto max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      {/* 1. PANEL: omnigrid-hero */}
+      <Panel
+        id="omnigrid"
+        media={media["omnigrid-hero"]}
+        priority={true}
+        tone="dark"
+        title="Omnigrid"
+        lead="Home battery storage engineered for continuous power during grid outages."
+        stats={
+          <StatRow
+            stats={[
+              { value: `${batteryCap} kWh`, label: "Usable Capacity" },
+              {
+                value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`,
+                label: "Continuous Output",
+              },
+              { value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years`, label: "Warranty" },
+            ]}
+          />
+        }
+        actions={
+          <>
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/75">
-                WHOLE-HOME ENERGY STORAGE
-              </span>
-              <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-                Omnigrid Clean Storage
-              </h1>
-              <p className="mt-4 text-base sm:text-lg text-white/80 font-normal max-w-xl mx-auto leading-relaxed">
-                24/7 Outage Defense, Time-of-Day Tariff Optimization, and Absolute Energy
-                Sovereignty.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Bottom Floating Specs Dock & Dual Pills */}
-          <div className="w-full max-w-4xl space-y-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="grid grid-cols-3 gap-4 text-center divide-x divide-white/20 text-white py-4 backdrop-blur-md bg-black/40 rounded-2xl border border-white/10"
+              Configure Omnigrid
+            </Button>
+            <Button
+              onClick={() => openConsultationDrawer()}
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                  {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh
-                </div>
-                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
-                  Capacity / Unit
-                </div>
-              </div>
-              <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-emerald-400">
-                  {PRODUCTS_CONFIG.battery.islandingTransferSpeedMs}
-                </div>
-                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
-                  Sub-Cycle Islanding
-                </div>
-              </div>
-              <div>
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                  {PRODUCTS_CONFIG.battery.warrantyYears}-Year
-                </div>
-                <div className="text-[11px] sm:text-xs text-white/70 uppercase tracking-wider mt-0.5">
-                  Warranty
-                </div>
-              </div>
-            </motion.div>
+              Schedule Consultation
+            </Button>
+          </>
+        }
+      />
 
-            {/* Dual CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+      {/* 2. PANEL: home-outage */}
+      <Panel
+        id="outage-defense"
+        media={media["home-outage"]}
+        tone="dark"
+        title="Outage Protection"
+        lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
+        stats={
+          <StatRow
+            stats={[
+              { value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs, label: "Transfer Speed" },
+              { value: "24/7", label: "Power Security" },
+            ]}
+          />
+        }
+        actions={
+          <>
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
-                Configure Omnigrid System
-              </Link>
-              <button
-                type="button"
-                onClick={() => openConsultationDrawer("villa")}
-                className="btn-glass w-full sm:w-auto text-sm cursor-pointer"
-              >
-                Consult Storage Engineer
-              </button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 2: 24/7 Outage Defense & Seamless Islanding (Pure White #FFFFFF)
-          ========================================================================= */}
-      <section className="w-full bg-[#FFFFFF] py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Visual Frame */}
-            <motion.div {...fadeUp} className="lg:col-span-7">
-              <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm bg-[#171A20]">
-                <img
-                  src={ogCore}
-                  alt="Precision Lithium Iron Phosphate battery module architecture inside Omnigrid"
-                  className="w-full aspect-[16/10] object-cover"
-                />
-              </div>
-            </motion.div>
-
-            {/* Narrative & Feature Highlights */}
-            <motion.div {...fadeUp} className="lg:col-span-5 space-y-6">
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
-                UNINTERRUPTED POWER
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
-                Immunity from the Utility Grid
-              </h2>
-              <p className="text-sm sm:text-base text-[#5C5E62] leading-relaxed">
-                Indian electrical grids suffer frequent voltage sags, brownouts, and monsoon line
-                breaks. Omnigrid acts as an impenetrable electronic shield, detecting grid
-                disruptions and transferring your entire residence in under 4 milliseconds.
-              </p>
-
-              <div className="space-y-4 pt-4 border-t border-[#E2E8F0]">
-                <div className="flex items-start gap-3">
-                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="h-3 w-3" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
-                      Continuous Inductive Heavy Motor Support
-                    </h3>
-                    <p className="text-xs text-[#5C5E62] mt-0.5">
-                      High surge capability effortlessly starts and operates 4–5 heavy Inverter AC
-                      compressors, water lift pumps, and EV chargers without voltage dips.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="h-3 w-3" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
-                      100% Silent & Zero Diesel Fumes
-                    </h3>
-                    <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Eliminate noisy, vibrating diesel generator maintenance, toxic exhaust fumes,
-                      and manual fuel procurement entirely.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="h-5 w-5 rounded-full bg-[#171A20] text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="h-3 w-3" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs sm:text-sm font-semibold text-[#171A20]">
-                      Sub-4ms Transition (Zero Flicker)
-                    </h3>
-                    <p className="text-xs text-[#5C5E62] mt-0.5">
-                      Faster than an eye blink. Sensitive high-end audio gear, gaming PCs, smart
-                      lighting systems, and security servers never drop power.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 3: Time-of-Day (ToD) Tariff Optimization (Studio Gray #F8F8FA)
-          ========================================================================= */}
-      <section className="w-full bg-[#F8F8FA] py-20 lg:py-28 border-t border-b border-[#E2E8F0]">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
-              INTELLIGENT ENERGY ARBITRAGE
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
-              Never Pay Peak Electricity Rates
-            </h2>
-            <p className="text-sm sm:text-base text-[#5C5E62]">
-              State electricity distribution boards in India increasingly penalize peak evening
-              consumption (6 PM to 10 PM) with heavy tariff surcharges. Omnigrid neutralizes peak
-              penalties automatically.
-            </p>
-          </motion.div>
-
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div
-              {...fadeUp}
-              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+              Configure Omnigrid
+            </Button>
+            <Button
+              onClick={() => setSpecsOpen(true)}
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
-                <Clock className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-semibold text-[#171A20]">
-                Time-Based Tariff Arbitrage
-              </h3>
-              <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Omnigrid automatically charges using free rooftop solar during the day, then powers
-                your estate throughout peak evening tariff windows to eliminate high DISCOM rates.
-              </p>
-            </motion.div>
+              View Specs
+            </Button>
+          </>
+        }
+      />
 
-            <motion.div
-              {...fadeUp}
-              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+      {/* 3. PANEL: home-final */}
+      <Panel
+        id="sunset-power"
+        media={media["home-final"]}
+        tone="dark"
+        title="Use Solar After Sunset"
+        lead="Store daytime excess generation to power nighttime air conditioning and appliances."
+        stats={
+          <StatRow
+            stats={[
+              { value: "100%", label: "Solar Self-Use" },
+              { value: "Zero", label: "Diesel Fumes" },
+            ]}
+          />
+        }
+        actions={
+          <>
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
-                <Zap className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-semibold text-[#171A20]">100% Self-Powered Mode</h3>
-              <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Minimize reliance on the external grid. Maximize consumption of your own clean solar
-                generation day and night, keeping your estate completely carbon-neutral.
-              </p>
-            </motion.div>
-
-            <motion.div
-              {...fadeUp}
-              className="p-6 rounded-2xl border border-[#E2E8F0] bg-white space-y-3"
+              Configure Omnigrid
+            </Button>
+            <Button
+              onClick={() => openConsultationDrawer()}
+              variant="secondary"
+              tone="dark"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#171A20] text-white flex items-center justify-center">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-semibold text-[#171A20]">Emergency Backup Reserve</h3>
-              <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Set a guaranteed energy reserve percentage (e.g. 20% to 50%) that is permanently
-                preserved exclusively for sudden weather emergencies and grid outages.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+              Schedule Consultation
+            </Button>
+          </>
+        }
+      />
 
-      {/* =========================================================================
-          SECTION 4: Modular Scalability & Technical Specifications (Pure White #FFFFFF)
-          ========================================================================= */}
-      <section className="w-full bg-[#FFFFFF] py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
-              ENGINEERING SPECIFICATIONS
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#171A20]">
-              Modular Architecture & Specifications
-            </h2>
-            <p className="text-sm sm:text-base text-[#5C5E62]">
-              Stack multiple Omnigrid units seamlessly to match your estate's exact power capacity
-              and continuous runtime requirements.
-            </p>
-          </motion.div>
-
-          {/* Stacking Options */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {STACK_OPTIONS.map((stack) => (
-              <button
-                key={stack.units}
-                type="button"
-                onClick={() => setSelectedUnits(stack.units)}
-                className={`p-5 rounded-2xl border text-left transition-all cursor-pointer ${
-                  selectedUnits === stack.units
-                    ? "border-[#171A20] bg-[#171A20] text-white shadow-sm"
-                    : "border-[#E2E8F0] bg-[#F8F8FA] text-[#171A20] hover:border-[#171A20]/30"
-                }`}
-              >
-                <div className="text-xs font-semibold opacity-70">
-                  {stack.units} {stack.units === 1 ? "Unit" : "Units"}
-                </div>
-                <div className="mt-1 text-2xl font-bold tracking-tight">{stack.capacity}</div>
-                <div
-                  className={`mt-1 text-xs font-medium ${
-                    selectedUnits === stack.units ? "text-white" : "text-[#171A20]"
+      {/* 4. QUIET SECTION: Backup Duration Estimator */}
+      <QuietSection
+        id="estimator"
+        bg="surface"
+        title="Backup Duration Estimator"
+        lead="Select your essential loads to see how long a single Omnigrid unit keeps your home running."
+      >
+        <div className="max-w-2xl mx-auto space-y-10">
+          {/* Unboxed Segmented Load Toggles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {LOAD_ITEMS.map((item) => {
+              const active = selectedLoads.includes(item.id);
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => toggleLoad(item.id)}
+                  className={`p-4 rounded-[4px] text-center transition-all cursor-pointer border ${
+                    active
+                      ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
+                      : "border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/40"
                   }`}
                 >
-                  {stack.desc}
-                </div>
-                <div
-                  className={`mt-3 text-[11px] leading-relaxed ${
-                    selectedUnits === stack.units ? "text-white/70" : "text-[#5C5E62]"
-                  }`}
-                >
-                  {stack.loads}
-                </div>
-              </button>
-            ))}
+                  <div className="text-[13px] font-medium leading-snug">{item.label}</div>
+                  <div
+                    className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                  >
+                    ~{item.watts} W
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Specs Table */}
-          <div className="mt-16 max-w-4xl mx-auto border-t border-[#E2E8F0] divide-y divide-[#E2E8F0]">
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Usable Energy Capacity</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh per unit
-              </span>
+          {/* Big Number Display */}
+          <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
+            <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
+              {backupHours} Hours
             </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Peak & Continuous Power Output</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.peakPowerKw} kW Peak /{" "}
-                {PRODUCTS_CONFIG.battery.continuousPowerKw} kW Continuous per Unit
-              </span>
+            <div className="text-[13px] text-[#5C5E62]">
+              Estimated Backup Duration ({totalWatts} W average load)
             </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Battery Chemistry</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.chemistry}
-              </span>
-            </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Round-Trip Efficiency</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}% AC-to-AC
-              </span>
-            </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Operating Temperature Range</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.operatingTempRangeC}
-              </span>
-            </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Ingress Protection Rating</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.protectionRating}
-              </span>
-            </div>
-            <div className="py-4 flex justify-between items-center text-xs sm:text-sm">
-              <span className="text-[#5C5E62] font-medium">Performance Warranty</span>
-              <span className="font-semibold text-[#171A20]">
-                {PRODUCTS_CONFIG.battery.warrantyYears}-Year Warranty
-              </span>
-            </div>
-          </div>
-
-          {!PRODUCTS_CONFIG.specsVerified && (
-            <p className="mt-4 text-center text-xs text-[#5C5E62] italic">
-              {PRODUCTS_CONFIG.indicativeDisclaimer}
+            <p className="text-[13px] text-[#5C5E62] pt-1">
+              Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to 4
+              units for larger estates.
             </p>
-          )}
-        </div>
-      </section>
+          </div>
 
-      {/* =========================================================================
-          SECTION 5: Next-Generation Storage CTA Bar (Studio Gray #F8F8FA)
-          ========================================================================= */}
-      <section className="w-full bg-[#F8F8FA] py-16 border-t border-[#E2E8F0]">
-        <div className="mx-auto max-w-5xl px-6 lg:px-12 text-center space-y-6">
-          <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171A20]">
-            Take Control of Your Energy Future
-          </h3>
-          <p className="text-xs sm:text-sm text-[#5C5E62] max-w-xl mx-auto">
-            Calculate exact Omnigrid battery units for your villa or schedule an engineering
-            consultation with our storage specialists.
-          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link to="/deploy" className="btn-primary w-full sm:w-auto text-sm cursor-pointer">
-              Configure in Design Studio →
-            </Link>
-            <button
-              type="button"
-              onClick={() => openConsultationDrawer("villa")}
-              className="btn-secondary w-full sm:w-auto text-sm cursor-pointer"
+            <Button
+              to="/deploy"
+              variant="primary"
+              tone="light"
+              className="w-full sm:w-auto min-w-[200px]"
             >
-              Consult Energy Storage Engineer
-            </button>
+              Configure Omnigrid
+            </Button>
+            <TextLink to="/residential" arrow>
+              Learn about solar integration
+            </TextLink>
           </div>
         </div>
-      </section>
+      </QuietSection>
 
       <Footer />
+
+      {/* Specifications Drawer */}
+      <SpecsDrawer
+        open={specsOpen}
+        onOpenChange={setSpecsOpen}
+        categories={OMNIGRID_SPECS}
+        title="Omnigrid Technical Specifications"
+      />
     </div>
   );
 }

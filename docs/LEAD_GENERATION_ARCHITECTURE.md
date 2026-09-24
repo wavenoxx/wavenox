@@ -42,18 +42,18 @@ This document outlines the end-to-end inbound client acquisition pipeline for th
 
 Every consultation submission captures the following parameters:
 
-| Field | Type | Description |
-|---|---|---|
-| `property_tier` | `string` | `villa` (30-50kW), `estate` (50-120kW), `commercial` (120-500kW+), `defense` |
-| `roof_area_sqft` | `number` | Usable roof footprint (1,000 to 100,000 sq.ft) |
-| `estimated_capacity_kw` | `number` | Derived via `computeSolarYield` (13 W/sq.ft) |
-| `estimated_savings_inr` | `number` | 25-Year cumulative net wealth generated |
-| `client_name` | `string` | Client full name |
-| `phone` | `string` | WhatsApp/Mobile (+91 Indian mobile format) |
-| `city` | `string` | Operating hub (e.g. Hyderabad, Bengaluru) |
-| `battery_tier` | `string` | Omnigrid storage selection (20kWh, 40kWh, 100kWh) |
-| `utm_source` | `string` | Campaign origin (e.g. `google`, `facebook`, `linkedin`) |
-| `utm_campaign` | `string` | Specific marketing campaign identifier |
+| Field                   | Type     | Description                                                                  |
+| ----------------------- | -------- | ---------------------------------------------------------------------------- |
+| `property_tier`         | `string` | `villa` (30-50kW), `estate` (50-120kW), `commercial` (120-500kW+), `defense` |
+| `roof_area_sqft`        | `number` | Usable roof footprint (1,000 to 100,000 sq.ft)                               |
+| `estimated_capacity_kw` | `number` | Derived via `computeSolarYield` (13 W/sq.ft)                                 |
+| `estimated_savings_inr` | `number` | 25-Year cumulative net wealth generated                                      |
+| `client_name`           | `string` | Client full name                                                             |
+| `phone`                 | `string` | WhatsApp/Mobile (+91 Indian mobile format)                                   |
+| `city`                  | `string` | Operating hub (e.g. Hyderabad, Bengaluru)                                    |
+| `battery_tier`          | `string` | Omnigrid storage selection (20kWh, 40kWh, 100kWh)                            |
+| `utm_source`            | `string` | Campaign origin (e.g. `google`, `facebook`, `linkedin`)                      |
+| `utm_campaign`          | `string` | Specific marketing campaign identifier                                       |
 
 ---
 
@@ -97,6 +97,7 @@ For formal lead tracking, lead deduplication, and export to CRM:
 ## 5. Rebranding for a New Owner
 
 To point all lead capture to a new business owner:
+
 1. Open `.env` (or `src/config/brand.ts`).
 2. Update:
    ```env

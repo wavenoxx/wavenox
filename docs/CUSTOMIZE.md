@@ -8,18 +8,18 @@ This platform is architected as an **end-to-end, reusable, luxury clean-tech mas
 
 File: `src/config/brand.ts` (or via `.env` variables)
 
-| Setting | Default Value | Example for New Owner |
-| :--- | :--- | :--- |
-| `DEFAULT_BRAND_NAME` | `"WAVENOX"` | `"SolTerra Architecture"` |
-| `DEFAULT_LEGAL_NAME` | `"WAVENOX Technologies Pvt Ltd"` | `"SolTerra Energy Solutions Pvt Ltd"` |
-| `DEFAULT_SITE_URL` | `"https://wavenox.com"` | `"https://solterra.in"` |
-| `DEFAULT_TAGLINE` | `"Absolute power. Zero compromise."` | `"Architectural Solar Infrastructure"` |
-| `DEFAULT_PHONE_DISPLAY` | `"+91 91546 26354"` | The owner's official office number |
-| `DEFAULT_PHONE_DIAL` | `"+919154626354"` | Dial-ready E.164 number |
-| `DEFAULT_WHATSAPP_DISPLAY` | `"+91 70758 70054"` | Owner's VIP sales WhatsApp |
-| `DEFAULT_WHATSAPP_DIAL` | `"917075870054"` | Numbers only with country code |
-| `DEFAULT_EMAIL` | `"advisory@wavenox.com"` | Owner's sales email |
-| `DEFAULT_ADDRESS` | `"Gachibowli, Hyderabad..."` | Owner's registered office address |
+| Setting                    | Default Value                        | Example for New Owner                  |
+| :------------------------- | :----------------------------------- | :------------------------------------- |
+| `DEFAULT_BRAND_NAME`       | `"WAVENOX"`                          | `"SolTerra Architecture"`              |
+| `DEFAULT_LEGAL_NAME`       | `"WAVENOX Technologies Pvt Ltd"`     | `"SolTerra Energy Solutions Pvt Ltd"`  |
+| `DEFAULT_SITE_URL`         | `"https://wavenox.com"`              | `"https://solterra.in"`                |
+| `DEFAULT_TAGLINE`          | `"Absolute power. Zero compromise."` | `"Architectural Solar Infrastructure"` |
+| `DEFAULT_PHONE_DISPLAY`    | `"+91 91546 26354"`                  | The owner's official office number     |
+| `DEFAULT_PHONE_DIAL`       | `"+919154626354"`                    | Dial-ready E.164 number                |
+| `DEFAULT_WHATSAPP_DISPLAY` | `"+91 70758 70054"`                  | Owner's VIP sales WhatsApp             |
+| `DEFAULT_WHATSAPP_DIAL`    | `"917075870054"`                     | Numbers only with country code         |
+| `DEFAULT_EMAIL`            | `"advisory@wavenox.com"`             | Owner's sales email                    |
+| `DEFAULT_ADDRESS`          | `"Gachibowli, Hyderabad..."`         | Owner's registered office address      |
 
 > [!TIP]
 > Setting environment variables in `.env` (e.g. `VITE_BRAND_NAME="SolTerra"`) automatically overrides these defaults without modifying code.

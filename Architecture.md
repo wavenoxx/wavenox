@@ -51,14 +51,17 @@ WAVENOX is engineered as a high-performance, full-stack, reusable web platform b
 To guarantee that any solar EPC contractor in India can acquire and rebrand this platform within 30 minutes, all business-specific, geographic, and solar physics variables are centralized:
 
 ### 2.1 `src/config/brand.ts`
+
 - Single source of truth for: Brand name, legal entity, phone numbers (display and dialable E.164), WhatsApp links, email addresses, social profiles, and domain.
 - Built-in validation and normalization helpers (`validSiteUrl`, `normalizedDial`, `normalizedWhatsAppDial`, `validWhatsAppLink`).
 
 ### 2.2 `src/config/business.ts`
+
 - Primary operating city (Hyderabad HQ), regional coverage, GPS coordinates for Schema.org LocalBusiness microdata, and verified service hubs across India (Bengaluru, Mumbai, Vijayawada, Delhi-NCR).
 - Customer review registry (auto-hides when empty to comply with consumer protection laws).
 
 ### 2.3 `src/config/solar.ts`
+
 - Complete solar physics and Indian financial models:
   - Energy density: `WATTS_PER_SQFT_WAVENOX = 13` W/sq.ft.
   - Annual effective solar hours: `GEN_HOURS_PER_YEAR = 1600` hrs.
@@ -110,13 +113,13 @@ wavenox/
 
 ## 4. Route Architecture & Page Mapping
 
-| Route | Page Name | Primary Focus & Tesla Equivalent |
-| :--- | :--- | :--- |
-| `/` | **Solar Panels Showcase** | Exact replica of `https://www.tesla.com/solarpanels` section hierarchy on Pure White & Studio Gray canvas. |
-| `/deploy` | **System Design Studio** | Interactive 6-step configurator mirroring `https://www.tesla.com/energy/design` with custom kW sizing, Omnigrid battery count, and PM Surya Ghar subsidy credits. |
-| `/residential` | **Solar for Homes** | Architectural solar for luxury villas, independent houses, and penthouses. |
-| `/enterprise` | **Commercial & Industrial** | Megawatt-scale solar, Section 32 40% Year-1 tax depreciation, corporate campuses. |
-| `/omnigrid` | **Omnigrid Battery Storage** | Whole-home outage backup, seamless sub-millisecond islanding, compact wall-mounted battery. |
+| Route          | Page Name                    | Primary Focus & Tesla Equivalent                                                                                                                                  |
+| :------------- | :--------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`            | **Solar Panels Showcase**    | Exact replica of `https://www.tesla.com/solarpanels` section hierarchy on Pure White & Studio Gray canvas.                                                        |
+| `/deploy`      | **System Design Studio**     | Interactive 6-step configurator mirroring `https://www.tesla.com/energy/design` with custom kW sizing, Omnigrid battery count, and PM Surya Ghar subsidy credits. |
+| `/residential` | **Solar for Homes**          | Architectural solar for luxury villas, independent houses, and penthouses.                                                                                        |
+| `/enterprise`  | **Commercial & Industrial**  | Megawatt-scale solar, Section 32 40% Year-1 tax depreciation, corporate campuses.                                                                                 |
+| `/omnigrid`    | **Omnigrid Battery Storage** | Whole-home outage backup, seamless sub-millisecond islanding, compact wall-mounted battery.                                                                       |
 
 ---
 
