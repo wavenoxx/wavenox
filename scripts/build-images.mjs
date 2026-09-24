@@ -94,10 +94,7 @@ async function main() {
       // WebP
       const webpFileName = `${shot.slug}-${w}w.webp`;
       const webpPath = path.join(outDir, webpFileName);
-      await sharp(imgBuffer)
-        .resize(w, h, { fit: "cover" })
-        .webp({ quality: 80 })
-        .toFile(webpPath);
+      await sharp(imgBuffer).resize(w, h, { fit: "cover" }).webp({ quality: 80 }).toFile(webpPath);
       desktopWebpList.push(`/media/${webpFileName} ${w}w`);
 
       // JPG fallback
@@ -178,7 +175,7 @@ ${manifestEntries
     mobileSrc: ${JSON.stringify(e.mobileSrc)},
     mobileWebp: ${JSON.stringify(e.mobileWebp)},
     mobileAvif: ${JSON.stringify(e.mobileAvif)},
-  } as MediaDescriptor,`
+  } as MediaDescriptor,`,
   )
   .join("\n")}
 } as const;

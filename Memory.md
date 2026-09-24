@@ -18,18 +18,18 @@
 
 ## 2. Technical Stack State
 
-| Parameter | Current Value | Notes |
-| :--- | :--- | :--- |
-| **Node.js Version** | `v26.4.0` | Node 26 LTS runtime |
-| **Meta-Framework** | TanStack Start (`^1.168.26`) | Nitro-based SSR + Vite 8 |
-| **Routing** | TanStack Router (`^1.170.16`) | Type-safe, file-based (`src/routes/`) |
-| **Styling** | Tailwind CSS v4 (`^4.2.1`) | Native `@theme inline`, OKLCH colors |
-| **Animation Engine** | Framer Motion (`^12.42.2`) | GPU-accelerated spring physics |
-| **Component Primitives** | Radix UI (`@radix-ui/react-dialog`) | Accessible modal dialogs with focus trapping and ARIA |
-| **Validation** | Zod `3.x` | Strict type validation for inputs and RPC handlers |
-| **Database** | Supabase (PostgreSQL 15+) | RLS zero-trust policies, duplicate trigger, consent audit |
-| **Unit Testing** | Vitest (`v5.0.1`) | 9/9 tests passing (`src/config/solar.test.ts`) |
-| **Build Target** | Cloudflare Pages / Workers | Output in `.output/server` and `.output/public` |
+| Parameter                | Current Value                       | Notes                                                     |
+| :----------------------- | :---------------------------------- | :-------------------------------------------------------- |
+| **Node.js Version**      | `v26.4.0`                           | Node 26 LTS runtime                                       |
+| **Meta-Framework**       | TanStack Start (`^1.168.26`)        | Nitro-based SSR + Vite 8                                  |
+| **Routing**              | TanStack Router (`^1.170.16`)       | Type-safe, file-based (`src/routes/`)                     |
+| **Styling**              | Tailwind CSS v4 (`^4.2.1`)          | Native `@theme inline`, OKLCH colors                      |
+| **Animation Engine**     | Framer Motion (`^12.42.2`)          | GPU-accelerated spring physics                            |
+| **Component Primitives** | Radix UI (`@radix-ui/react-dialog`) | Accessible modal dialogs with focus trapping and ARIA     |
+| **Validation**           | Zod `3.x`                           | Strict type validation for inputs and RPC handlers        |
+| **Database**             | Supabase (PostgreSQL 15+)           | RLS zero-trust policies, duplicate trigger, consent audit |
+| **Unit Testing**         | Vitest (`v5.0.1`)                   | 9/9 tests passing (`src/config/solar.test.ts`)            |
+| **Build Target**         | Cloudflare Pages / Workers          | Output in `.output/server` and `.output/public`           |
 
 ---
 

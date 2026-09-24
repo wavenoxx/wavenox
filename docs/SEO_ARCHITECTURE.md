@@ -18,6 +18,7 @@ This document specifies the technical SEO framework, metadata hierarchy, and Sch
 ## 2. Schema.org JSON-LD Entities
 
 ### 2.1. LocalBusiness / HomeAndConstructionBusiness Schema
+
 Injected into the root layout to establish high local search authority in major metropolitan hubs (Hyderabad, Bengaluru, etc.):
 
 ```json
@@ -88,17 +89,17 @@ Injected into the root layout to establish high local search authority in major 
 
 ## 3. Route Index & Sizing Keywords
 
-| Route | Primary Keyword | Search Intent | Target Persona |
-|---|---|---|---|
-| `/` | Luxury Solar Architecture | Commercial / Brand | High-Net-Worth Estate Owners |
-| `/residential` | Solar Roof Tiles for Luxury Villas | Commercial Investigation | Villa Owners, Architects |
-| `/enterprise` | Commercial Rooftop Solar MW Scale | B2B Commercial | Factory Owners, CFOs, ESG Heads |
-| `/liquid-glass` | BIPV Solar Glass Tiles | Technical / Product | Structural Engineers, Architects |
-| `/omnigrid` | Whole-House Energy Storage Battery | Transactional / Hardware | Off-Grid Compounds, Estate Managers |
-| `/defense` | Hurricane Ballistic Rated Solar | High-Security / Continuity | Industrial & Compound Security |
-| `/intelligence` | AI Energy Management System EMS | Technical Innovation | Tech Founders, CleanTech Investors |
-| `/brand` | Monolithic Solar Manifesto | Informational / Brand | Discerning Clients, Media |
-| `/deploy` | Solar Roof Sizing & Subsidy Calculator | High-Intent Lead | Active Home & Business Owners |
+| Route           | Primary Keyword                        | Search Intent              | Target Persona                      |
+| --------------- | -------------------------------------- | -------------------------- | ----------------------------------- |
+| `/`             | Luxury Solar Architecture              | Commercial / Brand         | High-Net-Worth Estate Owners        |
+| `/residential`  | Solar Roof Tiles for Luxury Villas     | Commercial Investigation   | Villa Owners, Architects            |
+| `/enterprise`   | Commercial Rooftop Solar MW Scale      | B2B Commercial             | Factory Owners, CFOs, ESG Heads     |
+| `/liquid-glass` | BIPV Solar Glass Tiles                 | Technical / Product        | Structural Engineers, Architects    |
+| `/omnigrid`     | Whole-House Energy Storage Battery     | Transactional / Hardware   | Off-Grid Compounds, Estate Managers |
+| `/defense`      | Hurricane Ballistic Rated Solar        | High-Security / Continuity | Industrial & Compound Security      |
+| `/intelligence` | AI Energy Management System EMS        | Technical Innovation       | Tech Founders, CleanTech Investors  |
+| `/brand`        | Monolithic Solar Manifesto             | Informational / Brand      | Discerning Clients, Media           |
+| `/deploy`       | Solar Roof Sizing & Subsidy Calculator | High-Intent Lead           | Active Home & Business Owners       |
 
 ---
 
