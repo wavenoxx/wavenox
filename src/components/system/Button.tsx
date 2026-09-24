@@ -23,25 +23,25 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   ref,
 ) {
   const baseClasses =
-    "inline-flex items-center justify-center h-10 px-6 rounded-[4px] text-[14px] font-medium leading-none tracking-normal whitespace-nowrap transition-colors duration-150 select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex items-center justify-center min-h-[44px] h-11 px-7 rounded-[4px] text-[13px] sm:text-[14px] font-medium tracking-[0.04em] whitespace-nowrap transition-all duration-150 select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 active:scale-[0.99]";
 
   let variantClasses = "";
   if (tone === "dark") {
     if (variant === "primary") {
       variantClasses =
-        "bg-[#FFFFFF] text-[#171A20] hover:bg-[#FFFFFF]/90 active:bg-[#FFFFFF]/80 focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
+        "bg-[#FFFFFF] text-[#171A20] hover:bg-[#FFFFFF]/90 active:bg-[#FFFFFF]/80 shadow-[0_2px_8px_rgba(0,0,0,0.3)] focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
     } else {
       variantClasses =
-        "bg-[#FFFFFF]/15 text-[#FFFFFF] backdrop-blur-md hover:bg-[#FFFFFF]/25 active:bg-[#FFFFFF]/30 focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
+        "bg-black/30 border border-white/30 text-[#FFFFFF] backdrop-blur-md hover:bg-white/15 hover:border-white/50 active:bg-white/20 focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
     }
   } else {
     // tone === "light"
     if (variant === "primary") {
       variantClasses =
-        "bg-[#171A20] text-[#FFFFFF] hover:bg-[#171A20]/90 active:bg-[#171A20]/80 focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
+        "bg-[#171A20] text-[#FFFFFF] hover:bg-[#000000] active:bg-[#171A20]/90 shadow-[0_2px_8px_rgba(23,26,32,0.15)] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
     } else {
       variantClasses =
-        "bg-[#F4F4F4] text-[#171A20] hover:bg-[#EAEAEA] active:bg-[#DFDFDF] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
+        "bg-[#F4F4F4] border border-[#E3E4E6] text-[#171A20] hover:bg-[#EAEAEA] active:bg-[#DFDFDF] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
     }
   }
 

@@ -12,18 +12,21 @@ const shots = [
   {
     slug: "home-hero",
     source: path.resolve(rootDir, "src/assets/home-hero-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-hero-mobile-master.jpg"),
     alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar roof at golden hour",
     isHero: true,
   },
   {
     slug: "home-design",
     source: path.resolve(rootDir, "src/assets/home-design-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-design-mobile-master.jpg"),
     alt: "Architectural macro detail of concealed mounting structure and matte-black solar panels on rooftop terrace",
     isHero: false,
   },
   {
     slug: "home-outage",
     source: path.resolve(rootDir, "src/assets/home-outage-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-outage-mobile-master.jpg"),
     alt: "Cinematic dusk neighborhood during power outage with residential villa warmly illuminated by stored solar power",
     isHero: false,
   },
@@ -162,26 +165,47 @@ async function main() {
       }
     }
 
-    // Generate mobile portrait crop (aspect 4:5 - 800w x 1000h)
+    // Generate mobile portrait (True 9:16 aspect ratio - 800w x 1422h)
     const mobileWidth = 800;
-    const mobileHeight = 1000;
+    const mobileHeight = 1422;
+
+    let mobileImgBuffer = null;
+    if (shot.mobileSource) {
+      try {
+        mobileImgBuffer = await fs.readFile(shot.mobileSource);
+        console.log(`  Using dedicated 9:16 mobile master for ${shot.slug}`);
+      } catch {
+        mobileImgBuffer = null;
+      }
+    }
+
+    if (!mobileImgBuffer) {
+      // High-precision 9:16 extraction from master canvas
+      const targetH = origHeight;
+      const targetW = Math.round(targetH * (9 / 16));
+      const extractW = Math.min(targetW, origWidth);
+      const left = Math.max(0, Math.round((origWidth - extractW) / 2));
+      mobileImgBuffer = await sharp(imgBuffer)
+        .extract({ left, top: 0, width: extractW, height: targetH })
+        .toBuffer();
+    }
 
     const mobileAvifFile = `${shot.slug}-mobile.avif`;
-    await sharp(imgBuffer)
+    await sharp(mobileImgBuffer)
       .resize(mobileWidth, mobileHeight, { fit: "cover", position: "center" })
-      .avif({ quality: 75, effort: 5 })
+      .avif({ quality: 78, effort: 5 })
       .toFile(path.join(outDir, mobileAvifFile));
 
     const mobileWebpFile = `${shot.slug}-mobile.webp`;
-    await sharp(imgBuffer)
+    await sharp(mobileImgBuffer)
       .resize(mobileWidth, mobileHeight, { fit: "cover", position: "center" })
-      .webp({ quality: 80 })
+      .webp({ quality: 82 })
       .toFile(path.join(outDir, mobileWebpFile));
 
     const mobileJpgFile = `${shot.slug}-mobile.jpg`;
-    await sharp(imgBuffer)
+    await sharp(mobileImgBuffer)
       .resize(mobileWidth, mobileHeight, { fit: "cover", position: "center" })
-      .jpeg({ quality: 82, mozjpeg: true })
+      .jpeg({ quality: 84, mozjpeg: true })
       .toFile(path.join(outDir, mobileJpgFile));
 
     // Master default jpg guaranteed to exist on disk

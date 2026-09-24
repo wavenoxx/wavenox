@@ -36,6 +36,22 @@ export const Route = createFileRoute("/omnigrid")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/omnigrid-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/omnigrid-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
+    ],
   }),
   component: OmnigridPage,
 });

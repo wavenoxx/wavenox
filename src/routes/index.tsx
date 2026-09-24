@@ -36,6 +36,43 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: BRAND_CONFIG.name,
+          url: "https://wavenox.in",
+          logo: "https://wavenox.in/favicon.ico",
+          description:
+            "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: BRAND_CONFIG.contact.phone.dial,
+            contactType: "customer service",
+            areaServed: "IN",
+            availableLanguage: ["English", "Telugu", "Hindi"],
+          },
+        }),
+      },
+    ],
   }),
   component: IndexPage,
 });

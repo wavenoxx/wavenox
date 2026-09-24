@@ -22,9 +22,25 @@ export const Route = createFileRoute("/residential")({
         content:
           "Clean rooftop solar engineered for Indian residential terraces. 25-year warranty and seamless battery backup.",
       },
-      { property: "og:image", content: "/media/homes-hero-1600w.jpg" },
+      { property: "og:image", content: "/media/res-hero-1600w.jpg" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/res-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/res-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
     ],
   }),
   component: ResidentialPage,
