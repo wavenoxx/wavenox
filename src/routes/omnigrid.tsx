@@ -52,6 +52,30 @@ export const Route = createFileRoute("/omnigrid")({
         type: "image/webp",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: `${BRAND_CONFIG.name} Omnigrid Clean Energy Storage System`,
+          image: `${BRAND_CONFIG.domain}/media/omnigrid-hero-1600w.jpg`,
+          description: `Whole-home battery storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, <20ms instant outage switchover, LiFePO4 chemistry, and 10-year warranty.`,
+          brand: {
+            "@type": "Brand",
+            name: BRAND_CONFIG.name,
+          },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "INR",
+            price: "280000",
+            priceValidUntil: "2027-12-31",
+            availability: "https://schema.org/InStock",
+            areaServed: "IN",
+          },
+        }),
+      },
+    ],
   }),
   component: OmnigridPage,
 });

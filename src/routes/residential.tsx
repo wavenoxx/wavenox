@@ -42,6 +42,32 @@ export const Route = createFileRoute("/residential")({
         type: "image/webp",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: `${BRAND_CONFIG.name} Residential Monolithic Solar Architecture`,
+          image: `${BRAND_CONFIG.domain}/media/res-hero-1600w.jpg`,
+          description:
+            "Architectural rooftop solar designed for luxury Indian villas and residences. N-Type TOPCon bifacial modules, zero terrace floor penetration, 170 km/h wind resilience, and PM Surya Ghar subsidy integration.",
+          brand: {
+            "@type": "Brand",
+            name: BRAND_CONFIG.name,
+          },
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "INR",
+            lowPrice: "186000",
+            highPrice: "1550000",
+            priceValidUntil: "2027-12-31",
+            availability: "https://schema.org/InStock",
+            areaServed: "IN",
+          },
+        }),
+      },
+    ],
   }),
   component: ResidentialPage,
 });

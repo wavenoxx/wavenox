@@ -59,8 +59,8 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: BRAND_CONFIG.name,
-          url: "https://wavenox.in",
-          logo: "https://wavenox.in/favicon.ico",
+          url: BRAND_CONFIG.domain,
+          logo: `${BRAND_CONFIG.domain}/favicon.ico`,
           description:
             "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
           contactPoint: {
@@ -310,7 +310,7 @@ function IndexPage() {
           <StatRow
             stats={[
               { value: "< 20 ms", label: "Backup Switchover" },
-              { value: "13.5 kWh", label: "Usable Storage" },
+              { value: "14.3 kWh", label: "Usable Storage" },
             ]}
           />
         }

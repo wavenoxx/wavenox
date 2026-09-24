@@ -44,6 +44,25 @@ export const Route = createFileRoute("/enterprise")({
         type: "image/webp",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name: `${BRAND_CONFIG.name} Enterprise Commercial & Industrial Solar Infrastructure`,
+          image: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg`,
+          description:
+            "Turnkey commercial solar engineering, procurement, and construction (EPC) for manufacturing plants, cold storage facilities, and corporate tech parks. Section 32 40% tax depreciation optimization.",
+          provider: {
+            "@type": "Organization",
+            name: BRAND_CONFIG.name,
+            url: BRAND_CONFIG.domain,
+          },
+          areaServed: "IN",
+        }),
+      },
+    ],
   }),
   component: EnterprisePage,
 });

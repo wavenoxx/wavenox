@@ -30,6 +30,26 @@ export const Route = createFileRoute("/deploy")({
       { property: "og:image", content: "/media/home-hero-1600w.jpg" },
       { property: "og:type", content: "website" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: `${BRAND_CONFIG.name} Solar Design Studio & Proposal Generator`,
+          url: `${BRAND_CONFIG.domain}/deploy`,
+          applicationCategory: "DesignApplication",
+          operatingSystem: "All",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "INR",
+          },
+          description:
+            "Interactive architectural rooftop solar sizing calculator with DISCOM net-metering integration and PM Surya Ghar subsidy modeling.",
+        }),
+      },
+    ],
   }),
   component: DeployPage,
 });

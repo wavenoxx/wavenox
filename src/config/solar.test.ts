@@ -53,7 +53,7 @@ describe("Solar Engine — estimate() Core Calculations", () => {
   });
 
   it("produces emiBelowBill === false for default studio configuration", () => {
-    // Default studio: ₹12,000 bill, 24 panels (13.2 kW), 2 Omnigrid units (27 kWh)
+    // Default studio: ₹12,000 bill, 24 panels (13.2 kW), 2 Omnigrid units (28.6 kWh)
     const result = estimate({
       monthlyBillInr: 12000,
       panels: 24,

@@ -53,8 +53,8 @@ export const Route = createFileRoute("/our-story")({
           publisher: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
-            url: "https://wavenox.in",
-            logo: "https://wavenox.in/favicon.ico",
+            url: BRAND_CONFIG.domain,
+            logo: `${BRAND_CONFIG.domain}/favicon.ico`,
           },
         }),
       },

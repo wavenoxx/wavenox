@@ -109,14 +109,14 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
   omnigrid: {
     products: [
       {
-        name: "Omnigrid 13.5 kWh",
+        name: "Omnigrid 14.3 kWh",
         image: "/media/omnigrid-hero-640w.webp",
         learnTo: "/omnigrid",
         orderTo: "/deploy",
         orderLabel: "Configure",
       },
       {
-        name: "Omnigrid Dual-Pack (27 kWh)",
+        name: "Omnigrid Dual-Pack (28.6 kWh)",
         image: "/media/omnigrid-night-640w.webp",
         learnTo: "/omnigrid",
         orderTo: "/deploy",

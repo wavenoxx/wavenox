@@ -10,14 +10,14 @@ import { BUSINESS, hubCityList } from "./business";
  */
 export const DEFAULT_BRAND_NAME = "WAVENOX";
 const DEFAULT_LEGAL_NAME = "WAVENOX Technologies Private Limited";
-const DEFAULT_SITE_URL = "https://wavenox.com";
+const DEFAULT_SITE_URL = "https://wavenox.in";
 const DEFAULT_TAGLINE = "Absolute power. Zero compromise.";
 const DEFAULT_PHONE_DISPLAY = "+91 91546 26354";
 const DEFAULT_PHONE_DIAL = "+919154626354";
 const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
 const DEFAULT_WHATSAPP_DIAL = "917075870054";
 const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
-const DEFAULT_EMAIL = "advisory@wavenox.com";
+const DEFAULT_EMAIL = "advisory@wavenox.in";
 const DEFAULT_ADDRESS =
   "WAVENOX Innovation Lab, Financial District, Gachibowli, Hyderabad, Telangana 500032";
 
@@ -124,11 +124,11 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
   const legalName = clean(env.VITE_LEGAL_NAME) || DEFAULT_LEGAL_NAME;
   const tagline = clean(env.VITE_TAGLINE) || DEFAULT_TAGLINE;
   const domain = validSiteUrl(clean(env.VITE_SITE_URL) || DEFAULT_SITE_URL);
-  let domainHost = "wavenox.com";
+  let domainHost = "wavenox.in";
   try {
     domainHost = new URL(domain).host;
   } catch {
-    domainHost = "wavenox.com";
+    domainHost = "wavenox.in";
   }
 
   const phoneDisplay = clean(env.VITE_BUSINESS_PHONE_DISPLAY) || DEFAULT_PHONE_DISPLAY;

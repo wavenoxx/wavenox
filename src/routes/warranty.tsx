@@ -73,12 +73,12 @@ export const Route = createFileRoute("/warranty")({
           author: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
-            url: "https://wavenox.in",
+            url: BRAND_CONFIG.domain,
           },
           publisher: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
-            logo: "https://wavenox.in/favicon.ico",
+            logo: `${BRAND_CONFIG.domain}/favicon.ico`,
           },
         }),
       },

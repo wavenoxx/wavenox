@@ -49,9 +49,9 @@ export const Route = createFileRoute("/service-areas")({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           name: BRAND_CONFIG.name,
-          image: "https://wavenox.in/media/home-hero-1600w.jpg",
+          image: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg`,
           telephone: BRAND_CONFIG.contact.phone.display,
-          url: "https://wavenox.in",
+          url: BRAND_CONFIG.domain,
           address: {
             "@type": "PostalAddress",
             streetAddress: "Financial District, Nanakramguda, Gachibowli",
