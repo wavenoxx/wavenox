@@ -5,59 +5,66 @@
 ## 1. Project Genesis & Strategic Direction
 
 - **Brand Name**: WAVENOX
+- **Legal Entity**: WAVENOX Technologies Private Limited
 - **Tagline**: Absolute power. Zero compromise.
-- **Strategic Mandate**: 
-  - Transform WAVENOX into the **Tesla Solar Panels & Energy Design Studio of India (`https://www.tesla.com/solarpanels` & `https://www.tesla.com/energy/design`)**.
-  - Eliminate all generic, busy, rainbow-glowing AI template elements and cluttered 4-column footers.
-  - Deliver the restrained, confident, monolithic aesthetic of Tesla clean-tech, adapted exclusively for the Indian market (Rupees, DISCOM net-metering, PM Surya Ghar Muft Bijli Yojana subsidies).
-- **The Tesla Color System Realignment**:
-  - The founder explicitly pointed out that Tesla's website is NOT pitch-black throughout!
-  - It uses **Pure White (`#FFFFFF`) & Soft Studio Light Gray (`#F8F8FA`)** for showroom content sections, calculators, and specs, contrasted against deep **Carbon Dark (`#171A20`)** typography, with dark contrast reserved for edge-to-edge photography viewports (like the Hero and hardware macro shots).
-- **The 3-Layer Tesla Ecosystem**:
-  - **Layer 1: The Main Solar Panels Showcase (`/` or `/solarpanels`)**: 12 clean sections from 100vh Hero to 1-line showroom footer.
-  - **Layer 2: Interactive System Design Studio (`/deploy`)**: 6-step configurator mirroring `tesla.com/energy/design`.
-  - **Layer 3: Dedicated Ecosystem Sub-Pages**: `/residential` (Homes), `/enterprise` (Commercial MW), `/omnigrid` (Storage).
-- **The Reusable Masterpiece Strategy**:
-  - The platform is engineered as a turnkey, white-label, sale-ready business asset.
-  - When complete, the platform will be sold to a real-world solar EPC contractor or renewable energy developer in India.
-  - Using the centralized configuration engine (`src/config/brand.ts`, `business.ts`, `solar.ts`), any new owner can rebrand the site, change phone/WhatsApp links, update service hubs, and adjust tariffs in under 30 minutes without altering UI code.
-- **Reference Blueprint (`InvisProtect`)**:
-  - Leverages the battle-tested configuration patterns from the founder's previous enterprise project at `/scratch/invisprotect`.
+- **Operating Territory**: Hyderabad HQ, Bengaluru, Mumbai, Vijayawada, Delhi-NCR
+- **Active Branch**: `phase-1-foundation`
+- **Strategic Mandate**:
+  - Build an honest, robust, accessible, and mathematically verifiable architectural clean-tech web platform.
+  - Phase 1 ("Honest & Working Foundation") is complete: regulatory alignment, DPDP Act 2023 compliance, zero-trust server lead pipeline, single calculation engine, and Radix Dialog accessibility.
+  - Ready for Phase 2: Tesla-style design pass.
 
 ---
 
-## 2. Technical Environment & Stack State
+## 2. Technical Stack State
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Operating System** | macOS (Darwin) | Local developer machine |
 | **Node.js Version** | `v26.4.0` | Node 26 LTS runtime |
-| **Package Tooling** | `npm` / `bun` | Scripts configured in `package.json` |
 | **Meta-Framework** | TanStack Start (`^1.168.26`) | Nitro-based SSR + Vite 8 |
 | **Routing** | TanStack Router (`^1.170.16`) | Type-safe, file-based (`src/routes/`) |
-| **Styling** | Tailwind CSS v4 (`^4.2.1`) | `@theme inline`, OKLCH color space |
+| **Styling** | Tailwind CSS v4 (`^4.2.1`) | Native `@theme inline`, OKLCH colors |
 | **Animation Engine** | Framer Motion (`^12.42.2`) | GPU-accelerated spring physics |
-| **Component Kit** | Radix UI + shadcn/ui | Headless accessible primitives |
-| **Icons** | Lucide React (`^0.575.0`) | Clean line-art icons |
-| **Local Dev Server** | `http://localhost:8080/` | Active on port 8080 |
-| **Git Remote** | `https://github.com/wavenoxx/wavenox.git` | Clean `main` branch |
+| **Component Primitives** | Radix UI (`@radix-ui/react-dialog`) | Accessible modal dialogs with focus trapping and ARIA |
+| **Validation** | Zod `3.x` | Strict type validation for inputs and RPC handlers |
+| **Database** | Supabase (PostgreSQL 15+) | RLS zero-trust policies, duplicate trigger, consent audit |
+| **Unit Testing** | Vitest (`v5.0.1`) | 9/9 tests passing (`src/config/solar.test.ts`) |
+| **Build Target** | Cloudflare Pages / Workers | Output in `.output/server` and `.output/public` |
 
 ---
 
-## 3. Visual Assets Inventory
+## 3. Key Architecture & Engineering Decisions
 
-| Asset Name | Path | Resolution | Description & Usage |
-| :--- | :--- | :--- | :--- |
-| `luxury_solar_villa.jpg` | `src/assets/luxury_solar_villa.jpg` | 1920 × 1080 | Cinema-grade modern concrete villa with flush solar roof at golden hour. 100vh Hero background. |
-| `liquid_glass_macro.jpg` | `src/assets/liquid_glass_macro.jpg` | 1920 × 1080 | Extreme macro of hexagonal N-type TOPCon silicon cells under tempered glass. Sleek Design section. |
-| `enterprise_mw_rooftop.jpg` | `src/assets/enterprise_mw_rooftop.jpg` | 1920 × 1080 | Aerial render of 1MW monolithic black solar roof on corporate campus. Commercial page. |
-| Curated Lovable Assets | `src/assets/*.jpg` | Various | 32 pre-existing high-res assets for subpages and details. |
+1. **Import Protection & RPC File Structure:**
+   - TanStack Start uses `vite-plugin-import-protection` which blocks client components from importing any module located in a path matching `**/server/**`.
+   - Therefore, public RPC server functions (`createServerFn`) reside in `src/functions/leads.ts`.
+   - Server-only secrets (`SUPABASE_SERVICE_ROLE_KEY`) reside in `src/server/supabase.ts` and are dynamically imported exclusively inside server function handlers.
+   - Proof: Client bundle (`.output/public`) has **zero** occurrences of `SUPABASE_SERVICE_ROLE_KEY` or `service_role`.
+
+2. **Unified Solar Physics Engine (`src/config/solar.ts`):**
+   - Single source of truth for all calculations.
+   - Tied directly to `PRODUCTS_CONFIG.module.ratedPowerW` (550W) and `PRODUCTS_CONFIG.battery.usableCapacityKwh`.
+   - Modeled savings are mathematically capped at 100% of baseline annual power bill.
+   - Commercial segment returns ₹0 subsidy (PM Surya Ghar is residential-only).
+
+3. **Lead Pipeline & Bot Suppression:**
+   - Honeypot field (`company_website`) silently returns success for bots without writing to the database.
+   - Normalizes all Indian numbers to E.164 (`+91XXXXXXXXXX`).
+   - Requires explicit DPDP Act 2023 consent checkbox.
+   - PostgreSQL trigger enforces a 60-second duplicate submission cooldown per phone number.
+   - "Demo Fallback Mode" was removed — if Supabase keys are missing, the server returns an explicit configuration error rather than dropping leads.
+
+4. **Global Dialog Mount:**
+   - `ConsultationDrawer` is mounted once globally in `src/routes/__root.tsx`.
+   - Redundant mounts in individual page routes were removed to eliminate duplicated state and event conflicts.
+   - Triggerable anywhere via `openConsultationDrawer(tier?)` custom window event.
 
 ---
 
-## 4. Critical Bug Fixes & Protection
+## 4. Verification Checklist & Current Health
 
-- **Fixed `computeSolarYield`**:
-  - Previously threw `TypeError: Cannot read properties of undefined (reading 'toFixed')` when called with object arguments in `/enterprise` and `/deploy`.
-  - Now defensively handles both `{ roofAreaSqFt, tariffRatePerKwh }` object parameters and positional `(sqft, tariff)` numbers, returning all expected properties.
-  - Zero runtime crashes across all routes.
+- [x] `npm test`: 9/9 passing
+- [x] `npx tsc --noEmit`: 0 errors
+- [x] `npm run lint`: 0 errors (7 minor react-refresh warnings on UI component files)
+- [x] `npm run build`: Successful Nitro Cloudflare build
+- [x] Secret Leak Audit: 0 matches in `.output/public`
