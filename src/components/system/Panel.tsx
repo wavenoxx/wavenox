@@ -81,7 +81,7 @@ export function Panel({
       </div>
 
       {/* Top Section: Title & Lead */}
-      <div className="relative pt-20 sm:pt-24 md:pt-32 px-5 sm:px-6 text-center z-10 w-full max-w-4xl mx-auto">
+      <div className="relative pt-20 sm:pt-24 md:pt-32 px-5 sm:px-6 text-center z-20 w-full max-w-4xl mx-auto">
         <Reveal immediate={priority}>
           {title && (
             <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
@@ -99,11 +99,11 @@ export function Panel({
 
       {/* Middle Custom Content if any */}
       {children && (
-        <div className="relative flex-1 flex items-center justify-center px-6 z-10">{children}</div>
+        <div className="relative flex-1 flex items-center justify-center px-6 z-20">{children}</div>
       )}
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
-      <div className="relative pb-8 sm:pb-12 md:pb-14 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-5 md:gap-6 z-10 w-full max-w-4xl mx-auto text-center">
+      <div className="relative pb-8 sm:pb-12 md:pb-14 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-5 md:gap-6 z-20 w-full max-w-4xl mx-auto text-center">
         {stats && (
           <Reveal immediate={priority} delay={0.1} className="w-full">
             {stats}
