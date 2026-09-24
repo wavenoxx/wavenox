@@ -5,113 +5,83 @@
 ## 1. Project Phase Overview
 
 ```
-┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
-│        PHASE 1          │     │        PHASE 2          │     │        PHASE 3          │
-│   Foundation & Audit    │ ──► │  Config & Bespoke Assets│ ──► │ Layer 1: Tesla Showcase │
-│       (COMPLETED)       │     │       (COMPLETED)       │     │     (ACTIVE SPRINT)     │
-└─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
-                                                                             │
-                                                                             ▼
-┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
-│        PHASE 6          │     │        PHASE 5          │     │        PHASE 4          │
-│   Production Audit      │ ◄── │ Layer 3: Ecosystem      │ ◄── │ Layer 2: Design Studio  │
-│   & Git Remote Push     │     │ Subpages Refactor       │     │  Configurator (/deploy) │
-└─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
+┌─────────────────────────────────┐       ┌─────────────────────────────────┐
+│            PHASE 1              │       │            PHASE 2              │
+│ Honest & Working Foundation     │ ────► │  Tesla-Style Design Pass        │
+│          (COMPLETED ✅)          │       │           (NEXT UP 🚀)          │
+└─────────────────────────────────┘       └─────────────────────────────────┘
 ```
 
 ---
 
-## 2. Phase 1: Codebase Audit & Reference Scanning (Status: COMPLETED ✅)
+## 2. Phase 1: Honest & Working Foundation (Status: COMPLETED ✅)
 
-- [x] Clone and deep scan GitHub repository (`https://github.com/wavenoxx/wavenox.git`).
-- [x] Inspect founder's reference project (`InvisProtect`) at `/scratch/invisprotect`.
-- [x] Analyze live Tesla Solar website (`tesla.com/solarpanels` & `tesla.com/energy/design`) structure, typography, and color tokens.
-- [x] Identify root causes of previous prototype rejection (unfocused AI-style clutter, busy glowing cards, bloated footer).
+Branch: `phase-1-foundation`
 
----
+### Step 1: Repository Hygiene & Foundation Integrity
+- [x] Removed obsolete legacy routes and unused demo files.
+- [x] Hardened `.gitignore` to prevent any credential leaks (`.env`, `.env.*`, Supabase service role keys).
+- [x] Standardized root types and resolved all TypeScript compiler warnings in core configurations.
+- [x] Commit: `phase1(step 1): clean legacy routes, fix root types, gitignore` (`a9ba6a9`).
 
-## 3. Phase 2: Configuration & Asset Generation (Status: COMPLETED ✅)
+### Step 2: Product Specifications & Decoupling
+- [x] Removed all unauthorized "Tesla Powerwall" and "Tesla Solar" branding references.
+- [x] Created `src/config/products.ts` as the central repository for hardware datasheets (TOPCon module, hybrid string inverter, Omnigrid battery storage).
+- [x] Added `// VERIFY(owner): ...` annotations on all unconfirmed OEM specifications.
+- [x] Added user-facing indicative spec disclaimer banner.
+- [x] Commit: `phase1(step 2): remove tesla branding, extract product specs to products.ts` (`ec818da`).
 
-- [x] Create centralized decoupled configuration engine (`src/config/brand.ts`, `business.ts`, `solar.ts`).
-- [x] Resolve critical runtime bug in `computeSolarYield` in `src/config/solar.ts` (preventing error boundaries).
-- [x] Generate cinema-grade bespoke visual assets in `src/assets/`:
-  - `luxury_solar_villa.jpg`: Modern concrete villa with seamless black solar roof at golden hour.
-  - `liquid_glass_macro.jpg`: Macro shot of hexagonal N-type TOPCon silicon cells under tempered diamond glass.
-  - `enterprise_mw_rooftop.jpg`: High-angle aerial render of 1MW monolithic black solar roof.
+### Step 3: Regulatory Alignment & Copy Accuracy
+- [x] Removed unverifiable marketing claims (e.g., "India's #1", fake uptime guarantees).
+- [x] Aligned subsidy language strictly with PM Surya Ghar: Muft Bijli Yojana (up to ₹78,000 for residential systems up to 3 kW; ₹0 for commercial).
+- [x] Replaced misleading "zero bill forever" claims with realistic net-metering offsets and grid fixed-charge disclosures.
+- [x] Commit: `phase1(step 3): remove unverifiable claims, align regulatory copy` (`aa783a4`).
 
----
+### Step 4: Unified Solar Calculation Engine (`src/config/solar.ts`)
+- [x] Centralized all solar calculations, energy yields, and financial math into `src/config/solar.ts`.
+- [x] Deprecated duplicate calculators across components (`BillSavingsSlider`, `SystemConfigurator`, `ConsultationDrawer`, `enterprise.tsx`).
+- [x] Added Vitest test suite (`src/config/solar.test.ts`) with 9 comprehensive unit tests (all passing).
+- [x] Ensured modeled savings never exceed 100% of baseline annual power bill.
+- [x] Commit: `phase1(step 4): one calculation engine in solar.ts with tests` (`49a3d72`).
 
-## 4. Phase 3: Layer 1 — The Main Tesla Solar Showcase (`src/routes/index.tsx`) (Active Sprint 🔴)
+### Step 5: Server Lead Pipeline & Zero-Trust Security
+- [x] Created `src/functions/leads.ts` using TanStack Start `createServerFn` with Zod validation.
+- [x] Created `src/server/supabase.ts` for secure server-side Supabase client using `SUPABASE_SERVICE_ROLE_KEY`.
+- [x] Implemented bot suppression via hidden honeypot field (`company_website`).
+- [x] Implemented phone number normalization to Indian E.164 standard (`+91XXXXXXXXXX`).
+- [x] Added DPDP Act 2023 consent capture (`consent_given`, `consent_version`, `consent_at`).
+- [x] Created database migrations:
+  - `supabase/migrations/20260923_consultations.sql`: Baseline schema, indices, 60s duplicate trigger.
+  - `supabase/migrations/20260924_consultations_v2.sql`: Reference codes, zero-trust RLS hardening, defensive legacy tier normalization.
+- [x] Wired direct submission in `ConsultationDrawer`, `SystemConfigurator`, and `enterprise.tsx`.
+- [x] Eliminated "Demo Fallback Mode" — server returns explicit configuration error if keys are missing rather than dropping leads with fake success.
+- [x] Centralized battery capacity (`PRODUCTS_CONFIG.battery.usableCapacityKwh`) across calculations, OutageProtection, and Omnigrid routes.
+- [x] Commits: `663362b`, `a845112`.
 
-- [ ] **Step 3.1: Floating Blur Header (`Header.tsx`)**
-  - Left: Monolithic `WAVENOX` logo.
-  - Center: Clean links (`Solar Roof`, `Solar Panels`, `Omnigrid`, `Commercial`).
-  - Right: Sleek `Schedule Consultation` pill & `Menu` drawer trigger.
-- [ ] **Step 3.2: 100vh Full-Bleed Hero Section (`Hero.tsx`)**
-  - Full-screen `luxury_solar_villa.jpg` background.
-  - Centered clean title (`Solar for Existing Roofs` / `Solar Panels`).
-  - Subtitle link (`Schedule a Virtual Consultation →`).
-  - Bottom floating dock with 3 key specs (`Guaranteed Lowest Price`, `25-Year Warranty`, `24/7 Outage Protection`).
-  - Dual Tesla pill buttons (`Order Now` solid Carbon Dark pill + `Schedule Consultation` dark glass pill).
-- [ ] **Step 3.3: Sleek Low-Profile Design Section (`SleekDesign.tsx`)**
-  - Pure White `#FFFFFF` backdrop.
-  - Concealed mounting hardware, zero visible conduits, monolithic all-black styling.
-  - Macro visual (`liquid_glass_macro.jpg`).
-- [ ] **Step 3.4: 24/7 Outage Protection Section (`OutageProtection.tsx`)**
-  - Studio Gray `#F8F8FA` backdrop.
-  - Omnigrid battery storage integration for uninterrupted power during Indian grid blackouts.
-  - Interactive status simulator (Day: Solar Charging / Night: Battery / Grid Outage: Instant Islanding).
-- [ ] **Step 3.5: Pay Less for Electricity Section (`BillSavingsSlider.tsx`)**
-  - Pure White `#FFFFFF` backdrop.
-  - Interactive monthly electricity bill slider (₹3,000 to ₹75,000+ per month).
-  - Indian state DISCOM selector (TSSPDCL, BESCOM, MSEDCL, TANGEDCO, BSES).
-  - Live reactive calculations: System size (kW), annual savings, 25-yr net wealth, and PM Surya Ghar subsidy credit.
-- [ ] **Step 3.6: Efficiency & All-Weather Reliability (`EfficiencyTech.tsx`)**
-  - Studio Gray `#F8F8FA` backdrop.
-  - N-type TOPCon cascading cell tech, shade resilience, 50°C Indian heat resistance.
-- [ ] **Step 3.7: Monitor and Optimize Section (`EnergyControl.tsx`)**
-  - Pure White `#FFFFFF` backdrop.
-  - Sleek mobile phone mockup with animated energy flow telemetry (Solar ➔ Battery ➔ Home ➔ Grid).
-- [ ] **Step 3.8: Built to Last: Technical Specs Drawer (`TechSpecs.tsx`)**
-  - Expandable 2-column minimalist engineering specs table matching Tesla's spec drawer.
-- [ ] **Step 3.9: Order to Power On Section (`OrderProcess.tsx`)**
-  - Studio Gray `#F8F8FA` backdrop.
-  - 5-step installation timeline (Virtual Design ➔ Permitting ➔ Installation ➔ CEIG Inspection ➔ Power On & Subsidies).
-- [ ] **Step 3.10: Schedule a Virtual Consultation Modal (`ConsultationModal.tsx`)**
-  - Tesla Energy Advisor booking drawer for 1-on-1 virtual design reviews.
-- [ ] **Step 3.11: Comprehensive FAQ & Support Accordion (`SupportFaq.tsx`)**
-  - High-trust Indian rooftop solar Q&A on net-metering, subsidies, warranties.
-- [ ] **Step 3.12: Minimalist 1-Line Showroom Footer (`Footer.tsx`)**
-  - Replaces 4-column footer with Tesla's iconic 1-line understated footer.
-- [ ] **Step 3.13: Assemble Homepage (`src/routes/index.tsx`)**
-  - Orchestrate all 12 modules into the seamless Tesla Solar Showcase flow.
+### Step 6: Accessible Radix Dialog & Navigation Menus
+- [x] Replaced custom modal/drawer in `ConsultationDrawer.tsx` with `@radix-ui/react-dialog` (`Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`).
+- [x] Guaranteed focus trapping, ESC key dismiss, outside click dismiss, and return focus on close.
+- [x] Deduplicated consultation drawer mount: mounted once globally in `src/routes/__root.tsx`, removed duplicate mounts from individual pages.
+- [x] Enhanced `Header.tsx` mobile menu with `aria-expanded`, `aria-controls`, ESC key dismiss, and auto-close on route navigation.
+- [x] Commit: `phase1(step 6): accessible Radix Dialog for consultation drawer, header menu a11y, deduplicate drawer mount` (`3908f5e`).
+
+### Step 7: Legal Pages & Footer Integration
+- [x] Created `src/routes/legal/privacy.tsx` compliant with India's Digital Personal Data Protection Act, 2023 (DPDP Act).
+- [x] Created `src/routes/legal/terms.tsx` detailing preliminary quotation terms, DISCOM timelines, and Hyderabad jurisdiction.
+- [x] Created `src/routes/legal/disclosures.tsx` with complete mathematical models, DISCOM tariff schedules, and financial assumptions.
+- [x] Updated `src/components/Footer.tsx` with clean legal links, corporate entity name, registered office address, and copyright notice.
+- [x] Commit: `phase1(step 7): DPDP Act 2023 privacy policy, quotation terms, financial disclosures, and footer links` (`dccaa91`).
+
+### Step 8: Documentation
+- [x] Updated `README.md` with complete technical stack, route map, calculation engine, lead pipeline, and deployment guide.
+- [x] Updated `Tasks.md` and `Memory.md`.
 
 ---
 
-## 5. Phase 4: Layer 2 — Interactive System Design Studio (`/deploy`)
+## 3. Phase 2: Tesla-Style Design Pass (Backlog 📋)
 
-- [ ] **Step 4.1**: Build `SystemConfigurator.tsx` with 6-step interactive flow:
-  1. *Location & Bill*: City/PIN code + Monthly power bill (₹3k to ₹75k+).
-  2. *System Sizing*: Small (4.8 kW), Medium (9.6 kW), Large (14.4 kW), Extra Large (19.2 kW+).
-  3. *Battery Storage (Omnigrid)*: 0, 1, 2, or 3 units with Whole Home vs Essential Load backup toggle.
-  4. *Roof Type Selector*: RCC Flat Terrace vs Sloped Mangalore Tile vs Metal Sheet.
-  5. *Financial Breakdown*: Gross price, PM Surya Ghar subsidy credit (up to ₹78,000), Net payable cost, Cash vs Loan EMI.
-  6. *One-Click WhatsApp Reservation*: Direct dossier dispatch.
-- [ ] **Step 4.2**: Mount into `src/routes/deploy.tsx` with showroom styling.
-
----
-
-## 6. Phase 5: Layer 3 — Ecosystem Subpages Refactor
-
-- [ ] **Step 5.1**: Refactor `/residential` (Solar for Homes) with Tesla showroom styling and spec docks.
-- [ ] **Step 5.2**: Refactor `/enterprise` (Commercial & Industrial MW) with Section 32 40% depreciation engine.
-- [ ] **Step 5.3**: Refactor `/omnigrid` (Storage) with whole-home backup and sub-millisecond islanding.
-
----
-
-## 7. Phase 6: Production Audit, Verification & Git Remote Push
-
-- [ ] Execute `npm run build` to verify clean compilation.
-- [ ] Confirm local development server is active on `http://localhost:8080/`.
-- [ ] Commit all changes with clean atomic git messages.
-- [ ] Push to GitHub remote `https://github.com/wavenoxx/wavenox.git`.
+- [ ] **Full-bleed Hero Showcase**: Refine photography overlays, typography kerning, and floating bottom docks.
+- [ ] **Interactive 3D Roof Visualizer**: WebGL/Three.js or fluid SVG model for villa roof solar panel layout.
+- [ ] **Sound Design & Micro-Interactions**: Subtle audio/haptic feedback on slider adjustments and button clicks.
+- [ ] **Design Studio Polish**: Streamlined multi-step configurator mirroring Tesla Energy Design Studio with live 3D preview.
+- [ ] **Omnigrid Microgrid Animator**: Real-time energy flow animation between solar panels, battery, home, and utility grid.

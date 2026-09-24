@@ -1,43 +1,26 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, IndianRupee, ShieldCheck, Zap, Sparkles } from "lucide-react";
-import { SOLAR_CONFIG, calculateGovtSubsidyInr } from "@/config/solar";
-
-const DISCOMS = [
-  { code: "TSSPDCL", name: "Telangana (TSSPDCL)", rate: 9.5 },
-  { code: "BESCOM", name: "Karnataka (BESCOM)", rate: 8.8 },
-  { code: "MSEDCL", name: "Maharashtra (MSEDCL)", rate: 11.2 },
-  { code: "TANGEDCO", name: "Tamil Nadu (TANGEDCO)", rate: 8.2 },
-  { code: "BSES", name: "Delhi-NCR (BSES)", rate: 8.5 },
-];
+import { DISCOMS, estimate } from "@/config/solar";
 
 export function BillSavingsSlider() {
   const [monthlyBill, setMonthlyBill] = useState(14000);
   const [selectedDiscom, setSelectedDiscom] = useState(DISCOMS[0]);
 
-  // Financial calculations
-  const tariff = selectedDiscom.rate;
-  const monthlyUnits = Math.round(monthlyBill / tariff);
-  // ~120 kWh per month per kW in Indian insolation
-  const recommendedKw = Math.max(3, Math.round((monthlyUnits / 120) * 10) / 10);
-  const annualSolarGenKwh = Math.round(recommendedKw * 1550);
-  const estimatedAnnualSavings = Math.round(annualSolarGenKwh * tariff * 0.96);
+  const calculation = useMemo(
+    () =>
+      estimate({
+        monthlyBillInr: monthlyBill,
+        discomCode: selectedDiscom.code,
+      }),
+    [monthlyBill, selectedDiscom.code],
+  );
 
-  // 25-Year wealth with 5% average tariff inflation
-  let cumulativeSavings = 0;
-  let currentYearRate = tariff;
-  for (let year = 1; year <= 25; year++) {
-    cumulativeSavings += annualSolarGenKwh * currentYearRate * 0.95;
-    currentYearRate *= 1.05;
-  }
-  const twentyFiveYearLakhs = (cumulativeSavings / 100000).toFixed(1);
-
-  // PM Surya Ghar subsidy
-  const subsidyInr = calculateGovtSubsidyInr(recommendedKw);
+  const twentyFiveYearLakhs = (calculation.netGain25YearsInr / 100000).toFixed(1);
 
   return (
-    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -68,7 +51,9 @@ export function BillSavingsSlider() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            See how much you can save each year by switching to WAVENOX architectural solar. Select your local electricity board and average monthly power bill to view instant system sizing, 25-year net wealth generated, and Central Government PM Surya Ghar subsidies.
+            See how much you can save each year by switching to WAVENOX architectural solar. Select
+            your local electricity board and average monthly power bill to view instant system
+            sizing, 25-year net wealth generated, and Central Government PM Surya Ghar subsidies.
           </motion.p>
         </div>
 
@@ -91,8 +76,8 @@ export function BillSavingsSlider() {
                       : "bg-[#F8F8FA] text-[#5C5E62] border border-[#E2E8F0] hover:border-zinc-400 hover:text-[#171A20]"
                   }`}
                 >
-                  <span>{d.name}</span>
-                  <span className="ml-1.5 opacity-60">₹{d.rate}/u</span>
+                  <span>{d.code}</span>
+                  <span className="ml-1.5 opacity-60">₹{d.residentialTariffInr}/u</span>
                 </button>
               );
             })}
@@ -127,7 +112,7 @@ export function BillSavingsSlider() {
                 step={1000}
                 value={monthlyBill}
                 onChange={(e) => setMonthlyBill(Number(e.target.value))}
-                className="tesla-slider"
+                className="range-slider"
               />
               <div className="flex justify-between text-xs text-[#5C5E62] font-medium">
                 <span>₹3,000 / mo</span>
@@ -141,11 +126,11 @@ export function BillSavingsSlider() {
               <div className="flex items-center gap-2">
                 <Zap size={16} className="text-[#F57C00]" />
                 <span className="font-medium text-[#171A20]">
-                  Grid Offset: 100% of your power bill eliminated
+                  Grid Offset: Covers ~{calculation.billCoveragePct}% of your bill
                 </span>
               </div>
               <span className="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                Zero Bill
+                ~{calculation.billCoveragePct}% Coverage
               </span>
             </div>
 
@@ -169,10 +154,11 @@ export function BillSavingsSlider() {
                 Recommended Size
               </span>
               <div className="text-3xl font-bold text-[#171A20] tabular-nums">
-                {recommendedKw} kW
+                {calculation.recommendedKw} kW
               </div>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                N-Type TOPCon dual-glass architecture generating ~{annualSolarGenKwh.toLocaleString("en-IN")} units/yr.
+                N-Type TOPCon dual-glass architecture generating ~
+                {calculation.annualGenKwh.toLocaleString("en-IN")} units/yr.
               </p>
             </div>
 
@@ -182,7 +168,7 @@ export function BillSavingsSlider() {
                 1-Year Bill Savings
               </span>
               <div className="text-3xl font-bold text-[#171A20] tabular-nums">
-                ₹{estimatedAnnualSavings.toLocaleString("en-IN")}
+                ₹{calculation.annualSavingsInr.toLocaleString("en-IN")}
               </div>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
                 Direct utility bill offset at {selectedDiscom.code} scheduled residential rates.
@@ -192,13 +178,13 @@ export function BillSavingsSlider() {
             {/* Metric 3: 25-Year Wealth Generated */}
             <div className="p-6 rounded-2xl bg-[#F8F8FA] border border-[#E2E8F0] space-y-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-[#5C5E62]">
-                25-Yr Net Wealth
+                25-year savings after system cost
               </span>
               <div className="text-3xl font-bold text-[#171A20] tabular-nums">
                 ₹{twentyFiveYearLakhs} L
               </div>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
-                Cumulative wealth preserved factoring 5% historical DISCOM tariff escalation.
+                Cumulative net savings factoring module degradation and tariff inflation.
               </p>
             </div>
 
@@ -211,7 +197,7 @@ export function BillSavingsSlider() {
                 <span className="h-2 w-2 rounded-full bg-[#F57C00]" />
               </div>
               <div className="text-3xl font-bold text-[#F57C00] tabular-nums">
-                ₹{subsidyInr.toLocaleString("en-IN")}
+                ₹{calculation.subsidyInr.toLocaleString("en-IN")}
               </div>
               <p className="text-xs text-[#5C5E62] leading-relaxed">
                 PM Surya Ghar Muft Bijli Yojana direct credit deposited to your bank account.
@@ -219,6 +205,14 @@ export function BillSavingsSlider() {
             </div>
           </div>
         </div>
+
+        {/* Footnote */}
+        <p className="mt-8 text-center text-xs text-[#5C5E62]">
+          Estimate only.{" "}
+          <a href="/legal/disclosures" className="underline hover:text-[#171A20]">
+            See how we calculate
+          </a>
+        </p>
       </div>
     </section>
   );

@@ -20,7 +20,7 @@ export function BrandLogo({
 
   const content = (
     <span
-      className={`inline-block font-bold uppercase select-none transition-colors duration-200 hover:opacity-85 ${sizeClasses[size]} ${className}`}
+      className={`inline-block font-bold uppercase transition-colors duration-200 hover:opacity-85 ${sizeClasses[size]} ${className}`}
     >
       {BRAND_CONFIG.name}
     </span>

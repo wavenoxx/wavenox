@@ -12,13 +12,18 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import ogCore from "@/assets/og-core.jpg";
+import { PRODUCTS_CONFIG } from "@/config/products";
 
 type Mode = "day" | "night" | "outage";
 
 const MODES: { id: Mode; label: string; sub: string }[] = [
   { id: "day", label: "Day: Solar Charging", sub: "Sunlight generates power & charges battery" },
   { id: "night", label: "Night: Battery Power", sub: "Stored solar sustains home appliances" },
-  { id: "outage", label: "Grid Outage: Failsafe Islanding", sub: "< 4ms instant blackout protection" },
+  {
+    id: "outage",
+    label: "Grid Outage: Failsafe Islanding",
+    sub: `${PRODUCTS_CONFIG.battery.islandingTransferSpeedMs} instant blackout protection`,
+  },
 ];
 
 export function OutageProtection() {
@@ -58,7 +63,7 @@ export function OutageProtection() {
   }[activeMode];
 
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -69,7 +74,7 @@ export function OutageProtection() {
             transition={{ duration: 0.5 }}
             className="text-xs font-semibold uppercase tracking-[0.25em] text-[#5C5E62]"
           >
-            Powerwall & Storage
+            Omnigrid Storage
           </motion.span>
 
           <motion.h2
@@ -89,7 +94,11 @@ export function OutageProtection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            Grid outages and severe summer voltage fluctuations are a daily reality across Indian cities. Omnigrid stores excess solar energy generated during the day and provides seamless, uninterrupted backup power at night or during blackouts. Keep your air conditioners, refrigeration, and security systems running without a split-second flicker.
+            Grid outages and severe summer voltage fluctuations are a daily reality across Indian
+            cities. Omnigrid stores excess solar energy generated during the day and provides
+            seamless, uninterrupted backup power at night or during blackouts. Keep your air
+            conditioners, refrigeration, and security systems running without a split-second
+            flicker.
           </motion.p>
         </div>
 
@@ -206,9 +215,12 @@ export function OutageProtection() {
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>
-                  {activeMode === "day" && "Omnigrid charges silently while home runs 100% on clean rooftop solar."}
-                  {activeMode === "night" && "Omnigrid powers all air conditioning and lighting without drawing costly peak-hour grid units."}
-                  {activeMode === "outage" && "Grid blackout isolated in under 4ms. No equipment restart or light flicker."}
+                  {activeMode === "day" &&
+                    "Omnigrid charges silently while home runs 100% on clean rooftop solar."}
+                  {activeMode === "night" &&
+                    "Omnigrid powers all air conditioning and lighting without drawing costly peak-hour grid units."}
+                  {activeMode === "outage" &&
+                    "Grid blackout isolated in under 4ms. No equipment restart or light flicker."}
                 </span>
               </div>
               <span className="font-semibold text-[#171A20] shrink-0">Sub-4ms Islanding</span>
@@ -224,7 +236,7 @@ export function OutageProtection() {
                 className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-103"
               />
               <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium border border-white/20">
-                Omnigrid 13.5 kWh Core
+                Omnigrid {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh Core
               </div>
             </div>
 
@@ -232,27 +244,33 @@ export function OutageProtection() {
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0]">
                 <span className="block text-xl font-bold text-[#171A20] tabular-nums">
-                  13.5 kWh
+                  {PRODUCTS_CONFIG.battery.usableCapacityKwh} kWh
                 </span>
                 <span className="block text-[11px] text-[#5C5E62] mt-0.5">Capacity / Unit</span>
               </div>
 
               <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0]">
                 <span className="block text-xl font-bold text-[#171A20] tabular-nums">
-                  &lt; 4ms
+                  {PRODUCTS_CONFIG.battery.islandingTransferSpeedMs}
                 </span>
                 <span className="block text-[11px] text-[#5C5E62] mt-0.5">Islanding Speed</span>
               </div>
 
               <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0]">
                 <span className="block text-xl font-bold text-[#171A20] tabular-nums">
-                  10-Year
+                  {PRODUCTS_CONFIG.battery.warrantyYears}-Year
                 </span>
                 <span className="block text-[11px] text-[#5C5E62] mt-0.5">Warranty</span>
               </div>
             </div>
 
-            {/* Dual Tesla-Style Pill Buttons */}
+            {!PRODUCTS_CONFIG.specsVerified && (
+              <p className="text-[11px] text-[#71717A] text-center sm:text-left italic">
+                {PRODUCTS_CONFIG.indicativeDisclaimer}
+              </p>
+            )}
+
+            {/* Pill Action Buttons */}
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               <Link
                 to="/deploy"

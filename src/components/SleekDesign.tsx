@@ -18,13 +18,13 @@ const FEATURES = [
   {
     icon: ShieldCheck,
     title: "Monolithic All-Black Aesthetic",
-    desc: "N-type TOPCon monocrystalline cells under dual-tempered diamond glass create a seamless, non-reflective obsidian plane.",
+    desc: "N-type TOPCon monocrystalline cells under dual-tempered glass create a seamless, non-reflective obsidian plane.",
   },
 ];
 
 export function SleekDesign() {
   return (
-    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -55,7 +55,11 @@ export function SleekDesign() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            Traditional solar panels are bulky and attached with visible rails and messy conduits that ruin your home's architecture. WAVENOX low-profile architectural panels blend seamlessly into your roof with concealed mounting hardware and all-black monolithic styling. Engineered specifically for luxury Indian residences, ensuring zero roof penetration leaks and aerodynamic cyclone resistance.
+            Traditional solar panels are bulky and attached with visible rails and messy conduits
+            that ruin your home's architecture. WAVENOX low-profile architectural panels blend
+            seamlessly into your roof with concealed mounting hardware and all-black monolithic
+            styling. Engineered specifically for luxury Indian residences, ensuring zero roof
+            penetration leaks and aerodynamic cyclone resistance.
           </motion.p>
         </div>
 
@@ -71,12 +75,12 @@ export function SleekDesign() {
           >
             <img
               src={liquidGlassMacro}
-              alt="WAVENOX Hexagonal N-Type TOPCon Silicon Cells under Diamond Glass"
+              alt="WAVENOX N-Type TOPCon Silicon Cells under Tempered Glass"
               className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-103"
             />
             {/* Subtle caption watermark */}
             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium tracking-wide">
-              Hexagonal N-Type TOPCon • 24.8% Cell Efficiency
+              N-Type TOPCon Bifacial • All-Black Design
             </div>
           </motion.div>
 
@@ -97,9 +101,7 @@ export function SleekDesign() {
                     <Icon size={20} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-[#171A20]">
-                      {f.title}
-                    </h3>
+                    <h3 className="text-sm font-semibold text-[#171A20]">{f.title}</h3>
                     <p className="text-xs sm:text-sm text-[#5C5E62] mt-1 leading-relaxed">
                       {f.desc}
                     </p>
@@ -108,7 +110,7 @@ export function SleekDesign() {
               );
             })}
 
-            {/* Dual Tesla-Style Pill Buttons */}
+            {/* Dual Pill Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}

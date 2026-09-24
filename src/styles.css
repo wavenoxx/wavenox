@@ -14,7 +14,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --font-display: "Universal Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display:
+    "Universal Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 :root {
@@ -34,8 +35,9 @@
   * {
     border-color: var(--color-border);
   }
-  html, body {
-    background-color: #FFFFFF;
+  html,
+  body {
+    background-color: #ffffff;
     color: var(--color-foreground);
     font-family: var(--font-display);
     -webkit-font-smoothing: antialiased;
@@ -43,45 +45,45 @@
   }
 }
 
-/* Tesla Minimalist Pill Buttons */
-.tesla-pill-primary {
+/* Minimalist Pill Buttons */
+.btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.625rem 2rem;
   border-radius: 9999px;
-  background-color: #171A20;
-  color: #FFFFFF;
+  background-color: #171a20;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.tesla-pill-primary:hover {
+.btn-primary:hover {
   background-color: #000000;
   transform: translateY(-1px);
 }
 
-.tesla-pill-secondary {
+.btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.625rem 2rem;
   border-radius: 9999px;
-  background-color: #EEEEEE;
-  color: #171A20;
+  background-color: #eeeeee;
+  color: #171a20;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   transition: all 0.2s ease;
 }
-.tesla-pill-secondary:hover {
-  background-color: #E2E8F0;
+.btn-secondary:hover {
+  background-color: #e2e8f0;
   transform: translateY(-1px);
 }
 
-.tesla-pill-glass {
+.btn-glass {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -90,50 +92,50 @@
   background-color: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #FFFFFF;
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.25);
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   transition: all 0.2s ease;
 }
-.tesla-pill-glass:hover {
+.btn-glass:hover {
   background-color: rgba(0, 0, 0, 0.75);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Tesla Clean Range Slider */
-.tesla-slider {
+/* Clean Range Slider */
+.range-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 4px;
   border-radius: 999px;
-  background: #E2E8F0;
+  background: #e2e8f0;
   outline: none;
   cursor: pointer;
 }
-.tesla-slider::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
   border-radius: 999px;
-  background: #171A20;
-  border: 3px solid #FFFFFF;
+  background: #171a20;
+  border: 3px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transition: transform 0.15s ease;
 }
-.tesla-slider::-webkit-slider-thumb:hover {
+.range-slider::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
-.tesla-slider::-moz-range-thumb {
+.range-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 999px;
-  background: #171A20;
-  border: 3px solid #FFFFFF;
+  background: #171a20;
+  border: 3px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }

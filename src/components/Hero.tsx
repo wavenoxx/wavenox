@@ -6,7 +6,7 @@ import { openConsultationDrawer } from "./ConsultationDrawer";
 
 export function Hero() {
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black text-white flex flex-col justify-between items-center text-center select-none">
+    <section className="relative h-screen w-full overflow-hidden bg-black text-white flex flex-col justify-between items-center text-center">
       {/* Background Image: Cinema-Grade Luxury Solar Villa */}
       <div className="absolute inset-0 z-0">
         <img
@@ -25,7 +25,7 @@ export function Hero() {
         />
       </div>
 
-      {/* Top Content: Clean Tesla-Grade Typography */}
+      {/* Top Content: Clean Typography */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -36,9 +36,7 @@ export function Hero() {
           Solar for Existing Roofs
         </h1>
         <div className="mt-3 flex items-center justify-center gap-2">
-          <p className="text-sm sm:text-base text-zinc-200 font-normal">
-            Lowest Cost in India — Guaranteed
-          </p>
+          <p className="text-sm sm:text-base text-zinc-200 font-normal">Pay less for electricity</p>
           <span className="text-zinc-400">•</span>
           <button
             type="button"
@@ -64,10 +62,10 @@ export function Hero() {
             {/* Spec 1 */}
             <div className="flex flex-col items-center">
               <span className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-white drop-shadow-sm">
-                Guaranteed
+                ₹78,000
               </span>
               <span className="mt-1 text-[11px] sm:text-xs text-zinc-300 font-normal tracking-wide">
-                Lowest Price in India
+                PM Surya Ghar subsidy (eligible homes)
               </span>
             </div>
 
@@ -92,7 +90,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Dual Tesla-Style Pill Action Buttons */}
+          {/* Dual Pill Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             {/* Primary Pill: Order Now */}
             <Link

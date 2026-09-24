@@ -18,7 +18,8 @@ const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
 const DEFAULT_WHATSAPP_DIAL = "917075870054";
 const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
 const DEFAULT_EMAIL = "advisory@wavenox.com";
-const DEFAULT_ADDRESS = "WAVENOX Innovation Lab, Financial District, Gachibowli, Hyderabad, Telangana 500032";
+const DEFAULT_ADDRESS =
+  "WAVENOX Innovation Lab, Financial District, Gachibowli, Hyderabad, Telangana 500032";
 
 const DEFAULT_INSTAGRAM_URL = "https://instagram.com/wavenox.solar";
 const DEFAULT_LINKEDIN_URL = "https://linkedin.com/company/wavenox";
@@ -105,7 +106,10 @@ function validWhatsAppLink(value: string): { link: string; dial: string } | null
     if (url.protocol !== "https:" || !["wa.me", "api.whatsapp.com"].includes(url.hostname)) {
       return null;
     }
-    const dial = url.hostname === "wa.me" ? url.pathname.replace(/\D/g, "") : url.searchParams.get("phone") || "";
+    const dial =
+      url.hostname === "wa.me"
+        ? url.pathname.replace(/\D/g, "")
+        : url.searchParams.get("phone") || "";
     return /^[1-9]\d{7,14}$/.test(dial) ? { link: url.toString(), dial } : null;
   } catch {
     return null;
@@ -133,8 +137,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
     normalizedWhatsAppDial(env.VITE_BUSINESS_WHATSAPP_DIAL || "") ||
     parsedWhatsAppLink?.dial ||
     DEFAULT_WHATSAPP_DIAL;
-  const whatsappDisplay =
-    clean(env.VITE_BUSINESS_WHATSAPP_DISPLAY) || DEFAULT_WHATSAPP_DISPLAY;
+  const whatsappDisplay = clean(env.VITE_BUSINESS_WHATSAPP_DISPLAY) || DEFAULT_WHATSAPP_DISPLAY;
   const whatsappLink =
     parsedWhatsAppLink?.link ||
     (whatsappDial ? `https://wa.me/${whatsappDial}` : DEFAULT_WHATSAPP_LINK);
@@ -143,8 +146,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
   const address = clean(env.VITE_BUSINESS_ADDRESS) || DEFAULT_ADDRESS;
 
   const contactEnabled =
-    clean(env.VITE_CONTACT_ENABLED).toLowerCase() === "true" ||
-    Boolean(phoneDial && whatsappDial);
+    clean(env.VITE_CONTACT_ENABLED).toLowerCase() === "true" || Boolean(phoneDial && whatsappDial);
 
   const description =
     clean(env.VITE_BRAND_DESCRIPTION) ||
@@ -191,5 +193,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
 }
 
 export const BRAND_CONFIG = buildBrandConfig(
-  typeof import.meta !== "undefined" && import.meta.env ? (import.meta.env as unknown as PublicEnvironment) : {},
+  typeof import.meta !== "undefined" && import.meta.env
+    ? (import.meta.env as unknown as PublicEnvironment)
+    : {},
 );

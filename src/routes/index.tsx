@@ -10,7 +10,6 @@ import { TechSpecs } from "@/components/TechSpecs";
 import { OrderProcess } from "@/components/OrderProcess";
 import { SupportFaq } from "@/components/SupportFaq";
 import { Footer } from "@/components/Footer";
-import { ConsultationDrawer } from "@/components/ConsultationDrawer";
 import { BRAND_CONFIG } from "@/config/brand";
 
 export const Route = createFileRoute("/")({
@@ -20,13 +19,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Wavenox deploys world-class low-profile residential and commercial architectural solar across India. Guaranteed lowest price, 25-year warranty, and 24/7 outage protection.",
+          "Wavenox deploys world-class low-profile residential and commercial architectural solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and 24/7 outage protection.",
       },
       { property: "og:title", content: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
       {
         property: "og:description",
         content:
-          "Ultra-luxury solar infrastructure for homes and businesses. Guaranteed lowest price, 25-year warranty, and 24/7 outage protection.",
+          "Ultra-luxury solar infrastructure for homes and businesses. Subsidies up to ₹78,000 for eligible homes, 25-year warranty, and 24/7 outage protection.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -49,7 +48,6 @@ function Index() {
       <OrderProcess />
       <SupportFaq />
       <Footer />
-      <ConsultationDrawer />
     </main>
   );
 }

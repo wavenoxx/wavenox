@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -14,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BRAND_CONFIG } from "../config/brand";
 import { BUSINESS } from "../config/business";
 import { ConsultationDrawer } from "../components/ConsultationDrawer";
+import { initTelemetry } from "../lib/telemetry";
 
 function NotFoundComponent() {
   return (
@@ -37,7 +39,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -121,12 +123,12 @@ function RootShell({ children }: { children: ReactNode }) {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: BUSINESS.geo.lat,
-      longitude: BUSINESS.geo.lng,
+      latitude: BUSINESS.geo.latitude,
+      longitude: BUSINESS.geo.longitude,
     },
     areaServed: BUSINESS.serviceHubs.map((hub) => ({
       "@type": "City",
-      name: hub.city,
+      name: hub.schemaName || hub.city,
     })),
   };
 
@@ -149,6 +151,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    initTelemetry();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

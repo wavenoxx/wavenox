@@ -1,14 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import {
-  Compass,
-  FileCheck,
-  Wrench,
-  Gauge,
-  Zap,
-  ArrowRight,
-  ShieldCheck,
-} from "lucide-react";
+import { Compass, FileCheck, Wrench, Gauge, Zap, ArrowRight, ShieldCheck } from "lucide-react";
 import { openConsultationDrawer } from "./ConsultationDrawer";
 
 const STEPS = [
@@ -43,15 +35,15 @@ const STEPS = [
   {
     step: "05",
     icon: Zap,
-    title: "Power On & Direct Subsidy Disbursal",
-    desc: "Flip the switch to 100% clean autonomous energy. We submit post-commissioning geo-tagged reports to the National Solar Portal, crediting up to ₹78,000 subsidy directly to your bank account.",
-    timing: "Day 1 Clean Energy",
+    title: "Power On & Subsidy Processing",
+    desc: "Flip the switch to clean solar energy. We submit post-commissioning geo-tagged reports to the National Solar Portal. Subsidies (up to ₹78,000 for eligible residential homes) are typically disbursed by the portal directly to your bank account 1–3 months after commissioning.",
+    timing: "Typically 1–3 months after commissioning",
   },
 ];
 
 export function OrderProcess() {
   return (
-    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-white text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -82,7 +74,10 @@ export function OrderProcess() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            From initial digital design to flipping the switch on clean power, our certified in-house engineering team manages every step of your solar journey. We handle all DISCOM net-metering approvals, CEIG electrical clearances, and PM Surya Ghar government subsidy disbursals with zero hassle.
+            From initial digital design to flipping the switch on clean power, our certified
+            in-house engineering team manages every step of your solar journey. We handle all DISCOM
+            net-metering approvals, CEIG electrical clearances, and PM Surya Ghar government subsidy
+            disbursals with zero hassle.
           </motion.p>
         </div>
 
@@ -101,9 +96,7 @@ export function OrderProcess() {
               >
                 <div>
                   <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
-                    <span className="text-xl font-bold text-[#171A20] tabular-nums">
-                      {s.step}
-                    </span>
+                    <span className="text-xl font-bold text-[#171A20] tabular-nums">{s.step}</span>
                     <div className="p-2 rounded-lg bg-white border border-[#E2E8F0] text-[#171A20]">
                       <Icon size={18} />
                     </div>
@@ -113,9 +106,7 @@ export function OrderProcess() {
                     {s.title}
                   </h3>
 
-                  <p className="text-xs text-[#5C5E62] mt-2 leading-relaxed">
-                    {s.desc}
-                  </p>
+                  <p className="text-xs text-[#5C5E62] mt-2 leading-relaxed">{s.desc}</p>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
@@ -136,15 +127,15 @@ export function OrderProcess() {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-[#171A20]">
-                Zero Paperwork Hassle
+                Regulatory & Net-Metering Filing
               </h4>
               <p className="text-xs text-[#5C5E62] mt-0.5">
-                Our regulatory team coordinates all government DISCOM filings, net-meter installation, and subsidy credits on your behalf.
+                We prepare and file your DISCOM net-metering and PM Surya Ghar applications for you.
               </p>
             </div>
           </div>
 
-          {/* Dual Tesla Pill CTAs */}
+          {/* Dual Pill CTAs */}
           <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
             <Link
               to="/deploy"

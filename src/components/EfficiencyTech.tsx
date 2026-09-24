@@ -1,30 +1,31 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, ThermometerSun, Grid, Zap, Award } from "lucide-react";
+import { ShieldCheck, ThermometerSun, Grid } from "lucide-react";
 import defTile from "@/assets/def-tile.jpg";
 import { openConsultationDrawer } from "./ConsultationDrawer";
+import { PRODUCTS_CONFIG } from "@/config/products";
 
 const TECH_SPECS = [
   {
     icon: Grid,
-    title: "18 Independent Power Zones",
-    desc: "Laser-cut N-type half-cells are partitioned into 18 autonomous diodes. If shade falls from a roof water tank, parapet, or tree, the unshaded sections continue producing at 100% capacity.",
+    title: "Independent Bypass Zones",
+    desc: "Laser-cut N-type half-cells are partitioned into autonomous diode zones. If shade falls from a roof parapet or water tank, unshaded sections continue producing power.",
   },
   {
     icon: ThermometerSun,
-    title: "50°C Indian Summer Thermal Rating",
-    desc: "Conventional panels degrade rapidly above 25°C. WAVENOX features an ultra-low temperature coefficient of -0.29%/°C, generating up to 14% more energy during scorching Indian heatwaves.",
+    title: "High-Temperature Thermal Performance",
+    desc: `Conventional panels degrade in high heat. WAVENOX features a low temperature coefficient of ${PRODUCTS_CONFIG.module.tempCoefficientPmaxPctPerC}%/°C, maximizing energy output during peak Indian summers.`,
   },
   {
     icon: ShieldCheck,
-    title: "Class 4 Severe Weather Resilience",
-    desc: "Dual-tempered 3.2mm diamond glass front and back withstands 250 km/h cyclone winds and 50mm ballistic hail impacts at 140 km/h. Backed by an unconditional 25-year structural warranty.",
+    title: "Structural Weather Resilience",
+    desc: `${PRODUCTS_CONFIG.module.frontGlass} with heavy-gauge anodized aluminum framing rated for ${PRODUCTS_CONFIG.module.maxStaticLoadPa}. Backed by a ${PRODUCTS_CONFIG.module.productWarrantyYears}-year product and ${PRODUCTS_CONFIG.module.performanceWarrantyYears}-year performance warranty.`,
   },
 ];
 
 export function EfficiencyTech() {
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -55,7 +56,9 @@ export function EfficiencyTech() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            WAVENOX solar panels are designed with advanced cell architecture that maximizes energy production across every square foot of your roof. Even in complex roof angles, high summer temperatures, or partial shade, our panels out-produce conventional solar arrays.
+            WAVENOX solar panels are designed with advanced cell architecture that maximizes energy
+            production across every square foot of your roof. Even in complex roof angles, high
+            summer temperatures, or partial shade, our panels out-produce conventional solar arrays.
           </motion.p>
         </div>
 
@@ -89,7 +92,13 @@ export function EfficiencyTech() {
               );
             })}
 
-            {/* Dual Tesla-Style Pill Buttons */}
+            {!PRODUCTS_CONFIG.specsVerified && (
+              <p className="text-xs text-[#5C5E62] italic">
+                {PRODUCTS_CONFIG.indicativeDisclaimer}
+              </p>
+            )}
+
+            {/* Pill Action Buttons */}
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               <Link
                 to="/deploy"
@@ -122,7 +131,8 @@ export function EfficiencyTech() {
             />
             {/* Spec overlay tag */}
             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium tracking-wide">
-              Dual-Glass 3.2mm • 25-Year Guaranteed &gt;89.4% Output
+              {PRODUCTS_CONFIG.module.frontGlass} •{" "}
+              {PRODUCTS_CONFIG.module.performanceWarrantyYears}-Year Performance Warranty
             </div>
           </motion.div>
         </div>

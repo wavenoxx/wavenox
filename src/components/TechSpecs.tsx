@@ -1,31 +1,41 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Award, FileText } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { openConsultationDrawer } from "./ConsultationDrawer";
+import { PRODUCTS_CONFIG } from "@/config/products";
 
 const MECHANICAL_SPECS = [
-  { label: "Nominal Power Rating", value: "550W – 600W Bifacial" },
-  { label: "Cell Technology", value: "N-Type TOPCon Half-Cut (18 Zones)" },
-  { label: "Module Efficiency", value: "24.8% Peak (22.8% STC)" },
-  { label: "Dimensions", value: "2278 × 1134 × 30 mm" },
-  { label: "Weight", value: "28.5 kg (Dual Tempered Glass)" },
-  { label: "Front / Back Glass", value: "3.2mm Anti-Reflective Diamond Glass" },
-  { label: "Wind Rating", value: "250 km/h (Category 5 Cyclone Standard)" },
+  { label: "Nominal Power Rating", value: `${PRODUCTS_CONFIG.module.ratedPowerW}W Bifacial` },
+  { label: "Cell Technology", value: PRODUCTS_CONFIG.module.cellType },
+  { label: "Module Efficiency", value: `${PRODUCTS_CONFIG.module.efficiencyPct}% STC` },
+  { label: "Dimensions", value: PRODUCTS_CONFIG.module.dimensionsMm },
+  { label: "Weight", value: `${PRODUCTS_CONFIG.module.weightKg} kg` },
+  { label: "Front / Back Glass", value: PRODUCTS_CONFIG.module.frontGlass },
+  { label: "Static Load Rating", value: PRODUCTS_CONFIG.module.maxStaticLoadPa },
 ];
 
 const ELECTRICAL_SPECS = [
-  { label: "Inverter Efficiency", value: "98.6% European Efficiency" },
-  { label: "Rapid Shutdown (RSD)", value: "Integrated Sub-10ms NEC Compliant" },
-  { label: "Hail Impact Rating", value: "Class 4 (50mm Hail at 140 km/h)" },
-  { label: "Fire Safety Class", value: "UL 790 Class A Fire Rated" },
-  { label: "Compliance & Standards", value: "BIS (IS 14286), IEC 61215, IEC 61730" },
-  { label: "Structural Warranty", value: "25 Years Comprehensive Workmanship" },
-  { label: "Performance Warranty", value: "25 Years Guaranteed (>89.4% at Yr 25)" },
+  {
+    label: "Inverter Efficiency",
+    value: `${PRODUCTS_CONFIG.inverter.efficiencyPct}% European (${PRODUCTS_CONFIG.inverter.maxEfficiencyPct}% Peak)`,
+  },
+  { label: "Inverter Architecture", value: PRODUCTS_CONFIG.inverter.type },
+  { label: "Enclosure Protection", value: PRODUCTS_CONFIG.inverter.protectionRating },
+  { label: "Fire Safety Class", value: PRODUCTS_CONFIG.module.fireRating },
+  { label: "Compliance & Standards", value: PRODUCTS_CONFIG.module.certifications.join(", ") },
+  {
+    label: "Product Warranty",
+    value: `${PRODUCTS_CONFIG.module.productWarrantyYears} Years Workmanship`,
+  },
+  {
+    label: "Performance Warranty",
+    value: `${PRODUCTS_CONFIG.module.performanceWarrantyYears} Years Linear Output`,
+  },
 ];
 
 export function TechSpecs() {
   return (
-    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden select-none border-b border-[#E2E8F0]">
+    <section className="relative w-full bg-[#F8F8FA] text-[#171A20] py-24 sm:py-32 lg:py-36 overflow-hidden border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="max-w-3xl">
@@ -56,11 +66,13 @@ export function TechSpecs() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-[#393C41] mt-4 leading-relaxed max-w-2xl"
           >
-            Engineered with uncompromising precision. Every WAVENOX architectural panel undergoes rigorous testing to exceed Indian BIS and international IEC standards for mechanical loading, thermal shock, and long-term durability.
+            Engineered with uncompromising precision. Every WAVENOX architectural panel undergoes
+            rigorous testing to exceed Indian BIS and international IEC standards for mechanical
+            loading, thermal shock, and long-term durability.
           </motion.p>
         </div>
 
-        {/* 2-Column Minimalist Specifications Table (Tesla Showroom Style) */}
+        {/* 2-Column Minimalist Specifications Table */}
         <div className="mt-14 lg:mt-20 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 bg-white p-6 sm:p-12 rounded-3xl border border-[#E2E8F0] shadow-xs">
           {/* Column 1: Mechanical & Physical */}
           <div className="space-y-4">
@@ -99,16 +111,23 @@ export function TechSpecs() {
           </div>
         </div>
 
+        {!PRODUCTS_CONFIG.specsVerified && (
+          <p className="mt-4 text-xs text-[#5C5E62] text-center italic">
+            {PRODUCTS_CONFIG.indicativeDisclaimer}
+          </p>
+        )}
+
         {/* Bottom Actions & Certification Bar */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
           <div className="flex items-center gap-2 text-xs text-[#5C5E62]">
             <ShieldCheck size={18} className="text-[#171A20] shrink-0" />
             <span>
-              Certified under Bureau of Indian Standards (BIS IS 14286) & IEC 61215/61730 for residential installations.
+              Certified under Bureau of Indian Standards (BIS IS 14286) & IEC 61215/61730 for
+              residential installations.
             </span>
           </div>
 
-          {/* Dual Tesla Pill CTAs */}
+          {/* Pill Action Buttons */}
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <Link
               to="/deploy"
