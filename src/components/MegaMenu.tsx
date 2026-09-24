@@ -62,7 +62,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "DISCOM Net-Metering & Sanctions", to: "/legal/disclosures" },
           { label: "Calculate Savings", to: "/deploy" },
-          { label: "Technical Specifications", to: "/residential" },
+          { label: "Technology Atelier & Specifications", to: "/technology" },
         ],
       },
     ],
@@ -198,7 +198,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
       {
         title: "Technology",
         links: [
-          { label: "N-Type TOPCon Cell Architecture", to: "/residential" },
+          { label: "N-Type TOPCon Cell Architecture", to: "/technology" },
           { label: "Omnigrid Solid-State Islanding", to: "/omnigrid" },
           { label: "Realtime Mobile Telemetry", to: "/#monitoring" },
           { label: "Linear 25-Year Performance Curve", to: "/residential" },

@@ -35,7 +35,12 @@ export function Header() {
   const isLightPage =
     pathname.startsWith("/deploy") ||
     pathname.startsWith("/legal") ||
-    pathname.startsWith("/order");
+    pathname.startsWith("/order") ||
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/technology") ||
+    pathname.startsWith("/warranty") ||
+    pathname.startsWith("/service-areas") ||
+    pathname.startsWith("/our-story");
 
   // Auto-close menus on route navigation
   React.useEffect(() => {
@@ -271,6 +276,14 @@ export function Header() {
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                 >
                   <span>Design Studio</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
+                <Link
+                  to="/technology"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>Technology Atelier</span>
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
                 <Link
