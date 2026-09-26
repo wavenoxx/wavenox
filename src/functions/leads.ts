@@ -194,10 +194,15 @@ export const submitLead = createServerFn({ method: "POST" })
     // 5. Supabase Database Configuration & Environment Resolution
     const supabaseUrl =
       typeof process !== "undefined"
-        ? process.env?.SUPABASE_URL || process.env?.VITE_SUPABASE_URL || ""
+        ? process.env?.SUPABASE_URL ||
+          process.env?.VITE_SUPABASE_URL ||
+          process.env?.NEXT_PUBLIC_SUPABASE_URL ||
+          ""
         : "";
     const supabaseKey =
-      typeof process !== "undefined" ? process.env?.SUPABASE_SERVICE_ROLE_KEY || "" : "";
+      typeof process !== "undefined"
+        ? process.env?.SUPABASE_SERVICE_ROLE_KEY || process.env?.SUPABASE_SECRET_KEY || ""
+        : "";
 
     const envLeadMode =
       typeof process !== "undefined"

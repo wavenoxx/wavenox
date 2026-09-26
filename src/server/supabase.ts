@@ -14,12 +14,17 @@ export function getServerSupabaseClient(): SupabaseClient {
     return cachedClient;
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  const supabaseUrl =
+    process.env.SUPABASE_URL ||
+    process.env.VITE_SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    "";
+  const supabaseServiceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "";
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
     throw new Error(
-      "Missing Supabase server configuration. Please ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in your environment.",
+      "Missing Supabase server configuration. Please ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY) are set in your environment.",
     );
   }
 
