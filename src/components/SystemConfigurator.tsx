@@ -8,6 +8,7 @@ import {
   MessageSquare,
   CheckCircle2,
   FileText,
+  Ruler,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
@@ -19,6 +20,10 @@ import { Media, StatRow, Button, TextLink } from "@/components/system";
 import { media } from "@/config/media";
 import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
 import { WealthCurveVisualizer } from "./WealthCurveVisualizer";
+import { BillDecoder } from "./BillDecoder";
+import { MonthlyGenerationChart } from "./MonthlyGenerationChart";
+import { RoofSketcher } from "./RoofSketcher";
+import { SourcePopover } from "./SourcePopover";
 
 export interface SystemConfiguratorProps {
   initialBill?: number;
@@ -101,6 +106,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [roofProfile, setRoofProfile] = React.useState("rcc-flat");
   const [paymentMode, setPaymentMode] = React.useState<"cash" | "loan">("loan");
   const [estateView, setEstateView] = React.useState<"villa" | "estate">("villa");
+  const [showRoofSketcher, setShowRoofSketcher] = React.useState(false);
 
   // Lead Form State
   const [userName, setUserName] = React.useState("");
@@ -466,6 +472,11 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 * Telangana Gruha Jyothi scheme provides eligible households up to 200 free
                 units/month. Calculated using official TGERC FY 2025-26 telescopic tariffs.
               </p>
+              <BillDecoder
+                monthlyBill={monthlyBill}
+                discomCode={selectedDiscomCode}
+                className="mt-3"
+              />
             </div>
           </div>
 
@@ -610,11 +621,46 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 );
               })}
             </div>
+
+            {/* Satellite Roof Sketcher Drawer */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowRoofSketcher((prev) => !prev)}
+                className="w-full p-3 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] text-[#171A20] text-[13px] font-medium flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-[#F57C00]" />
+                  <span>
+                    {showRoofSketcher
+                      ? "Hide Satellite Terrace Usability Sketcher"
+                      : "Sketch Usable Terrace on Satellite Map (Calculates Panels)"}
+                  </span>
+                </div>
+                <span className="text-[11px] uppercase tracking-wider text-[#5C5E62] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E3E4E6]">
+                  {showRoofSketcher ? "Close Sketcher" : "Open Tool"}
+                </span>
+              </button>
+
+              {showRoofSketcher && (
+                <div className="mt-3">
+                  <RoofSketcher
+                    onApplyKw={(_kw, panels, _area) => {
+                      setPanelCount(Math.min(maxResidentialPanels, Math.max(6, panels)));
+                      setShowRoofSketcher(false);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Section 5: Payment Structure */}
           <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
-            <h2 className="text-[18px] font-medium text-[#171A20]">5. Investment Structure</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-[18px] font-medium text-[#171A20]">5. Investment Structure</h2>
+              <SourcePopover sourceId="sbiSolarLoan" label="SBI Concessional Loan" />
+            </div>
             <div
               role="radiogroup"
               aria-label="Investment payment mode"
@@ -664,12 +710,18 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <span className="text-[#5C5E62]">System Equipment & Turnkey Installation</span>
                 <span className="font-medium tabular-nums">₹{formatInr(totalGrossInr)}</span>
               </div>
-              <div className="flex justify-between text-[#171A20]">
-                <span className="text-[#5C5E62]">PM Surya Ghar National Subsidy</span>
+              <div className="flex justify-between items-center text-[#171A20]">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#5C5E62]">PM Surya Ghar National Subsidy</span>
+                  <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
+                </div>
                 <span className="font-medium tabular-nums">-₹{formatInr(subsidyInr)}</span>
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
-                <span className="font-medium">Effective cost after subsidy</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium">Effective cost after subsidy</span>
+                  <SourcePopover sourceId="tgercTariffs" showIconOnly />
+                </div>
                 <span className="text-[18px] font-semibold tabular-nums">
                   ₹{formatInr(netPayableInr)}
                 </span>
@@ -703,6 +755,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears={calculation.paybackYears}
               tariffPerKwh={discom.residentialTariffInr}
             />
+
+            {/* NASA POWER / PVWatts Monthly Solar Generation Curve */}
+            <MonthlyGenerationChart systemKw={systemKw} className="mt-6" />
           </div>
 
           {/* Section 6: Proposal Request Form */}

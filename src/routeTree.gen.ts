@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutThisProjectRouteImport } from './routes/about-this-project'
 import { Route as ArchitectsRouteImport } from './routes/architects'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
@@ -29,6 +30,11 @@ import { Route as OrderReceivedRouteImport } from './routes/order/received'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutThisProjectRoute = AboutThisProjectRouteImport.update({
+  id: '/about-this-project',
+  path: '/about-this-project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchitectsRoute = ArchitectsRouteImport.update({
@@ -109,6 +115,7 @@ const OrderReceivedRoute = OrderReceivedRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -221,6 +233,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutThisProjectRoute: typeof AboutThisProjectRoute
   ArchitectsRoute: typeof ArchitectsRoute
   DeployRoute: typeof DeployRoute
   EnterpriseRoute: typeof EnterpriseRoute
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about-this-project': {
+      id: '/about-this-project'
+      path: '/about-this-project'
+      fullPath: '/about-this-project'
+      preLoaderRoute: typeof AboutThisProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/architects': {
@@ -357,6 +377,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutThisProjectRoute: AboutThisProjectRoute,
   ArchitectsRoute: ArchitectsRoute,
   DeployRoute: DeployRoute,
   EnterpriseRoute: EnterpriseRoute,

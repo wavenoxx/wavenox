@@ -18,6 +18,7 @@ import { BUSINESS } from "../config/business";
 import { CONSULTATION_EVENT } from "../lib/consultation";
 import { BrandLogo } from "../components/BrandLogo";
 import { initTelemetry } from "../lib/telemetry";
+import { LanguageProvider } from "../lib/i18n";
 
 const LazyConsultationDrawer = lazy(() =>
   import("../components/ConsultationDrawer").then((m) => ({ default: m.ConsultationDrawer })),
@@ -209,9 +210,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <LazyConsultationDrawerWrapper />
+      <LanguageProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <LazyConsultationDrawerWrapper />
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

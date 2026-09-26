@@ -22,6 +22,7 @@ const routes = [
   { name: "service-areas", path: "/service-areas" },
   { name: "warranty", path: "/warranty" },
   { name: "faq", path: "/faq" },
+  { name: "about-this-project", path: "/about-this-project" },
   { name: "legal-terms", path: "/legal/terms" },
   { name: "legal-privacy", path: "/legal/privacy" },
   { name: "legal-disclosures", path: "/legal/disclosures" },

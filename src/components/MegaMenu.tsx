@@ -212,6 +212,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             action: () => openConsultationDrawer(),
           },
           { label: "Design Story & Concept", to: "/our-story" },
+          { label: "Colophon & Case Study", to: "/about-this-project" },
           { label: "Terms of Service", to: "/legal/terms" },
           { label: "Privacy Policy", to: "/legal/privacy" },
           { label: "Regulatory Disclosures", to: "/legal/disclosures" },

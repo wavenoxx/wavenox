@@ -19,6 +19,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { DISCOMS } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
+import { PmSuryaGharJourney } from "@/components/PmSuryaGharJourney";
 
 export const Route = createFileRoute("/net-metering")({
   head: () => ({
@@ -111,25 +112,6 @@ const REGULATORY_DATA: Record<string, DiscomRegulatoryData> = {
     inspectionRequired: true,
   },
 };
-
-const REQUIRED_DOCUMENTS = [
-  {
-    name: "Latest Paid Electricity Bill",
-    desc: "Must display the unique Service Connection Number (USC No.), sanctioned load in kW, and tariff category (LT-1 Residential or HT Commercial).",
-  },
-  {
-    name: "Rooftop Ownership Title / Property Tax Deed",
-    desc: "Municipal property tax receipt, registered sale deed, or NOC from developer confirming exclusive terrace usage rights.",
-  },
-  {
-    name: "Aadhaar Card of Electricity Account Holder",
-    desc: "Matches the exact name on the DISCOM utility meter for PM Surya Ghar national portal identity synchronization.",
-  },
-  {
-    name: "Cancelled Bank Cheque",
-    desc: "Required for Direct Benefit Transfer (DBT) credit of the Central Government PM Surya Ghar subsidy (up to ₹78,000).",
-  },
-];
 
 function NetMeteringPage() {
   const [selectedCode, setSelectedCode] = React.useState("TGSPDCL");
@@ -354,37 +336,9 @@ function NetMeteringPage() {
           </div>
         </section>
 
-        {/* 4 Required Statutory Documents */}
-        <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-t border-[#E3E4E6]">
-          <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
-              Liaison Checklist
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
-              Statutory Documentation Requirements
-            </h2>
-            <p className="text-[14px] text-[#5C5E62]">
-              We handle all paperwork and physical utility inspections. You only provide these 4
-              documents.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {REQUIRED_DOCUMENTS.map((doc, idx) => (
-              <div
-                key={doc.name}
-                className="p-6 rounded-[6px] bg-[#FFFFFF] border border-[#E3E4E6] shadow-xs flex items-start gap-4"
-              >
-                <div className="w-8 h-8 rounded-full bg-[#171A20] text-[#FFFFFF] text-[12px] font-bold font-mono flex items-center justify-center shrink-0">
-                  0{idx + 1}
-                </div>
-                <div>
-                  <h3 className="text-[15px] font-semibold text-[#171A20]">{doc.name}</h3>
-                  <p className="text-[13px] text-[#5C5E62] leading-relaxed mt-1">{doc.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* PM Surya Ghar Official National Journey */}
+        <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full mb-16">
+          <PmSuryaGharJourney />
         </section>
 
         {/* Service Connection Feasibility Inquiry */}

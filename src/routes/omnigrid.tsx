@@ -16,6 +16,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { EnergyFlowSimulator } from "@/components/EnergyFlowSimulator";
+import { BatteryHonestyAdvisor } from "@/components/BatteryHonestyAdvisor";
 
 const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
 
@@ -268,56 +269,17 @@ function OmnigridPage() {
           <EnergyFlowSimulator />
         </QuietSection>
 
-        {/* 5. QUIET SECTION: Backup Duration Estimator */}
+        {/* 5. QUIET SECTION: Backup Duration & Honesty Advisor */}
         <QuietSection
           id="estimator"
           bg="surface"
-          title="Backup Duration Estimator"
-          lead="Select your essential loads to see how long a single Omnigrid unit keeps your home running."
+          title="Backup Duration &amp; Honesty Advisor"
+          lead="Calculate runtime across real BEE-rated appliances, with transparent payback guidance."
         >
-          <div className="max-w-2xl mx-auto space-y-10">
-            {/* Unboxed Segmented Load Toggles */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {LOAD_ITEMS.map((item) => {
-                const active = selectedLoads.includes(item.id);
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => toggleLoad(item.id)}
-                    className={`p-4 rounded-[4px] text-center transition-all cursor-pointer border ${
-                      active
-                        ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
-                        : "border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/40"
-                    }`}
-                  >
-                    <div className="text-[13px] font-medium leading-snug">{item.label}</div>
-                    <div
-                      className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
-                    >
-                      ~{item.watts} W
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+          <div className="max-w-4xl mx-auto space-y-6">
+            <BatteryHonestyAdvisor />
 
-            {/* Big Number Display */}
-            <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
-              <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
-                {backupHours} Hours
-              </div>
-              <div className="text-[13px] text-[#5C5E62]">
-                Estimated Backup Duration ({totalWatts} W average load)
-              </div>
-              <p className="text-[13px] text-[#5C5E62] pt-1">
-                Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to
-                4 units for larger estates.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
               <Button
                 to="/deploy"
                 variant="primary"

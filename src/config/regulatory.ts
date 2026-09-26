@@ -240,6 +240,159 @@ export function unitsForBill(
   return Math.round(bestUnits);
 }
 
+export interface BillSlabBreakdown {
+  slab: string;
+  units: number;
+  ratePerUnit: number;
+  amount: number;
+}
+
+export interface DetailedBillAnalysis {
+  monthlyBillInr: number;
+  estimatedUnits: number;
+  discomCode: string;
+  sanctionedLoadKw: number;
+  category: "LT-I(A)" | "LT-I(B)" | "LT-I(C)";
+  slabs: BillSlabBreakdown[];
+  energyChargesTotal: number;
+  customerCharge: number;
+  fixedCharge: number;
+  electricityDuty: number;
+  totalComputedBill: number;
+  averageRatePerKwh: number;
+}
+
+/**
+ * Detailed bill decoder providing an exact slab-by-slab breakdown
+ * for Telangana domestic electricity bills under TGERC FY 2025-26 tariff order.
+ */
+export function decodeBill(
+  discomCode: string,
+  billInr: number,
+  sanctionedLoadKw: number = 5,
+): DetailedBillAnalysis {
+  const units = unitsForBill(discomCode, billInr, sanctionedLoadKw);
+  const u = Math.max(1, units);
+
+  const slabs: BillSlabBreakdown[] = [];
+  let category: "LT-I(A)" | "LT-I(B)" | "LT-I(C)" = "LT-I(C)";
+
+  if (u <= 100) {
+    category = "LT-I(A)";
+    const u1 = Math.min(u, 50);
+    slabs.push({
+      slab: "0 – 50 units",
+      units: u1,
+      ratePerUnit: 1.95,
+      amount: Math.round(u1 * 1.95 * 100) / 100,
+    });
+    if (u > 50) {
+      const u2 = u - 50;
+      slabs.push({
+        slab: "51 – 100 units",
+        units: u2,
+        ratePerUnit: 3.1,
+        amount: Math.round(u2 * 3.1 * 100) / 100,
+      });
+    }
+  } else if (u <= 200) {
+    category = "LT-I(B)";
+    const u1 = Math.min(u, 100);
+    slabs.push({
+      slab: "0 – 100 units",
+      units: u1,
+      ratePerUnit: 3.4,
+      amount: Math.round(u1 * 3.4 * 100) / 100,
+    });
+    if (u > 100) {
+      const u2 = u - 100;
+      slabs.push({
+        slab: "101 – 200 units",
+        units: u2,
+        ratePerUnit: 4.8,
+        amount: Math.round(u2 * 4.8 * 100) / 100,
+      });
+    }
+  } else {
+    category = "LT-I(C)";
+    const u1 = Math.min(u, 200);
+    slabs.push({
+      slab: "0 – 200 units",
+      units: u1,
+      ratePerUnit: 5.1,
+      amount: Math.round(u1 * 5.1 * 100) / 100,
+    });
+
+    if (u > 200) {
+      const u2 = Math.min(u - 200, 100);
+      slabs.push({
+        slab: "201 – 300 units",
+        units: u2,
+        ratePerUnit: 7.7,
+        amount: Math.round(u2 * 7.7 * 100) / 100,
+      });
+    }
+    if (u > 300) {
+      const u3 = Math.min(u - 300, 100);
+      slabs.push({
+        slab: "301 – 400 units",
+        units: u3,
+        ratePerUnit: 9.0,
+        amount: Math.round(u3 * 9.0 * 100) / 100,
+      });
+    }
+    if (u > 400) {
+      const u4 = Math.min(u - 400, 400);
+      slabs.push({
+        slab: "401 – 800 units",
+        units: u4,
+        ratePerUnit: 9.5,
+        amount: Math.round(u4 * 9.5 * 100) / 100,
+      });
+    }
+    if (u > 800) {
+      const u5 = u - 800;
+      slabs.push({
+        slab: "> 800 units",
+        units: u5,
+        ratePerUnit: 10.0,
+        amount: Math.round(u5 * 10.0 * 100) / 100,
+      });
+    }
+  }
+
+  const energyChargesTotal = Math.round(slabs.reduce((acc, s) => acc + s.amount, 0));
+
+  let customerCharge = 70;
+  if (u <= 100) customerCharge = 25;
+  else if (u <= 200) customerCharge = 50;
+  else if (u <= 300) customerCharge = 60;
+  else if (u <= 400) customerCharge = 70;
+  else customerCharge = 80;
+
+  const fixedCharge = u > 200 ? Math.max(1, sanctionedLoadKw) * 10 : 0;
+  const electricityDuty = Math.round(u * 0.06 * 100) / 100;
+  const totalComputedBill = Math.round(
+    energyChargesTotal + customerCharge + fixedCharge + electricityDuty,
+  );
+  const averageRatePerKwh = Number((totalComputedBill / u).toFixed(2));
+
+  return {
+    monthlyBillInr: billInr,
+    estimatedUnits: u,
+    discomCode,
+    sanctionedLoadKw,
+    category,
+    slabs,
+    energyChargesTotal,
+    customerCharge,
+    fixedCharge,
+    electricityDuty,
+    totalComputedBill,
+    averageRatePerKwh,
+  };
+}
+
 // ----------------------------------------------------------------------------
 // 3. TELANGANA DISCOMS DIRECTORY
 // ----------------------------------------------------------------------------
@@ -311,6 +464,86 @@ export const HYDERABAD_ANNUAL_YIELD_KWH_PER_KW = HYDERABAD_MONTHLY_YIELD_KWH_PER
   (sum, m) => sum + m.yieldKwh,
   0,
 ); // Exactly 1490 kWh/kWp/year
+
+export interface CitySolarYieldProfile {
+  city: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  optimalTiltDeg: number;
+  annualKwhPerKw: number;
+  source: DataSource;
+  monthlyYield: { month: string; yieldKwh: number }[];
+}
+
+export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
+  hyderabad: {
+    city: "Hyderabad",
+    state: "Telangana",
+    latitude: 17.385,
+    longitude: 78.4867,
+    optimalTiltDeg: 18,
+    annualKwhPerKw: 1490,
+    source: HYDERABAD_YIELD_SOURCE,
+    monthlyYield: [...HYDERABAD_MONTHLY_YIELD_KWH_PER_KW],
+  },
+  visakhapatnam: {
+    city: "Visakhapatnam",
+    state: "Andhra Pradesh",
+    latitude: 17.6868,
+    longitude: 83.2185,
+    optimalTiltDeg: 18,
+    annualKwhPerKw: 1460,
+    source: {
+      title: "NASA POWER Surface Solar Irradiance (Visakhapatnam 17.6868° N, 83.2185° E)",
+      url: "https://power.larc.nasa.gov",
+      verifiedOn: "2026-08-15",
+      documentRef: "NASA POWER SSE Release 8",
+    },
+    monthlyYield: [
+      { month: "Jan", yieldKwh: 128 },
+      { month: "Feb", yieldKwh: 132 },
+      { month: "Mar", yieldKwh: 144 },
+      { month: "Apr", yieldKwh: 146 },
+      { month: "May", yieldKwh: 140 },
+      { month: "Jun", yieldKwh: 102 },
+      { month: "Jul", yieldKwh: 94 },
+      { month: "Aug", yieldKwh: 92 },
+      { month: "Sep", yieldKwh: 105 },
+      { month: "Oct", yieldKwh: 120 },
+      { month: "Nov", yieldKwh: 125 },
+      { month: "Dec", yieldKwh: 132 },
+    ],
+  },
+  bengaluru: {
+    city: "Bengaluru",
+    state: "Karnataka",
+    latitude: 12.9716,
+    longitude: 77.5946,
+    optimalTiltDeg: 13,
+    annualKwhPerKw: 1440,
+    source: {
+      title: "NASA POWER Surface Solar Irradiance (Bengaluru 12.9716° N, 77.5946° E)",
+      url: "https://power.larc.nasa.gov",
+      verifiedOn: "2026-08-15",
+      documentRef: "NASA POWER SSE Release 8",
+    },
+    monthlyYield: [
+      { month: "Jan", yieldKwh: 130 },
+      { month: "Feb", yieldKwh: 135 },
+      { month: "Mar", yieldKwh: 150 },
+      { month: "Apr", yieldKwh: 142 },
+      { month: "May", yieldKwh: 132 },
+      { month: "Jun", yieldKwh: 96 },
+      { month: "Jul", yieldKwh: 90 },
+      { month: "Aug", yieldKwh: 92 },
+      { month: "Sep", yieldKwh: 108 },
+      { month: "Oct", yieldKwh: 118 },
+      { month: "Nov", yieldKwh: 122 },
+      { month: "Dec", yieldKwh: 125 },
+    ],
+  },
+};
 
 // ----------------------------------------------------------------------------
 // 5. WIND LOAD SPECIFICATION (IS 875 PART 3: 2015)

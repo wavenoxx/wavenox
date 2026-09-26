@@ -17,6 +17,7 @@ const ROUTES = [
   { path: "/architects", priority: "0.8", changefreq: "monthly" },
   { path: "/faq", priority: "0.8", changefreq: "weekly" },
   { path: "/our-story", priority: "0.7", changefreq: "monthly" },
+  { path: "/about-this-project", priority: "0.8", changefreq: "weekly" },
   { path: "/legal/terms", priority: "0.5", changefreq: "yearly" },
   { path: "/legal/privacy", priority: "0.5", changefreq: "yearly" },
   { path: "/legal/disclosures", priority: "0.5", changefreq: "yearly" },

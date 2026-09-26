@@ -4,12 +4,14 @@ import {
   energyCharge,
   calculateMonthlyElectricityBill,
   unitsForBill,
+  decodeBill,
   calculateModuleDegradation,
   MODULE_WARRANTY_TERMS,
   SOLAR_LOAN_TERMS,
   WIND_SPEED_STANDARDS,
   VERIFIED_DISCOMS,
   HYDERABAD_ANNUAL_YIELD_KWH_PER_KW,
+  CITY_SOLAR_METEOROLOGY,
 } from "./regulatory";
 import { project25Years } from "./solar";
 import { PHYSICS_SIMULATION_TIMELINE, verifyPowerBalance } from "./simulation";
@@ -82,6 +84,18 @@ describe("Regulatory Engine — TGERC FY 2025-26 Telescopic Tariff Slabs (FIX_PL
       const recoveredUnits = unitsForBill("TGSPDCL", computedBill, 5);
       expect(Math.abs(recoveredUnits - units)).toBeLessThanOrEqual(1);
     }
+  });
+
+  it("decodes a ₹3,000 monthly bill into realistic units and telescopic slabs (FIX_PLAN Phase 6.1)", () => {
+    const analysis = decodeBill("TGSPDCL", 3000, 5);
+    // Exact TGERC FY 2025-26 math: 416 units = ₹2,997 ≈ ₹3,000
+    expect(analysis.estimatedUnits).toBe(416);
+    expect(analysis.category).toBe("LT-I(C)");
+    expect(analysis.slabs.length).toBeGreaterThanOrEqual(4);
+    // Total computed bill should be within 1% of input bill
+    expect(Math.abs(analysis.totalComputedBill - 3000)).toBeLessThanOrEqual(15);
+    expect(analysis.averageRatePerKwh).toBeGreaterThan(6.0);
+    expect(analysis.averageRatePerKwh).toBeLessThan(7.5);
   });
 
   it("restricts verified DISCOMs to TGSPDCL and TGNPDCL", () => {
@@ -173,5 +187,29 @@ describe("Regulatory Engine — Linear Warranty & Degradation Maths (FIX_PLAN 2.
     expect(calculateModuleDegradation(10)).toBe(95.4);
     expect(calculateModuleDegradation(20)).toBe(91.4);
     expect(calculateModuleDegradation(25)).toBe(89.4);
+  });
+});
+
+describe("Regulatory Engine — NASA POWER / PVWatts Meteorology (FIX_PLAN Phase 6.2)", () => {
+  it("provides monthly generation curves for Hyderabad, Visakhapatnam, and Bengaluru", () => {
+    expect(CITY_SOLAR_METEOROLOGY.hyderabad).toBeDefined();
+    expect(CITY_SOLAR_METEOROLOGY.visakhapatnam).toBeDefined();
+    expect(CITY_SOLAR_METEOROLOGY.bengaluru).toBeDefined();
+
+    const hyd = CITY_SOLAR_METEOROLOGY.hyderabad;
+    expect(hyd.monthlyYield).toHaveLength(12);
+    expect(hyd.annualKwhPerKw).toBe(1490);
+
+    // Sum of 12 months should match annual total
+    const sumMonthly = hyd.monthlyYield.reduce((a, b) => a + b.yieldKwh, 0);
+    expect(sumMonthly).toBe(1490);
+
+    // March/April/May (pre-monsoon summer) should have peak generation
+    expect(hyd.monthlyYield[2].yieldKwh).toBeGreaterThanOrEqual(140);
+    expect(hyd.monthlyYield[3].yieldKwh).toBeGreaterThanOrEqual(140);
+
+    // July/August (monsoon) should show realistic seasonal dip
+    expect(hyd.monthlyYield[6].yieldKwh).toBeLessThan(115);
+    expect(hyd.monthlyYield[7].yieldKwh).toBeLessThan(115);
   });
 });

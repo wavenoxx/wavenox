@@ -6,6 +6,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
 import { openConsultationDrawer } from "@/lib/consultation";
+import { LanguageToggle } from "./LanguageToggle";
 
 interface NavItem {
   key: Exclude<MegaMenuCategory, null>;
@@ -152,6 +153,9 @@ export function Header() {
             <HelpCircle className="w-[18px] h-[18px]" />
           </button>
 
+          {/* Language Switcher (Telugu / English) */}
+          <LanguageToggle tone={showSolidHeader ? "light" : "dark"} />
+
           {/* Region / Grid Icon */}
           <button
             type="button"
@@ -271,15 +275,18 @@ export function Header() {
             <div>
               <div className="flex items-center justify-between pb-8">
                 <BrandLogo size="sm" asLink={false} />
-                <Dialog.Close asChild>
-                  <button
-                    type="button"
-                    className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none"
-                    aria-label="Close navigation menu"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </Dialog.Close>
+                <div className="flex items-center gap-2">
+                  <LanguageToggle tone="light" />
+                  <Dialog.Close asChild>
+                    <button
+                      type="button"
+                      className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                      aria-label="Close navigation menu"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </Dialog.Close>
+                </div>
               </div>
 
               <nav className="flex flex-col space-y-4" aria-label="Menu Items">
@@ -356,6 +363,14 @@ export function Header() {
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                 >
                   <span>Architectural Solar Specs</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
+                <Link
+                  to="/about-this-project"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>About Project (Case Study)</span>
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
               </nav>

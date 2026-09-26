@@ -148,6 +148,14 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link
+                  to="/about-this-project"
+                  className="hover:text-[#171A20] transition-colors font-medium text-[#171A20]"
+                >
+                  Colophon &amp; Case Study
+                </Link>
+              </li>
+              <li>
                 <Link to="/legal/disclosures" className="hover:text-[#171A20] transition-colors">
                   Statutory Disclosures
                 </Link>
@@ -227,6 +235,13 @@ export function Footer() {
             <span>·</span>
             <Link to="/legal/disclosures" className="hover:text-[#171A20] transition-colors">
               Disclosures
+            </Link>
+            <span>·</span>
+            <Link
+              to="/about-this-project"
+              className="hover:text-[#171A20] transition-colors font-medium"
+            >
+              Colophon
             </Link>
             <span>·</span>
             <Link to="/faq" className="hover:text-[#171A20] transition-colors">
