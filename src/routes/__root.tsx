@@ -16,23 +16,37 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BRAND_CONFIG } from "../config/brand";
 import { BUSINESS } from "../config/business";
 import { ConsultationDrawer } from "../components/ConsultationDrawer";
+import { BrandLogo } from "../components/BrandLogo";
 import { initTelemetry } from "../lib/telemetry";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#111215] text-[#FFFFFF] px-6 text-center select-text">
+      <div className="mb-8">
+        <BrandLogo asLink size="md" className="text-[#FFFFFF]" />
+      </div>
+      <div className="max-w-md">
+        <span className="text-[12px] font-mono tracking-[0.2em] uppercase text-[#F57C00]">
+          404 · Navigation Exception
+        </span>
+        <h1 className="mt-2 text-[32px] sm:text-[40px] font-medium tracking-tight text-[#FFFFFF]">
+          Page Not Found
+        </h1>
+        <p className="mt-3 text-[14px] leading-relaxed text-[#9CA3AF]">
+          The requested architectural solar showroom view does not exist or has been relocated.
         </p>
-        <div className="mt-6">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] h-11 px-7 rounded-[4px] bg-[#FFFFFF] text-[#171A20] text-[13px] font-medium tracking-[0.04em] transition-opacity hover:opacity-90 cursor-pointer"
           >
-            Go home
+            Explore Systems
+          </Link>
+          <Link
+            to="/deploy"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] h-11 px-7 rounded-[4px] bg-[#1B1E24] hover:bg-[#23272F] text-[#FFFFFF] border border-[#2C323C] text-[13px] font-medium tracking-[0.04em] transition-colors cursor-pointer"
+          >
+            Design Studio
           </Link>
         </div>
       </div>
@@ -48,30 +62,38 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#111215] text-[#FFFFFF] px-6 text-center select-text">
+      <div className="mb-8">
+        <BrandLogo asLink size="md" className="text-[#FFFFFF]" />
+      </div>
+      <div className="max-w-md">
+        <span className="text-[12px] font-mono tracking-[0.2em] uppercase text-[#F57C00]">
+          Telemetry Exception
+        </span>
+        <h1 className="mt-2 text-[32px] sm:text-[40px] font-medium tracking-tight text-[#FFFFFF]">
+          System Offline
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+        <p className="mt-3 text-[14px] leading-relaxed text-[#9CA3AF]">
+          An unexpected telemetry exception occurred while rendering this interface. Reconnecting
+          telemetry or returning to the showroom will restore operation.
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] h-11 px-7 rounded-[4px] bg-[#FFFFFF] text-[#171A20] text-[13px] font-medium tracking-[0.04em] transition-opacity hover:opacity-90 cursor-pointer"
           >
-            Try again
+            Retry Connection
           </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          <Link
+            to="/"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] h-11 px-7 rounded-[4px] bg-[#1B1E24] hover:bg-[#23272F] text-[#FFFFFF] border border-[#2C323C] text-[13px] font-medium tracking-[0.04em] transition-colors cursor-pointer"
           >
-            Go home
-          </a>
+            Return to Showroom
+          </Link>
         </div>
       </div>
     </div>

@@ -126,7 +126,7 @@ export function Panel({
         )}
 
         {disclaimer && (
-          <p className="text-[11px] sm:text-[12px] font-normal leading-normal text-inherit/60 max-w-xl mx-auto text-balance">
+          <p className="text-[12px] font-normal leading-normal text-inherit/60 max-w-xl mx-auto text-balance">
             {disclaimer}
           </p>
         )}

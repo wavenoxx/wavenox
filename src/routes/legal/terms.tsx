@@ -144,8 +144,8 @@ function TermsPage() {
               </li>
               <li>
                 <strong className="text-[#171A20]">Commercial Ineligibility:</strong> Commercial,
-                industrial, and institutional rooftop segments are strictly ineligible for PM Surya
-                Ghar residential subsidies under central guidelines.
+                industrial, and government/educational rooftop segments are strictly ineligible for
+                PM Surya Ghar residential subsidies under central guidelines.
               </li>
             </ul>
           </section>

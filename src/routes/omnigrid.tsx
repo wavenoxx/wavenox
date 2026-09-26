@@ -187,7 +187,7 @@ function OmnigridPage() {
           media={media["omnigrid-switchover"]}
           tone="dark"
           title="Outage Protection"
-          lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
+          lead="Fast switchover in under 20 milliseconds keeps your entire home running."
           stats={
             <StatRow
               stats={[
@@ -258,12 +258,12 @@ function OmnigridPage() {
           }
         />
 
-        {/* 4. KINETIC ENERGY FLOW: 24-Hour Autonomous Simulation */}
+        {/* 4. ENERGY FLOW: 24-Hour Home Simulation */}
         <QuietSection
           id="flow-simulation"
           bg="white"
-          title="24-Hour Kinetic Energy Flow"
-          lead="Experience how solar generation, Omnigrid battery storage, and the DISCOM grid interact seamlessly from dawn to nocturnal autonomy."
+          title="24-Hour Solar & Storage Flow"
+          lead="See how solar generation, battery storage, and the DISCOM grid interact throughout the day and evening."
         >
           <EnergyFlowSimulator />
         </QuietSection>

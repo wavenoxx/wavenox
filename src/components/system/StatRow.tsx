@@ -36,13 +36,11 @@ export function StatRow({ stats, align = "center", className = "" }: StatRowProp
           <span className="text-[19px] sm:text-[26px] md:text-[34px] font-semibold tracking-tight leading-tight tabular-nums text-inherit drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
             {stat.value}
           </span>
-          <span className="text-[10px] sm:text-[11px] md:text-[12px] font-medium leading-tight tracking-[0.06em] uppercase text-inherit/80 mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+          <span className="text-[12px] md:text-[13px] font-medium leading-tight tracking-[0.06em] uppercase text-inherit/80 mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
             {stat.label}
           </span>
           {stat.sublabel && (
-            <span className="text-[10px] sm:text-[11px] font-normal text-inherit/60 mt-0.5">
-              {stat.sublabel}
-            </span>
+            <span className="text-[12px] font-normal text-inherit/60 mt-0.5">{stat.sublabel}</span>
           )}
         </div>
       ))}

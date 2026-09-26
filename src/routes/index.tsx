@@ -352,7 +352,7 @@ function IndexPage() {
                   <span>₹2,000</span>
                   <span>₹35,000+</span>
                 </div>
-                <p className="text-[11px] text-[#5C5E62] pt-1.5 text-center leading-normal">
+                <p className="text-[12px] text-[#5C5E62] pt-1.5 text-center leading-normal">
                   * Telangana Gruha Jyothi scheme gives eligible households up to 200 free
                   units/month.
                 </p>
@@ -369,7 +369,7 @@ function IndexPage() {
                 Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹
                 {formatInr(solarEstimate.subsidyInr)} central subsidy.
               </p>
-              <p className="text-[11px] text-[#5C5E62] pt-0.5">
+              <p className="text-[12px] text-[#5C5E62] pt-0.5">
                 <Link
                   to="/legal/disclosures"
                   hash="sources"

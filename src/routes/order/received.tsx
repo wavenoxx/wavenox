@@ -45,7 +45,7 @@ const NEXT_STEPS = [
   },
   {
     num: "03",
-    title: "Engineering Survey & Proposal Dossier",
+    title: "Engineering Survey & Indicative Proposal",
     desc: "We conduct an on-site terrace measurement to verify parapet heights, shading obstructions, and single-line electrical layouts.",
   },
 ];
@@ -161,7 +161,7 @@ function OrderReceivedPage() {
                   className="w-full sm:w-auto min-w-[220px] h-10 px-5 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <FileDown className="w-4 h-4 text-[#F57C00]" />
-                  <span>Download Dossier (PDF)</span>
+                  <span>Download Proposal (PDF)</span>
                 </button>
               )}
               <Button
@@ -206,7 +206,7 @@ function OrderReceivedPage() {
 
             <div className="p-6 rounded-[6px] border border-[#E3E4E6] bg-[#F8F9FA] text-left text-[13px] text-[#5C5E62] space-y-3">
               <p>
-                You can design and configure your bespoke rooftop solar array in our interactive
+                You can design and configure your custom rooftop solar array in our interactive
                 studio, or contact our engineering advisory directly.
               </p>
             </div>
@@ -235,7 +235,7 @@ function OrderReceivedPage() {
         )}
       </main>
 
-      {/* Bespoke Architectural Dossier Modal */}
+      {/* Architectural Proposal Modal */}
       {dossierData && (
         <ArchitecturalDossierModal
           isOpen={dossierModalOpen}

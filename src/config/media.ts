@@ -60,7 +60,7 @@ export const media = {
   } as MediaDescriptor,
   "res-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar array",
+    alt: "Contemporary villa residence with floor-to-ceiling glass and all-black solar array",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",
@@ -93,7 +93,7 @@ export const media = {
   } as MediaDescriptor,
   "omnigrid-hero": {
     src: "/media/omnigrid-hero-1600w.jpg",
-    alt: "Brushed titanium and obsidian black Omnigrid home battery energy storage system mounted in modern architect garage",
+    alt: "Matte graphite home battery energy storage system mounted in garage utility room",
     width: 1440,
     height: 1440,
     avif: "/media/omnigrid-hero-640w.avif 640w, /media/omnigrid-hero-1080w.avif 1080w, /media/omnigrid-hero-1600w.avif 1600w, /media/omnigrid-hero-1920w.avif 1920w",
@@ -181,7 +181,7 @@ export const media = {
   } as MediaDescriptor,
   "homes-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Ultra-luxury modern villa residence with floor-to-ceiling glass and monolithic flush all-black solar array",
+    alt: "Contemporary villa residence with floor-to-ceiling glass and clean all-black solar array",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",

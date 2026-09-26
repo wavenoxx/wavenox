@@ -11,7 +11,7 @@ import { BUSINESS, hubCityList } from "./business";
 export const DEFAULT_BRAND_NAME = "WAVENOX";
 const DEFAULT_LEGAL_NAME = "WAVENOX · Architectural Solar Concept";
 const DEFAULT_SITE_URL = "https://wavenox.in";
-const DEFAULT_TAGLINE = "Absolute power. Zero compromise.";
+const DEFAULT_TAGLINE = "Architectural solar for Indian residences.";
 const DEFAULT_PHONE_DISPLAY = "+91 91546 26354";
 const DEFAULT_PHONE_DIAL = "+919154626354";
 const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
@@ -151,7 +151,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
 
   const description =
     clean(env.VITE_BRAND_DESCRIPTION) ||
-    `${name} deploys world-class monolithic solar infrastructure for residential estates and commercial assets across ${hubCityList}. Absolute power. Zero compromise.`;
+    `${name} designs low-profile architectural solar for residential and commercial roofs in ${hubCityList}.`;
 
   return {
     status,

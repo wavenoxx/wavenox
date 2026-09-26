@@ -121,7 +121,7 @@ function ServiceAreasPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
             Regional Grid Infrastructure
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
@@ -160,7 +160,7 @@ function ServiceAreasPage() {
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E3E4E6]">
               <div>
-                <span className="text-[11px] font-semibold text-[#F57C00] uppercase tracking-widest block mb-1">
+                <span className="text-[12px] font-semibold text-[#F57C00] uppercase tracking-widest block mb-1">
                   Active Operational Jurisdiction
                 </span>
                 <h2 className="text-[24px] sm:text-[30px] font-medium text-[#171A20]">
@@ -193,7 +193,7 @@ function ServiceAreasPage() {
                 <div className="text-[18px] font-semibold text-[#171A20]">
                   {currentHub.irradiance}
                 </div>
-                <div className="text-[11px] text-[#5C5E62] mt-0.5">Global Horizontal Daily</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">Global Horizontal Daily</div>
               </div>
 
               <div className="p-4 rounded-[6px] bg-[#F4F4F4]/70 border border-[#E3E4E6]">
@@ -204,7 +204,7 @@ function ServiceAreasPage() {
                 <div className="text-[18px] font-semibold text-[#171A20]">
                   {currentHub.annualGenerationPerKw}
                 </div>
-                <div className="text-[11px] text-[#5C5E62] mt-0.5">N-Type TOPCon Physics</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">N-Type TOPCon Physics</div>
               </div>
 
               <div className="p-4 rounded-[6px] bg-[#F4F4F4]/70 border border-[#E3E4E6]">
@@ -215,7 +215,7 @@ function ServiceAreasPage() {
                 <div className="text-[18px] font-semibold text-[#171A20]">
                   {currentHub.cycloneRating}
                 </div>
-                <div className="text-[11px] text-[#5C5E62] mt-0.5">IS 875 Part 3 Certified</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">IS 875 Part 3 Certified</div>
               </div>
             </div>
 
@@ -273,7 +273,7 @@ function ServiceAreasPage() {
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="p-8 sm:p-10 rounded-[10px] bg-[#171A20] text-white flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-xl space-y-3">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
+              <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
                 Regional Engineering Support
               </span>
               <h3 className="text-[24px] sm:text-[28px] font-medium text-white leading-snug">
@@ -293,7 +293,7 @@ function ServiceAreasPage() {
                 <Phone className="w-4 h-4 text-[#F57C00]" />
                 <span>Call Advisory: {BRAND_CONFIG.contact.phone.display}</span>
               </a>
-              <span className="text-[11px] text-white/60">Mon – Sat · 9:00 AM – 7:00 PM IST</span>
+              <span className="text-[12px] text-white/60">Mon – Sat · 9:00 AM – 7:00 PM IST</span>
             </div>
           </div>
         </section>

@@ -62,7 +62,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "DISCOM Net-Metering & Sanctions", to: "/net-metering" },
           { label: "Calculate Savings", to: "/deploy" },
-          { label: "Technology Atelier & Specifications", to: "/technology" },
+          { label: "Solar Engineering & Specifications", to: "/technology" },
         ],
       },
     ],
@@ -192,7 +192,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "PM Surya Ghar Subsidy Guide", to: "/legal/disclosures" },
           { label: "Structural Wind Load Standards", to: "/technology" },
           { label: "Regional Jurisdictions & DISCOMs", to: "/service-areas" },
-          { label: "Architectural Atelier & BIM", to: "/architects" },
+          { label: "Architectural Solar & CAD Specs", to: "/architects" },
         ],
       },
       {

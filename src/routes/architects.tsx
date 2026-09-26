@@ -23,16 +23,16 @@ export const Route = createFileRoute("/architects")({
   head: () => ({
     meta: [
       {
-        title: `Architectural Atelier & BIM Specifications — ${BRAND_CONFIG.name}`,
+        title: `Architectural Solar & Technical Specifications — ${BRAND_CONFIG.name}`,
       },
       {
         name: "description",
         content:
-          "Turnkey rooftop solar integration for architects, interior designers, and luxury estate builders in India. Zero-penetration structural engineering, concealed conduit raceways, IS 875 (Part 3) 44 m/s wind resilience, and BIM/CAD specifications.",
+          "Turnkey rooftop solar integration for architects, interior designers, and luxury estate builders in India. Zero-penetration structural engineering, concealed conduit raceways, IS 875 (Part 3) 44 m/s wind resilience, and CAD specifications.",
       },
       {
         property: "og:title",
-        content: `Architectural Atelier & BIM Specifications — ${BRAND_CONFIG.name}`,
+        content: `Architectural Solar & Technical Specifications — ${BRAND_CONFIG.name}`,
       },
       {
         property: "og:description",
@@ -50,9 +50,9 @@ export const Route = createFileRoute("/architects")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Service",
-          name: `${BRAND_CONFIG.name} Architectural Solar Atelier`,
+          name: `${BRAND_CONFIG.name} Architectural Solar Design`,
           description:
-            "Turnkey rooftop solar integration for architects and luxury residential builders in India. Zero-penetration structural engineering, concealed conduit raceways, and BIM/CAD specifications.",
+            "Turnkey rooftop solar integration for architects and residential builders in India. Zero-penetration structural engineering, concealed conduit raceways, and CAD specifications.",
           provider: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -70,7 +70,7 @@ const ARCHITECT_PILLARS = [
   {
     icon: Layers,
     title: "Zero-Puncture Terrace Membrane Preservation",
-    desc: "Our non-penetrative structural ballast clamps and perimeter parapet anchors preserve 100% of the builder's waterproofing membrane. Guaranteed with our 5-year structural weatherproofing charter.",
+    desc: "Our non-penetrative structural ballast clamps and perimeter parapet anchors protect 100% of the builder's waterproofing membrane, engineered to IS 875 standards.",
   },
   {
     icon: Compass,
@@ -185,9 +185,9 @@ function ArchitectsPage() {
       <main className="flex-1 pt-28 pb-20">
         {/* Hero Section */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full text-center space-y-6 pt-8 pb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F4F4] text-[#5C5E62] text-[11px] font-semibold uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F4F4] text-[#5C5E62] text-[12px] font-semibold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5 text-[#F57C00]" />
-            <span>The Architectural Atelier</span>
+            <span>Architectural Collaboration</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-[#171A20] max-w-3xl mx-auto leading-[1.1]">
@@ -195,9 +195,9 @@ function ArchitectsPage() {
           </h1>
 
           <p className="text-[16px] sm:text-[18px] text-[#5C5E62] max-w-2xl mx-auto leading-relaxed">
-            We partner with premier architects, structural engineers, and luxury villa developers to
-            seamlessly embed monolithic clean power into bespoke residences without compromising
-            form or terrace usability.
+            We partner with architects, structural engineers, and luxury villa developers to
+            integrate clean rooftop power into modern residences without compromising form or
+            terrace usability.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -206,7 +206,7 @@ function ArchitectsPage() {
               onClick={() => openConsultationDrawer()}
               className="w-full sm:w-auto min-w-[220px] h-12 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] transition-colors cursor-pointer"
             >
-              Request Architectural Dossier
+              Request Architectural Specs
             </button>
             <a
               href={whatsappUrl}
@@ -215,12 +215,12 @@ function ArchitectsPage() {
               className="w-full sm:w-auto min-w-[200px] h-12 px-6 rounded-[4px] border border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] text-[14px] font-medium tracking-wide hover:bg-[#F4F4F4] transition-colors flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4 text-[#F57C00]" />
-              <span>Direct Atelier Liaison</span>
+              <span>Direct Engineering Liaison</span>
             </a>
           </div>
         </section>
 
-        {/* 3 Core Architectural Pillars */}
+        {/* Core Architectural Principles */}
         <section className="px-6 sm:px-12 max-w-6xl mx-auto w-full py-16 border-t border-[#E3E4E6]">
           <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
             <h2 className="text-xs font-bold uppercase tracking-widest text-[#5C5E62]">
@@ -274,7 +274,7 @@ function ArchitectsPage() {
           <div className="overflow-x-auto rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] shadow-xs">
             <table className="w-full text-left text-[13px] border-collapse">
               <thead>
-                <tr className="bg-[#F8F9FA] border-b border-[#E3E4E6] text-[11px] uppercase font-bold text-[#5C5E62]">
+                <tr className="bg-[#F8F9FA] border-b border-[#E3E4E6] text-[12px] uppercase font-bold text-[#5C5E62]">
                   <th className="py-3.5 px-4">Hardware Component</th>
                   <th className="py-3.5 px-4">Physical Dimensions</th>
                   <th className="py-3.5 px-4">Structural / Mechanical Properties</th>
@@ -291,7 +291,7 @@ function ArchitectsPage() {
                     <td className="py-4 px-4 text-[12px] text-[#5C5E62]">
                       {spec.weight || spec.loading || spec.acoustics || spec.material}
                     </td>
-                    <td className="py-4 px-4 text-right font-mono font-medium text-[11px] text-[#171A20]">
+                    <td className="py-4 px-4 text-right font-mono font-medium text-[12px] text-[#171A20]">
                       {spec.cadFormats}
                     </td>
                   </tr>
@@ -325,7 +325,7 @@ function ArchitectsPage() {
                 </h4>
                 <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
                   {submissionResult.isDemo
-                    ? "Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no automated dossier dispatch occurs. You can review the published CAD specifications above or discuss engineering integration directly with the designer via WhatsApp."
+                    ? "Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no automated specification package dispatch occurs. You can review the published CAD specifications above or discuss engineering integration directly with the designer via WhatsApp."
                     : "Thank you for registering your practice. Our engineering team will review your project parameters and share custom technical details."}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -375,7 +375,7 @@ function ArchitectsPage() {
                   <div>
                     <label
                       htmlFor="arch_studio_name"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       Architecture Studio / Firm *
                     </label>
@@ -392,7 +392,7 @@ function ArchitectsPage() {
                   <div>
                     <label
                       htmlFor="arch_contact_name"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       Lead Architect / Principal *
                     </label>
@@ -412,7 +412,7 @@ function ArchitectsPage() {
                   <div>
                     <label
                       htmlFor="arch_phone"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       Mobile / WhatsApp (+91) *
                     </label>
@@ -430,7 +430,7 @@ function ArchitectsPage() {
                   <div>
                     <label
                       htmlFor="arch_project_location"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       Project Location / City *
                     </label>

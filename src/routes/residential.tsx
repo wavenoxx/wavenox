@@ -23,7 +23,7 @@ export const Route = createFileRoute("/residential")({
       {
         property: "og:description",
         content:
-          "Clean rooftop solar engineered for Indian residential terraces. 25-year warranty and seamless battery backup.",
+          "Clean rooftop solar engineered for Indian residential terraces. 25-year warranty and reliable battery backup.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/res-hero-1600w.jpg` },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/residential` },

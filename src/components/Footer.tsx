@@ -21,7 +21,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
                 <Link to="/" className="hover:text-[#171A20] transition-colors">
-                  Monolithic Solar Panels
+                  All-Black Solar Panels
                 </Link>
               </li>
               <li>
@@ -41,7 +41,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/deploy" className="hover:text-[#171A20] transition-colors">
-                  Bespoke Solar Studio
+                  Solar Sizing Studio
                 </Link>
               </li>
             </ul>
@@ -55,12 +55,12 @@ export function Footer() {
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
                 <Link to="/technology" className="hover:text-[#171A20] transition-colors">
-                  Technology Atelier
+                  Solar Engineering
                 </Link>
               </li>
               <li>
                 <Link to="/warranty" className="hover:text-[#171A20] transition-colors">
-                  25-Year Asset Warranty Charter
+                  25-Year Warranty Standards
                 </Link>
               </li>
               <li>
@@ -75,7 +75,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/architects" className="hover:text-[#171A20] transition-colors">
-                  Architectural Atelier &amp; BIM
+                  Architectural Solar Specs
                 </Link>
               </li>
               <li>
@@ -136,10 +136,10 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* COLUMN 4: ATELIER & LEGAL */}
+          {/* COLUMN 4: COMPANY & LEGAL */}
           <div className="space-y-4">
             <h4 className="text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.16em]">
-              Atelier &amp; Governance
+              Company &amp; Governance
             </h4>
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
@@ -211,7 +211,7 @@ export function Footer() {
         </div>
 
         {/* BOTTOM FINE-PRINT STRIP */}
-        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#5C5E62]/80 text-center sm:text-left">
+        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#5C5E62]/80 text-center sm:text-left">
           <div>
             {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
             calculations for Telangana (TGSPDCL &amp; TGNPDCL).

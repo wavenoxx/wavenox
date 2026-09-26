@@ -22,15 +22,15 @@ import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 export const Route = createFileRoute("/our-story")({
   head: () => ({
     meta: [
-      { title: `Atelier Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}` },
+      { title: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content:
-          "The founding philosophy of WAVENOX: Why we rejected conventional solar utility scaffolding to engineer monolithic, architectural clean energy for India’s finest residences.",
+          "The founding philosophy of WAVENOX: Why we rejected conventional solar utility scaffolding to engineer integrated, architectural clean energy for India’s finest residences.",
       },
       {
         property: "og:title",
-        content: `Atelier Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
+        content: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
       },
       {
         property: "og:description",
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/our-story")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "AboutPage",
-          name: "WAVENOX Atelier Ethos and Architectural History",
+          name: "WAVENOX Design Ethos and Architectural History",
           description:
             "The founding principles of WAVENOX clean energy architecture, rooted in Hyderabad, Telangana.",
           publisher: {
@@ -73,7 +73,7 @@ function OurStoryPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
             Design Concept &amp; Architectural Study
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
@@ -98,7 +98,7 @@ function OurStoryPage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 inset-x-0 p-6 sm:p-10 text-white z-10 max-w-xl">
-              <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block mb-1">
+              <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block mb-1">
                 Design Vision
               </span>
               <h2 className="text-[20px] sm:text-[26px] font-medium tracking-tight leading-snug">
@@ -111,7 +111,7 @@ function OurStoryPage() {
         {/* 3. THE THESIS */}
         <section className="max-w-3xl mx-auto px-6 mt-20 sm:mt-28 space-y-8 text-[15px] sm:text-[16px] leading-relaxed text-[#5C5E62]">
           <div className="space-y-4">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#171A20] block">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#171A20] block">
               The Genesis
             </span>
             <h2 className="text-[26px] sm:text-[32px] font-medium tracking-tight text-[#171A20] leading-snug">
@@ -136,7 +136,7 @@ function OurStoryPage() {
             <p className="font-medium text-[#171A20] text-[15px]">
               “The terrace of an Indian home is living space — where families gather on monsoon
               evenings, host dinners, and take morning walks. Rooftop solar must respect, shade, and
-              elevate that space rather than consume it.”
+              enhance that space rather than consume it.”
             </p>
             <span className="text-[12px] text-[#5C5E62] block">
               — Architectural Solar Design Study, Hyderabad
@@ -144,10 +144,10 @@ function OurStoryPage() {
           </div>
         </section>
 
-        {/* 4. FOUR PILLARS OF OUR DESIGN PHILOSOPHY */}
+        {/* 4. FOUR PRINCIPLES OF OUR DESIGN PHILOSOPHY */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Our Principles
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
@@ -208,20 +208,19 @@ function OurStoryPage() {
           </div>
         </section>
 
-        {/* 5. CONCEPT ATELIER SUMMARY */}
+        {/* 5. CONCEPT DESIGN STUDY SUMMARY */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="border border-[#E3E4E6] rounded-[10px] bg-[#F4F4F4]/50 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
-                Concept Atelier
+              <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
+                Concept Study
               </span>
               <h3 className="text-[22px] sm:text-[26px] font-medium text-[#171A20]">
                 Conceptualized in Hyderabad, Designed for Indian Homes
               </h3>
               <p className="text-[14px] text-[#5C5E62] max-w-xl leading-relaxed">
                 An architectural study exploring how high-performance solar generation and
-                contemporary living spaces seamlessly coexist across Greater Hyderabad and
-                Telangana.
+                contemporary living spaces coexist across Greater Hyderabad and Telangana.
               </p>
             </div>
             <div className="shrink-0">

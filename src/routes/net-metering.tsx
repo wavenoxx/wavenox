@@ -215,7 +215,7 @@ function NetMeteringPage() {
       <main className="flex-1 pt-28 pb-20">
         {/* Page Hero */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full text-center space-y-6 pt-8 pb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F4F4] text-[#5C5E62] text-[11px] font-semibold uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F4F4] text-[#5C5E62] text-[12px] font-semibold uppercase tracking-widest">
             <Zap className="w-3.5 h-3.5 text-[#F57C00]" />
             <span>State Regulatory Engine</span>
           </div>
@@ -248,7 +248,7 @@ function NetMeteringPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* DISCOM Select */}
               <div>
-                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-2">
+                <label className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-2">
                   Designated Distribution Utility (DISCOM)
                 </label>
                 <div className="space-y-2">
@@ -267,7 +267,7 @@ function NetMeteringPage() {
                         <div className="text-[13px] font-semibold text-[#171A20]">
                           {item.name} ({item.code})
                         </div>
-                        <div className="text-[11px] text-[#5C5E62] mt-0.5">
+                        <div className="text-[12px] text-[#5C5E62] mt-0.5">
                           {item.state} · Turnkey Net-Metering Sanctioned
                         </div>
                       </div>
@@ -283,7 +283,7 @@ function NetMeteringPage() {
               <div className="flex flex-col justify-between space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[11px] font-semibold text-[#171A20] uppercase tracking-wider">
+                    <label className="text-[12px] font-semibold text-[#171A20] uppercase tracking-wider">
                       Sanctioned Connected Load (kW)
                     </label>
                     <span className="font-mono text-[18px] font-bold text-[#171A20]">
@@ -299,12 +299,12 @@ function NetMeteringPage() {
                     onChange={(e) => setSanctionedLoadKw(Number(e.target.value))}
                     className="range-slider w-full"
                   />
-                  <div className="flex justify-between text-[11px] text-[#5C5E62] mt-2 font-mono">
+                  <div className="flex justify-between text-[12px] text-[#5C5E62] mt-2 font-mono">
                     <span>3 kW (Studio Villa)</span>
                     <span>15 kW (Estate)</span>
                     <span>50 kW (Mansion)</span>
                   </div>
-                  <p className="text-[11px] text-[#5C5E62] mt-3 leading-relaxed">
+                  <p className="text-[12px] text-[#5C5E62] mt-3 leading-relaxed">
                     * Found on your monthly electricity bill under &quot;Sanctioned Load&quot; or
                     &quot;Contracted Demand&quot;.
                   </p>
@@ -320,7 +320,7 @@ function NetMeteringPage() {
                   </div>
                   <div className="flex justify-between border-b border-[#E3E4E6] pb-2">
                     <span className="text-[#5C5E62]">Technical Feasibility:</span>
-                    <span className="text-[#171A20] text-right font-sans font-medium text-[11px] max-w-[200px]">
+                    <span className="text-[#171A20] text-right font-sans font-medium text-[12px] max-w-[200px]">
                       {sanctionedLoadKw <= 10
                         ? "Waived / Deemed Approved (≤ 10 kW)"
                         : "Subject to DT Feeder Capacity"}
@@ -328,7 +328,7 @@ function NetMeteringPage() {
                   </div>
                   <div className="flex justify-between border-b border-[#E3E4E6] pb-2">
                     <span className="text-[#5C5E62]">Metering Classification:</span>
-                    <span className="text-[#171A20] text-right font-sans font-medium text-[11px] max-w-[200px]">
+                    <span className="text-[#171A20] text-right font-sans font-medium text-[12px] max-w-[200px]">
                       {meterCategory}
                     </span>
                   </div>
@@ -429,7 +429,7 @@ function NetMeteringPage() {
                   <div>
                     <label
                       htmlFor="net-service-num"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       Service Connection / USC Number *
                     </label>
@@ -446,7 +446,7 @@ function NetMeteringPage() {
                   <div>
                     <label
                       htmlFor="net-pincode"
-                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                      className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                     >
                       6-Digit Postal PIN Code *
                     </label>
@@ -468,7 +468,7 @@ function NetMeteringPage() {
                 <div>
                   <label
                     htmlFor="net-phone"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
                   >
                     Mobile Number / WhatsApp (+91) *
                   </label>
@@ -518,7 +518,7 @@ function NetMeteringPage() {
                   />
                   <label
                     htmlFor="net-consent"
-                    className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                    className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                   >
                     I authorize WAVENOX to review my service connection details and contact me
                     regarding net-metering feasibility in accordance with the{" "}

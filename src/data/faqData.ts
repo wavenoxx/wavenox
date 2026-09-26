@@ -94,7 +94,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Omnigrid & Outages",
     question: "Can I start with solar first and add an Omnigrid battery later?",
     answer:
-      "Yes. All WAVENOX residential installations utilize hybrid-ready inverters. You can install our low-profile monolithic solar array today and seamlessly plug in an Omnigrid storage stack at any point in the future. Battery capacity can also be scaled modularly in 14.3 kWh increments (up to 28.6 kWh dual-pack or 42.9 kWh triple-stack) as your family's evening consumption or EV charging requirements expand.",
+      "Yes. All WAVENOX residential installations utilize hybrid-ready inverters. You can install our low-profile all-black solar array today and connect an Omnigrid storage stack at any point in the future. Battery capacity can also be scaled modularly in 14.3 kWh increments (up to 28.6 kWh dual-pack or 42.9 kWh triple-stack) as your family's evening consumption or EV charging requirements expand.",
     featured: false,
   },
 

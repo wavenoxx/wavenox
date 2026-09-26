@@ -115,7 +115,7 @@ wavenox/
 
 | Route          | Page Name                    | Primary Focus & Tesla Equivalent                                                                                                                                  |
 | :------------- | :--------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`            | **Solar Panels Showcase**    | Exact replica of `https://www.tesla.com/solarpanels` section hierarchy on Pure White & Studio Gray canvas.                                                        |
+| `/`            | **Solar Panels Showcase**    | Tesla-inspired section hierarchy with restrained design DNA on Pure White & Studio Gray canvas.                                                                   |
 | `/deploy`      | **System Design Studio**     | Interactive 6-step configurator mirroring `https://www.tesla.com/energy/design` with custom kW sizing, Omnigrid battery count, and PM Surya Ghar subsidy credits. |
 | `/residential` | **Solar for Homes**          | Architectural solar for luxury villas, independent houses, and penthouses.                                                                                        |
 | `/enterprise`  | **Commercial & Industrial**  | Megawatt-scale solar, Section 32 40% Year-1 tax depreciation, corporate campuses.                                                                                 |

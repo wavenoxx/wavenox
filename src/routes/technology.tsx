@@ -23,11 +23,12 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { SunPathSimulator } from "@/components/SunPathSimulator";
 
 export const Route = createFileRoute("/technology")({
   head: () => ({
     meta: [
-      { title: `Technology Atelier & Engineering Standards — ${BRAND_CONFIG.name}` },
+      { title: `Solar Engineering & Technical Standards — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content:
@@ -35,12 +36,12 @@ export const Route = createFileRoute("/technology")({
       },
       {
         property: "og:title",
-        content: `Technology Atelier & Engineering Standards — ${BRAND_CONFIG.name}`,
+        content: `Solar Engineering & Technical Standards — ${BRAND_CONFIG.name}`,
       },
       {
         property: "og:description",
         content:
-          "Explore the metallurgy, cell physics, and software engineering behind monolithic luxury solar.",
+          "Explore the structural metallurgy, cell physics, and software engineering behind architectural solar.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-heat-1600w.jpg` },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/technology` },
@@ -70,7 +71,7 @@ export const Route = createFileRoute("/technology")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "TechArticle",
-          headline: "WAVENOX Monolithic Clean Energy Architecture & Engineering Standards",
+          headline: "WAVENOX Clean Energy Architecture & Engineering Standards",
           description:
             "Technical specification of N-type TOPCon bifacial modules, LiFePO4 battery energy storage, and elevated terrace pergola engineering in India.",
           author: {
@@ -100,11 +101,11 @@ function TechnologyPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
-            Engineering Atelier &amp; Metallurgy
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+            Solar Engineering &amp; Metallurgy
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
-            The Anatomy of Monolithic Solar
+            The Anatomy of Architectural Solar
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
             How WAVENOX engineered an integrated, all-black clean energy architecture built for
@@ -114,7 +115,7 @@ function TechnologyPage() {
           {/* Key Engineering Benchmarks Ribbon */}
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {[
-              { value: "22.8%", label: "Module Efficiency", sub: "STC Certified" },
+              { value: "22.45%", label: "Module Efficiency", sub: "STC Certified" },
               { value: "-0.30%", label: "Temp. Coeff.", sub: "Per °C Rise" },
               { value: "< 20 ms", label: "Islanding Speed", sub: "Solid-State" },
               { value: "44 m/s", label: "Basic Wind Speed", sub: "IS 875 Part 3 (158 km/h)" },
@@ -128,10 +129,10 @@ function TechnologyPage() {
                 <span className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-[#171A20] tabular-nums">
                   {stat.value}
                 </span>
-                <span className="text-[11px] font-medium uppercase tracking-wider text-[#5C5E62] mt-0.5">
+                <span className="text-[12px] font-medium uppercase tracking-wider text-[#5C5E62] mt-0.5">
                   {stat.label}
                 </span>
-                <span className="text-[10px] text-[#5C5E62]/70">{stat.sub}</span>
+                <span className="text-[12px] text-[#5C5E62]/70">{stat.sub}</span>
               </div>
             ))}
           </div>
@@ -150,16 +151,16 @@ function TechnologyPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 inset-x-0 p-6 sm:p-10 text-white z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="max-w-xl">
-                <span className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.2em] text-white/70 block mb-1.5">
+                <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-white/70 block mb-1.5">
                   Precision Silicon Physics
                 </span>
                 <h2 className="text-[22px] sm:text-[28px] font-medium tracking-tight text-white leading-snug">
                   N-Type TOPCon Dual-Glass Bifacial Architecture
                 </h2>
                 <p className="text-[13px] sm:text-[14px] text-white/80 leading-relaxed mt-1 text-balance">
-                  Quantum tunneling oxide passivation layer completely eliminates Light-Induced
-                  Degradation (LID) while capturing up to 25% rear albedo reflection from terrace
-                  surfaces.
+                  Ultra-thin silicon oxide passivation layer with doped poly-Si contacts minimizes
+                  initial Light-Induced Degradation (LID) while capturing up to 25% rear albedo
+                  reflection from terrace surfaces.
                 </p>
               </div>
               <div className="shrink-0">
@@ -179,15 +180,15 @@ function TechnologyPage() {
         {/* 3. ARCHITECTURAL COMPARISON: CONVENTIONAL VS WAVENOX */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Architectural Distinction
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
               The Standard Rooftop vs. The WAVENOX Standard
             </h2>
             <p className="text-[14px] sm:text-[16px] text-[#5C5E62] mt-2">
-              Why traditional solar installations deface luxury residences, and how monolithic
-              engineering protects your home’s architectural integrity.
+              Why traditional solar installations clutter residences, and how integrated engineering
+              protects your home’s architectural integrity.
             </p>
           </div>
 
@@ -198,7 +199,7 @@ function TechnologyPage() {
                 <div className="text-[17px] font-medium text-[#5C5E62]">
                   Conventional Solar Installation
                 </div>
-                <span className="px-2.5 py-1 rounded-[4px] bg-[#5C5E62]/10 text-[11px] font-medium text-[#5C5E62] uppercase tracking-wider">
+                <span className="px-2.5 py-1 rounded-[4px] bg-[#5C5E62]/10 text-[12px] font-medium text-[#5C5E62] uppercase tracking-wider">
                   Generic
                 </span>
               </div>
@@ -241,12 +242,12 @@ function TechnologyPage() {
               </ul>
             </div>
 
-            {/* WAVENOX Monolithic Standard */}
+            {/* WAVENOX Architectural Standard */}
             <div className="p-6 sm:p-8 rounded-[8px] border-2 border-[#171A20] bg-[#171A20] text-white shadow-xl space-y-5">
               <div className="flex items-center justify-between pb-4 border-b border-white/15">
-                <div className="text-[17px] font-medium text-white">WAVENOX Monolithic System</div>
-                <span className="px-2.5 py-1 rounded-[4px] bg-white/20 text-[11px] font-medium text-white uppercase tracking-wider">
-                  Apex Luxury
+                <div className="text-[17px] font-medium text-white">WAVENOX Pergola System</div>
+                <span className="px-2.5 py-1 rounded-[4px] bg-white/20 text-[12px] font-medium text-white uppercase tracking-wider">
+                  Pergola Standard
                 </span>
               </div>
               <ul className="space-y-3.5 text-[14px] text-white/85">
@@ -294,10 +295,15 @@ function TechnologyPage() {
           </div>
         </section>
 
-        {/* 4. FOUR CORE ENGINEERING PILLARS (INTERACTIVE TABS) */}
+        {/* SUN-PATH & SHADOW SIMULATION (REAL HYDERABAD ASTRONOMICAL DATA) */}
+        <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
+          <SunPathSimulator />
+        </section>
+
+        {/* 4. FOUR CORE ENGINEERING DISCIPLINES (INTERACTIVE TABS) */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Deep Engineering Breakdown
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
@@ -337,8 +343,8 @@ function TechnologyPage() {
           {activeTab === "cell" && (
             <div className="p-8 sm:p-10 rounded-[10px] border border-[#E3E4E6] bg-[#F4F4F4]/40 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
-                  Quantum Tunneling Passivation
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
+                  Tunnel Oxide Passivation
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
                   Why N-Type TOPCon Outperforms Every Legacy Panel
@@ -352,7 +358,7 @@ function TechnologyPage() {
                 <div className="pt-2 grid grid-cols-2 gap-4">
                   <div className="p-3 bg-white rounded-[4px] border border-[#E3E4E6]">
                     <div className="text-[18px] font-semibold text-[#171A20] tabular-nums">
-                      22.8%
+                      22.45%
                     </div>
                     <div className="text-[12px] text-[#5C5E62]">Module Conversion Efficiency</div>
                   </div>
@@ -379,7 +385,7 @@ function TechnologyPage() {
           {activeTab === "pergola" && (
             <div className="p-8 sm:p-10 rounded-[10px] border border-[#E3E4E6] bg-[#F4F4F4]/40 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
                   Structural Metallurgy &amp; Cyclone Physics
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
@@ -421,7 +427,7 @@ function TechnologyPage() {
           {activeTab === "storage" && (
             <div className="p-8 sm:p-10 rounded-[10px] border border-[#E3E4E6] bg-[#F4F4F4]/40 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
                   Solid-State Microgrid Architecture
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
@@ -463,7 +469,7 @@ function TechnologyPage() {
           {activeTab === "iot" && (
             <div className="p-8 sm:p-10 rounded-[10px] border border-[#E3E4E6] bg-[#F4F4F4]/40 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
                   Cloud Telemetry &amp; Diagnostics
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
@@ -507,7 +513,7 @@ function TechnologyPage() {
           <div className="border border-[#E3E4E6] rounded-[8px] bg-[#FFFFFF] overflow-hidden shadow-sm">
             <div className="p-6 sm:p-8 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#5C5E62] block mb-1">
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#5C5E62] block mb-1">
                   Master Technical Datasheet
                 </span>
                 <h3 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
@@ -583,7 +589,7 @@ function TechnologyPage() {
         {/* 6. CONVERSION ADVISORY DOCK */}
         <section className="max-w-4xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="p-8 sm:p-12 rounded-[12px] bg-[#171A20] text-white text-center space-y-5 shadow-2xl">
-            <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block">
+            <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block">
               Architectural Feasibility
             </span>
             <h2 className="text-[26px] sm:text-[34px] md:text-[40px] font-medium tracking-tight text-white text-balance leading-snug">

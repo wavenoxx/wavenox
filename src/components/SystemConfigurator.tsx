@@ -47,7 +47,7 @@ const BATTERY_OPTIONS = [
     label: "2 Units",
     sublabel: `${(batteryCap * 2).toFixed(1)} kWh`,
     capacityKwh: batteryCap * 2,
-    headline: "Whole-home backup. Seamless transfer powering up to 4 air conditioners.",
+    headline: "Whole-home backup. Fast transfer powering up to 4 air conditioners.",
   },
   {
     units: 3,
@@ -455,7 +455,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] text-[#5C5E62] pt-1 leading-normal">
+              <p className="text-[12px] text-[#5C5E62] pt-1 leading-normal">
                 * Telangana Gruha Jyothi scheme provides eligible households up to 200 free
                 units/month. Calculated using official TGERC FY 2025-26 telescopic tariffs.
               </p>
@@ -641,7 +641,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   ₹{formatInr(netPayableInr)}
                 </span>
               </div>
-              <p className="text-[11px] text-[#5C5E62] leading-tight pt-0.5">
+              <p className="text-[12px] text-[#5C5E62] leading-tight pt-0.5">
                 *Subsidy is credited via DBT to your bank account post-commissioning (typically
                 within 15–45 days of DISCOM inspection).
               </p>
@@ -654,7 +654,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <div className="pt-1 flex items-center justify-end">
                 <a
                   href="/legal/disclosures#sources"
-                  className="inline-flex items-center gap-1.5 text-[11px] text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[12px] text-[#5C5E62] hover:text-[#171A20] transition-colors"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
                   <span>Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)</span>
@@ -676,17 +676,17 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           <div className="space-y-5 pt-8 border-t border-[#E3E4E6]">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
-                  Bespoke Dossier
+                <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
+                  Solar Proposal
                 </span>
-                <span className="text-[11px] text-[#5C5E62]">· 24-Hour Engineering Review</span>
+                <span className="text-[12px] text-[#5C5E62]">· 24-Hour Engineering Review</span>
               </div>
               <h2 className="text-[20px] font-medium tracking-tight text-[#171A20]">
-                6. Request Architectural Feasibility Dossier
+                6. Request Architectural Feasibility Proposal
               </h2>
               <p className="text-[13px] text-[#5C5E62] mt-1 leading-relaxed">
                 Our solar structural engineers review rooftop satellite irradiance, shadow profile,
-                and DISCOM feeder capacity to generate your custom 3D proposal dossier.
+                and DISCOM feeder capacity to generate your custom 3D solar proposal.
               </p>
             </div>
 
@@ -701,7 +701,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <div>
                 <label
                   htmlFor="user-name"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Full Name *
                 </label>
@@ -719,7 +719,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <div>
                 <label
                   htmlFor="user-phone"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
@@ -744,7 +744,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div>
                   <label
                     htmlFor="user-address"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     City / Locality *
                   </label>
@@ -761,7 +761,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div>
                   <label
                     htmlFor="user-pin"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     6-Digit PIN Code *
                   </label>
@@ -779,7 +779,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   />
                 </div>
               </div>
-              <p className="text-[11px] text-[#5C5E62]/80">
+              <p className="text-[12px] text-[#5C5E62]/80">
                 PIN code is required to verify local DISCOM substation transformer capacity and PM
                 Surya Ghar feeder clearance.
               </p>
@@ -818,12 +818,11 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 />
                 <label
                   htmlFor="studio-consent"
-                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX
-                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Data is processed
-                  solely for proposal generation and never shared. You may withdraw consent anytime
-                  via our{" "}
+                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
+                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
+                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
                   <a href="/legal/privacy" className="underline hover:text-[#171A20]">
                     Privacy Policy
                   </a>
@@ -838,7 +837,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   className="flex-1 h-12 px-5 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-                  <span>{isSubmitting ? "Generating Dossier..." : "Request Proposal Dossier"}</span>
+                  <span>{isSubmitting ? "Generating Proposal..." : "Request Solar Proposal"}</span>
                 </button>
 
                 <button
@@ -848,7 +847,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   title="View instant architectural feasibility preview"
                 >
                   <FileText className="w-4 h-4 text-[#5C5E62]" />
-                  <span>Preview Dossier (PDF)</span>
+                  <span>Preview Proposal (PDF)</span>
                 </button>
               </div>
 
@@ -889,7 +888,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         </button>
       </div>
 
-      {/* Bespoke Architectural Feasibility Dossier Preview Modal */}
+      {/* Architectural Feasibility Proposal Preview Modal */}
       <ArchitecturalDossierModal
         isOpen={previewDossierOpen}
         onClose={() => setPreviewDossierOpen(false)}

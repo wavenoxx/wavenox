@@ -27,7 +27,7 @@ import { calculateModuleDegradation, MODULE_WARRANTY_TERMS } from "@/config/regu
 export const Route = createFileRoute("/warranty")({
   head: () => ({
     meta: [
-      { title: `25-Year Sovereign Asset Warranty Charter — ${BRAND_CONFIG.name}` },
+      { title: `25-Year Asset Protection & Warranty Terms — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content:
@@ -35,12 +35,12 @@ export const Route = createFileRoute("/warranty")({
       },
       {
         property: "og:title",
-        content: `25-Year Sovereign Asset Warranty Charter — ${BRAND_CONFIG.name}`,
+        content: `25-Year Asset Protection & Warranty Terms — ${BRAND_CONFIG.name}`,
       },
       {
         property: "og:description",
         content:
-          "Explore our institutional-grade guarantees: 25-year power curve, 10-year storage warranty, and engineered terrace mounting.",
+          "Explore our comprehensive guarantees: 25-year power curve, 10-year storage warranty, and engineered terrace mounting.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/warranty` },
@@ -70,9 +70,9 @@ export const Route = createFileRoute("/warranty")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "TechArticle",
-          headline: "WAVENOX 25-Year Asset Protection Charter and Degradation Warranties",
+          headline: "WAVENOX 25-Year Asset Protection and Degradation Warranties",
           description:
-            "Institutional guarantee schedule covering 25-year linear solar power degradation, 10-year LiFePO4 battery capacity, and weather-tight terrace mounting.",
+            "Comprehensive guarantee schedule covering 25-year linear solar power degradation, 10-year LiFePO4 battery capacity, and weather-tight terrace mounting.",
           author: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -98,11 +98,11 @@ function WarrantyPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
-            Institutional Asset Protection
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+            Asset Protection Standards
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
-            The 25-Year Sovereign Warranty Charter
+            The 25-Year Solar Warranty Standards
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
             Solar is a quarter-century financial asset. We stand behind every kilowatt with tier-one
@@ -128,10 +128,10 @@ function WarrantyPage() {
                 <span className="text-[22px] sm:text-[24px] font-semibold tracking-tight text-[#171A20] tabular-nums">
                   {stat.value}
                 </span>
-                <span className="text-[11px] font-medium uppercase tracking-wider text-[#5C5E62] mt-0.5">
+                <span className="text-[12px] font-medium uppercase tracking-wider text-[#5C5E62] mt-0.5">
                   {stat.label}
                 </span>
-                <span className="text-[11px] text-[#5C5E62]/70">{stat.sub}</span>
+                <span className="text-[12px] text-[#5C5E62]/70">{stat.sub}</span>
               </div>
             ))}
           </div>
@@ -140,11 +140,11 @@ function WarrantyPage() {
         {/* 2. THE 4 CORNERSTONE GUARANTEES */}
         <section className="max-w-5xl mx-auto px-6 mt-16 sm:mt-24">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Comprehensive Coverage
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
-              Four Pillars of Sovereign Ownership
+              Four Core Protection Principles
             </h2>
             <p className="text-[14px] sm:text-[16px] text-[#5C5E62] mt-2">
               Comprehensive protection spanning module degradation, battery cycling, inverter
@@ -246,7 +246,7 @@ function WarrantyPage() {
           <div className="border border-[#E3E4E6] rounded-[8px] bg-[#FFFFFF] overflow-hidden shadow-sm">
             <div className="p-6 sm:p-8 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#5C5E62] block mb-1">
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#5C5E62] block mb-1">
                   Linear Output Degradation
                 </span>
                 <h3 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
@@ -261,7 +261,7 @@ function WarrantyPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-[13px] sm:text-[14px] border-collapse">
                 <thead>
-                  <tr className="border-b border-[#E3E4E6] bg-[#F4F4F4]/60 text-[11px] font-semibold text-[#5C5E62] uppercase tracking-wider">
+                  <tr className="border-b border-[#E3E4E6] bg-[#F4F4F4]/60 text-[12px] font-semibold text-[#5C5E62] uppercase tracking-wider">
                     <th className="py-3.5 px-6">Milestone</th>
                     <th className="py-3.5 px-6">Conventional Poly/Mono</th>
                     <th className="py-3.5 px-6 text-[#171A20]">WAVENOX N-Type TOPCon</th>
@@ -328,7 +328,7 @@ function WarrantyPage() {
         {/* 4. HASSLE-FREE CLAIMS PROCESS */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Autonomous Support
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
@@ -371,7 +371,7 @@ function WarrantyPage() {
               <h4 className="text-[18px] font-medium text-[#171A20]">Zero Out-of-Pocket</h4>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
                 All certified repairs, component replacements, labor, and re-commissioning tests are
-                completed under your sovereign warranty charter with ₹0 out-of-pocket fees.
+                completed under your manufacturer warranty terms with ₹0 out-of-pocket fees.
               </p>
             </div>
           </div>
@@ -380,11 +380,11 @@ function WarrantyPage() {
         {/* 5. DIRECT CTA DOCK */}
         <section className="max-w-4xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="p-8 sm:p-12 rounded-[12px] bg-[#171A20] text-white text-center space-y-5 shadow-2xl">
-            <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block">
+            <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block">
               Long-Term Energy Independence
             </span>
             <h2 className="text-[26px] sm:text-[34px] md:text-[40px] font-medium tracking-tight text-white text-balance leading-snug">
-              Invest with Institutional Certainty
+              Invest with Long-Term Certainty
             </h2>
             <p className="text-[14px] sm:text-[16px] text-white/80 max-w-xl mx-auto leading-relaxed text-balance">
               Review your residence’s solar potential, net-metering eligibility, and obtain a formal

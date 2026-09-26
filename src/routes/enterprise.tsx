@@ -444,7 +444,7 @@ function EnterprisePage() {
               <div>
                 <label
                   htmlFor="rfp-name"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Full Name *
                 </label>
@@ -462,7 +462,7 @@ function EnterprisePage() {
               <div>
                 <label
                   htmlFor="rfp-phone"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
@@ -487,7 +487,7 @@ function EnterprisePage() {
                 <div>
                   <label
                     htmlFor="rfp-company"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     Company / Facility Name
                   </label>
@@ -504,7 +504,7 @@ function EnterprisePage() {
                 <div>
                   <label
                     htmlFor="rfp-website"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     Company Website (Optional)
                   </label>
@@ -552,7 +552,7 @@ function EnterprisePage() {
                 />
                 <label
                   htmlFor="rfp-consent"
-                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
                   I authorize WAVENOX commercial solar engineers to evaluate facility
                   interconnection and contact me in accordance with the{" "}

@@ -91,7 +91,7 @@ function FaqPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* Editorial Hero Header */}
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
             Knowledge Base &amp; Regulatory Advisory
           </span>
           <h1 className="text-[32px] sm:text-[42px] md:text-[50px] font-medium tracking-tight leading-[1.12] text-[#171A20] text-balance">
@@ -136,7 +136,7 @@ function FaqPage() {
                   key={cat.id}
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`min-h-[38px] px-4 py-1.5 rounded-[4px] text-[13px] font-medium transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
+                  className={`min-h-[38px] px-4 py-1.5 rounded-[4px] text-[13px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
                     active
                       ? "bg-[#171A20] text-[#FFFFFF] shadow-sm"
                       : "bg-[#F4F4F4] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#EAEAEA]"
@@ -193,7 +193,7 @@ function FaqPage() {
                     className="w-full min-h-[58px] py-4 px-5 sm:px-6 flex items-start justify-between text-left gap-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] rounded-[6px]"
                   >
                     <div>
-                      <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-[#5C5E62] block mb-1">
+                      <span className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#5C5E62] block mb-1">
                         {item.categoryLabel}
                       </span>
                       <span className="text-[15px] sm:text-[16px] font-medium text-[#171A20] leading-snug">

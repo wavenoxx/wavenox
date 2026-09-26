@@ -74,7 +74,7 @@ export const PHYSICS_SIMULATION_TIMELINE: SimulationState[] = [
   {
     timeStr: "12:30 PM",
     hour: 12.5,
-    label: "Solar Apex Peak",
+    label: "Midday Solar Peak",
     solarKw: 10.5,
     homeKw: 3.5,
     batteryKw: 2.0, // Charging at 2.0 kW (topping off)
@@ -84,7 +84,7 @@ export const PHYSICS_SIMULATION_TIMELINE: SimulationState[] = [
     gridKw: 5.0,
     isOutage: false,
     statusText:
-      "Solar apex · Villa fully powered, battery near capacity, exporting 5.0 kW to DISCOM",
+      "Midday peak · Villa fully powered, battery near capacity, exporting 5.0 kW to DISCOM",
   },
   {
     timeStr: "03:30 PM",

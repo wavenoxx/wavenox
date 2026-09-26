@@ -17,7 +17,7 @@ export function BrandLogo({ className = "", asLink = true, size = "md" }: BrandL
 
   const content = (
     <span
-      className={`inline-flex items-center font-semibold uppercase select-none transition-opacity duration-200 hover:opacity-80 ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center font-semibold uppercase transition-opacity duration-200 hover:opacity-80 ${sizeClasses[size]} ${className}`}
       style={{ letterSpacing: size === "lg" ? "0.40em" : "0.36em" }}
     >
       {BRAND_CONFIG.name}

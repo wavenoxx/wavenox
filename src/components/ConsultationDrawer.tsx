@@ -381,7 +381,7 @@ export function ConsultationDrawer() {
               <div>
                 <label
                   htmlFor="drawer-name"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Full Name *
                 </label>
@@ -399,7 +399,7 @@ export function ConsultationDrawer() {
               <div>
                 <label
                   htmlFor="drawer-phone"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
@@ -424,7 +424,7 @@ export function ConsultationDrawer() {
                 <div>
                   <label
                     htmlFor="drawer-city"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     City / Locality *
                   </label>
@@ -441,7 +441,7 @@ export function ConsultationDrawer() {
                 <div>
                   <label
                     htmlFor="drawer-pincode"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     6-Digit PIN Code *
                   </label>
@@ -459,7 +459,7 @@ export function ConsultationDrawer() {
                   />
                 </div>
               </div>
-              <p className="text-[11px] text-[#5C5E62]/80">
+              <p className="text-[12px] text-[#5C5E62]/80">
                 PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar
                 clearance.
               </p>
@@ -498,12 +498,11 @@ export function ConsultationDrawer() {
                 />
                 <label
                   htmlFor="drawer-consent"
-                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX
-                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Data is processed
-                  solely for proposal generation and never shared. You may withdraw consent anytime
-                  via our{" "}
+                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
+                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
+                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
                   <a href="/legal/privacy" className="underline hover:text-[#171A20]">
                     Privacy Policy
                   </a>
