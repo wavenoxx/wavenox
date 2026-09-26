@@ -5,7 +5,7 @@ import type { MediaDescriptor } from "@/components/system/Media";
 export const media = {
   "home-hero": {
     src: "/media/home-hero-1600w.jpg",
-    alt: "Contemporary residential villa in Jubilee Hills with low-profile flush-mounted monocrystalline solar array at golden hour",
+    alt: "Contemporary villa at golden hour with black solar panels on its flat roof and a pool in the garden",
     width: 1376,
     height: 768,
     avif: "/media/home-hero-640w.avif 640w, /media/home-hero-1080w.avif 1080w, /media/home-hero-1600w.avif 1600w, /media/home-hero-1920w.avif 1920w",
@@ -16,7 +16,7 @@ export const media = {
   } as MediaDescriptor,
   "home-design": {
     src: "/media/home-design-1600w.jpg",
-    alt: "Architectural macro detail of concealed mounting structure and matte-black solar panels on rooftop terrace",
+    alt: "All-black solar panels on a low black frame beside a glass balustrade on a stone terrace",
     width: 1376,
     height: 768,
     avif: "/media/home-design-640w.avif 640w, /media/home-design-1080w.avif 1080w, /media/home-design-1600w.avif 1600w, /media/home-design-1920w.avif 1920w",
@@ -27,7 +27,7 @@ export const media = {
   } as MediaDescriptor,
   "home-outage": {
     src: "/media/home-outage-1600w.jpg",
-    alt: "Cinematic dusk neighborhood during power outage with residential villa warmly illuminated by stored solar power",
+    alt: "Blue-hour street during a power cut: one house lit, its neighbours and streetlights dark",
     width: 1376,
     height: 768,
     avif: "/media/home-outage-640w.avif 640w, /media/home-outage-1080w.avif 1080w, /media/home-outage-1600w.avif 1600w, /media/home-outage-1920w.avif 1920w",
@@ -38,7 +38,7 @@ export const media = {
   } as MediaDescriptor,
   "home-heat": {
     src: "/media/home-heat-1600w.jpg",
-    alt: "Studio macro shot of N-type TOPCon bifacial cell architecture under precision golden edge illumination",
+    alt: "Low-angle close-up of a black solar panel under harsh midday sun and heat shimmer",
     width: 1920,
     height: 1088,
     avif: "/media/home-heat-640w.avif 640w, /media/home-heat-1080w.avif 1080w, /media/home-heat-1600w.avif 1600w, /media/home-heat-1920w.avif 1920w",
@@ -49,7 +49,7 @@ export const media = {
   } as MediaDescriptor,
   "home-final": {
     src: "/media/home-final-1600w.jpg",
-    alt: "Architectural residential terrace with elevated solar pergola living canopy at twilight",
+    alt: "A family dining at twilight under a solar pergola on a rooftop terrace with city lights beyond",
     width: 1920,
     height: 1088,
     avif: "/media/home-final-640w.avif 640w, /media/home-final-1080w.avif 1080w, /media/home-final-1600w.avif 1600w, /media/home-final-1920w.avif 1920w",
@@ -60,7 +60,7 @@ export const media = {
   } as MediaDescriptor,
   "res-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Contemporary villa residence with floor-to-ceiling glass and all-black solar array",
+    alt: "Front of a stone-clad villa at dusk with a low black solar array along its roofline",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",
@@ -71,7 +71,7 @@ export const media = {
   } as MediaDescriptor,
   "res-terrace": {
     src: "/media/res-terrace-1600w.jpg",
-    alt: "Urban independent residence rooftop terrace featuring flush-mounted solar array and pristine usable area",
+    alt: "Rooftop terrace with an elevated solar structure shading a swing, plants and a water tank",
     width: 1920,
     height: 1088,
     avif: "/media/res-terrace-640w.avif 640w, /media/res-terrace-1080w.avif 1080w, /media/res-terrace-1600w.avif 1600w, /media/res-terrace-1920w.avif 1920w",
@@ -82,7 +82,7 @@ export const media = {
   } as MediaDescriptor,
   "res-weather": {
     src: "/media/res-weather-1600w.jpg",
-    alt: "Severe weather durability testing on anti-reflective hydrophobic tempered glass solar module",
+    alt: "Heavy monsoon rain running off a tilted solar array, with bolted clamps in the foreground",
     width: 1200,
     height: 1200,
     avif: "/media/res-weather-640w.avif 640w, /media/res-weather-1080w.avif 1080w, /media/res-weather-1600w.avif 1600w, /media/res-weather-1920w.avif 1920w",
@@ -93,7 +93,7 @@ export const media = {
   } as MediaDescriptor,
   "omnigrid-hero": {
     src: "/media/omnigrid-hero-1600w.jpg",
-    alt: "Matte graphite home battery energy storage system mounted in garage utility room",
+    alt: "A stack of three graphite battery modules with an inverter above, in a minimal utility room",
     width: 1440,
     height: 1440,
     avif: "/media/omnigrid-hero-640w.avif 640w, /media/omnigrid-hero-1080w.avif 1080w, /media/omnigrid-hero-1600w.avif 1600w, /media/omnigrid-hero-1920w.avif 1920w",
@@ -104,7 +104,7 @@ export const media = {
   } as MediaDescriptor,
   "omnigrid-switchover": {
     src: "/media/omnigrid-switchover-1600w.jpg",
-    alt: "Solid-state microgrid transfer switchgear and high-speed telemetry pulse indicator",
+    alt: "Battery status light and inverter display glowing in a dark utility room at night",
     width: 1088,
     height: 1440,
     avif: "/media/omnigrid-switchover-640w.avif 640w, /media/omnigrid-switchover-1080w.avif 1080w, /media/omnigrid-switchover-1600w.avif 1600w, /media/omnigrid-switchover-1920w.avif 1920w",
@@ -115,7 +115,7 @@ export const media = {
   } as MediaDescriptor,
   "omnigrid-night": {
     src: "/media/omnigrid-night-1600w.jpg",
-    alt: "Modern luxury home living area illuminated seamlessly after sunset using daytime stored solar energy",
+    alt: "A warmly lit living room at night while the neighbourhood outside is dark",
     width: 1920,
     height: 1088,
     avif: "/media/omnigrid-night-640w.avif 640w, /media/omnigrid-night-1080w.avif 1080w, /media/omnigrid-night-1600w.avif 1600w, /media/omnigrid-night-1920w.avif 1920w",
@@ -126,7 +126,7 @@ export const media = {
   } as MediaDescriptor,
   "commercial-hero": {
     src: "/media/commercial-hero-1600w.jpg",
-    alt: "2 MW commercial technology campus rooftop solar array at sunrise engineered for industrial load offset",
+    alt: "Patancheru manufacturing plant rooftop covered with neat rows of solar panels at sunrise",
     width: 1376,
     height: 768,
     avif: "/media/commercial-hero-640w.avif 640w, /media/commercial-hero-1080w.avif 1080w, /media/commercial-hero-1600w.avif 1600w, /media/commercial-hero-1920w.avif 1920w",
@@ -159,7 +159,7 @@ export const media = {
   } as MediaDescriptor,
   "studio-estate": {
     src: "/media/studio-estate-1600w.jpg",
-    alt: "Architectural 3D CAD multi-roof estate layout model engineered for comprehensive solar generation",
+    alt: "Rooftop estate layout model engineered for comprehensive solar generation",
     width: 1440,
     height: 1440,
     avif: "/media/studio-estate-640w.avif 640w, /media/studio-estate-1080w.avif 1080w, /media/studio-estate-1600w.avif 1600w, /media/studio-estate-1920w.avif 1920w",
@@ -168,20 +168,9 @@ export const media = {
     mobileWebp: "/media/studio-estate-mobile.webp",
     mobileAvif: "/media/studio-estate-mobile.avif",
   } as MediaDescriptor,
-  "liquid-glass": {
-    src: "/media/liquid-glass-1600w.jpg",
-    alt: "Liquid anti-reflective tempered glass coating reflecting sky and capturing oblique sun rays",
-    width: 1376,
-    height: 768,
-    avif: "/media/liquid-glass-640w.avif 640w, /media/liquid-glass-1080w.avif 1080w, /media/liquid-glass-1600w.avif 1600w, /media/liquid-glass-1920w.avif 1920w",
-    webp: "/media/liquid-glass-640w.webp 640w, /media/liquid-glass-1080w.webp 1080w, /media/liquid-glass-1600w.webp 1600w, /media/liquid-glass-1920w.webp 1920w",
-    mobileSrc: "/media/liquid-glass-mobile.jpg",
-    mobileWebp: "/media/liquid-glass-mobile.webp",
-    mobileAvif: "/media/liquid-glass-mobile.avif",
-  } as MediaDescriptor,
   "homes-hero": {
     src: "/media/res-hero-1600w.jpg",
-    alt: "Contemporary villa residence with floor-to-ceiling glass and clean all-black solar array",
+    alt: "Front of a stone-clad villa at dusk with a low black solar array along its roofline",
     width: 1376,
     height: 768,
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1600w.avif 1600w, /media/res-hero-1920w.avif 1920w",

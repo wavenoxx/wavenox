@@ -54,7 +54,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
       {
         links: [
           {
-            label: "Schedule a Virtual Consultation",
+            label: "Speak with a Solar Engineer",
             action: () => openConsultationDrawer(),
           },
           { label: "Why WAVENOX Solar", to: "/residential" },

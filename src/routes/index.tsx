@@ -62,13 +62,13 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
+      { title: `${BRAND_CONFIG.name} — Rooftop Solar for Indian Homes` },
       {
         name: "description",
         content:
           "WAVENOX deploys low-profile residential solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and 24/7 outage protection.",
       },
-      { property: "og:title", content: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
+      { property: "og:title", content: `${BRAND_CONFIG.name} — Rooftop Solar for Indian Homes` },
       {
         property: "og:description",
         content:
@@ -193,7 +193,7 @@ function IndexPage() {
           media={media["home-hero"]}
           priority={true}
           tone="dark"
-          title="Solar Panels"
+          title="Rooftop Solar"
           lead="Pay less for electricity with low-profile solar built for Indian roofs."
           stats={
             <StatRow
@@ -212,7 +212,7 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
@@ -250,7 +250,7 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
               <Button
                 to="/residential"
@@ -269,7 +269,7 @@ function IndexPage() {
           id="outage-protection"
           media={media["home-outage"]}
           tone="dark"
-          title="Power Through Outages"
+          title="Outage Protection"
           lead="Add Omnigrid to store solar energy and keep your home running when the grid goes down."
           stats={
             <StatRow
@@ -295,17 +295,17 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
             </>
           }
         />
 
-        {/* 4. QUIET SECTION: Pay Less for Electricity (Savings Calculator) */}
+        {/* 4. QUIET SECTION: Lower Monthly Power Bills (Savings Calculator) */}
         <QuietSection
           id="savings"
           bg="surface"
-          title="Pay Less for Electricity"
+          title="Lower Monthly Power Bills"
           lead="See how much solar lowers your monthly power bill across Telangana and Andhra Pradesh."
         >
           <div className="max-w-2xl mx-auto space-y-10">
@@ -389,7 +389,7 @@ function IndexPage() {
                 tone="light"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
               <TextLink to="/legal/disclosures" arrow>
                 How we calculate
@@ -429,17 +429,17 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
             </>
           }
         />
 
-        {/* 6. QUIET SECTION: Monitor from Anywhere */}
+        {/* 6. QUIET SECTION: Track Live Generation */}
         <QuietSection
           id="monitoring"
           bg="white"
-          title="Monitor from Anywhere"
+          title="Track Live Generation"
           lead="Track generation, home consumption, and battery storage in real time through your inverter maker's cloud app."
         >
           <div className="flex flex-col items-center">
@@ -548,7 +548,7 @@ function IndexPage() {
           id="consultation"
           media={media["home-final"]}
           tone="dark"
-          title="Schedule a Virtual Consultation"
+          title="Speak with a Solar Engineer"
           lead="Speak with a solar engineer to review your roof layout, subsidy eligibility, and savings."
           stats={
             <StatRow
@@ -574,7 +574,7 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
             </>
           }

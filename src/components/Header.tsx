@@ -14,7 +14,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: "solar", label: "Solar Panels", to: "/" },
+  { key: "solar", label: "Rooftop Solar", to: "/" },
   { key: "homes", label: "Homes", to: "/residential" },
   { key: "omnigrid", label: "Omnigrid", to: "/omnigrid" },
   { key: "commercial", label: "Commercial", to: "/enterprise" },

@@ -121,7 +121,7 @@ function ResidentialPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
@@ -159,7 +159,7 @@ function ResidentialPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
               <Button
                 onClick={() => setSpecsOpen(true)}
@@ -205,7 +205,7 @@ function ResidentialPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
             </>
           }
@@ -242,7 +242,7 @@ function ResidentialPage() {
           id="consultation"
           media={media["home-final"]}
           tone="dark"
-          title="Schedule a Virtual Consultation"
+          title="Speak with a Solar Engineer"
           lead="Speak with a solar engineer to review your roof layout, subsidy eligibility, and savings."
           stats={
             <StatRow
@@ -268,7 +268,7 @@ function ResidentialPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[200px]"
               >
-                Order Now
+                Design Yours
               </Button>
             </>
           }
