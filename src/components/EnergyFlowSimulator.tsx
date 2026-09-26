@@ -98,7 +98,11 @@ export function EnergyFlowSimulator() {
                 <div className="text-[12px] font-medium leading-tight">
                   {item.timeStr.split(" ")[0]}
                 </div>
-                <div className="text-[12px] truncate opacity-75 hidden sm:block mt-0.5">
+                <div
+                  className={`text-[12px] truncate hidden sm:block mt-0.5 ${
+                    isSelected ? "text-[#111215]" : "text-[#9CA3AF]"
+                  }`}
+                >
                   {item.label}
                 </div>
               </button>
@@ -140,7 +144,7 @@ export function EnergyFlowSimulator() {
               {current.solarKw.toFixed(1)}{" "}
               <span className="text-[14px] text-[#9CA3AF] font-normal">kW</span>
             </div>
-            <div className="text-[12px] text-[#5C5E62] mt-1.5">580W N-Type TOPCon</div>
+            <div className="text-[12px] text-[#9CA3AF] mt-1.5">580W N-Type TOPCon</div>
           </div>
 
           {/* Node 2: Central Inverter & Gateway */}
@@ -177,7 +181,7 @@ export function EnergyFlowSimulator() {
                   Discharging {current.batteryKw.toFixed(1)} kW
                 </span>
               ) : (
-                <span className="text-[#5C5E62]">Standby · Ready</span>
+                <span className="text-[#9CA3AF]">Standby · Ready</span>
               )}
             </div>
           </div>
@@ -192,7 +196,7 @@ export function EnergyFlowSimulator() {
               {current.homeKw.toFixed(1)}{" "}
               <span className="text-[14px] text-[#9CA3AF] font-normal">kW</span>
             </div>
-            <div className="text-[12px] text-[#5C5E62] mt-1.5">Domestic Demand</div>
+            <div className="text-[12px] text-[#9CA3AF] mt-1.5">Domestic Demand</div>
           </div>
         </div>
 

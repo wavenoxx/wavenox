@@ -350,7 +350,7 @@ function DisclosuresPage() {
           {/* Section 7: Sourced Verification Index (#sources) */}
           <section id="sources" className="space-y-4 pt-6 border-t-2 border-[#171A20]">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-[#F57C00]">
+              <div className="text-xs font-semibold uppercase tracking-widest text-[#B45309]">
                 Single Source of Truth
               </div>
               <h2 className="text-xl font-bold text-[#171A20] mt-1">

@@ -65,7 +65,7 @@ export function SourcePopover({
         aria-expanded={isOpen}
         aria-haspopup="dialog"
         aria-label={`View source and assumptions for ${data.metric}`}
-        className="inline-flex items-center gap-1 text-[11px] font-medium text-[#5C5E62] hover:text-[#171A20] bg-[#F4F4F4] hover:bg-[#EAEAEA] px-1.5 py-0.5 rounded-[3px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171A20]"
+        className="inline-flex items-center gap-1 text-[12px] font-medium text-[#5C5E62] hover:text-[#171A20] bg-[#F4F4F4] hover:bg-[#EAEAEA] px-2 py-0.5 rounded-[3px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171A20]"
       >
         <Info className="w-3 h-3 text-[#F57C00] shrink-0" />
         {!showIconOnly && <span>{label}</span>}
@@ -128,7 +128,7 @@ export function SourcePopover({
               <span className="font-medium text-[#171A20]">{data.verifiedDate}</span>
             </div>
             {data.notes && (
-              <p className="text-[11px] text-[#5C5E62] pt-1 leading-normal italic">*{data.notes}</p>
+              <p className="text-[12px] text-[#5C5E62] pt-1 leading-normal italic">*{data.notes}</p>
             )}
           </div>
 
@@ -143,7 +143,7 @@ export function SourcePopover({
               <span>View Official Source</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-            <span className="text-[11px] text-[#5C5E62]">No sponsored data</span>
+            <span className="text-[12px] text-[#5C5E62]">No sponsored data</span>
           </div>
         </div>
       )}

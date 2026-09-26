@@ -110,7 +110,7 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
       {/* 1. Honest Economic Advisory Banner */}
       <div className="p-5 sm:p-6 bg-[#F8F9FA] border-b border-[#E3E4E6] space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D97706] bg-[#D97706]/10 px-2 py-0.5 rounded-[3px]">
+          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
             Financial Transparency Advisory
           </span>
           <span className="text-[12px] text-[#5C5E62]">Net-Metering vs. Storage ROI</span>
@@ -198,8 +198,8 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
                 <div>
                   <div className="text-[13px] font-medium leading-snug">{load.name}</div>
                   <div
-                    className={`text-[11px] mt-0.5 leading-tight ${
-                      isSelected ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"
+                    className={`text-[12px] mt-0.5 leading-tight ${
+                      isSelected ? "text-[#FFFFFF]/90" : "text-[#5C5E62]"
                     }`}
                   >
                     {load.source}

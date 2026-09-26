@@ -166,7 +166,7 @@ function ServiceAreasPage() {
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E3E4E6]">
               <div>
-                <span className="text-[12px] font-semibold text-[#F57C00] uppercase tracking-widest block mb-1">
+                <span className="text-[12px] font-semibold text-[#B45309] uppercase tracking-widest block mb-1">
                   Active Operational Jurisdiction
                 </span>
                 <h2 className="text-[24px] sm:text-[30px] font-medium text-[#171A20]">

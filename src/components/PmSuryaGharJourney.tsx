@@ -229,13 +229,13 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
                         {step.description}
                       </p>
                       <div className="flex flex-wrap items-center gap-1.5 pt-2">
-                        <span className="text-[11px] font-medium text-[#171A20] uppercase tracking-wider">
+                        <span className="text-[12px] font-medium text-[#171A20] uppercase tracking-wider">
                           Key Validation:
                         </span>
                         {step.requirements.map((req, i) => (
                           <span
                             key={i}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[3px] bg-[#F4F4F4] text-[#5C5E62] text-[11px]"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[3px] bg-[#F4F4F4] text-[#5C5E62] text-[12px]"
                           >
                             <CheckCircle2 className="w-3 h-3 text-[#16A34A]" />
                             {req}
@@ -244,7 +244,7 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
                       </div>
                     </div>
                   </div>
-                  <div className="text-[11px] font-medium text-[#5C5E62] bg-[#F4F4F4] px-2.5 py-1 rounded-[4px] self-start shrink-0">
+                  <div className="text-[12px] font-medium text-[#5C5E62] bg-[#F4F4F4] px-2.5 py-1 rounded-[4px] self-start shrink-0">
                     Lead: {step.actor}
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
                       >
                         {doc.title}
                       </span>
-                      <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-[3px] bg-[#F4F4F4] text-[#5C5E62]">
+                      <span className="text-[12px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-[3px] bg-[#F4F4F4] text-[#5C5E62]">
                         {doc.format}
                       </span>
                     </div>

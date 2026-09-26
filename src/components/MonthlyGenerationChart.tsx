@@ -49,7 +49,7 @@ export function MonthlyGenerationChart({
       <div className="p-5 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F4F4F4]/50">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#F57C00] bg-[#F57C00]/10 px-2 py-0.5 rounded-[3px]">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
               NASA POWER &amp; NREL PVWatts v8
             </span>
             <span className="text-[12px] text-[#5C5E62]">
@@ -96,7 +96,7 @@ export function MonthlyGenerationChart({
       {/* Main Stats Display */}
       <div className="p-5 border-b border-[#E3E4E6] grid grid-cols-2 sm:grid-cols-4 gap-4 bg-[#FFFFFF]">
         <div>
-          <span className="text-[11px] text-[#5C5E62] uppercase tracking-wider block">
+          <span className="text-[12px] text-[#5C5E62] uppercase tracking-wider block">
             Annual Generation
           </span>
           <span className="text-[20px] sm:text-[24px] font-medium text-[#171A20] tabular-nums">
@@ -104,7 +104,7 @@ export function MonthlyGenerationChart({
           </span>
         </div>
         <div>
-          <span className="text-[11px] text-[#5C5E62] uppercase tracking-wider block">
+          <span className="text-[12px] text-[#5C5E62] uppercase tracking-wider block">
             Monthly Average
           </span>
           <span className="text-[20px] sm:text-[24px] font-medium text-[#171A20] tabular-nums">
@@ -112,7 +112,7 @@ export function MonthlyGenerationChart({
           </span>
         </div>
         <div>
-          <span className="text-[11px] text-[#5C5E62] uppercase tracking-wider block">
+          <span className="text-[12px] text-[#5C5E62] uppercase tracking-wider block">
             {activeItem?.month} Total
           </span>
           <span className="text-[20px] sm:text-[24px] font-medium text-[#171A20] tabular-nums">
@@ -120,7 +120,7 @@ export function MonthlyGenerationChart({
           </span>
         </div>
         <div>
-          <span className="text-[11px] text-[#5C5E62] uppercase tracking-wider block">
+          <span className="text-[12px] text-[#5C5E62] uppercase tracking-wider block">
             Daily Average ({activeItem?.month})
           </span>
           <span className="text-[20px] sm:text-[24px] font-medium text-[#F57C00] tabular-nums">
@@ -147,7 +147,7 @@ export function MonthlyGenerationChart({
               >
                 {/* Tooltip on active */}
                 <div
-                  className={`text-[10px] sm:text-[11px] font-mono text-[#171A20] mb-1 tabular-nums transition-opacity ${
+                  className={`text-[12px] font-mono text-[#171A20] mb-1 tabular-nums transition-opacity ${
                     isHovered ? "opacity-100 font-semibold" : "opacity-0 group-hover:opacity-100"
                   }`}
                 >
@@ -170,7 +170,7 @@ export function MonthlyGenerationChart({
 
                 {/* Month Label */}
                 <div
-                  className={`text-[11px] sm:text-[12px] mt-2 font-medium transition-colors ${
+                  className={`text-[12px] mt-2 font-medium transition-colors ${
                     isHovered ? "text-[#171A20] font-bold" : "text-[#5C5E62]"
                   }`}
                 >
@@ -182,7 +182,7 @@ export function MonthlyGenerationChart({
         </div>
 
         {/* Legend and Honest Meteorological Note */}
-        <div className="pt-3 border-t border-[#E3E4E6] flex flex-wrap items-center justify-between gap-3 text-[11px] sm:text-[12px] text-[#5C5E62]">
+        <div className="pt-3 border-t border-[#E3E4E6] flex flex-wrap items-center justify-between gap-3 text-[12px] text-[#5C5E62]">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-[2px] bg-[#F57C00]" />

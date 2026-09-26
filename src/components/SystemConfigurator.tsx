@@ -637,7 +637,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                       : "Sketch Usable Terrace on Satellite Map (Calculates Panels)"}
                   </span>
                 </div>
-                <span className="text-[11px] uppercase tracking-wider text-[#5C5E62] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E3E4E6]">
+                <span className="text-[12px] uppercase tracking-wider text-[#5C5E62] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E3E4E6]">
                   {showRoofSketcher ? "Close Sketcher" : "Open Tool"}
                 </span>
               </button>
@@ -764,7 +764,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           <div className="space-y-5 pt-8 border-t border-[#E3E4E6]">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
+                <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#92400E] bg-[#FEF3C7] px-2.5 py-0.5 rounded-[3px]">
                   Solar Proposal
                 </span>
                 <span className="text-[12px] text-[#5C5E62]">· 24-Hour Engineering Review</span>

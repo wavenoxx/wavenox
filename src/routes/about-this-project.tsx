@@ -165,7 +165,7 @@ function AboutThisProjectPage() {
         {/* HERO SECTION */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full pt-10 pb-16 border-b border-[#E3E4E6]">
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#92400E] bg-[#FEF3C7] px-2.5 py-0.5 rounded-[3px]">
               Engineering Case Study
             </span>
             <span className="text-[12px] text-[#5C5E62]">· Design Colophon &amp; Whitepaper</span>
@@ -217,7 +217,7 @@ function AboutThisProjectPage() {
         {/* SECTION 1: THE PROBLEM */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-6">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               01 · Context &amp; Motivation
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -250,7 +250,7 @@ function AboutThisProjectPage() {
         {/* SECTION 2: REGULATORY GROUND TRUTH */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-8">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               02 · Statutory Rigor
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -311,7 +311,7 @@ function AboutThisProjectPage() {
         {/* SECTION 3: DESIGN SYSTEM & TESLA RESTRAINT */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-8">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               03 · Visual Language
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -366,7 +366,7 @@ function AboutThisProjectPage() {
         {/* SECTION 4: BEFORE VS AFTER TRANSFORMATION */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-8">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               04 · Architectural Audit
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -386,7 +386,7 @@ function AboutThisProjectPage() {
                   <th className="p-4 border-b border-[#E3E4E6] w-3/8 text-[#B42318]">
                     Before Audit
                   </th>
-                  <th className="p-4 border-b border-[#E3E4E6] w-3/8 text-[#16A34A]">
+                  <th className="p-4 border-b border-[#E3E4E6] w-3/8 text-[#166534]">
                     After (WAVENOX Standard)
                   </th>
                 </tr>
@@ -396,7 +396,7 @@ function AboutThisProjectPage() {
                   <tr key={idx} className="hover:bg-[#F9FAFB]">
                     <td className="p-4 font-medium text-[#171A20] align-top">
                       <div>{item.dimension}</div>
-                      <span className="inline-block mt-1 text-[11px] font-semibold uppercase tracking-wider text-[#171A20] bg-[#F4F4F4] px-2 py-0.5 rounded">
+                      <span className="inline-block mt-1 text-[12px] font-semibold uppercase tracking-wider text-[#171A20] bg-[#F4F4F4] px-2 py-0.5 rounded">
                         {item.badge}
                       </span>
                     </td>
@@ -414,7 +414,7 @@ function AboutThisProjectPage() {
         {/* SECTION 5: TECHNICAL STACK & ARCHITECTURE */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-8">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               05 · Technology Stack
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -432,7 +432,7 @@ function AboutThisProjectPage() {
                 key={i}
                 className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] space-y-1.5"
               >
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C5E62]">
+                <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5C5E62]">
                   {item.category}
                 </span>
                 <h3 className="text-[14px] font-medium text-[#171A20]">{item.name}</h3>
@@ -445,7 +445,7 @@ function AboutThisProjectPage() {
         {/* SECTION 6: SOURCED ASSUMPTIONS CATALOG */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-b border-[#E3E4E6] space-y-8">
           <div className="space-y-2">
-            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#F57C00]">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-[#B45309]">
               06 · Authoritative Citations
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
@@ -466,7 +466,7 @@ function AboutThisProjectPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[14px] font-medium text-[#171A20]">{source.metric}</span>
-                    <span className="text-[11px] text-[#16A34A] font-semibold bg-[#DCFCE7] px-2 py-0.5 rounded">
+                    <span className="text-[12px] text-[#166534] font-semibold bg-[#DCFCE7] px-2 py-0.5 rounded">
                       Verified {source.verifiedDate}
                     </span>
                   </div>
@@ -475,7 +475,7 @@ function AboutThisProjectPage() {
                     {source.sourceDoc} ({source.authority})
                   </div>
                   {source.formulaOrBasis && (
-                    <div className="text-[11px] text-[#5C5E62] italic">
+                    <div className="text-[12px] text-[#5C5E62] italic">
                       Basis: {source.formulaOrBasis}
                     </div>
                   )}

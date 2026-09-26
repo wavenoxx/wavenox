@@ -219,32 +219,41 @@ export function Footer() {
         </div>
 
         {/* BOTTOM FINE-PRINT STRIP */}
-        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#5C5E62]/80 text-center sm:text-left">
+        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#393C41] text-center sm:text-left">
           <div>
             {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
             calculations for Telangana (TGSPDCL &amp; TGNPDCL).
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/legal/privacy" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/privacy"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Privacy
             </Link>
             <span>·</span>
-            <Link to="/legal/terms" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/terms"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Terms
             </Link>
             <span>·</span>
-            <Link to="/legal/disclosures" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/disclosures"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Disclosures
             </Link>
             <span>·</span>
             <Link
               to="/about-this-project"
-              className="hover:text-[#171A20] transition-colors font-medium"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors font-medium"
             >
               Colophon
             </Link>
             <span>·</span>
-            <Link to="/faq" className="hover:text-[#171A20] transition-colors">
+            <Link to="/faq" className="text-[#393C41] hover:text-[#171A20] transition-colors">
               FAQ
             </Link>
           </div>

@@ -141,7 +141,7 @@ export function RoofSketcher({
       <div className="p-5 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F4F4F4]/50">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#F57C00] bg-[#F57C00]/10 px-2 py-0.5 rounded-[3px]">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
               Terrace Geometry Engine
             </span>
             <span className="text-[12px] text-[#5C5E62]">Satellite Roof Sizer</span>
@@ -197,7 +197,7 @@ export function RoofSketcher({
           {activeTab === "satellite" ? (
             <div className="relative w-full h-[340px] rounded-[6px] overflow-hidden border border-[#E3E4E6]">
               <div ref={mapContainerRef} className="w-full h-full z-0" />
-              <div className="absolute bottom-2 left-2 z-10 bg-[#FFFFFF]/90 backdrop-blur-xs px-2.5 py-1 rounded-[4px] text-[10px] text-[#5C5E62] border border-[#E3E4E6]">
+              <div className="absolute bottom-2 left-2 z-10 bg-[#FFFFFF]/90 backdrop-blur-xs px-2.5 py-1 rounded-[4px] text-[12px] text-[#5C5E62] border border-[#E3E4E6]">
                 Map Tiles &copy; Esri World Imagery
               </div>
             </div>
@@ -219,14 +219,14 @@ export function RoofSketcher({
                     ))}
 
                     {/* Water Tank Footprint Overlay */}
-                    <div className="absolute top-2 right-2 w-14 h-14 bg-[#EF4444]/15 border border-[#EF4444] rounded-[2px] flex items-center justify-center text-[9px] text-[#DC2626] font-mono text-center p-1 leading-none">
+                    <div className="absolute top-2 right-2 w-14 h-14 bg-[#EF4444]/15 border border-[#EF4444] rounded-[2px] flex items-center justify-center text-[12px] text-[#DC2626] font-mono text-center p-1 leading-none">
                       Mumty / Tank
                     </div>
                   </div>
                 </div>
 
                 {/* Overlaid Dimension Badges */}
-                <div className="relative z-10 flex justify-between items-center text-[11px] text-[#5C5E62] font-mono">
+                <div className="relative z-10 flex justify-between items-center text-[12px] text-[#5C5E62] font-mono">
                   <span>Gross: {grossAreaSqft.toLocaleString("en-IN")} sq.ft</span>
                   <span className="text-[#171A20] font-semibold">
                     Net Solar Zone: {netUsableSqft.toLocaleString("en-IN")} sq.ft
@@ -236,7 +236,7 @@ export function RoofSketcher({
 
               {/* District Preset Buttons */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="text-[11px] text-[#5C5E62] font-medium uppercase tracking-wider">
+                <span className="text-[12px] text-[#5C5E62] font-medium uppercase tracking-wider">
                   Hyderabad Hubs:
                 </span>
                 {HYDERABAD_PRESETS.map((preset) => (
@@ -247,7 +247,7 @@ export function RoofSketcher({
                       setSelectedPreset(preset);
                       setGrossAreaSqft(preset.defaultSqft);
                     }}
-                    className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] border transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 text-[12px] font-medium rounded-[4px] border transition-colors cursor-pointer ${
                       selectedPreset.name === preset.name
                         ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
                         : "border-[#E3E4E6] bg-[#FFFFFF] text-[#5C5E62] hover:border-[#171A20]/40"
@@ -263,19 +263,19 @@ export function RoofSketcher({
           {/* Results Summary Bar */}
           <div className="mt-4 pt-3 border-t border-[#E3E4E6] grid grid-cols-3 gap-2 text-center">
             <div>
-              <span className="text-[11px] text-[#5C5E62] block">Usable Panels</span>
+              <span className="text-[12px] text-[#5C5E62] block">Usable Panels</span>
               <span className="text-[18px] font-medium text-[#171A20] tabular-nums">
                 {panelCount} Units
               </span>
             </div>
             <div>
-              <span className="text-[11px] text-[#5C5E62] block">Maximum Capacity</span>
+              <span className="text-[12px] text-[#5C5E62] block">Maximum Capacity</span>
               <span className="text-[18px] font-medium text-[#F57C00] tabular-nums">
                 {estimatedKw} kW
               </span>
             </div>
             <div>
-              <span className="text-[11px] text-[#5C5E62] block">Est. Monthly Gen</span>
+              <span className="text-[12px] text-[#5C5E62] block">Est. Monthly Gen</span>
               <span className="text-[18px] font-medium text-[#171A20] tabular-nums">
                 {estimatedMonthlyKwh} kWh
               </span>
@@ -311,7 +311,7 @@ export function RoofSketcher({
               aria-valuetext={`${grossAreaSqft} square feet`}
               className="range-slider w-full"
             />
-            <div className="flex justify-between text-[11px] text-[#5C5E62]">
+            <div className="flex justify-between text-[12px] text-[#5C5E62]">
               <span>600 sq.ft</span>
               <span>8,000 sq.ft</span>
             </div>
@@ -395,7 +395,7 @@ export function RoofSketcher({
               <span>Size Solar Studio to {estimatedKw} kW</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="text-[11px] text-[#5C5E62] text-center mt-2">
+            <p className="text-[12px] text-[#5C5E62] text-center mt-2">
               Transfers roof dimensions directly to the design studio calculation engine.
             </p>
           </div>

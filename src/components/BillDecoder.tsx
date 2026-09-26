@@ -33,7 +33,7 @@ export function BillDecoder({
       <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F4F4F4]/50">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#F57C00] bg-[#F57C00]/10 px-2 py-0.5 rounded-[3px]">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
               TGERC Sourced Tariff Breakdown
             </span>
             <span className="text-[12px] text-[#5C5E62] font-mono">{analysis.category}</span>
@@ -145,7 +145,7 @@ export function BillDecoder({
           </div>
 
           {/* Statutory Scheme Note */}
-          <div className="p-3 bg-[#F4F4F4] rounded-[4px] text-[11px] sm:text-[12px] text-[#5C5E62] leading-relaxed flex items-start gap-2">
+          <div className="p-3 bg-[#F4F4F4] rounded-[4px] text-[12px] text-[#5C5E62] leading-relaxed flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 text-[#F57C00] shrink-0 mt-0.5" />
             <div>
               <strong className="text-[#171A20]">Telangana Gruha Jyothi Note:</strong> Domestic

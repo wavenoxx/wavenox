@@ -11,6 +11,7 @@
     "lint": "eslint . && node scripts/copy-lint.mjs",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:e2e": "node scripts/run-e2e-audit.mjs",
     "images": "node scripts/build-images.mjs"
   },
   "dependencies": {
@@ -71,12 +72,14 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "2.8.5",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "axe-core": "^4.13.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",

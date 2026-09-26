@@ -275,7 +275,7 @@ function WarrantyPage() {
                     <td className="py-4 px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(1).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
                       +2.0% Lower Initial Loss
                     </td>
                   </tr>
@@ -285,7 +285,7 @@ function WarrantyPage() {
                     <td className="py-4 px-6 font-semibold text-[#171A20]">
                       ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct.toFixed(2)}% / year
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
                       43% Lower Loss
                     </td>
                   </tr>
@@ -295,7 +295,7 @@ function WarrantyPage() {
                     <td className="py-4 px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(10).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
                       +4.7% Yield Gain
                     </td>
                   </tr>
@@ -305,7 +305,7 @@ function WarrantyPage() {
                     <td className="py-4 px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(20).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
                       +7.7% Yield Gain
                     </td>
                   </tr>

@@ -21,18 +21,18 @@ export function LanguageToggle({
     <div
       role="group"
       aria-label="Language selection"
-      className={`inline-flex items-center gap-0.5 p-0.5 rounded-[4px] border text-[11px] font-medium transition-colors ${
+      className={`inline-flex items-center gap-1 p-0.5 rounded-[4px] border text-[12px] font-medium transition-colors ${
         isDark
-          ? "bg-white/10 border-white/20 text-white"
+          ? "bg-black/40 border-white/30 text-white"
           : "bg-[#F4F4F4] border-[#E3E4E6] text-[#171A20]"
       } ${className}`}
     >
       {showIcon && (
         <span
-          className={`pl-1.5 pr-0.5 ${isDark ? "text-white/70" : "text-[#5C5E62]"}`}
+          className={`pl-1.5 pr-0.5 ${isDark ? "text-white" : "text-[#171A20]"}`}
           aria-hidden="true"
         >
-          <Globe className="w-3 h-3" />
+          <Globe className="w-3.5 h-3.5" />
         </span>
       )}
 
@@ -40,14 +40,14 @@ export function LanguageToggle({
         type="button"
         onClick={() => setLanguage("en")}
         aria-pressed={language === "en"}
-        className={`px-1.5 py-0.5 rounded-[3px] transition-all cursor-pointer ${
+        className={`px-2 py-0.5 rounded-[3px] text-[12px] transition-all cursor-pointer ${
           language === "en"
             ? isDark
-              ? "bg-white text-[#171A20] shadow-xs font-semibold"
-              : "bg-[#171A20] text-[#FFFFFF] shadow-xs font-semibold"
+              ? "bg-[#FFFFFF] text-[#171A20] font-semibold shadow-xs"
+              : "bg-[#171A20] text-[#FFFFFF] font-semibold shadow-xs"
             : isDark
-              ? "text-white/80 hover:text-white"
-              : "text-[#5C5E62] hover:text-[#171A20]"
+              ? "text-[#FFFFFF] hover:bg-white/20"
+              : "text-[#171A20] hover:bg-[#EAEAEA]"
         }`}
       >
         EN
@@ -57,14 +57,14 @@ export function LanguageToggle({
         type="button"
         onClick={() => setLanguage("te")}
         aria-pressed={language === "te"}
-        className={`px-1.5 py-0.5 rounded-[3px] transition-all cursor-pointer ${
+        className={`px-2 py-0.5 rounded-[3px] text-[12px] transition-all cursor-pointer ${
           language === "te"
             ? isDark
-              ? "bg-white text-[#171A20] shadow-xs font-semibold"
-              : "bg-[#171A20] text-[#FFFFFF] shadow-xs font-semibold"
+              ? "bg-[#FFFFFF] text-[#171A20] font-semibold shadow-xs"
+              : "bg-[#171A20] text-[#FFFFFF] font-semibold shadow-xs"
             : isDark
-              ? "text-white/80 hover:text-white"
-              : "text-[#5C5E62] hover:text-[#171A20]"
+              ? "text-[#FFFFFF] hover:bg-white/20"
+              : "text-[#171A20] hover:bg-[#EAEAEA]"
         }`}
       >
         తెలుగు
