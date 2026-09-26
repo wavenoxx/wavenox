@@ -20,13 +20,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-export const CONSULTATION_EVENT = "open-wavenox-consultation";
-
-export function openConsultationDrawer(initialTier?: string) {
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(CONSULTATION_EVENT, { detail: { tier: initialTier } }));
-  }
-}
+import { CONSULTATION_EVENT } from "@/lib/consultation";
 
 const PROPERTY_TIERS = [
   {
@@ -52,13 +46,25 @@ const PROPERTY_TIERS = [
   },
 ];
 
-export function ConsultationDrawer() {
+export interface ConsultationDrawerProps {
+  defaultOpen?: boolean;
+  initialTier?: string;
+}
+
+export function ConsultationDrawer({
+  defaultOpen = false,
+  initialTier,
+}: ConsultationDrawerProps = {}) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(defaultOpen);
   const [step, setStep] = React.useState<1 | 2 | 3>(1);
   const [selectedTier, setSelectedTier] = React.useState<
     "villa" | "independent_home" | "commercial"
-  >("villa");
+  >(
+    initialTier === "commercial" || initialTier === "independent_home" || initialTier === "villa"
+      ? initialTier
+      : "villa",
+  );
   const [monthlyBill, setMonthlyBill] = React.useState(12000);
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -241,7 +247,7 @@ export function ConsultationDrawer() {
               </p>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2.5" role="radiogroup" aria-label="Property architecture tier">
               {PROPERTY_TIERS.map((tier) => {
                 const Icon = tier.icon;
                 const isSelected = selectedTier === tier.id;
@@ -249,6 +255,8 @@ export function ConsultationDrawer() {
                   <button
                     key={tier.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => setSelectedTier(tier.id)}
                     className={`w-full text-left p-3.5 rounded-[4px] border transition-all cursor-pointer flex items-start gap-3.5 ${
                       isSelected
@@ -316,6 +324,7 @@ export function ConsultationDrawer() {
                 onChange={(e) => setMonthlyBill(Number(e.target.value))}
                 className="range-slider"
                 aria-label="Monthly electricity bill"
+                aria-valuetext={`₹${monthlyBill.toLocaleString("en-IN")} per month`}
               />
               <div className="flex justify-between text-[12px] text-[#5C5E62]">
                 <span>₹3,000 / mo</span>

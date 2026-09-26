@@ -12,7 +12,7 @@ import {
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow, Button, TextLink } from "@/components/system";
@@ -438,12 +438,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 onChange={(e) => handleBillChange(Number(e.target.value))}
                 className="range-slider"
                 aria-label="Monthly electricity bill"
+                aria-valuetext={`₹${formatInr(monthlyBill)} per month`}
               />
-              <div className="flex justify-between gap-2 pt-1">
+              <div
+                role="radiogroup"
+                aria-label="Monthly bill presets"
+                className="flex justify-between gap-2 pt-1"
+              >
                 {BILL_PRESETS.map((preset) => (
                   <button
                     key={preset}
                     type="button"
+                    role="radio"
+                    aria-checked={monthlyBill === preset}
                     onClick={() => handleBillChange(preset)}
                     className={`flex-1 py-1 text-[12px] tabular-nums rounded-[4px] border transition-colors ${
                       monthlyBill === preset
@@ -472,13 +479,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             </div>
 
             {/* Sizing Tier Buttons */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="System sizing capacity tiers"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+            >
               {SYSTEM_TIERS.map((tier) => {
                 const isActive = panelCount === tier.panels;
                 return (
                   <button
                     key={tier.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setPanelCount(tier.panels)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -531,13 +544,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Omnigrid battery capacity options"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+            >
               {BATTERY_OPTIONS.map((opt) => {
                 const isActive = selectedBatteryUnits === opt.units;
                 return (
                   <button
                     key={opt.units}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setSelectedBatteryUnits(opt.units)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -561,13 +580,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           {/* Section 4: Roof Profile */}
           <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
             <h2 className="text-[18px] font-medium text-[#171A20]">4. Terrace Architecture</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Terrace architecture roof profiles"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2"
+            >
               {ROOF_PROFILES.map((prof) => {
                 const isActive = roofProfile === prof.id;
                 return (
                   <button
                     key={prof.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setRoofProfile(prof.id)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -590,9 +615,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           {/* Section 5: Payment Structure */}
           <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
             <h2 className="text-[18px] font-medium text-[#171A20]">5. Investment Structure</h2>
-            <div className="grid grid-cols-2 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Investment payment mode"
+              className="grid grid-cols-2 gap-2"
+            >
               <button
                 type="button"
+                role="radio"
+                aria-checked={paymentMode === "loan"}
                 onClick={() => setPaymentMode("loan")}
                 className={`p-3 text-left rounded-[4px] border transition-all ${
                   paymentMode === "loan"
@@ -609,6 +640,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={paymentMode === "cash"}
                 onClick={() => setPaymentMode("cash")}
                 className={`p-3 text-left rounded-[4px] border transition-all ${
                   paymentMode === "cash"

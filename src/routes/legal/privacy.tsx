@@ -267,6 +267,20 @@ function PrivacyPage() {
               </div>
             </div>
           </section>
+
+          {/* Section 7 */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
+              7. Cookie-less Analytics &amp; Bot Protection
+            </h2>
+            <p>
+              We respect user privacy and intentionally do not deploy tracking cookies,
+              fingerprinting pixels, or cross-site profiling scripts. We use privacy-centric,
+              cookie-less Cloudflare Web Analytics for aggregated traffic telemetry. Form
+              submissions utilize Cloudflare Turnstile to prevent automated spam abuse without
+              tracking users across websites.
+            </p>
+          </section>
         </div>
       </main>
 

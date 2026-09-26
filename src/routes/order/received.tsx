@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 import { Printer, Share2, FileDown } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,12 +11,15 @@ import {
 } from "@/components/ArchitecturalDossierModal";
 import { PRODUCTS_CONFIG } from "@/config/products";
 
-const orderReceivedSearchSchema = z.object({
-  ref: z.string().optional().default("WNX-PROPOSAL"),
-});
+interface OrderReceivedSearch {
+  ref: string;
+}
 
 export const Route = createFileRoute("/order/received")({
-  validateSearch: (search) => orderReceivedSearchSchema.parse(search),
+  validateSearch: (search: Record<string, unknown>): OrderReceivedSearch => ({
+    ref:
+      typeof search.ref === "string" && search.ref.trim().length > 0 ? search.ref : "WNX-PROPOSAL",
+  }),
   head: () => ({
     meta: [
       { title: `Proposal Status — ${BRAND_CONFIG.name}` },

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export type MegaMenuCategory = "solar" | "homes" | "omnigrid" | "commercial" | "discover" | null;
 
@@ -250,6 +250,11 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
         className="fixed top-14 left-0 right-0 z-40 bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6] shadow-2xl transition-all duration-200 animate-in fade-in-0 slide-in-from-top-1"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            onClose();
+          }
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-10 py-10">
           {isDiscover ? (

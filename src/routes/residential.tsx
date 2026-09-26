@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export const Route = createFileRoute("/residential")({
   staticData: {

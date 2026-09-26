@@ -16,7 +16,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { DISCOMS } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 
@@ -251,11 +251,17 @@ function NetMeteringPage() {
                 <label className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-wider mb-2">
                   Designated Distribution Utility (DISCOM)
                 </label>
-                <div className="space-y-2">
+                <div
+                  className="space-y-2"
+                  role="radiogroup"
+                  aria-label="Designated Distribution Utility"
+                >
                   {Object.values(REGULATORY_DATA).map((item) => (
                     <button
                       key={item.code}
                       type="button"
+                      role="radio"
+                      aria-checked={selectedCode === item.code}
                       onClick={() => setSelectedCode(item.code)}
                       className={`w-full p-3.5 rounded-[4px] border text-left transition-all cursor-pointer flex items-center justify-between ${
                         selectedCode === item.code
@@ -283,7 +289,10 @@ function NetMeteringPage() {
               <div className="flex flex-col justify-between space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[12px] font-semibold text-[#171A20] uppercase tracking-wider">
+                    <label
+                      htmlFor="sanctioned-load-range"
+                      className="text-[12px] font-semibold text-[#171A20] uppercase tracking-wider"
+                    >
                       Sanctioned Connected Load (kW)
                     </label>
                     <span className="font-mono text-[18px] font-bold text-[#171A20]">
@@ -291,6 +300,7 @@ function NetMeteringPage() {
                     </span>
                   </div>
                   <input
+                    id="sanctioned-load-range"
                     type="range"
                     min={3}
                     max={50}
@@ -298,6 +308,8 @@ function NetMeteringPage() {
                     value={sanctionedLoadKw}
                     onChange={(e) => setSanctionedLoadKw(Number(e.target.value))}
                     className="range-slider w-full"
+                    aria-label="Sanctioned Connected Load in kilowatts"
+                    aria-valuetext={`${sanctionedLoadKw} kW`}
                   />
                   <div className="flex justify-between text-[12px] text-[#5C5E62] mt-2 font-mono">
                     <span>3 kW (Studio Villa)</span>
@@ -345,12 +357,12 @@ function NetMeteringPage() {
         {/* 4 Required Statutory Documents */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full py-16 border-t border-[#E3E4E6]">
           <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#5C5E62]">
+            <div className="text-xs font-semibold uppercase tracking-widest text-[#5C5E62]">
               Liaison Checklist
-            </h2>
-            <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
               Statutory Documentation Requirements
-            </h3>
+            </h2>
             <p className="text-[14px] text-[#5C5E62]">
               We handle all paperwork and physical utility inspections. You only provide these 4
               documents.
@@ -367,7 +379,7 @@ function NetMeteringPage() {
                   0{idx + 1}
                 </div>
                 <div>
-                  <h4 className="text-[15px] font-semibold text-[#171A20]">{doc.name}</h4>
+                  <h3 className="text-[15px] font-semibold text-[#171A20]">{doc.name}</h3>
                   <p className="text-[13px] text-[#5C5E62] leading-relaxed mt-1">{doc.desc}</p>
                 </div>
               </div>
@@ -382,9 +394,9 @@ function NetMeteringPage() {
               <div className="text-xs font-bold uppercase tracking-widest text-[#5C5E62]">
                 Instant Feasibility Verification
               </div>
-              <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
+              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
                 Verify Your Transformer DT Clearance
-              </h3>
+              </h2>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Provide your Service Connection Number to let our regulatory liaison team verify
                 available feeder capacity on your local distribution transformer.
@@ -394,9 +406,9 @@ function NetMeteringPage() {
             {submissionResult ? (
               <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-4">
                 <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
-                <h4 className="text-[17px] font-semibold text-[#166534]">
+                <h3 className="text-[17px] font-semibold text-[#166534]">
                   Feasibility Request Logged ({submissionResult.referenceCode || "WNX-FEASIBILITY"})
-                </h4>
+                </h3>
                 <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
                   {submissionResult.isDemo
                     ? `Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no live automated query is dispatched to ${reg.code} servers. You can check your actual feeder load directly on the official ${reg.portalName} or discuss with our engineers on WhatsApp.`

@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/system/Button";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { FAQ_DATA, FAQ_CATEGORIES, type FaqCategoryId } from "@/data/faqData";
 
 export const Route = createFileRoute("/faq")({
@@ -128,13 +128,19 @@ function FaqPage() {
           </div>
 
           {/* Category Filter Pills */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <div
+            role="tablist"
+            aria-label="FAQ categories"
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
             {FAQ_CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   type="button"
+                  role="tab"
+                  aria-selected={active}
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`min-h-[38px] px-4 py-1.5 rounded-[4px] text-[13px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
                     active

@@ -105,6 +105,7 @@ export function SunPathSimulator() {
             value={hour}
             onChange={(e) => setHour(parseFloat(e.target.value))}
             aria-label="Hour of day slider"
+            aria-valuetext={formattedTime}
             className="w-full h-2 bg-[#23272F] rounded-lg appearance-none cursor-pointer accent-[#F57C00]"
           />
           <div className="flex justify-between text-[12px] text-[#5C5E62] mt-1.5 font-mono">

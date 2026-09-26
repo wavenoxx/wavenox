@@ -15,7 +15,7 @@ import {
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, estimate } from "@/config/solar";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 const FAQ_ITEMS: FaqItem[] = [
   {
@@ -347,6 +347,7 @@ function IndexPage() {
                   onChange={(e) => setMonthlyBill(Number(e.target.value))}
                   className="range-slider"
                   aria-label="Monthly electricity bill"
+                  aria-valuetext={`₹${formatInr(monthlyBill)} per month`}
                 />
                 <div className="flex justify-between text-[12px] text-[#5C5E62]">
                   <span>₹2,000</span>

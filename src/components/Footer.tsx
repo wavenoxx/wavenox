@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Phone, MessageSquare, MapPin, Mail, ArrowUpRight } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

@@ -5,7 +5,7 @@ import { X, Phone, MessageSquare, HelpCircle, Globe, User, ChevronRight } from "
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 interface NavItem {
   key: Exclude<MegaMenuCategory, null>;
@@ -49,6 +49,16 @@ export function Header() {
     }
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setActiveCategory(null);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleMouseEnter = (key: Exclude<MegaMenuCategory, null>) => {
@@ -103,6 +113,16 @@ export function Header() {
                 key={item.key}
                 to={item.to}
                 onMouseEnter={() => handleMouseEnter(item.key)}
+                onFocus={() => handleMouseEnter(item.key)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                    setActiveCategory(item.key);
+                  } else if (e.key === "Escape") {
+                    setActiveCategory(null);
+                  }
+                }}
+                aria-expanded={isHovered}
+                aria-haspopup="true"
                 className={`relative px-4 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
                   isHovered
                     ? "bg-[#F4F4F4] text-[#171A20]"
@@ -191,6 +211,7 @@ export function Header() {
               <Dialog.Close asChild>
                 <button
                   type="button"
+                  aria-label="Close region selector"
                   className="p-1 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4]"
                 >
                   <X className="w-5 h-5" />

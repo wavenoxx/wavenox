@@ -64,6 +64,7 @@ export const leadSubmissionSchema = z.object({
   }),
   consent_version: z.string().default("2026-09-v1"),
   hp_extra: z.string().optional(), // Non-guessable honeypot field for bot suppression
+  turnstile_token: z.string().optional(), // Cloudflare Turnstile token
   utm_source: z.string().optional(),
   utm_medium: z.string().optional(),
   utm_campaign: z.string().optional(),
@@ -81,6 +82,42 @@ export interface LeadSubmissionResponse {
   message: string;
   fieldErrors?: Record<string, string[] | undefined>;
   isDemo?: boolean;
+}
+
+// In-memory per-IP rate limiter (5 requests / 10 minutes)
+const ipRequestTimestamps = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+
+function isRateLimited(identifier: string): boolean {
+  const now = Date.now();
+  const history = ipRequestTimestamps.get(identifier) || [];
+  const recent = history.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
+    ipRequestTimestamps.set(identifier, recent);
+    return true;
+  }
+  recent.push(now);
+  ipRequestTimestamps.set(identifier, recent);
+  return false;
+}
+
+async function verifyTurnstile(token: string, secretKey: string): Promise<boolean> {
+  try {
+    const params = new URLSearchParams();
+    params.append("secret", secretKey);
+    params.append("response", token);
+
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: params,
+    });
+    const outcome = (await res.json()) as { success: boolean };
+    return outcome.success === true;
+  } catch (err) {
+    console.warn("[Turnstile] Validation check error:", err);
+    return false;
+  }
 }
 
 /**
@@ -125,9 +162,36 @@ export const submitLead = createServerFn({ method: "POST" })
       };
     }
 
+    // 3. Turnstile bot verification (if TURNSTILE_SECRET_KEY is configured)
+    const turnstileSecret =
+      typeof process !== "undefined" ? process.env?.TURNSTILE_SECRET_KEY : undefined;
+    if (turnstileSecret) {
+      if (!validData.turnstile_token) {
+        return {
+          success: false,
+          message: "Security verification required. Please complete the captcha check.",
+        };
+      }
+      const isHuman = await verifyTurnstile(validData.turnstile_token, turnstileSecret);
+      if (!isHuman) {
+        return {
+          success: false,
+          message: "Security verification failed. Please try again.",
+        };
+      }
+    }
+
+    // 4. Per-phone / IP sliding-window rate limit
+    if (isRateLimited(normalizedPhone)) {
+      return {
+        success: false,
+        message: "Too many requests. Please wait a few minutes before trying again.",
+      };
+    }
+
     const finalReferenceCode = generateReferenceCode();
 
-    // 3. Demo Mode Evaluation (Default: demo)
+    // 5. Demo Mode Evaluation (Default: demo)
     const leadMode =
       (typeof process !== "undefined"
         ? process.env?.VITE_LEAD_MODE || process.env?.LEAD_MODE

@@ -22,7 +22,7 @@ import { Media } from "@/components/system/Media";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { SunPathSimulator } from "@/components/SunPathSimulator";
 
 export const Route = createFileRoute("/technology")({
@@ -516,9 +516,9 @@ function TechnologyPage() {
                 <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-[#5C5E62] block mb-1">
                   Master Technical Datasheet
                 </span>
-                <h3 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
+                <h2 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
                   Component Specifications &amp; Architecture
-                </h3>
+                </h2>
               </div>
               <div className="flex items-center gap-2 text-[12px] font-medium text-[#5C5E62] bg-[#F4F4F4] px-3 py-1.5 rounded-[4px]">
                 <CheckCircle2 className="w-4 h-4 text-[#F57C00]" />

@@ -300,6 +300,7 @@ function EnterprisePage() {
                   onChange={(e) => setRoofAreaSqFt(Number(e.target.value))}
                   className="range-slider"
                   aria-label="Rooftop area in square feet"
+                  aria-valuetext={`${roofAreaSqFt.toLocaleString("en-IN")} square feet`}
                 />
                 <div className="flex justify-between text-[12px] text-[#5C5E62]">
                   <span>10,000 sq.ft</span>

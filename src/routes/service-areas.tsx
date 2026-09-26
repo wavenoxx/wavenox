@@ -16,7 +16,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/system/Button";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export const Route = createFileRoute("/service-areas")({
   head: () => ({
@@ -133,13 +133,19 @@ function ServiceAreasPage() {
           </p>
 
           {/* Regional Switcher Pills */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
+          <div
+            role="tablist"
+            aria-label="Regional jurisdictions"
+            className="mt-10 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto"
+          >
             {REGION_HUBS.map((hub) => {
               const isSelected = hub.id === selectedHub;
               return (
                 <button
                   key={hub.id}
                   type="button"
+                  role="tab"
+                  aria-selected={isSelected}
                   onClick={() => setSelectedHub(hub.id)}
                   className={`min-h-[44px] px-6 py-2.5 rounded-[4px] text-[13px] sm:text-[14px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
                     isSelected
@@ -276,9 +282,9 @@ function ServiceAreasPage() {
               <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
                 Regional Engineering Support
               </span>
-              <h3 className="text-[24px] sm:text-[28px] font-medium text-white leading-snug">
+              <h2 className="text-[24px] sm:text-[28px] font-medium text-white leading-snug">
                 Dedicated Rooftop Solar Consultation &amp; Liaison
-              </h3>
+              </h2>
               <p className="text-[14px] text-white/80 leading-relaxed">
                 From initial 3D shadow assessment and DISCOM net-metering portal application to
                 bi-directional meter synchronization, our engineering team coordinates every

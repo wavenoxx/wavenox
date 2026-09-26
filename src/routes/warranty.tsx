@@ -21,7 +21,7 @@ import { Media } from "@/components/system/Media";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { calculateModuleDegradation, MODULE_WARRANTY_TERMS } from "@/config/regulatory";
 
 export const Route = createFileRoute("/warranty")({

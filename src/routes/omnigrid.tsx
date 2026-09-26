@@ -14,7 +14,7 @@ import {
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { EnergyFlowSimulator } from "@/components/EnergyFlowSimulator";
 
 const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
@@ -284,6 +284,7 @@ function OmnigridPage() {
                   <button
                     key={item.id}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => toggleLoad(item.id)}
                     className={`p-4 rounded-[4px] text-center transition-all cursor-pointer border ${
                       active

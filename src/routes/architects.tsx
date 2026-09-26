@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { submitLead } from "@/functions/leads";
 

@@ -8,16 +8,43 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
-import "@fontsource-variable/inter";
+import { useEffect, useState, lazy, Suspense, type ReactNode } from "react";
+import "@fontsource-variable/inter/wght.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BRAND_CONFIG } from "../config/brand";
 import { BUSINESS } from "../config/business";
-import { ConsultationDrawer } from "../components/ConsultationDrawer";
+import { CONSULTATION_EVENT } from "../lib/consultation";
 import { BrandLogo } from "../components/BrandLogo";
 import { initTelemetry } from "../lib/telemetry";
+
+const LazyConsultationDrawer = lazy(() =>
+  import("../components/ConsultationDrawer").then((m) => ({ default: m.ConsultationDrawer })),
+);
+
+function LazyConsultationDrawerWrapper() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [initialTier, setInitialTier] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    function handleOpen(e: Event) {
+      const customEvent = e as CustomEvent<{ tier?: string }>;
+      setInitialTier(customEvent.detail?.tier);
+      setIsOpen(true);
+    }
+    window.addEventListener(CONSULTATION_EVENT, handleOpen);
+    return () => window.removeEventListener(CONSULTATION_EVENT, handleOpen);
+  }, []);
+
+  if (!isOpen) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <LazyConsultationDrawer defaultOpen={true} initialTier={initialTier} />
+    </Suspense>
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -184,7 +211,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <ConsultationDrawer />
+      <LazyConsultationDrawerWrapper />
     </QueryClientProvider>
   );
 }

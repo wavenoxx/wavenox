@@ -17,7 +17,7 @@ import { Button } from "@/components/system/Button";
 import { Media } from "@/components/system/Media";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export const Route = createFileRoute("/our-story")({
   head: () => ({
