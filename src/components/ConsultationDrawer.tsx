@@ -32,21 +32,21 @@ const PROPERTY_TIERS = [
   {
     id: "villa" as const,
     title: "Luxury Villa",
-    capacity: "25 kW – 50 kW",
+    capacity: "15 kW – 25 kW",
     desc: "Single-family residences requiring flush architectural mounting and 24/7 outage protection.",
     icon: Home,
   },
   {
     id: "independent_home" as const,
     title: "Independent Home / Penthouse",
-    capacity: "10 kW – 25 kW",
+    capacity: "5 kW – 15 kW",
     desc: "Terrace installations with elevated pergola structure and net-metering export.",
     icon: Building2,
   },
   {
     id: "commercial" as const,
     title: "Commercial & Industrial",
-    capacity: "50 kW – 500 kW+",
+    capacity: "25 kW – 500 kW+",
     desc: "Commercial rooftops and factories with 40% Section 32 accelerated depreciation.",
     icon: Factory,
   },
@@ -65,9 +65,20 @@ export function ConsultationDrawer() {
   const [city, setCity] = React.useState("Hyderabad");
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
-  const [companyWebsite, setCompanyWebsite] = React.useState("");
+  const [hpExtra, setHpExtra] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+
+  const resetForm = React.useCallback(() => {
+    setStep(1);
+    setName("");
+    setPhone("");
+    setCity("Hyderabad");
+    setPinCode("");
+    setConsentGiven(false);
+    setHpExtra("");
+    setSubmitError(null);
+  }, []);
 
   const calculation = React.useMemo(
     () =>
@@ -118,8 +129,11 @@ export function ConsultationDrawer() {
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (!open && typeof window !== "undefined" && window.location.hash === "#consultation") {
-      history.replaceState(null, "", window.location.pathname + window.location.search);
+    if (!open) {
+      resetForm();
+      if (typeof window !== "undefined" && window.location.hash === "#consultation") {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
     }
   };
 
@@ -156,7 +170,7 @@ export function ConsultationDrawer() {
           source: "drawer",
           consent_given: true,
           consent_version: "2026-09-v1",
-          company_website: companyWebsite.trim() || undefined,
+          hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
       });
@@ -167,6 +181,19 @@ export function ConsultationDrawer() {
         return;
       }
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            ref: res.referenceCode || "WNX-PROPOSAL",
+            name,
+            isDemo: res.isDemo ?? true,
+            timestamp: new Date().toISOString(),
+          }),
+        );
+      }
+
+      resetForm();
       setIsOpen(false);
       navigate({
         to: "/order/received",
@@ -352,10 +379,14 @@ export function ConsultationDrawer() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="drawer-name"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Full Name *
                 </label>
                 <input
+                  id="drawer-name"
                   type="text"
                   required
                   placeholder="First and last name"
@@ -366,7 +397,10 @@ export function ConsultationDrawer() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="drawer-phone"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
                 <div className="relative flex items-center">
@@ -374,6 +408,7 @@ export function ConsultationDrawer() {
                     +91
                   </span>
                   <input
+                    id="drawer-phone"
                     type="tel"
                     required
                     placeholder="10-digit mobile number"
@@ -387,10 +422,14 @@ export function ConsultationDrawer() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                  <label
+                    htmlFor="drawer-city"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
                     City / Locality *
                   </label>
                   <input
+                    id="drawer-city"
                     type="text"
                     required
                     placeholder="e.g. Hyderabad, Bengaluru"
@@ -400,10 +439,14 @@ export function ConsultationDrawer() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                  <label
+                    htmlFor="drawer-pincode"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
                     6-Digit PIN Code *
                   </label>
                   <input
+                    id="drawer-pincode"
                     type="text"
                     required
                     maxLength={6}
@@ -421,17 +464,27 @@ export function ConsultationDrawer() {
                 clearance.
               </p>
 
-              {/* Bot suppression */}
-              <input
-                type="text"
-                name="company_website"
-                value={companyWebsite}
-                onChange={(e) => setCompanyWebsite(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
+              {/* Bot suppression honeypot */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  opacity: 0,
+                  height: 0,
+                  overflow: "hidden",
+                }}
                 aria-hidden="true"
-              />
+              >
+                <input
+                  type="text"
+                  name="hp_extra"
+                  id="drawer-hp-extra"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpExtra}
+                  onChange={(e) => setHpExtra(e.target.value)}
+                />
+              </div>
 
               {/* DPDP Consent */}
               <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
@@ -448,8 +501,13 @@ export function ConsultationDrawer() {
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
                   I consent to receive my bespoke solar proposal and be contacted by WAVENOX
-                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Zero spam
-                  guarantee.
+                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Data is processed
+                  solely for proposal generation and never shared. You may withdraw consent anytime
+                  via our{" "}
+                  <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                    Privacy Policy
+                  </a>
+                  .
                 </label>
               </div>
 

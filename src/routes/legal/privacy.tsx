@@ -12,7 +12,16 @@ export const Route = createFileRoute("/legal/privacy")({
         name: "description",
         content: `Privacy Policy and data governance standards under India's Digital Personal Data Protection Act, 2023 (DPDP Act) for ${BRAND_CONFIG.legalName}.`,
       },
+      { property: "og:title", content: `Privacy Policy — ${BRAND_CONFIG.name}` },
+      {
+        property: "og:description",
+        content: `Privacy Policy and data governance standards under India's Digital Personal Data Protection Act, 2023 (DPDP Act) for ${BRAND_CONFIG.legalName}.`,
+      },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/legal/privacy` },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/legal/privacy` }],
   }),
   component: PrivacyPage,
 });

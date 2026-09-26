@@ -20,6 +20,9 @@ import { EnergyFlowSimulator } from "@/components/EnergyFlowSimulator";
 const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
 
 export const Route = createFileRoute("/omnigrid")({
+  staticData: {
+    headerTone: "overlay" as const,
+  },
   head: () => ({
     meta: [
       { title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
@@ -33,11 +36,13 @@ export const Route = createFileRoute("/omnigrid")({
         content:
           "Whole-home battery energy storage. Instant blackout protection, zero diesel noise, and 100% solar self-consumption.",
       },
-      { property: "og:image", content: "/media/omnigrid-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/omnigrid-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/omnigrid` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/omnigrid` },
       {
         rel: "preload",
         as: "image",
@@ -144,195 +149,201 @@ function OmnigridPage() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
-      {/* 1. PANEL: omnigrid-hero */}
-      <Panel
-        id="omnigrid"
-        media={media["omnigrid-hero"]}
-        priority={true}
-        tone="dark"
-        title="Omnigrid"
-        lead="Home battery storage engineered for continuous power during grid outages."
-        stats={
-          <StatRow
-            stats={[
-              { value: `${batteryCap} kWh`, label: "Usable Capacity" },
-              {
-                value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`,
-                label: "Continuous Output",
-              },
-              { value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years`, label: "Warranty" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Configure Omnigrid
-            </Button>
-            <Button
-              onClick={() => openConsultationDrawer()}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Schedule Consultation
-            </Button>
-          </>
-        }
-      />
+      <main>
+        {/* 1. PANEL: omnigrid-hero */}
+        <Panel
+          id="omnigrid"
+          as="h1"
+          media={media["omnigrid-hero"]}
+          priority={true}
+          tone="dark"
+          title="Omnigrid"
+          lead="Home battery storage engineered for continuous power during grid outages."
+          stats={
+            <StatRow
+              stats={[
+                { value: `${batteryCap} kWh`, label: "Usable Capacity" },
+                {
+                  value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`,
+                  label: "Continuous Output",
+                },
+                { value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years`, label: "Warranty" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Configure Omnigrid
+              </Button>
+              <Button
+                onClick={() => openConsultationDrawer()}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Schedule Consultation
+              </Button>
+            </>
+          }
+        />
 
-      {/* 2. PANEL: omnigrid-switchover */}
-      <Panel
-        id="outage-defense"
-        media={media["omnigrid-switchover"]}
-        tone="dark"
-        title="Outage Protection"
-        lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
-        stats={
-          <StatRow
-            stats={[
-              { value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs, label: "Transfer Speed" },
-              { value: "24/7", label: "Power Security" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Configure Omnigrid
-            </Button>
-            <Button
-              onClick={() => setSpecsOpen(true)}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              View Specs
-            </Button>
-          </>
-        }
-      />
+        {/* 2. PANEL: omnigrid-switchover */}
+        <Panel
+          id="outage-defense"
+          media={media["omnigrid-switchover"]}
+          tone="dark"
+          title="Outage Protection"
+          lead="Seamless switchover in under 20 milliseconds keeps your entire home running."
+          stats={
+            <StatRow
+              stats={[
+                {
+                  value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs,
+                  label: "Transfer Speed",
+                },
+                { value: "24/7", label: "Power Security" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Configure Omnigrid
+              </Button>
+              <Button
+                onClick={() => setSpecsOpen(true)}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                View Specs
+              </Button>
+            </>
+          }
+        />
 
-      {/* 3. PANEL: omnigrid-night */}
-      <Panel
-        id="sunset-power"
-        media={media["omnigrid-night"]}
-        tone="dark"
-        title="Use Solar After Sunset"
-        lead="Store daytime excess generation to power nighttime air conditioning and appliances."
-        stats={
-          <StatRow
-            stats={[
-              { value: "100%", label: "Solar Self-Use" },
-              { value: "Zero", label: "Diesel Fumes" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Configure Omnigrid
-            </Button>
-            <Button
-              onClick={() => openConsultationDrawer()}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Schedule Consultation
-            </Button>
-          </>
-        }
-      />
+        {/* 3. PANEL: omnigrid-night */}
+        <Panel
+          id="sunset-power"
+          media={media["omnigrid-night"]}
+          tone="dark"
+          title="Use Solar After Sunset"
+          lead="Store daytime excess generation to power nighttime air conditioning and appliances."
+          stats={
+            <StatRow
+              stats={[
+                { value: "100%", label: "Solar Self-Use" },
+                { value: "Zero", label: "Diesel Fumes" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Configure Omnigrid
+              </Button>
+              <Button
+                onClick={() => openConsultationDrawer()}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Schedule Consultation
+              </Button>
+            </>
+          }
+        />
 
-      {/* 4. KINETIC ENERGY FLOW: 24-Hour Autonomous Simulation */}
-      <QuietSection
-        id="flow-simulation"
-        bg="white"
-        title="24-Hour Kinetic Energy Flow"
-        lead="Experience how solar generation, Omnigrid battery storage, and the DISCOM grid interact seamlessly from dawn to nocturnal autonomy."
-      >
-        <EnergyFlowSimulator />
-      </QuietSection>
+        {/* 4. KINETIC ENERGY FLOW: 24-Hour Autonomous Simulation */}
+        <QuietSection
+          id="flow-simulation"
+          bg="white"
+          title="24-Hour Kinetic Energy Flow"
+          lead="Experience how solar generation, Omnigrid battery storage, and the DISCOM grid interact seamlessly from dawn to nocturnal autonomy."
+        >
+          <EnergyFlowSimulator />
+        </QuietSection>
 
-      {/* 5. QUIET SECTION: Backup Duration Estimator */}
-      <QuietSection
-        id="estimator"
-        bg="surface"
-        title="Backup Duration Estimator"
-        lead="Select your essential loads to see how long a single Omnigrid unit keeps your home running."
-      >
-        <div className="max-w-2xl mx-auto space-y-10">
-          {/* Unboxed Segmented Load Toggles */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {LOAD_ITEMS.map((item) => {
-              const active = selectedLoads.includes(item.id);
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => toggleLoad(item.id)}
-                  className={`p-4 rounded-[4px] text-center transition-all cursor-pointer border ${
-                    active
-                      ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
-                      : "border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/40"
-                  }`}
-                >
-                  <div className="text-[13px] font-medium leading-snug">{item.label}</div>
-                  <div
-                    className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+        {/* 5. QUIET SECTION: Backup Duration Estimator */}
+        <QuietSection
+          id="estimator"
+          bg="surface"
+          title="Backup Duration Estimator"
+          lead="Select your essential loads to see how long a single Omnigrid unit keeps your home running."
+        >
+          <div className="max-w-2xl mx-auto space-y-10">
+            {/* Unboxed Segmented Load Toggles */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {LOAD_ITEMS.map((item) => {
+                const active = selectedLoads.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => toggleLoad(item.id)}
+                    className={`p-4 rounded-[4px] text-center transition-all cursor-pointer border ${
+                      active
+                        ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
+                        : "border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/40"
+                    }`}
                   >
-                    ~{item.watts} W
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Big Number Display */}
-          <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
-            <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
-              {backupHours} Hours
+                    <div className="text-[13px] font-medium leading-snug">{item.label}</div>
+                    <div
+                      className={`text-[12px] mt-1 tabular-nums ${active ? "text-[#FFFFFF]/70" : "text-[#5C5E62]"}`}
+                    >
+                      ~{item.watts} W
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-            <div className="text-[13px] text-[#5C5E62]">
-              Estimated Backup Duration ({totalWatts} W average load)
-            </div>
-            <p className="text-[13px] text-[#5C5E62] pt-1">
-              Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to 4
-              units for larger estates.
-            </p>
-          </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="light"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Configure Omnigrid
-            </Button>
-            <TextLink to="/residential" arrow>
-              Learn about solar integration
-            </TextLink>
+            {/* Big Number Display */}
+            <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
+              <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                {backupHours} Hours
+              </div>
+              <div className="text-[13px] text-[#5C5E62]">
+                Estimated Backup Duration ({totalWatts} W average load)
+              </div>
+              <p className="text-[13px] text-[#5C5E62] pt-1">
+                Based on {batteryCap} kWh usable capacity at 90% round-trip efficiency. Stack up to
+                4 units for larger estates.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="light"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Configure Omnigrid
+              </Button>
+              <TextLink to="/residential" arrow>
+                Learn about solar integration
+              </TextLink>
+            </div>
           </div>
-        </div>
-      </QuietSection>
+        </QuietSection>
+      </main>
 
       <Footer />
 

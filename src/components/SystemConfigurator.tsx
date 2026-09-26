@@ -77,14 +77,27 @@ function formatInr(val: number): string {
 export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfiguratorProps) {
   const navigate = useNavigate();
 
+  const maxResidentialPanels = Math.ceil(
+    (SOLAR_ASSUMPTIONS.maxResidentialKw * 1000) / SOLAR_ASSUMPTIONS.panelWatt,
+  );
+
   // State
   const [address, setAddress] = React.useState("");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(
     initialDiscom || DISCOMS[0].code,
   );
   const [monthlyBill, setMonthlyBill] = React.useState(initialBill || 12000);
-  const [panelCount, setPanelCount] = React.useState(24);
-  const [selectedBatteryUnits, setSelectedBatteryUnits] = React.useState(1);
+  const [panelCount, setPanelCount] = React.useState(() => {
+    return Math.min(
+      maxResidentialPanels,
+      estimate({
+        monthlyBillInr: initialBill || 12000,
+        discomCode: initialDiscom || DISCOMS[0].code,
+        segment: "residential",
+      }).recommendedPanels,
+    );
+  });
+  const [selectedBatteryUnits, setSelectedBatteryUnits] = React.useState(0);
   const [roofProfile, setRoofProfile] = React.useState("rcc-flat");
   const [paymentMode, setPaymentMode] = React.useState<"cash" | "loan">("loan");
   const [estateView, setEstateView] = React.useState<"villa" | "estate">("villa");
@@ -94,7 +107,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [userPhone, setUserPhone] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
-  const [companyWebsite, setCompanyWebsite] = React.useState("");
+  const [hpExtra, setHpExtra] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [previewDossierOpen, setPreviewDossierOpen] = React.useState(false);
@@ -132,15 +145,27 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
   // Panel adjustment
   const handlePanelIncrement = (amount: number) => {
-    setPanelCount((prev) => Math.min(60, Math.max(6, prev + amount)));
+    setPanelCount((prev) => Math.min(maxResidentialPanels, Math.max(6, prev + amount)));
   };
 
   const handleBillChange = (val: number) => {
     setMonthlyBill(val);
-    if (val <= 6000) setPanelCount(SYSTEM_TIERS[0].panels);
-    else if (val <= 11000) setPanelCount(SYSTEM_TIERS[1].panels);
-    else if (val <= 18000) setPanelCount(SYSTEM_TIERS[2].panels);
-    else setPanelCount(SYSTEM_TIERS[3].panels);
+    const rec = estimate({
+      monthlyBillInr: val,
+      discomCode: selectedDiscomCode,
+      segment: "residential",
+    });
+    setPanelCount(Math.min(maxResidentialPanels, rec.recommendedPanels));
+  };
+
+  const handleDiscomChange = (newDiscomCode: string) => {
+    setSelectedDiscomCode(newDiscomCode);
+    const rec = estimate({
+      monthlyBillInr: monthlyBill,
+      discomCode: newDiscomCode,
+      segment: "residential",
+    });
+    setPanelCount(Math.min(maxResidentialPanels, rec.recommendedPanels));
   };
 
   const currentDossierData: DossierData = React.useMemo(
@@ -219,7 +244,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           source: "studio",
           consent_given: true,
           consent_version: "2026-09-v1",
-          company_website: companyWebsite.trim() || undefined,
+          hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
       });
@@ -253,6 +278,16 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears: calculation.paybackYears,
               annualSavings: calculation.annualSavingsInr,
               twentyFiveYearSavings: twentyFiveYearWealthInr,
+            }),
+          );
+
+          sessionStorage.setItem(
+            "wavenox_last_submission",
+            JSON.stringify({
+              ref: res.referenceCode || "WNX-PROPOSAL",
+              name: userName,
+              isDemo: res.isDemo ?? true,
+              timestamp: new Date().toISOString(),
             }),
           );
         } catch {
@@ -374,7 +409,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <select
                 id="studio-discom"
                 value={selectedDiscomCode}
-                onChange={(e) => setSelectedDiscomCode(e.target.value)}
+                onChange={(e) => handleDiscomChange(e.target.value)}
                 className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
               >
                 {DISCOMS.map((d) => (
@@ -732,17 +767,27 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 Surya Ghar feeder clearance.
               </p>
 
-              {/* Bot honeypot */}
-              <input
-                type="text"
-                name="company_website"
-                value={companyWebsite}
-                onChange={(e) => setCompanyWebsite(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
+              {/* Bot suppression honeypot */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  opacity: 0,
+                  height: 0,
+                  overflow: "hidden",
+                }}
                 aria-hidden="true"
-              />
+              >
+                <input
+                  type="text"
+                  name="hp_extra"
+                  id="studio-hp-extra"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpExtra}
+                  onChange={(e) => setHpExtra(e.target.value)}
+                />
+              </div>
 
               {/* DPDP Consent */}
               <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
@@ -758,10 +803,14 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   htmlFor="studio-consent"
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX solar
-                  structural engineers in accordance with the{" "}
-                  <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>. Zero spam
-                  guarantee.
+                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX
+                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Data is processed
+                  solely for proposal generation and never shared. You may withdraw consent anytime
+                  via our{" "}
+                  <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                    Privacy Policy
+                  </a>
+                  .
                 </label>
               </div>
 

@@ -42,11 +42,13 @@ export const Route = createFileRoute("/technology")({
         content:
           "Explore the metallurgy, cell physics, and software engineering behind monolithic luxury solar.",
       },
-      { property: "og:image", content: "/media/home-heat-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-heat-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/technology` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/technology` },
       {
         rel: "preload",
         as: "image",

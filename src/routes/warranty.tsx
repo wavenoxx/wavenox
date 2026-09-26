@@ -41,11 +41,13 @@ export const Route = createFileRoute("/warranty")({
         content:
           "Explore our institutional-grade guarantees: 25-year power curve, 10-year storage warranty, and zero terrace slab damage assurance.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/warranty` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/warranty` },
       {
         rel: "preload",
         as: "image",

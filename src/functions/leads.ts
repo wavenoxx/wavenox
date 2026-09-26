@@ -19,7 +19,7 @@ export function generateReferenceCode(): string {
 /**
  * Normalizes Indian phone numbers to E.164 format (+91XXXXXXXXXX)
  */
-function normalizeIndianPhone(phoneStr: string): string | null {
+export function normalizeIndianPhone(phoneStr: string): string | null {
   const digits = phoneStr.replace(/\D/g, "");
   if (digits.length === 10 && /^[6-9]/.test(digits)) {
     return `+91${digits}`;
@@ -41,6 +41,8 @@ export const leadSubmissionSchema = z.object({
     .refine((val) => normalizeIndianPhone(val) !== null, {
       message: "Please enter a valid 10-digit Indian mobile number (+91)",
     }),
+  company_name: z.string().trim().max(150).optional(),
+  company_url: z.string().trim().max(255).optional(),
   city: z.string().trim().default("Hyderabad"),
   pin_code: z
     .string()
@@ -55,13 +57,13 @@ export const leadSubmissionSchema = z.object({
   battery_units: z.number().int().nonnegative().default(0),
   net_price_inr: z.number().nonnegative().optional(),
   roof_area_sqft: z.number().nonnegative().optional(),
-  source: z.enum(["drawer", "studio", "enterprise"]),
+  source: z.enum(["drawer", "studio", "enterprise", "net_metering", "architects"]),
   notes: z.string().max(1000).optional(),
   consent_given: z.literal(true, {
     errorMap: () => ({ message: "Consent to be contacted is required" }),
   }),
   consent_version: z.string().default("2026-09-v1"),
-  company_website: z.string().optional(), // Honeypot field for bot suppression
+  hp_extra: z.string().optional(), // Non-guessable honeypot field for bot suppression
   utm_source: z.string().optional(),
   utm_medium: z.string().optional(),
   utm_campaign: z.string().optional(),
@@ -77,17 +79,35 @@ export interface LeadSubmissionResponse {
   success: boolean;
   referenceCode?: string;
   message: string;
+  fieldErrors?: Record<string, string[] | undefined>;
+  isDemo?: boolean;
 }
 
 /**
  * Server function to securely submit architectural solar consultation leads.
- * Validates inputs, checks honeypots, audits DPDP consent, and writes to Supabase.
+ * Validates inputs with safeParse, checks honeypots, audits DPDP consent,
+ * and handles Demo vs Live mode based on VITE_LEAD_MODE.
  */
 export const submitLead = createServerFn({ method: "POST" })
-  .validator((data: unknown) => leadSubmissionSchema.parse(data))
+  .validator((data: unknown) => data)
   .handler(async ({ data }): Promise<LeadSubmissionResponse> => {
-    // 1. Honeypot suppression
-    if (data.company_website && data.company_website.trim().length > 0) {
+    // 1. Zod Safe Validation
+    const parsed = leadSubmissionSchema.safeParse(data);
+    if (!parsed.success) {
+      const flattened = parsed.error.flatten();
+      const firstErrorMessage =
+        parsed.error.errors[0]?.message || "Validation failed. Please verify your inputs.";
+      return {
+        success: false,
+        message: firstErrorMessage,
+        fieldErrors: flattened.fieldErrors,
+      };
+    }
+
+    const validData = parsed.data;
+
+    // 2. Honeypot suppression
+    if (validData.hp_extra && validData.hp_extra.trim().length > 0) {
       // Silently accept bots without persisting
       return {
         success: true,
@@ -96,47 +116,66 @@ export const submitLead = createServerFn({ method: "POST" })
       };
     }
 
-    const normalizedPhone = normalizeIndianPhone(data.phone);
+    const normalizedPhone = normalizeIndianPhone(validData.phone);
     if (!normalizedPhone) {
       return {
         success: false,
         message: "Invalid phone number format. Please provide a 10-digit Indian phone number.",
+        fieldErrors: { phone: ["Invalid phone number format"] },
       };
     }
 
-    let finalReferenceCode = generateReferenceCode();
+    const finalReferenceCode = generateReferenceCode();
 
-    // 2. Check Supabase connection and persist
+    // 3. Demo Mode Evaluation (Default: demo)
+    const leadMode =
+      (typeof process !== "undefined"
+        ? process.env?.VITE_LEAD_MODE || process.env?.LEAD_MODE
+        : undefined) || "demo";
+
+    if (leadMode === "demo") {
+      // In demo mode: Show full experience, store nothing, return honest demo status
+      return {
+        success: true,
+        referenceCode: finalReferenceCode,
+        isDemo: true,
+        message:
+          "Demo Simulation: Your proposal has been prepared. As WAVENOX is a portfolio design concept, no lead data is stored.",
+      };
+    }
+
+    // 4. Live Mode (Persist to Supabase if configured)
     try {
       const { getServerSupabaseClient } = await import("@/server/supabase");
-      const { BRAND_CONFIG } = await import("@/config/brand");
       const db = getServerSupabaseClient();
 
       const insertPayload = (refCode: string) => ({
         reference_code: refCode,
-        client_name: data.name,
+        client_name: validData.name,
         phone: normalizedPhone,
-        city: data.city || "Hyderabad",
-        pin_code: data.pin_code && data.pin_code.length === 6 ? data.pin_code : null,
-        property_tier: data.property_tier,
-        discom_code: data.discom_code || null,
-        monthly_bill_inr: data.monthly_bill_inr ?? null,
-        system_kw: data.system_kw ?? null,
-        battery_units: data.battery_units ?? 0,
-        net_price_inr: data.net_price_inr ?? null,
-        roof_area_sqft: data.roof_area_sqft ?? null,
-        source: data.source,
-        notes: data.notes || null,
-        consent_given: data.consent_given,
-        consent_version: data.consent_version,
+        company_name: validData.company_name || null,
+        company_url: validData.company_url || null,
+        city: validData.city || "Hyderabad",
+        pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
+        property_tier: validData.property_tier,
+        discom_code: validData.discom_code || null,
+        monthly_bill_inr: validData.monthly_bill_inr ?? null,
+        system_kw: validData.system_kw ?? null,
+        battery_units: validData.battery_units ?? 0,
+        net_price_inr: validData.net_price_inr ?? null,
+        roof_area_sqft: validData.roof_area_sqft ?? null,
+        source: validData.source,
+        notes: validData.notes || null,
+        consent_given: validData.consent_given,
+        consent_version: validData.consent_version,
         consent_at: new Date().toISOString(),
-        utm_source: data.utm_source || null,
-        utm_medium: data.utm_medium || null,
-        utm_campaign: data.utm_campaign || null,
-        utm_term: data.utm_term || null,
-        utm_content: data.utm_content || null,
-        landing_url: data.landing_url || null,
-        referrer: data.referrer || null,
+        utm_source: validData.utm_source || null,
+        utm_medium: validData.utm_medium || null,
+        utm_campaign: validData.utm_campaign || null,
+        utm_term: validData.utm_term || null,
+        utm_content: validData.utm_content || null,
+        landing_url: validData.landing_url || null,
+        referrer: validData.referrer || null,
       });
 
       let { data: insertedRows, error } = await db
@@ -145,23 +184,23 @@ export const submitLead = createServerFn({ method: "POST" })
         .select("id");
 
       // Handle reference code unique collision: regenerate and retry once
+      let activeRefCode = finalReferenceCode;
       if (
         error &&
         error.code === "23505" &&
         (error.message?.includes("reference_code") || error.details?.includes("reference_code"))
       ) {
         console.warn("[submitLead] Reference code collision detected. Retrying with fresh code...");
-        finalReferenceCode = generateReferenceCode();
+        activeRefCode = generateReferenceCode();
         const retryResult = await db
           .from("consultations")
-          .insert(insertPayload(finalReferenceCode))
+          .insert(insertPayload(activeRefCode))
           .select("id");
         error = retryResult.error;
         insertedRows = retryResult.data;
       }
 
       if (error) {
-        // Handle 60-second anti-duplicate trigger message
         if (error.message?.includes("less than 60 seconds ago")) {
           return {
             success: false,
@@ -177,12 +216,15 @@ export const submitLead = createServerFn({ method: "POST" })
         };
       }
 
-      // 3. Dispatch optional owner notification via Resend REST API
+      // 5. Dispatch optional owner notification via Resend REST API
       const resendApiKey = typeof process !== "undefined" ? process.env?.RESEND_API_KEY : undefined;
       const ownerNotifyEmail =
         typeof process !== "undefined" ? process.env?.OWNER_NOTIFY_EMAIL : undefined;
+      const leadsFromEmail =
+        typeof process !== "undefined" ? process.env?.LEADS_FROM_EMAIL : undefined;
 
-      if (resendApiKey && ownerNotifyEmail && insertedRows?.[0]?.id) {
+      // Only dispatch if sender email is explicitly configured and verified
+      if (resendApiKey && ownerNotifyEmail && leadsFromEmail && insertedRows?.[0]?.id) {
         const insertedId = insertedRows[0].id;
         try {
           const resendResponse = await fetch("https://api.resend.com/emails", {
@@ -192,26 +234,27 @@ export const submitLead = createServerFn({ method: "POST" })
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "WAVENOX Leads <leads@wavenox.com>",
+              from: leadsFromEmail,
               to: ownerNotifyEmail,
-              subject: `[New Lead] ${data.name} — ${finalReferenceCode} (${data.property_tier})`,
+              subject: `[New Lead] ${validData.name} — ${activeRefCode} (${validData.property_tier})`,
               text: [
                 `New WAVENOX Consultation Request`,
                 `---------------------------------`,
-                `Reference: ${finalReferenceCode}`,
-                `Name: ${data.name}`,
+                `Reference: ${activeRefCode}`,
+                `Name: ${validData.name}`,
+                `Company: ${validData.company_name || "N/A"} (${validData.company_url || "N/A"})`,
                 `Phone: ${normalizedPhone}`,
-                `City: ${data.city || "Hyderabad"} (PIN: ${data.pin_code || "N/A"})`,
-                `Property Tier: ${data.property_tier}`,
-                `Source: ${data.source}`,
-                `System Size: ${data.system_kw ? `${data.system_kw} kW` : "N/A"}`,
+                `City: ${validData.city || "Hyderabad"} (PIN: ${validData.pin_code || "N/A"})`,
+                `Property Tier: ${validData.property_tier}`,
+                `Source: ${validData.source}`,
+                `System Size: ${validData.system_kw ? `${validData.system_kw} kW` : "N/A"}`,
                 `Monthly Bill: ${
-                  data.monthly_bill_inr
-                    ? `₹${data.monthly_bill_inr.toLocaleString("en-IN")}`
+                  validData.monthly_bill_inr
+                    ? `₹${validData.monthly_bill_inr.toLocaleString("en-IN")}`
                     : "N/A"
                 }`,
-                `Battery Units: ${data.battery_units || 0}`,
-                `Consent Logged: Yes (${data.consent_version})`,
+                `Battery Units: ${validData.battery_units || 0}`,
+                `Consent Logged: Yes (${validData.consent_version})`,
               ].join("\n"),
             }),
           });
@@ -226,19 +269,18 @@ export const submitLead = createServerFn({ method: "POST" })
           }
         } catch (notifyErr) {
           console.warn("[submitLead] Failed to dispatch owner notification email:", notifyErr);
-          // Non-blocking: notification failure must never fail the lead submission
         }
       }
 
       return {
         success: true,
-        referenceCode: finalReferenceCode,
+        referenceCode: activeRefCode,
+        isDemo: false,
         message: "Your proposal request has been successfully submitted.",
       };
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
 
-      // If Supabase environment is unconfigured, return friendly message without technical leak
       if (errMsg.includes("Missing Supabase server configuration")) {
         console.error(
           "[submitLead] CRITICAL: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not configured on the server.",

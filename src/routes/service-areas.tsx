@@ -38,10 +38,12 @@ export const Route = createFileRoute("/service-areas")({
         content:
           "Local engineering teams, net-metering synchronization, and on-site support across Hyderabad, Bengaluru, Visakhapatnam, and Vijayawada.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/service-areas` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/service-areas` }],
     scripts: [
       {
         type: "application/ld+json",

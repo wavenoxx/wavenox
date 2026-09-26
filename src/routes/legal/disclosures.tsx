@@ -14,7 +14,16 @@ export const Route = createFileRoute("/legal/disclosures")({
         name: "description",
         content: `Transparent engineering assumptions, DISCOM tariff schedules, solar generation physics, and financial modeling methodologies used by ${BRAND_CONFIG.name}.`,
       },
+      { property: "og:title", content: `Methodology & Disclosures — ${BRAND_CONFIG.name}` },
+      {
+        property: "og:description",
+        content: `Transparent engineering assumptions, DISCOM tariff schedules, and financial modeling methodologies used by ${BRAND_CONFIG.name}.`,
+      },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/legal/disclosures` },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/legal/disclosures` }],
   }),
   component: DisclosuresPage,
 });

@@ -37,10 +37,12 @@ export const Route = createFileRoute("/our-story")({
         content:
           "Discover how WAVENOX transformed solar from an unsightly utility into an architectural crown for luxury residences.",
       },
-      { property: "og:image", content: "/media/home-design-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-design-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/our-story` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/our-story` }],
     scripts: [
       {
         type: "application/ld+json",

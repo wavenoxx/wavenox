@@ -9,6 +9,7 @@ export interface PanelProps {
   alt?: string;
   priority?: boolean;
   tone?: "dark" | "light";
+  as?: "h1" | "h2";
   title?: React.ReactNode;
   lead?: React.ReactNode;
   topAddon?: React.ReactNode;
@@ -27,6 +28,7 @@ export function Panel({
   alt = "",
   priority = false,
   tone = "dark",
+  as = "h2",
   title,
   lead,
   topAddon,
@@ -44,7 +46,7 @@ export function Panel({
     <section
       id={id}
       data-theme={tone}
-      className={`relative w-full h-[100svh] min-h-[600px] flex flex-col justify-between overflow-hidden select-none ${toneClasses} ${className}`}
+      className={`relative w-full h-[100svh] min-h-[600px] flex flex-col justify-between overflow-hidden ${toneClasses} ${className}`}
     >
       {/* Background Media & Atmospheric Scrim */}
       <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
@@ -83,11 +85,16 @@ export function Panel({
       {/* Top Section: Title & Lead */}
       <div className="relative pt-20 sm:pt-24 md:pt-32 px-5 sm:px-6 text-center z-20 w-full max-w-4xl mx-auto">
         <Reveal immediate={priority}>
-          {title && (
-            <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
-              {title}
-            </h2>
-          )}
+          {title &&
+            (as === "h1" ? (
+              <h1 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                {title}
+              </h1>
+            ) : (
+              <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                {title}
+              </h2>
+            ))}
           {lead && (
             <p className="text-[13px] sm:text-[15px] md:text-[17px] font-normal leading-relaxed text-inherit/85 max-w-md sm:max-w-xl mx-auto mt-2 text-balance drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
               {lead}

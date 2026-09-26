@@ -9,7 +9,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#FFFFFF] text-[#171A20] border-t border-[#E3E4E6] select-none">
+    <footer className="w-full bg-[#FFFFFF] text-[#171A20] border-t border-[#E3E4E6]">
       {/* 4-COLUMN ARCHITECTURAL SITEMAP */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 pt-16 pb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-12">

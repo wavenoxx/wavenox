@@ -17,123 +17,6 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, estimate } from "@/config/solar";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
-      {
-        name: "description",
-        content:
-          "WAVENOX deploys low-profile residential solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and 24/7 outage protection.",
-      },
-      { property: "og:title", content: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
-      {
-        property: "og:description",
-        content:
-          "Low-profile architectural solar for Indian homes. Subsidies up to ₹78,000, 25-year linear warranty, and 24/7 outage protection.",
-      },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      {
-        rel: "preload",
-        as: "image",
-        href: "/media/home-hero-1600w.webp",
-        media: "(min-width: 768px)",
-        type: "image/webp",
-      },
-      {
-        rel: "preload",
-        as: "image",
-        href: "/media/home-hero-mobile.webp",
-        media: "(max-width: 767px)",
-        type: "image/webp",
-      },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: BRAND_CONFIG.name,
-          url: BRAND_CONFIG.domain,
-          logo: `${BRAND_CONFIG.domain}/favicon.ico`,
-          description:
-            "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
-          contactPoint: {
-            "@type": "ContactPoint",
-            telephone: BRAND_CONFIG.contact.phone.dial,
-            contactType: "customer service",
-            areaServed: "IN",
-            availableLanguage: ["English", "Telugu", "Hindi"],
-          },
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "How does the PM Surya Ghar subsidy work?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Eligible homes receive up to ₹78,000 direct benefit transfer from the central government for systems 3 kW or larger. WAVENOX files all national portal documentation and coordinates the DISCOM net-metering inspection end-to-end.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Will my solar panels work during a power outage?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Standard grid-tied systems shut off during blackouts for utility safety. When paired with Omnigrid battery storage, your home switches to stored solar in under 20 milliseconds, keeping lights, appliances, and air conditioning running without interruption.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Can Omnigrid battery run 1.5-ton air conditioners during blackouts?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes. Omnigrid delivers 6.0 kW continuous output with 10.0 kW peak surge capability, effortlessly starting and powering 1.5-ton and 2.0-ton 5-star inverter air conditioners, water borewell pumps, and refrigeration.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Can I still use my terrace after installing solar?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes. Our elevated pergola structures maintain 7 to 9 feet of clear headroom, transforming your terrace into a shaded outdoor living space while bifacial panels produce clean power overhead.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Will installing solar on my terrace cause roof leakage or slab damage?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Never. WAVENOX enforces a strict Zero Slab Damage protocol utilizing non-penetrating ballasted blocks or chemical-anchor pedestals sealed with marine-grade elastomeric waterproofing membranes, covered by a 5-year guarantee.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How does commercial Section 32 40% accelerated depreciation work?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under Section 32 of the Income Tax Act, commercial and industrial enterprises can claim 40% accelerated depreciation in Year 1 on rooftop solar capital assets, delivering immediate corporate tax savings.",
-              },
-            },
-          ],
-        }),
-      },
-    ],
-  }),
-  component: IndexPage,
-});
-
 const FAQ_ITEMS: FaqItem[] = [
   {
     id: "subsidy",
@@ -172,6 +55,86 @@ const FAQ_ITEMS: FaqItem[] = [
       "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 3 to 4 weeks depending on your state distribution utility.",
   },
 ];
+
+export const Route = createFileRoute("/")({
+  staticData: {
+    headerTone: "overlay" as const,
+  },
+  head: () => ({
+    meta: [
+      { title: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
+      {
+        name: "description",
+        content:
+          "WAVENOX deploys low-profile residential solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and 24/7 outage protection.",
+      },
+      { property: "og:title", content: `${BRAND_CONFIG.name} — Solar Panels for Existing Roofs` },
+      {
+        property: "og:description",
+        content:
+          "Low-profile architectural solar for Indian homes. Subsidies up to ₹78,000, 25-year linear warranty, and 24/7 outage protection.",
+      },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/` },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-1600w.webp",
+        media: "(min-width: 768px)",
+        type: "image/webp",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home-hero-mobile.webp",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: BRAND_CONFIG.name,
+          url: BRAND_CONFIG.domain,
+          logo: `${BRAND_CONFIG.domain}/icon-512.png`,
+          description:
+            "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: BRAND_CONFIG.contact.phone.dial,
+            contactType: "customer service",
+            areaServed: "IN",
+            availableLanguage: ["English", "Telugu", "Hindi"],
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQ_ITEMS.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer,
+            },
+          })),
+        }),
+      },
+    ],
+  }),
+  component: IndexPage,
+});
 
 const STEPS = [
   {
@@ -222,385 +185,388 @@ function IndexPage() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
-      {/* 1. PANEL: home-hero */}
-      <Panel
-        id="solar-panels"
-        media={media["home-hero"]}
-        priority={true}
-        tone="dark"
-        title="Solar Panels"
-        lead="Pay less for electricity with low-profile solar built for Indian roofs."
-        stats={
-          <StatRow
-            stats={[
-              { value: "₹78,000", label: "Surya Ghar Subsidy" },
-              { value: "25 Years", label: "Linear Warranty" },
-              { value: "24/7", label: "Outage Protection" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-            <Button
-              onClick={() => openConsultationDrawer()}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Schedule Consultation
-            </Button>
-          </>
-        }
-        disclaimer="*Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning."
-      />
-
-      {/* 2. PANEL: home-design */}
-      <Panel
-        id="design"
-        media={media["home-design"]}
-        tone="dark"
-        title="Clean, All-Black Design"
-        lead="Low-profile panels and concealed mounting that sit neatly on your roofline."
-        stats={
-          <StatRow
-            stats={[
-              { value: "Flush", label: "Terrace Mount" },
-              { value: "Zero", label: "Visible Conduits" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-            <Button
-              to="/residential"
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Learn More
-            </Button>
-          </>
-        }
-      />
-
-      {/* 3. PANEL: home-outage */}
-      <Panel
-        id="outage-protection"
-        media={media["home-outage"]}
-        tone="dark"
-        title="Power Through Outages"
-        lead="Add Omnigrid to store solar energy and keep your home running when the grid goes down."
-        stats={
-          <StatRow
-            stats={[
-              { value: "< 20 ms", label: "Backup Switchover" },
-              { value: "14.3 kWh", label: "Usable Storage" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              to="/omnigrid"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Explore Omnigrid
-            </Button>
-            <Button
-              to="/deploy"
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-          </>
-        }
-      />
-
-      {/* 4. QUIET SECTION: Pay Less for Electricity (Savings Calculator) */}
-      <QuietSection
-        id="savings"
-        bg="surface"
-        title="Pay Less for Electricity"
-        lead="See how much solar lowers your monthly power bill across Telangana and Andhra Pradesh."
-      >
-        <div className="max-w-2xl mx-auto space-y-10">
-          {/* Controls: DISCOM select & Bill slider */}
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
-                Electricity Board (DISCOM)
-              </label>
-              <select
-                id="discom-select"
-                value={selectedDiscom}
-                onChange={(e) => setSelectedDiscom(e.target.value)}
-                className="h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+      <main>
+        {/* 1. PANEL: home-hero */}
+        <Panel
+          id="solar-panels"
+          as="h1"
+          media={media["home-hero"]}
+          priority={true}
+          tone="dark"
+          title="Solar Panels"
+          lead="Pay less for electricity with low-profile solar built for Indian roofs."
+          stats={
+            <StatRow
+              stats={[
+                { value: "₹78,000", label: "Surya Ghar Subsidy" },
+                { value: "25 Years", label: "Linear Warranty" },
+                { value: "24/7", label: "Outage Protection" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
               >
-                {DISCOMS.map((d) => (
-                  <option key={d.code} value={d.code}>
-                    {d.code} ({d.state})
-                  </option>
-                ))}
-              </select>
-            </div>
+                Order Now
+              </Button>
+              <Button
+                onClick={() => openConsultationDrawer()}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Schedule Consultation
+              </Button>
+            </>
+          }
+          disclaimer="*Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning."
+        />
 
-            <div className="space-y-3">
-              <div className="flex justify-between items-baseline">
-                <span className="text-[13px] font-medium text-[#5C5E62]">
-                  Monthly Electricity Bill
-                </span>
-                <span className="text-[18px] font-medium tabular-nums text-[#171A20]">
-                  ₹{formatInr(monthlyBill)}
-                </span>
-              </div>
-              <input
-                type="range"
-                min={2000}
-                max={35000}
-                step={500}
-                value={monthlyBill}
-                onChange={(e) => setMonthlyBill(Number(e.target.value))}
-                className="range-slider"
-                aria-label="Monthly electricity bill"
-              />
-              <div className="flex justify-between text-[12px] text-[#5C5E62]">
-                <span>₹2,000</span>
-                <span>₹35,000+</span>
-              </div>
-            </div>
-          </div>
+        {/* 2. PANEL: home-design */}
+        <Panel
+          id="design"
+          media={media["home-design"]}
+          tone="dark"
+          title="Clean, All-Black Design"
+          lead="Low-profile panels and concealed mounting that sit neatly on your roofline."
+          stats={
+            <StatRow
+              stats={[
+                { value: "Flush", label: "Terrace Mount" },
+                { value: "Zero", label: "Visible Conduits" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Order Now
+              </Button>
+              <Button
+                to="/residential"
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Learn More
+              </Button>
+            </>
+          }
+        />
 
-          {/* Big Number Output */}
-          <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
-            <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
-              ₹{formatInr(solarEstimate.annualSavingsInr)}
-            </div>
-            <div className="text-[13px] text-[#5C5E62]">Estimated Annual Bill Savings</div>
-            <p className="text-[14px] text-[#171A20] pt-1">
-              Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹
-              {formatInr(solarEstimate.subsidyInr)} central subsidy.
-            </p>
-          </div>
+        {/* 3. PANEL: home-outage */}
+        <Panel
+          id="outage-protection"
+          media={media["home-outage"]}
+          tone="dark"
+          title="Power Through Outages"
+          lead="Add Omnigrid to store solar energy and keep your home running when the grid goes down."
+          stats={
+            <StatRow
+              stats={[
+                { value: "< 20 ms", label: "Backup Switchover" },
+                { value: "14.3 kWh", label: "Usable Storage" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                to="/omnigrid"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Explore Omnigrid
+              </Button>
+              <Button
+                to="/deploy"
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Order Now
+              </Button>
+            </>
+          }
+        />
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Button
-              to="/deploy"
-              search={{ bill: monthlyBill, discom: selectedDiscom }}
-              variant="primary"
-              tone="light"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-            <TextLink to="/legal/disclosures" arrow>
-              How we calculate
-            </TextLink>
-          </div>
-        </div>
-      </QuietSection>
-
-      {/* 5. PANEL: home-heat */}
-      <Panel
-        id="heat-performance"
-        media={media["home-heat"]}
-        tone="dark"
-        title="Built for Indian Heat"
-        lead="N-type TOPCon cells keep producing through hot afternoons and partial shade."
-        stats={
-          <StatRow
-            stats={[
-              { value: "-0.30% / °C", label: "Temperature Coeff." },
-              { value: "22.8%", label: "Module Efficiency" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              onClick={() => setSpecsOpen(true)}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              View Specs
-            </Button>
-            <Button
-              to="/deploy"
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-          </>
-        }
-      />
-
-      {/* 6. QUIET SECTION: Monitor from Anywhere */}
-      <QuietSection
-        id="monitoring"
-        bg="white"
-        title="Monitor from Anywhere"
-        lead="Track generation, home consumption, and battery storage in real time from your phone."
-      >
-        <div className="flex flex-col items-center">
-          {/* Minimalist Phone Mockup */}
-          <div className="w-[280px] sm:w-[320px] rounded-[36px] p-4 bg-[#171A20] text-[#FFFFFF] shadow-2xl border-4 border-[#393C41]">
-            {/* Phone Screen */}
-            <div className="rounded-[24px] bg-[#171A20] p-5 space-y-6">
-              <div className="flex justify-between items-center text-[12px] text-[#FFFFFF]/60">
-                <span>WAVENOX Live</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#F57C00] animate-pulse" />
-                  Realtime
-                </span>
+        {/* 4. QUIET SECTION: Pay Less for Electricity (Savings Calculator) */}
+        <QuietSection
+          id="savings"
+          bg="surface"
+          title="Pay Less for Electricity"
+          lead="See how much solar lowers your monthly power bill across Telangana and Andhra Pradesh."
+        >
+          <div className="max-w-2xl mx-auto space-y-10">
+            {/* Controls: DISCOM select & Bill slider */}
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
+                  Electricity Board (DISCOM)
+                </label>
+                <select
+                  id="discom-select"
+                  value={selectedDiscom}
+                  onChange={(e) => setSelectedDiscom(e.target.value)}
+                  className="h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                >
+                  {DISCOMS.map((d) => (
+                    <option key={d.code} value={d.code}>
+                      {d.code} ({d.state})
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* Energy Diagram */}
-              <div className="space-y-4">
-                <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
-                  <div>
-                    <div className="text-[12px] text-[#FFFFFF]/60">Solar Production</div>
-                    <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">
-                      5.8 kW
-                    </div>
-                  </div>
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#F57C00]" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[13px] font-medium text-[#5C5E62]">
+                    Monthly Electricity Bill
+                  </span>
+                  <span className="text-[18px] font-medium tabular-nums text-[#171A20]">
+                    ₹{formatInr(monthlyBill)}
+                  </span>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3 text-[12px]">
-                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
-                    <div className="text-[#FFFFFF]/60">Home Load</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
-                      1.6 kW
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
-                    <div className="text-[#FFFFFF]/60">Omnigrid Battery</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
-                      98% (2.2 kW)
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
-                  <div>
-                    <div className="text-[12px] text-[#FFFFFF]/60">Grid Net Export</div>
-                    <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
-                      2.0 kW (Sending)
-                    </div>
-                  </div>
-                  <div className="text-[12px] text-[#F57C00] font-medium">+Net Metering</div>
+                <input
+                  type="range"
+                  min={2000}
+                  max={35000}
+                  step={500}
+                  value={monthlyBill}
+                  onChange={(e) => setMonthlyBill(Number(e.target.value))}
+                  className="range-slider"
+                  aria-label="Monthly electricity bill"
+                />
+                <div className="flex justify-between text-[12px] text-[#5C5E62]">
+                  <span>₹2,000</span>
+                  <span>₹35,000+</span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-8 text-center">
-            <TextLink to="/deploy" arrow>
-              Design your system
-            </TextLink>
-          </div>
-        </div>
-      </QuietSection>
-
-      {/* 7. QUIET SECTION: From Order to Power On */}
-      <QuietSection
-        id="process"
-        bg="surface"
-        title="From Order to Power On"
-        lead="A dedicated project engineer manages every step from permit to commissioning."
-      >
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-6 pt-4">
-          {STEPS.map((step) => (
-            <div key={step.num} className="space-y-2">
-              <span className="text-[13px] font-medium tabular-nums text-[#5C5E62] block">
-                {step.num}
-              </span>
-              <h3 className="text-[16px] font-medium text-[#171A20]">{step.title}</h3>
-              <p className="text-[13px] text-[#5C5E62] leading-relaxed">{step.desc}</p>
+            {/* Big Number Output */}
+            <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
+              <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                ₹{formatInr(solarEstimate.annualSavingsInr)}
+              </div>
+              <div className="text-[13px] text-[#5C5E62]">Estimated Annual Bill Savings</div>
+              <p className="text-[14px] text-[#171A20] pt-1">
+                Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹
+                {formatInr(solarEstimate.subsidyInr)} central subsidy.
+              </p>
             </div>
-          ))}
-        </div>
-      </QuietSection>
 
-      {/* 8. QUIET SECTION: Questions & Answers */}
-      <QuietSection
-        id="faq"
-        bg="white"
-        title="Questions & Answers"
-        lead="Clear answers on rooftop solar, government subsidies, and grid backup."
-      >
-        <div className="max-w-2xl mx-auto space-y-8">
-          <Faq items={FAQ_ITEMS} defaultValue="subsidy" />
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-2">
-            <TextLink to="/faq" arrow>
-              Browse complete Knowledge Base (26 Topics)
-            </TextLink>
-            <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
-              Talk to a WAVENOX solar advisor
-            </TextLink>
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <Button
+                to="/deploy"
+                search={{ bill: monthlyBill, discom: selectedDiscom }}
+                variant="primary"
+                tone="light"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Order Now
+              </Button>
+              <TextLink to="/legal/disclosures" arrow>
+                How we calculate
+              </TextLink>
+            </div>
           </div>
-        </div>
-      </QuietSection>
+        </QuietSection>
 
-      {/* 9. PANEL: home-final */}
-      <Panel
-        id="consultation"
-        media={media["home-final"]}
-        tone="dark"
-        title="Schedule a Virtual Consultation"
-        lead="Speak with a solar engineer to review your roof layout, subsidy eligibility, and savings."
-        stats={
-          <StatRow
-            stats={[
-              { value: "15 Mins", label: "Virtual Consultation" },
-              { value: "₹0", label: "Feasibility Layout" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              onClick={() => openConsultationDrawer()}
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Schedule Consultation
-            </Button>
-            <Button
-              to="/deploy"
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Order Now
-            </Button>
-          </>
-        }
-      />
+        {/* 5. PANEL: home-heat */}
+        <Panel
+          id="heat-performance"
+          media={media["home-heat"]}
+          tone="dark"
+          title="Built for Indian Heat"
+          lead="N-type TOPCon cells keep producing through hot afternoons and partial shade."
+          stats={
+            <StatRow
+              stats={[
+                { value: "-0.30% / °C", label: "Temperature Coeff." },
+                { value: "22.8%", label: "Module Efficiency" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                onClick={() => setSpecsOpen(true)}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                View Specs
+              </Button>
+              <Button
+                to="/deploy"
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Order Now
+              </Button>
+            </>
+          }
+        />
+
+        {/* 6. QUIET SECTION: Monitor from Anywhere */}
+        <QuietSection
+          id="monitoring"
+          bg="white"
+          title="Monitor from Anywhere"
+          lead="Track generation, home consumption, and battery storage in real time from your phone."
+        >
+          <div className="flex flex-col items-center">
+            {/* Minimalist Phone Mockup */}
+            <div className="w-[280px] sm:w-[320px] rounded-[36px] p-4 bg-[#171A20] text-[#FFFFFF] shadow-2xl border-4 border-[#393C41]">
+              {/* Phone Screen */}
+              <div className="rounded-[24px] bg-[#171A20] p-5 space-y-6">
+                <div className="flex justify-between items-center text-[12px] text-[#FFFFFF]/60">
+                  <span>WAVENOX Live</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#F57C00] animate-pulse" />
+                    Realtime
+                  </span>
+                </div>
+
+                {/* Energy Diagram */}
+                <div className="space-y-4">
+                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
+                    <div>
+                      <div className="text-[12px] text-[#FFFFFF]/60">Solar Production</div>
+                      <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">
+                        5.8 kW
+                      </div>
+                    </div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#F57C00]" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-[12px]">
+                    <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
+                      <div className="text-[#FFFFFF]/60">Home Load</div>
+                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
+                        1.6 kW
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
+                      <div className="text-[#FFFFFF]/60">Omnigrid Battery</div>
+                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
+                        98% (2.2 kW)
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
+                    <div>
+                      <div className="text-[12px] text-[#FFFFFF]/60">Grid Net Export</div>
+                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
+                        2.0 kW (Sending)
+                      </div>
+                    </div>
+                    <div className="text-[12px] text-[#F57C00] font-medium">+Net Metering</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <TextLink to="/deploy" arrow>
+                Design your system
+              </TextLink>
+            </div>
+          </div>
+        </QuietSection>
+
+        {/* 7. QUIET SECTION: From Order to Power On */}
+        <QuietSection
+          id="process"
+          bg="surface"
+          title="From Order to Power On"
+          lead="A dedicated project engineer manages every step from permit to commissioning."
+        >
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-6 pt-4">
+            {STEPS.map((step) => (
+              <div key={step.num} className="space-y-2">
+                <span className="text-[13px] font-medium tabular-nums text-[#5C5E62] block">
+                  {step.num}
+                </span>
+                <h3 className="text-[16px] font-medium text-[#171A20]">{step.title}</h3>
+                <p className="text-[13px] text-[#5C5E62] leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </QuietSection>
+
+        {/* 8. QUIET SECTION: Questions & Answers */}
+        <QuietSection
+          id="faq"
+          bg="white"
+          title="Questions & Answers"
+          lead="Clear answers on rooftop solar, government subsidies, and grid backup."
+        >
+          <div className="max-w-2xl mx-auto space-y-8">
+            <Faq items={FAQ_ITEMS} defaultValue="subsidy" />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-2">
+              <TextLink to="/faq" arrow>
+                Browse complete Knowledge Base (26 Topics)
+              </TextLink>
+              <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
+                Talk to a WAVENOX solar advisor
+              </TextLink>
+            </div>
+          </div>
+        </QuietSection>
+
+        {/* 9. PANEL: home-final */}
+        <Panel
+          id="consultation"
+          media={media["home-final"]}
+          tone="dark"
+          title="Schedule a Virtual Consultation"
+          lead="Speak with a solar engineer to review your roof layout, subsidy eligibility, and savings."
+          stats={
+            <StatRow
+              stats={[
+                { value: "15 Mins", label: "Virtual Consultation" },
+                { value: "₹0", label: "Feasibility Layout" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                onClick={() => openConsultationDrawer()}
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Schedule Consultation
+              </Button>
+              <Button
+                to="/deploy"
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Order Now
+              </Button>
+            </>
+          }
+        />
+      </main>
 
       {/* 10. FOOTER */}
       <Footer />

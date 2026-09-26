@@ -10,6 +10,9 @@ import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 
 export const Route = createFileRoute("/enterprise")({
+  staticData: {
+    headerTone: "overlay" as const,
+  },
   head: () => ({
     meta: [
       { title: `Commercial Solar — ${BRAND_CONFIG.name}` },
@@ -24,11 +27,13 @@ export const Route = createFileRoute("/enterprise")({
         content:
           "High-capacity rooftop solar infrastructure for manufacturing plants, cold storage, and corporate campuses.",
       },
-      { property: "og:image", content: "/media/commercial-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/enterprise` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/enterprise` },
       {
         rel: "preload",
         as: "image",
@@ -84,6 +89,7 @@ function EnterprisePage() {
   const [companyName, setCompanyName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [companyWebsite, setCompanyWebsite] = React.useState("");
+  const [hpExtra, setHpExtra] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
@@ -122,7 +128,9 @@ function EnterprisePage() {
         data: {
           name: clientName,
           phone,
-          city: companyName ? `${companyName} Facility` : "Industrial Rooftop",
+          company_name: companyName.trim() || undefined,
+          company_url: companyWebsite.trim() || undefined,
+          city: "Hyderabad",
           property_tier: "commercial",
           roof_area_sqft: roofAreaSqFt,
           system_kw: capacityKw,
@@ -131,7 +139,7 @@ function EnterprisePage() {
           notes: `Commercial proposal for ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft (~${capacityMw} MWp). Tariff: ₹${commercialTariff}/unit.`,
           consent_given: true,
           consent_version: "2026-09-v1",
-          company_website: companyWebsite.trim() || undefined,
+          hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
       });
@@ -140,6 +148,18 @@ function EnterprisePage() {
         setSubmitError(res.message);
         setIsSubmitting(false);
         return;
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            ref: res.referenceCode || "WNX-ENTERPRISE",
+            name: clientName,
+            isDemo: res.isDemo ?? true,
+            timestamp: new Date().toISOString(),
+          }),
+        );
       }
 
       navigate({
@@ -166,305 +186,336 @@ function EnterprisePage() {
     <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
-      {/* 1. PANEL: commercial-hero */}
-      <Panel
-        id="commercial"
-        media={media["commercial-hero"]}
-        priority={true}
-        tone="dark"
-        title="Commercial Solar"
-        lead="Turn industrial rooftops into clean energy assets with high-yield bifacial arrays."
-        stats={
-          <StatRow
-            stats={[
-              { value: "40%", label: "Tax Depreciation" },
-              { value: "3 to 4 Yrs", label: "Average Payback" },
-              { value: "25 Years", label: "Linear Warranty" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              onClick={scrollToAssessment}
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Request Site Assessment
-            </Button>
-            <Button
-              onClick={scrollToCalculator}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Calculate Yield
-            </Button>
-          </>
-        }
-        disclaimer="*Accelerated depreciation under Section 32 of Income Tax Act. Consult your financial advisor."
-      />
-
-      {/* 2. PANEL: commercial-industrial */}
-      <Panel
-        id="operating-costs"
-        media={media["commercial-industrial"]}
-        tone="dark"
-        title="Lower Operating Costs"
-        lead="Produce your own clean power during high peak daytime commercial tariff hours."
-        stats={
-          <StatRow
-            stats={[
-              { value: "₹10.50+", label: "Tariff Offset" },
-              { value: "22.8%", label: "Module Efficiency" },
-            ]}
-          />
-        }
-        actions={
-          <>
-            <Button
-              onClick={scrollToAssessment}
-              variant="primary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              Request Site Assessment
-            </Button>
-            <Button
-              onClick={() => setSpecsOpen(true)}
-              variant="secondary"
-              tone="dark"
-              className="w-full sm:w-auto min-w-[200px]"
-            >
-              View Specs
-            </Button>
-          </>
-        }
-      />
-
-      {/* 3. QUIET SECTION: Commercial Calculator */}
-      <QuietSection
-        id="calculator"
-        bg="surface"
-        title="Commercial Yield Calculator"
-        lead="Estimate system capacity, annual energy savings, and Year 1 Section 32 tax shields."
-      >
-        <div className="max-w-2xl mx-auto space-y-10">
-          {/* Controls */}
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex justify-between items-baseline">
-                <span className="text-[13px] font-medium text-[#5C5E62]">Usable Rooftop Area</span>
-                <span className="text-[18px] font-medium tabular-nums text-[#171A20]">
-                  {roofAreaSqFt.toLocaleString("en-IN")} sq.ft
-                </span>
-              </div>
-              <input
-                type="range"
-                min={10000}
-                max={200000}
-                step={5000}
-                value={roofAreaSqFt}
-                onChange={(e) => setRoofAreaSqFt(Number(e.target.value))}
-                className="range-slider"
-                aria-label="Rooftop area in square feet"
-              />
-              <div className="flex justify-between text-[12px] text-[#5C5E62]">
-                <span>10,000 sq.ft</span>
-                <span>200,000+ sq.ft</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
-              <label htmlFor="tariff-input" className="text-[13px] font-medium text-[#5C5E62]">
-                Current Commercial Tariff (₹ / kWh)
-              </label>
-              <input
-                id="tariff-input"
-                type="number"
-                step="0.1"
-                min="7"
-                max="15"
-                value={commercialTariff}
-                onChange={(e) => setCommercialTariff(Number(e.target.value))}
-                className="h-10 w-28 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] text-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
-              />
-            </div>
-          </div>
-
-          {/* Big Number Output */}
-          <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
-            <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
-              ₹{formatInr(annualSavingsInr)}
-            </div>
-            <div className="text-[13px] text-[#5C5E62]">Estimated Annual Electricity Savings</div>
-          </div>
-
-          {/* Stat Row */}
-          <div className="pt-2">
+      <main>
+        {/* 1. PANEL: commercial-hero */}
+        <Panel
+          id="commercial"
+          as="h1"
+          media={media["commercial-hero"]}
+          priority={true}
+          tone="dark"
+          title="Commercial Solar"
+          lead="Turn industrial rooftops into clean energy assets with high-yield bifacial arrays."
+          stats={
             <StatRow
               stats={[
-                {
-                  value: `${capacityMw} MWp`,
-                  label: "Plant Capacity",
-                  sublabel: `~${capacityKw} kWp`,
-                },
-                {
-                  value: `₹${formatInr(year1TaxShieldInr)}`,
-                  label: "Year 1 Tax Shield",
-                  sublabel: "Sec 32 Depreciation",
-                },
-                {
-                  value: `${estPaybackYears} Yrs`,
-                  label: "Estimated Payback",
-                  sublabel: "Capex Recovery",
-                },
+                { value: "40%", label: "Tax Depreciation" },
+                { value: "3 to 4 Yrs", label: "Average Payback" },
+                { value: "25 Years", label: "Linear Warranty" },
               ]}
             />
+          }
+          actions={
+            <>
+              <Button
+                onClick={scrollToAssessment}
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Request Site Assessment
+              </Button>
+              <Button
+                onClick={scrollToCalculator}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Calculate Yield
+              </Button>
+            </>
+          }
+          disclaimer="*Accelerated depreciation under Section 32 of Income Tax Act. Consult your financial advisor."
+        />
+
+        {/* 2. PANEL: commercial-industrial */}
+        <Panel
+          id="operating-costs"
+          media={media["commercial-industrial"]}
+          tone="dark"
+          title="Lower Operating Costs"
+          lead="Produce your own clean power during high peak daytime commercial tariff hours."
+          stats={
+            <StatRow
+              stats={[
+                { value: "₹10.50+", label: "Tariff Offset" },
+                { value: "22.8%", label: "Module Efficiency" },
+              ]}
+            />
+          }
+          actions={
+            <>
+              <Button
+                onClick={scrollToAssessment}
+                variant="primary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                Request Site Assessment
+              </Button>
+              <Button
+                onClick={() => setSpecsOpen(true)}
+                variant="secondary"
+                tone="dark"
+                className="w-full sm:w-auto min-w-[200px]"
+              >
+                View Specs
+              </Button>
+            </>
+          }
+        />
+
+        {/* 3. QUIET SECTION: Commercial Calculator */}
+        <QuietSection
+          id="calculator"
+          bg="surface"
+          title="Commercial Yield Calculator"
+          lead="Estimate system capacity, annual energy savings, and Year 1 Section 32 tax shields."
+        >
+          <div className="max-w-2xl mx-auto space-y-10">
+            {/* Controls */}
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[13px] font-medium text-[#5C5E62]">
+                    Usable Rooftop Area
+                  </span>
+                  <span className="text-[18px] font-medium tabular-nums text-[#171A20]">
+                    {roofAreaSqFt.toLocaleString("en-IN")} sq.ft
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={10000}
+                  max={200000}
+                  step={5000}
+                  value={roofAreaSqFt}
+                  onChange={(e) => setRoofAreaSqFt(Number(e.target.value))}
+                  className="range-slider"
+                  aria-label="Rooftop area in square feet"
+                />
+                <div className="flex justify-between text-[12px] text-[#5C5E62]">
+                  <span>10,000 sq.ft</span>
+                  <span>200,000+ sq.ft</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
+                <label htmlFor="tariff-input" className="text-[13px] font-medium text-[#5C5E62]">
+                  Current Commercial Tariff (₹ / kWh)
+                </label>
+                <input
+                  id="tariff-input"
+                  type="number"
+                  step="0.1"
+                  min="7"
+                  max="15"
+                  value={commercialTariff}
+                  onChange={(e) => setCommercialTariff(Number(e.target.value))}
+                  className="h-10 w-28 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] text-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                />
+              </div>
+            </div>
+
+            {/* Big Number Output */}
+            <div className="text-center pt-4 border-t border-[#E3E4E6] space-y-2">
+              <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                ₹{formatInr(annualSavingsInr)}
+              </div>
+              <div className="text-[13px] text-[#5C5E62]">Estimated Annual Electricity Savings</div>
+            </div>
+
+            {/* Stat Row */}
+            <div className="pt-2">
+              <StatRow
+                stats={[
+                  {
+                    value: `${capacityMw} MWp`,
+                    label: "Plant Capacity",
+                    sublabel: `~${capacityKw} kWp`,
+                  },
+                  {
+                    value: `₹${formatInr(year1TaxShieldInr)}`,
+                    label: "Year 1 Tax Shield",
+                    sublabel: "Sec 32 Depreciation",
+                  },
+                  {
+                    value: `${estPaybackYears} Yrs`,
+                    label: "Estimated Payback",
+                    sublabel: "Capex Recovery",
+                  },
+                ]}
+              />
+            </div>
           </div>
-        </div>
-      </QuietSection>
+        </QuietSection>
 
-      {/* 4. QUIET SECTION: Commercial Site Assessment Form */}
-      <QuietSection
-        id="assessment"
-        bg="white"
-        title="Request a Site Assessment"
-        lead="Our commercial engineering team will evaluate roof structural loads, grid interconnection, and preliminary yield."
-      >
-        <div className="max-w-xl mx-auto">
-          <form onSubmit={handleSubmitRfp} className="space-y-5">
-            {submitError && (
-              <div className="p-3.5 bg-[#B42318]/10 border border-[#B42318]/30 rounded-[6px] text-[#B42318] text-[13px] flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{submitError}</span>
-              </div>
-            )}
+        {/* 4. QUIET SECTION: Commercial Site Assessment Form */}
+        <QuietSection
+          id="assessment"
+          bg="white"
+          title="Request a Site Assessment"
+          lead="Our commercial engineering team will evaluate roof structural loads, grid interconnection, and preliminary yield."
+        >
+          <div className="max-w-xl mx-auto">
+            <form onSubmit={handleSubmitRfp} className="space-y-5">
+              {submitError && (
+                <div className="p-3.5 bg-[#B42318]/10 border border-[#B42318]/30 rounded-[6px] text-[#B42318] text-[13px] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
 
-            <div>
-              <label
-                htmlFor="rfp-name"
-                className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
-              >
-                Full Name *
-              </label>
-              <input
-                id="rfp-name"
-                type="text"
-                required
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                placeholder="First and last name"
-                className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="rfp-phone"
-                className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
-              >
-                Mobile Phone / WhatsApp (+91) *
-              </label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3.5 text-[13px] font-medium text-[#5C5E62] select-none pointer-events-none border-r border-[#E5E7EB] pr-2.5">
-                  +91
-                </span>
+              <div>
+                <label
+                  htmlFor="rfp-name"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
+                  Full Name *
+                </label>
                 <input
-                  id="rfp-phone"
-                  type="tel"
+                  id="rfp-name"
+                  type="text"
                   required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="10-digit mobile number"
-                  maxLength={14}
-                  className="w-full h-11 pl-16 pr-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label
-                  htmlFor="rfp-company"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
-                >
-                  Company / Facility Name
-                </label>
-                <input
-                  id="rfp-company"
-                  type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="e.g. Commercial facility or business name"
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  placeholder="First and last name"
                   className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="rfp-website"
+                  htmlFor="rfp-phone"
                   className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
-                  Company Website (Optional)
+                  Mobile Phone / WhatsApp (+91) *
                 </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-3.5 text-[13px] font-medium text-[#5C5E62] select-none pointer-events-none border-r border-[#E5E7EB] pr-2.5">
+                    +91
+                  </span>
+                  <input
+                    id="rfp-phone"
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="10-digit mobile number"
+                    maxLength={14}
+                    className="w-full h-11 pl-16 pr-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label
+                    htmlFor="rfp-company"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
+                    Company / Facility Name
+                  </label>
+                  <input
+                    id="rfp-company"
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="e.g. Commercial facility or business name"
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="rfp-website"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
+                    Company Website (Optional)
+                  </label>
+                  <input
+                    id="rfp-website"
+                    type="text"
+                    value={companyWebsite}
+                    onChange={(e) => setCompanyWebsite(e.target.value)}
+                    placeholder="e.g. company.in"
+                    className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Visually hidden honeypot field for bot suppression */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  opacity: 0,
+                  height: 0,
+                  overflow: "hidden",
+                }}
+                aria-hidden="true"
+              >
                 <input
-                  id="rfp-website"
                   type="text"
-                  value={companyWebsite}
-                  onChange={(e) => setCompanyWebsite(e.target.value)}
-                  placeholder="e.g. company.in"
-                  className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
+                  name="hp_extra"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpExtra}
+                  onChange={(e) => setHpExtra(e.target.value)}
                 />
               </div>
-            </div>
 
-            {/* DPDP Act 2023 Consent */}
-            <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
-              <input
-                id="rfp-consent"
-                type="checkbox"
-                required
-                checked={consentGiven}
-                onChange={(e) => setConsentGiven(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
-              />
-              <label
-                htmlFor="rfp-consent"
-                className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+              {/* DPDP Act 2023 Consent */}
+              <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
+                <input
+                  id="rfp-consent"
+                  type="checkbox"
+                  required
+                  checked={consentGiven}
+                  onChange={(e) => setConsentGiven(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
+                />
+                <label
+                  htmlFor="rfp-consent"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                >
+                  I authorize WAVENOX commercial solar engineers to evaluate facility
+                  interconnection and contact me in accordance with the{" "}
+                  <strong>DPDP Act 2023</strong>. Data is processed solely for proposal generation
+                  and never shared. You may withdraw consent anytime via our{" "}
+                  <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                    Privacy Policy
+                  </a>
+                  .
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || !consentGiven}
+                className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                I authorize WAVENOX commercial solar engineers to evaluate facility interconnection
-                and contact me in accordance with the <strong>DPDP Act 2023</strong>. Zero spam
-                guarantee.
-              </label>
-            </div>
+                <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
+                <span>
+                  {isSubmitting ? "Generating Assessment..." : "Request Commercial Proposal"}
+                </span>
+              </button>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || !consentGiven}
-              className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-              <span>
-                {isSubmitting ? "Generating Assessment..." : "Request Commercial Proposal"}
-              </span>
-            </button>
-
-            <div className="pt-2 text-center">
-              <a
-                href={BRAND_CONFIG.contact.whatsapp.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
-              >
-                <MessageSquare className="w-4 h-4 text-[#F57C00]" />
-                <span>Prefer direct commercial advisor discussion? Chat on WhatsApp →</span>
-              </a>
-            </div>
-          </form>
-        </div>
-      </QuietSection>
+              <div className="pt-2 text-center">
+                <a
+                  href={BRAND_CONFIG.contact.whatsapp.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[13px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#F57C00]" />
+                  <span>Prefer direct commercial advisor discussion? Chat on WhatsApp →</span>
+                </a>
+              </div>
+            </form>
+          </div>
+        </QuietSection>
+      </main>
 
       <Footer />
 

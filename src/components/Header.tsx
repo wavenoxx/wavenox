@@ -32,15 +32,10 @@ export function Header() {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
 
-  const isLightPage =
-    pathname.startsWith("/deploy") ||
-    pathname.startsWith("/legal") ||
-    pathname.startsWith("/order") ||
-    pathname.startsWith("/faq") ||
-    pathname.startsWith("/technology") ||
-    pathname.startsWith("/warranty") ||
-    pathname.startsWith("/service-areas") ||
-    pathname.startsWith("/our-story");
+  const currentMatch = routerState.matches[routerState.matches.length - 1];
+  const headerTone =
+    (currentMatch?.staticData as { headerTone?: "overlay" | "solid" } | undefined)?.headerTone ??
+    "solid";
 
   // Auto-close menus on route navigation
   React.useEffect(() => {
@@ -81,13 +76,14 @@ export function Header() {
   };
 
   const isMenuVisible = activeCategory !== null;
-  const showSolidHeader = isScrolled || isLightPage || isMenuVisible;
+  const isOverlay = headerTone === "overlay";
+  const showSolidHeader = isScrolled || !isOverlay || isMenuVisible;
 
   return (
     <>
       <header
         onMouseLeave={handleMouseLeave}
-        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 select-none ${
+        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 ${
           showSolidHeader
             ? "bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6]"
             : "bg-transparent text-[#FFFFFF]"

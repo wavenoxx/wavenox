@@ -13,7 +13,16 @@ export const Route = createFileRoute("/legal/terms")({
         name: "description",
         content: `Standard Terms of Service, engineering quotation policies, and warranty definitions for ${BRAND_CONFIG.legalName}.`,
       },
+      { property: "og:title", content: `Terms of Service — ${BRAND_CONFIG.name}` },
+      {
+        property: "og:description",
+        content: `Standard Terms of Service, engineering quotation policies, and warranty definitions for ${BRAND_CONFIG.legalName}.`,
+      },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/legal/terms` },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/legal/terms` }],
   }),
   component: TermsPage,
 });

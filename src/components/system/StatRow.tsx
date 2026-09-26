@@ -24,7 +24,7 @@ export function StatRow({ stats, align = "center", className = "" }: StatRowProp
 
   return (
     <div
-      className={`w-full grid ${gridCols} gap-2 sm:gap-6 md:flex md:w-auto md:flex-wrap md:items-baseline md:gap-14 mx-auto ${
+      className={`w-full grid ${gridCols} md:max-w-none md:flex md:w-auto md:flex-nowrap md:items-baseline md:gap-14 mx-auto ${
         isCenter ? "justify-center text-center" : "justify-start text-left"
       } ${className}`}
     >

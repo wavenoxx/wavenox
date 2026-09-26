@@ -18,6 +18,7 @@ import {
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { DISCOMS } from "@/config/solar";
+import { submitLead } from "@/functions/leads";
 
 export const Route = createFileRoute("/net-metering")({
   head: () => ({
@@ -39,9 +40,11 @@ export const Route = createFileRoute("/net-metering")({
         content:
           "Calculate your permissible solar capacity, metering class, and sanction timeline under State Electricity Regulatory Commission (SERC) codes.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/net-metering` },
       { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/net-metering` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -176,7 +179,14 @@ function NetMeteringPage() {
   const [serviceNum, setServiceNum] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [checkSubmitted, setCheckSubmitted] = React.useState(false);
+  const [consentGiven, setConsentGiven] = React.useState(false);
+  const [hpExtra, setHpExtra] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = React.useState<{
+    referenceCode?: string;
+    isDemo?: boolean;
+  } | null>(null);
 
   const reg = REGULATORY_DATA[selectedCode] || REGULATORY_DATA["TGSPDCL"];
   const permissibleSolarKw = (sanctionedLoadKw * (reg.maxSolarCapacityPct / 100)).toFixed(1);
@@ -188,9 +198,52 @@ function NetMeteringPage() {
     meterCategory = "Three-Phase CT/PT Operated Net-Meter with AMR (Automated Meter Reading)";
   }
 
-  const handleFeasibilityCheck = (e: React.FormEvent) => {
+  const handleFeasibilityCheck = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCheckSubmitted(true);
+    if (!consentGiven) {
+      setSubmitError(
+        "Please confirm your consent to be contacted regarding net-metering feasibility.",
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await submitLead({
+        data: {
+          name: `Consumer USC-${serviceNum.trim()}`,
+          phone,
+          city: "Hyderabad",
+          pin_code: pinCode.trim(),
+          property_tier: "villa",
+          discom_code: selectedCode,
+          system_kw: Number(permissibleSolarKw),
+          source: "net_metering",
+          notes: `Feasibility check for USC: ${serviceNum} under ${selectedCode}. Sanctioned load: ${sanctionedLoadKw} kW. Permissible solar: ${permissibleSolarKw} kW.`,
+          consent_given: true,
+          consent_version: "2026-09-v1",
+          hp_extra: hpExtra.trim() || undefined,
+        },
+      });
+
+      if (!res.success) {
+        setSubmitError(res.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      setSubmissionResult({
+        referenceCode: res.referenceCode,
+        isDemo: res.isDemo ?? true,
+      });
+    } catch (err: unknown) {
+      console.error("[NetMetering] Feasibility error:", err);
+      setSubmitError("Failed to record feasibility check. Please reach us via WhatsApp.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const whatsappHref = `${BRAND_CONFIG.contact.whatsappLink}?text=${encodeURIComponent(
@@ -378,25 +431,50 @@ function NetMeteringPage() {
               </p>
             </div>
 
-            {checkSubmitted ? (
-              <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-3">
+            {submissionResult ? (
+              <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-4">
                 <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
                 <h4 className="text-[17px] font-semibold text-[#166534]">
-                  Feasibility Request Logged for {reg.code}
+                  Feasibility Request Logged ({submissionResult.referenceCode || "WNX-FEASIBILITY"})
                 </h4>
-                <p className="text-[13px] text-[#15803D] max-w-md mx-auto">
-                  Our utility engineer will cross-reference your service connection with the local
-                  DISCOM substation records within 24 hours.
+                <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
+                  {submissionResult.isDemo
+                    ? `Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no live automated query is dispatched to ${reg.code} servers. You can check your actual feeder load directly on the official ${reg.portalName} or discuss with our engineers on WhatsApp.`
+                    : `Your feasibility assessment request has been recorded for ${reg.code}. You can also view official feeder capacity guidelines directly on ${reg.portalName}.`}
                 </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <a
+                    href={reg.portalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-[#16A34A] text-white text-[13px] font-medium hover:bg-[#15803D] transition-colors"
+                  >
+                    <span>Visit {reg.portalName}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] border border-[#16A34A] text-[#166534] text-[13px] font-medium hover:bg-[#DCFCE7] transition-colors"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Discuss on WhatsApp</span>
+                  </a>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleFeasibilityCheck} className="space-y-4 max-w-xl mx-auto pt-2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="net-service-num"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       Service Connection / USC Number *
                     </label>
                     <input
+                      id="net-service-num"
                       type="text"
                       required
                       value={serviceNum}
@@ -406,10 +484,14 @@ function NetMeteringPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="net-pincode"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       6-Digit Postal PIN Code *
                     </label>
                     <input
+                      id="net-pincode"
                       type="text"
                       required
                       maxLength={6}
@@ -424,10 +506,14 @@ function NetMeteringPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                  <label
+                    htmlFor="net-phone"
+                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                  >
                     Mobile Number / WhatsApp (+91) *
                   </label>
                   <input
+                    id="net-phone"
                     type="tel"
                     required
                     value={phone}
@@ -438,12 +524,70 @@ function NetMeteringPage() {
                   />
                 </div>
 
+                {/* Bot suppression honeypot */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    opacity: 0,
+                    height: 0,
+                    overflow: "hidden",
+                  }}
+                  aria-hidden="true"
+                >
+                  <input
+                    type="text"
+                    name="hp_extra"
+                    id="net-hp-extra"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={hpExtra}
+                    onChange={(e) => setHpExtra(e.target.value)}
+                  />
+                </div>
+
+                {/* DPDP Consent */}
+                <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="net-consent"
+                    required
+                    checked={consentGiven}
+                    onChange={(e) => setConsentGiven(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded-[4px] border-[#CBD5E1] text-[#171A20] focus:ring-1 focus:ring-[#171A20] cursor-pointer shrink-0"
+                  />
+                  <label
+                    htmlFor="net-consent"
+                    className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  >
+                    I authorize WAVENOX to review my service connection details and contact me
+                    regarding net-metering feasibility in accordance with the{" "}
+                    <strong>DPDP Act 2023</strong>. Data is processed solely for feasibility
+                    estimation and never shared. You may withdraw consent anytime via our{" "}
+                    <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                      Privacy Policy
+                    </a>
+                    .
+                  </label>
+                </div>
+
+                {submitError && (
+                  <div className="p-3.5 rounded-[6px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px]">
+                    {submitError}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full h-12 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  disabled={isSubmitting || !consentGiven}
+                  className="w-full h-12 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-                  <span>Verify Feeder Clearance &amp; Sanction Lead Time</span>
+                  <span>
+                    {isSubmitting
+                      ? "Submitting Request..."
+                      : "Verify Feeder Clearance & Sanction Lead Time"}
+                  </span>
                 </button>
               </form>
             )}

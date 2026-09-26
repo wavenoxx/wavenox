@@ -21,10 +21,10 @@ const DEFAULT_EMAIL = "advisory@wavenox.in";
 const DEFAULT_ADDRESS =
   "WAVENOX Innovation Lab, Financial District, Gachibowli, Hyderabad, Telangana 500032";
 
-const DEFAULT_INSTAGRAM_URL = "https://instagram.com/wavenox.solar";
-const DEFAULT_LINKEDIN_URL = "https://linkedin.com/company/wavenox";
-const DEFAULT_YOUTUBE_URL = "https://youtube.com/@wavenox";
-const DEFAULT_TWITTER_URL = "https://x.com/wavenox";
+const DEFAULT_INSTAGRAM_URL = "";
+const DEFAULT_LINKEDIN_URL = "";
+const DEFAULT_YOUTUBE_URL = "";
+const DEFAULT_TWITTER_URL = "";
 
 /* ========================================================================== */
 

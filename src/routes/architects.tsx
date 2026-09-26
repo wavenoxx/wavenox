@@ -17,6 +17,7 @@ import {
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
 import { PRODUCTS_CONFIG } from "@/config/products";
+import { submitLead } from "@/functions/leads";
 
 export const Route = createFileRoute("/architects")({
   head: () => ({
@@ -38,9 +39,11 @@ export const Route = createFileRoute("/architects")({
         content:
           "Engineering solar into modern architectural design language. Concealed conduits, zero terrace punctures, and 170 km/h cyclone resistance.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/architects` },
       { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/architects` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -117,15 +120,63 @@ function ArchitectsPage() {
   const [contactName, setContactName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [projectLocation, setProjectLocation] = React.useState("");
-  const [formSubmitted, setFormSubmitted] = React.useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-  };
+  const [hpExtra, setHpExtra] = React.useState("");
+  const [consentGiven, setConsentGiven] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = React.useState<{
+    referenceCode?: string;
+    isDemo: boolean;
+  } | null>(null);
 
   const whatsappText = `Hello WAVENOX Architectural Team, I am an architect / interior designer and would like to review rooftop solar CAD/BIM specifications and schedule a technical consultation.`;
   const whatsappUrl = `${BRAND_CONFIG.contact.whatsappLink}?text=${encodeURIComponent(whatsappText)}`;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consentGiven) {
+      setSubmitError(
+        "Please confirm your consent to be contacted regarding CAD/BIM specifications.",
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await submitLead({
+        data: {
+          name: contactName.trim(),
+          phone: phone.trim(),
+          city: projectLocation.trim() || "Hyderabad",
+          property_tier: "villa",
+          company_name: studioName.trim(),
+          source: "architects",
+          notes: `Architectural CAD/BIM inquiry from ${studioName.trim()} (${contactName.trim()}) for project in ${projectLocation.trim()}.`,
+          consent_given: true,
+          consent_version: "2026-09-v1",
+          hp_extra: hpExtra.trim() || undefined,
+        },
+      });
+
+      if (!res.success) {
+        setSubmitError(res.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      setSubmissionResult({
+        referenceCode: res.referenceCode,
+        isDemo: res.isDemo ?? true,
+      });
+    } catch (err: unknown) {
+      console.error("[Architects] Lead submission error:", err);
+      setSubmitError("Failed to record architectural inquiry. Please reach us via WhatsApp.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#171A20] selection:bg-[#171A20] selection:text-white flex flex-col justify-between">
@@ -261,32 +312,76 @@ function ArchitectsPage() {
                 Register Your Architectural Studio
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Connect directly with our Lead Solar Structural Engineers to receive 3D shadow
-                models, custom Pergola structural calculations, and turnkey DISCOM utility liaison
-                for your client villas.
+                Connect directly with our engineering team to review 3D shadow models, Pergola
+                structural parameters, and utility coordination for your client residences.
               </p>
             </div>
 
-            {formSubmitted ? (
-              <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-3">
+            {submissionResult ? (
+              <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-4">
                 <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
                 <h4 className="text-[17px] font-semibold text-[#166534]">
-                  Architectural Dossier Request Confirmed
+                  Architectural Inquiry Recorded ({submissionResult.referenceCode || "WNX-ARCH"})
                 </h4>
-                <p className="text-[13px] text-[#15803D] max-w-md mx-auto">
-                  Our Lead Structural Engineer will contact you within 24 hours with complete BIM
-                  families and project-specific 3D shadow simulation files.
+                <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
+                  {submissionResult.isDemo
+                    ? "Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no automated dossier dispatch occurs. You can review the published CAD specifications above or discuss engineering integration directly with the designer via WhatsApp."
+                    : "Thank you for registering your practice. Our engineering team will review your project parameters and share custom technical details."}
                 </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-[#16A34A] text-white text-[13px] font-medium hover:bg-[#15803D] transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Discuss on WhatsApp</span>
+                  </a>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pt-2">
+                {submitError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-[6px] text-[13px] text-red-700">
+                    {submitError}
+                  </div>
+                )}
+
+                {/* Honeypot field (hidden from real users) */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    opacity: 0,
+                    height: 0,
+                    overflow: "hidden",
+                  }}
+                  aria-hidden="true"
+                >
+                  <label htmlFor="arch_hp_extra">Leave this field blank</label>
+                  <input
+                    type="text"
+                    id="arch_hp_extra"
+                    name="hp_extra"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={hpExtra}
+                    onChange={(e) => setHpExtra(e.target.value)}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="arch_studio_name"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       Architecture Studio / Firm *
                     </label>
                     <input
                       type="text"
+                      id="arch_studio_name"
                       required
                       value={studioName}
                       onChange={(e) => setStudioName(e.target.value)}
@@ -295,11 +390,15 @@ function ArchitectsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="arch_contact_name"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       Lead Architect / Principal *
                     </label>
                     <input
                       type="text"
+                      id="arch_contact_name"
                       required
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
@@ -311,11 +410,15 @@ function ArchitectsPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="arch_phone"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       Mobile / WhatsApp (+91) *
                     </label>
                     <input
                       type="tel"
+                      id="arch_phone"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -325,11 +428,15 @@ function ArchitectsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5">
+                    <label
+                      htmlFor="arch_project_location"
+                      className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-wider mb-1.5"
+                    >
                       Project Location / City *
                     </label>
                     <input
                       type="text"
+                      id="arch_project_location"
                       required
                       value={projectLocation}
                       onChange={(e) => setProjectLocation(e.target.value)}
@@ -339,12 +446,39 @@ function ArchitectsPage() {
                   </div>
                 </div>
 
+                {/* DPDP Consent */}
+                <div className="flex items-start gap-2.5 pt-2">
+                  <input
+                    type="checkbox"
+                    id="consent_architects"
+                    checked={consentGiven}
+                    onChange={(e) => setConsentGiven(e.target.checked)}
+                    required
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-[#171A20] focus:ring-[#171A20]"
+                  />
+                  <label
+                    htmlFor="consent_architects"
+                    className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
+                  >
+                    I consent to WAVENOX collecting my professional contact details to share CAD/BIM
+                    specifications and discuss project feasibility. You may withdraw consent at any
+                    time. See our{" "}
+                    <Link to="/legal/privacy" className="underline hover:text-[#171A20]">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </label>
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full h-12 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  disabled={isSubmitting}
+                  className="w-full h-12 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FileCode2 className="w-4 h-4 text-[#F57C00]" />
-                  <span>Request Full BIM &amp; CAD Package</span>
+                  <span>
+                    {isSubmitting ? "Recording Inquiry..." : "Request Technical CAD Specifications"}
+                  </span>
                 </button>
               </form>
             )}
