@@ -15,7 +15,7 @@ export const FAQ_CATEGORIES = [
   { id: "terrace", label: "Terrace & Pergolas" },
   { id: "technology", label: "TOPCon Technology" },
   { id: "billing", label: "Net Metering & DISCOMs" },
-  { id: "commercial", label: "Commercial & Tax (Sec 32)" },
+  { id: "commercial", label: "Commercial & Tax (Section 34)" },
   { id: "warranty", label: "Warranties & Service" },
 ] as const;
 
@@ -47,7 +47,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Subsidies & Surya Ghar",
     question: "Do I have to visit DISCOM offices or government departments myself?",
     answer:
-      "No. WAVENOX handles the entire regulatory liaison process end-to-end. Our regulatory engineering team creates your National Portal registration, submits technical single-line diagrams (SLD) to your local DISCOM (such as TGSPDCL, TSNPDCL, APEPDCL, APSPDCL, or BESCOM), secures the feasibility sanction, coordinates the physical meter inspection, and submits the commissioning certificate.",
+      "No. WAVENOX handles the entire regulatory liaison process end-to-end. Our regulatory engineering team creates your National Portal registration, submits technical single-line diagrams (SLD) to your local DISCOM (such as TGSPDCL, TGNPDCL, APEPDCL, APSPDCL, or BESCOM), secures the feasibility sanction, coordinates the physical meter inspection, and submits the commissioning certificate.",
     featured: true,
   },
   {
@@ -56,7 +56,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Subsidies & Surya Ghar",
     question: "Are WAVENOX solar modules compliant with MNRE ALMM and DCR mandates?",
     answer:
-      "Yes. Every solar panel deployed by WAVENOX for residential subsidy projects is certified under the MNRE Approved List of Models and Manufacturers (ALMM) and complies with Domestic Content Requirement (DCR) rules, guaranteeing unconditional subsidy approval from the central portal.",
+      "Yes. Every solar panel deployed by WAVENOX for residential subsidy projects is certified under the MNRE Approved List of Models and Manufacturers (ALMM) and complies with Domestic Content Requirement (DCR) rules with Indian-made solar cells. Under MNRE guidelines, residential PM Surya Ghar CFA strictly mandates DCR modules; while ALMM List-II (cells) is being phased in with net-metering exemptions for projects commissioned through 31 Dec 2026, our procurement adheres to full DCR compliance.",
     featured: false,
   },
 
@@ -123,7 +123,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Terrace & Pergolas",
     question: "How do WAVENOX elevated structures perform during cyclones and monsoons?",
     answer:
-      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Engineered in accordance with IS 875 (Part 3) wind load standards, our pergolas are structurally rated to withstand 170 km/h wind gusts, ensuring total resilience through coastal cyclones and severe squalls.",
+      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Structures are engineered in accordance with IS 875 (Part 3) for the site's basic wind speed — e.g. 44 m/s (158 km/h) in Hyderabad and 50 m/s in coastal zones — ensuring total structural stability through severe monsoonal squalls.",
     featured: false,
   },
 
@@ -181,7 +181,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Net Metering & DISCOMs",
     question: "What are the solar banking rules in Telangana, Andhra Pradesh, and Karnataka?",
     answer:
-      "In Telangana (TGSPDCL / TSNPDCL) and Andhra Pradesh (APEPDCL / APSPDCL), excess solar credits bank month-to-month and settle annually at the tariff determined by the respective State Electricity Regulatory Commission (SERC). In Karnataka (BESCOM), net metering is available for domestic consumers up to sanctioned transformer capacity. WAVENOX coordinates all utility tariff filings automatically.",
+      "In Telangana (TGSPDCL / TGNPDCL) and Andhra Pradesh (APEPDCL / APSPDCL), excess solar credits bank month-to-month and settle annually at the tariff determined by the respective State Electricity Regulatory Commission (SERC). In Karnataka (BESCOM), net metering is available for domestic consumers up to sanctioned transformer capacity. WAVENOX coordinates all utility tariff filings automatically.",
     featured: false,
   },
   {
@@ -190,24 +190,24 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Net Metering & DISCOMs",
     question: "Can I install a solar system larger than my DISCOM sanctioned connected load?",
     answer:
-      "Utility regulations require that your rooftop solar plant capacity cannot exceed your sanctioned connected load (e.g., if your sanctioned load is 5 kW, maximum permitted solar is 5 kW). If your roof has space for a 10 kW system to offset heavy AC usage, WAVENOX will file an official load enhancement application with your DISCOM alongside your solar application.",
+      "Under the Ministry of Power Electricity (Rights of Consumers) Amendment Rules, 2024, technical feasibility studies are waived (deemed approved) for rooftop systems up to 10 kW, with deemed load enhancement up to 10 kW. For systems larger than 10 kW, utility regulations evaluate distribution transformer capacity, and WAVENOX files official load enhancement requests on your behalf through the national portal.",
     featured: false,
   },
 
-  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 32)
+  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 34)
   {
-    id: "section-32-accelerated-depreciation",
+    id: "section-34-accelerated-depreciation",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
-    question: "How does Section 32 40% accelerated tax depreciation work for businesses?",
+    categoryLabel: "Commercial & Tax (Section 34)",
+    question: "How does Section 34 40% accelerated tax depreciation work for businesses?",
     answer:
-      "Under Section 32 of the Indian Income Tax Act, commercial and industrial enterprises investing in rooftop solar capital assets can claim 40% accelerated depreciation in Year 1 (or 20% if commissioned in the second half of the fiscal year). For a profitable corporate entity in the 25%–30% corporate tax bracket, this delivers immediate tax savings equal to roughly 10%–12% of the total project CAPEX in the first year alone.",
+      "Under Section 34 of the Income-tax Act, 2025 (in force 1 April 2026, replacing Section 32 of the 1961 Act), commercial and industrial enterprises investing in rooftop solar capital assets can claim 40% accelerated depreciation in Year 1 (or 20% if put to use for less than 180 days in the fiscal year). For a corporate entity in the 25%–30% corporate tax bracket, this delivers immediate tax savings equal to roughly 10%–12% of total project CAPEX in the first year alone. (Illustrative — consult your Chartered Accountant).",
     featured: true,
   },
   {
     id: "commercial-payback-period",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
+    categoryLabel: "Commercial & Tax (Section 34)",
     question: "What is the typical return on investment (ROI) for commercial solar in India?",
     answer:
       "Commercial and industrial tariffs across Telangana, Andhra Pradesh, and Karnataka range between ₹8.50 and ₹12.50 per unit. Combined with 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
@@ -216,7 +216,7 @@ export const FAQ_DATA: FaqTopic[] = [
   {
     id: "open-access-vs-rooftop",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
+    categoryLabel: "Commercial & Tax (Section 34)",
     question: "What is the difference between captive rooftop solar and group captive open access?",
     answer:
       "Captive rooftop solar generates electricity directly on your facility roof behind the commercial meter, eliminating all grid transmission losses, wheeling charges, and cross-subsidy surcharges. Open access involves procuring power from an off-site solar park across the utility transmission grid, which is typically recommended only when your facility roof area is insufficient to meet your total electrical demand.",

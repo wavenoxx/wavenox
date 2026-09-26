@@ -15,7 +15,7 @@ export const Route = createFileRoute("/faq")({
       {
         name: "description",
         content:
-          "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 32 tax depreciation.",
+          "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 34 tax depreciation.",
       },
       { property: "og:title", content: `FAQ & Solar Knowledge Center — ${BRAND_CONFIG.name}` },
       {

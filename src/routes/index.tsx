@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import {
@@ -352,6 +352,10 @@ function IndexPage() {
                   <span>₹2,000</span>
                   <span>₹35,000+</span>
                 </div>
+                <p className="text-[11px] text-[#5C5E62] pt-1.5 text-center leading-normal">
+                  * Telangana Gruha Jyothi scheme gives eligible households up to 200 free
+                  units/month.
+                </p>
               </div>
             </div>
 
@@ -364,6 +368,15 @@ function IndexPage() {
               <p className="text-[14px] text-[#171A20] pt-1">
                 Recommended {solarEstimate.recommendedKw} kW system · Estimated ₹
                 {formatInr(solarEstimate.subsidyInr)} central subsidy.
+              </p>
+              <p className="text-[11px] text-[#5C5E62] pt-0.5">
+                <Link
+                  to="/legal/disclosures"
+                  hash="sources"
+                  className="underline hover:text-[#171A20]"
+                >
+                  Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)
+                </Link>
               </p>
             </div>
 

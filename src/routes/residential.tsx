@@ -56,7 +56,7 @@ export const Route = createFileRoute("/residential")({
           name: `${BRAND_CONFIG.name} Residential Monolithic Solar Architecture`,
           image: `${BRAND_CONFIG.domain}/media/res-hero-1600w.jpg`,
           description:
-            "Architectural rooftop solar designed for luxury Indian villas and residences. N-Type TOPCon bifacial modules, zero terrace floor penetration, 170 km/h wind resilience, and PM Surya Ghar subsidy integration.",
+            "Architectural rooftop solar designed for luxury Indian villas and residences. N-Type TOPCon bifacial modules, zero terrace floor penetration, IS 875 (Part 3) 44 m/s wind resilience, and PM Surya Ghar subsidy integration.",
           brand: {
             "@type": "Brand",
             name: BRAND_CONFIG.name,
@@ -160,7 +160,7 @@ function ResidentialPage() {
             <StatRow
               stats={[
                 { value: "7 to 9 ft", label: "Clear Headroom" },
-                { value: "170 km/h", label: "Wind Gust Rating" },
+                { value: "44 m/s", label: "Basic Wind Speed", sublabel: "IS 875 (158 km/h)" },
               ]}
             />
           }
@@ -196,7 +196,7 @@ function ResidentialPage() {
           stats={
             <StatRow
               stats={[
-                { value: "170 km/h", label: "Wind Gust Rating" },
+                { value: "44 m/s", label: "Basic Wind Speed", sublabel: "IS 875 (158 km/h)" },
                 { value: "IP68", label: "Water & Dust Proof" },
                 { value: "25 Years", label: "Linear Guarantee" },
               ]}

@@ -70,7 +70,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/technology" className="hover:text-[#171A20] transition-colors">
-                  170 km/h Cyclone Metallurgy
+                  IS 875 (Part 3) 44 m/s Metallurgy
                 </Link>
               </li>
               <li>
@@ -99,7 +99,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
-                  Telangana (TGSPDCL / TSNPDCL)
+                  Telangana (TGSPDCL / TGNPDCL)
                 </Link>
               </li>
               <li>

@@ -47,7 +47,7 @@ const PROPERTY_TIERS = [
     id: "commercial" as const,
     title: "Commercial & Industrial",
     capacity: "25 kW – 500 kW+",
-    desc: "Commercial rooftops and factories with 40% Section 32 accelerated depreciation.",
+    desc: "Commercial rooftops and factories with 40% Section 34 accelerated depreciation.",
     icon: Factory,
   },
 ];

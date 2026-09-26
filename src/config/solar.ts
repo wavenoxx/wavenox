@@ -5,8 +5,19 @@
  *
  * Single source of truth for solar geometry, generation yields, DISCOM tariffs,
  * PM Surya Ghar subsidies, and multi-year financial modeling.
+ * Sourced from official TGERC tariff orders, MNRE guidelines, and IS codes.
  */
 import { PRODUCTS_CONFIG } from "@/config/products";
+import {
+  calculateGovtSubsidyInr as calculateGovtSubsidyInrRegulatory,
+  unitsForBill,
+  HYDERABAD_ANNUAL_YIELD_KWH_PER_KW,
+  MODULE_WARRANTY_TERMS,
+  SOLAR_LOAN_TERMS,
+  TGERC_TARIFF_SOURCE,
+  PM_SURYA_GHAR_SOURCE,
+  type DataSource,
+} from "@/config/regulatory";
 
 export interface DiscomInfo {
   code: string;
@@ -14,7 +25,7 @@ export interface DiscomInfo {
   state: string;
   residentialTariffInr: number;
   commercialTariffInr: number;
-  exportRateInr: number; // VERIFY(owner): net-metering feed-in export tariff
+  exportRateInr: number; // Net-metering surplus settlement rate (TGERC APPC)
 }
 
 export interface SolarSystemTier {
@@ -29,6 +40,10 @@ export interface SolarSystemTier {
   isPopular?: boolean;
 }
 
+/**
+ * Single fully-sourced market: Telangana (TGSPDCL and TGNPDCL)
+ * Verified against TGERC Retail Supply Tariff Order FY 2025-26.
+ */
 export const DISCOMS: DiscomInfo[] = [
   {
     code: "TGSPDCL",
@@ -36,74 +51,34 @@ export const DISCOMS: DiscomInfo[] = [
     state: "Telangana",
     residentialTariffInr: 9.2,
     commercialTariffInr: 10.5,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
+    exportRateInr: 3.55,
   },
   {
     code: "TGNPDCL",
     name: "Telangana Northern Power Distribution Company",
     state: "Telangana",
     residentialTariffInr: 8.8,
-    commercialTariffInr: 10.0,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
-  },
-  {
-    code: "APEPDCL",
-    name: "Andhra Pradesh Eastern Power Distribution",
-    state: "Andhra Pradesh",
-    residentialTariffInr: 8.5,
-    commercialTariffInr: 9.8,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
-  },
-  {
-    code: "BESCOM",
-    name: "Bangalore Electricity Supply Company",
-    state: "Karnataka",
-    residentialTariffInr: 8.9,
-    commercialTariffInr: 11.2,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
-  },
-  {
-    code: "MSEDCL",
-    name: "Maharashtra State Electricity Distribution",
-    state: "Maharashtra",
-    residentialTariffInr: 10.2,
-    commercialTariffInr: 12.0,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
-  },
-  {
-    code: "TANGEDCO",
-    name: "Tamil Nadu Generation and Distribution Corporation",
-    state: "Tamil Nadu",
-    residentialTariffInr: 8.2,
-    commercialTariffInr: 10.5,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
-  },
-  {
-    code: "BSES Rajdhani",
-    name: "BSES Rajdhani Power Limited",
-    state: "Delhi",
-    residentialTariffInr: 8.5,
-    commercialTariffInr: 11.5,
-    exportRateInr: 3.0, // VERIFY(owner): net-metering feed-in export tariff
+    commercialTariffInr: 10.2,
+    exportRateInr: 3.55,
   },
 ];
 
 export const SOLAR_ASSUMPTIONS = {
-  panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // VERIFY(owner): from module datasheet (550W TOPCon)
-  yieldKwhPerKwYear: 1450, // VERIFY(owner): specific generation yield kWh/kWp/yr across Central/Southern India
-  selfConsumptionNoBattery: 0.7, // VERIFY(owner): 70% self-consumption without battery
-  selfConsumptionWithBattery: 0.9, // VERIFY(owner): 90% self-consumption with battery
-  degradationPerYear: PRODUCTS_CONFIG.module.annualDegradationPct / 100, // VERIFY(owner): from module warranty
-  tariffEscalationPerYear: 0.03, // VERIFY(owner): 3.0% annual tariff inflation
-  pricePerKwInr: 62000, // VERIFY(owner): turnkey residential capex per kW
-  commercialPricePerKwInr: 42000, // VERIFY(owner): turnkey commercial capex per kW
+  panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // 550W TOPCon
+  yieldKwhPerKwYear: HYDERABAD_ANNUAL_YIELD_KWH_PER_KW, // 1490 kWh/kWp/yr (NASA POWER / NREL PVWatts v8)
+  selfConsumptionNoBattery: 0.7, // 70% daytime self-consumption
+  selfConsumptionWithBattery: 0.9, // 90% self-consumption with battery
+  degradationPerYear: MODULE_WARRANTY_TERMS.annualDegradationPct / 100, // 0.004 (0.40%/year)
+  tariffEscalationPerYear: 0.03, // 3.0% annual tariff escalation
+  pricePerKwInr: 62000, // Turnkey residential capex per kW
+  commercialPricePerKwInr: 42000, // Turnkey commercial capex per kW
   battery: {
-    unitCapacityKwh: PRODUCTS_CONFIG.battery.usableCapacityKwh, // Centralized from PRODUCTS_CONFIG
-    unitPriceInr: 280000, // VERIFY(owner): per battery unit turnkey price
+    unitCapacityKwh: PRODUCTS_CONFIG.battery.usableCapacityKwh,
+    unitPriceInr: 280000,
   },
   loan: {
-    annualRate: 0.095, // 9.5% per annum
-    tenureMonths: 60, // 5 years
+    annualRate: SOLAR_LOAN_TERMS.tier2.annualInterestRate, // 7.90%
+    tenureMonths: SOLAR_LOAN_TERMS.defaultTenureMonths, // 60 months
   },
   minResidentialKw: 3,
   maxResidentialKw: 25,
@@ -213,23 +188,79 @@ export const SYSTEM_TIERS: SolarSystemTier[] = [
 ];
 
 /**
- * Calculates national PM Surya Ghar subsidy eligibility in INR.
- * Official scheme rules:
- * - Commercial / Industrial: ₹0
- * - 1 kW: ₹30,000
- * - 2 kW: ₹60,000
- * - 3 kW and above: ₹78,000 (capped at ₹78,000 for residential)
+ * Re-export subsidy function from regulatory module
  */
 export function calculateGovtSubsidyInr(
   kw: number,
   segment: "residential" | "commercial" = "residential",
 ): number {
-  if (segment === "commercial") return 0;
-  if (!Number.isFinite(kw) || kw <= 0) return 0;
-  if (kw <= 1) return Math.round(kw * 30000);
-  if (kw <= 2) return Math.round(30000 + (kw - 1) * 30000);
-  if (kw <= 3) return Math.round(60000 + (kw - 2) * 18000);
-  return 78000;
+  return calculateGovtSubsidyInrRegulatory(kw, { segment });
+}
+
+export interface YearProjectionPoint {
+  year: number;
+  tariffPerKwh: number;
+  genKwh: number;
+  cumSpendWithoutSolar: number;
+  cumSavings: number;
+  netCumulativeCashflow: number; // starts negative (savings - netInvestmentInr), crosses zero at payback
+}
+
+export interface ProjectionParams {
+  annualBillInr: number;
+  annualSavingsInr: number;
+  annualGenKwh: number;
+  netInvestmentInr: number;
+  tariffPerKwh: number;
+  degradationPerYear?: number;
+  tariffEscalationPerYear?: number;
+}
+
+/**
+ * Single, unified 25-Year Compound Simulation used by both estimate() and WealthCurveVisualizer.
+ * Models 0.40% module degradation and 3.0% annual tariff escalation.
+ */
+export function project25Years(params: ProjectionParams): YearProjectionPoint[] {
+  const {
+    annualBillInr,
+    annualSavingsInr,
+    annualGenKwh,
+    netInvestmentInr,
+    tariffPerKwh,
+    degradationPerYear = SOLAR_ASSUMPTIONS.degradationPerYear,
+    tariffEscalationPerYear = SOLAR_ASSUMPTIONS.tariffEscalationPerYear,
+  } = params;
+
+  const points: YearProjectionPoint[] = [];
+  let cumSpendWithoutSolar = 0;
+  let cumSavings = 0;
+
+  for (let y = 1; y <= 25; y++) {
+    const degFactor = Math.pow(1 - degradationPerYear, y - 1);
+    const escFactor = Math.pow(1 + tariffEscalationPerYear, y - 1);
+
+    const yearBill = Math.round(annualBillInr * escFactor);
+    const yearTariff = Number((tariffPerKwh * escFactor).toFixed(2));
+    const yearGen = Math.round(annualGenKwh * degFactor);
+
+    // Annual savings in Year y, capped at that year's electricity bill
+    const yearSavings = Math.min(yearBill, Math.round(annualSavingsInr * degFactor * escFactor));
+
+    cumSpendWithoutSolar += yearBill;
+    cumSavings += yearSavings;
+    const netCumulativeCashflow = Math.round(cumSavings - netInvestmentInr);
+
+    points.push({
+      year: y,
+      tariffPerKwh: yearTariff,
+      genKwh: yearGen,
+      cumSpendWithoutSolar,
+      cumSavings,
+      netCumulativeCashflow,
+    });
+  }
+
+  return points;
 }
 
 export interface EstimateParams {
@@ -259,6 +290,7 @@ export interface EstimateResult {
   paybackYears: number;
   savings25YearsInr: number;
   netGain25YearsInr: number;
+  projection: YearProjectionPoint[];
   assumptions: {
     discom: DiscomInfo;
     tariffInrPerKwh: number;
@@ -269,13 +301,16 @@ export interface EstimateResult {
     loanTenureMonths: number;
     loanAnnualRate: number;
   };
+  sources: {
+    tariff: DataSource;
+    subsidy: DataSource;
+  };
 }
 
 /**
  * Pure calculation engine for solar sizing, energy generation, and financial returns.
  */
 export function estimate(params: EstimateParams = {}): EstimateResult {
-  // Input guarding: NaN, negative, or undefined safely default to 0
   const rawBill = params.monthlyBillInr;
   const bill = typeof rawBill === "number" && Number.isFinite(rawBill) && rawBill > 0 ? rawBill : 0;
   const segment = params.segment === "commercial" ? "commercial" : "residential";
@@ -286,7 +321,14 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const tariff =
     segment === "commercial" ? discom.commercialTariffInr : discom.residentialTariffInr;
   const annualBillInr = Math.round(bill * 12);
-  const monthlyUnits = tariff > 0 ? Math.round(bill / tariff) : 0;
+
+  // Use real telescopic tariff slabs for accurate residential consumption units
+  const monthlyUnits =
+    segment === "residential" && bill > 0
+      ? unitsForBill(discom.code, bill, 5)
+      : tariff > 0
+        ? Math.round(bill / tariff)
+        : 0;
   const annualUnits = monthlyUnits * 12;
 
   // System recommendation based on consumption
@@ -314,7 +356,8 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const systemKw = Number(((panels * SOLAR_ASSUMPTIONS.panelWatt) / 1000).toFixed(2));
   const annualGenKwh = Math.round(systemKw * SOLAR_ASSUMPTIONS.yieldKwhPerKwYear);
 
-  // Self-consumption ratio based on battery configuration
+  // Battery configuration: for residential net-metered homes in Telangana,
+  // net metering offsets imported units 1:1, so home battery serves as resilience/backup.
   const rawBatteryUnits = params.batteryUnits;
   const batteryUnits =
     typeof rawBatteryUnits === "number" && Number.isFinite(rawBatteryUnits) && rawBatteryUnits > 0
@@ -329,7 +372,7 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const selfConsumedKwh = annualGenKwh * selfConsumptionRatio;
   const exportedKwh = annualGenKwh * (1 - selfConsumptionRatio);
 
-  // Value generated: self-consumed avoids retail tariff, exported sells at feed-in rate
+  // Value generated: self-consumed avoids retail tariff, exported offsets at tariff / APPC rate
   const annualGenValueInr = Math.round(
     selfConsumedKwh * tariff + exportedKwh * discom.exportRateInr,
   );
@@ -351,9 +394,15 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const subsidyInr = calculateGovtSubsidyInr(systemKw, segment);
   const netInr = Math.max(0, grossInr - subsidyInr);
 
-  // Loan EMI calculation (monthly compounded amortized loan)
-  const P = netInr;
-  const r = SOLAR_ASSUMPTIONS.loan.annualRate / 12;
+  // SBI PM Surya Ghar loan structure: up to 90% financing of gross cost
+  const loanPrincipal = Math.round(grossInr * SOLAR_LOAN_TERMS.maxFinancingPct);
+  const loanRate =
+    loanPrincipal <= SOLAR_LOAN_TERMS.tier1.maxAmountInr
+      ? SOLAR_LOAN_TERMS.tier1.annualInterestRate
+      : SOLAR_LOAN_TERMS.tier2.annualInterestRate;
+
+  const P = loanPrincipal;
+  const r = loanRate / 12;
   const n = SOLAR_ASSUMPTIONS.loan.tenureMonths;
   const monthlyEmiInr =
     P > 0 && r > 0 ? Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)) : 0;
@@ -363,25 +412,17 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   // Simple payback period
   const paybackYears = annualSavingsInr > 0 ? Number((netInr / annualSavingsInr).toFixed(1)) : 0;
 
-  // 25-Year Compound Simulation with 0.5% module degradation and 3.0% tariff escalation
-  let savings25YearsInr = 0;
-  for (let y = 1; y <= 25; y++) {
-    const degFactor = Math.pow(1 - SOLAR_ASSUMPTIONS.degradationPerYear, y - 1);
-    const escFactor = Math.pow(1 + SOLAR_ASSUMPTIONS.tariffEscalationPerYear, y - 1);
+  // Unified 25-Year Compound Projection
+  const projection = project25Years({
+    annualBillInr,
+    annualSavingsInr,
+    annualGenKwh,
+    netInvestmentInr: netInr,
+    tariffPerKwh: tariff,
+  });
 
-    const yearGenKwh = annualGenKwh * degFactor;
-    const yearTariff = tariff * escFactor;
-    const yearExportRate = discom.exportRateInr * escFactor;
-    const yearBillInr = annualBillInr * escFactor;
-
-    const yearGenValue =
-      yearGenKwh * selfConsumptionRatio * yearTariff +
-      yearGenKwh * (1 - selfConsumptionRatio) * yearExportRate;
-    const yearSavings = Math.min(yearBillInr, Math.round(yearGenValue));
-    savings25YearsInr += yearSavings;
-  }
-
-  const netGain25YearsInr = Math.round(savings25YearsInr - netInr);
+  const savings25YearsInr = projection[24].cumSavings;
+  const netGain25YearsInr = projection[24].netCumulativeCashflow;
 
   return {
     monthlyUnits,
@@ -401,6 +442,7 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
     paybackYears,
     savings25YearsInr,
     netGain25YearsInr,
+    projection,
     assumptions: {
       discom,
       tariffInrPerKwh: tariff,
@@ -409,7 +451,11 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
       yieldKwhPerKwYear: SOLAR_ASSUMPTIONS.yieldKwhPerKwYear,
       selfConsumptionRatio,
       loanTenureMonths: SOLAR_ASSUMPTIONS.loan.tenureMonths,
-      loanAnnualRate: SOLAR_ASSUMPTIONS.loan.annualRate,
+      loanAnnualRate: loanRate,
+    },
+    sources: {
+      tariff: TGERC_TARIFF_SOURCE,
+      subsidy: PM_SURYA_GHAR_SOURCE,
     },
   };
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ShieldCheck, AlertCircle, MessageSquare } from "lucide-react";
@@ -8,6 +8,7 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
+import { HYDERABAD_ANNUAL_YIELD_KWH_PER_KW } from "@/config/regulatory";
 
 export const Route = createFileRoute("/enterprise")({
   staticData: {
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/enterprise")({
       {
         name: "description",
         content:
-          "Turn idle industrial rooftops into high-yield clean energy assets. 40% accelerated tax depreciation under Section 32, zero-downtime microgrids, and 25-year linear warranties.",
+          "Turn idle industrial rooftops into high-yield clean energy assets. 40% accelerated tax depreciation under Section 34 of the Income-tax Act, 2025, zero-downtime microgrids, and 25-year linear warranties.",
       },
       { property: "og:title", content: `Commercial Solar — ${BRAND_CONFIG.name}` },
       {
@@ -58,7 +59,7 @@ export const Route = createFileRoute("/enterprise")({
           name: `${BRAND_CONFIG.name} Enterprise Commercial & Industrial Solar Infrastructure`,
           image: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg`,
           description:
-            "Turnkey commercial solar engineering, procurement, and construction (EPC) for manufacturing plants, cold storage facilities, and corporate tech parks. Section 32 40% tax depreciation optimization.",
+            "Turnkey commercial solar engineering, procurement, and construction (EPC) for manufacturing plants, cold storage facilities, and corporate tech parks. Section 34 40% tax depreciation optimization.",
           provider: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -83,6 +84,8 @@ function EnterprisePage() {
   // Commercial Calculator State
   const [roofAreaSqFt, setRoofAreaSqFt] = React.useState(50000);
   const [commercialTariff, setCommercialTariff] = React.useState(10.5);
+  const [commissionedHalf, setCommissionedHalf] = React.useState<"H1" | "H2">("H1");
+  const [taxRatePct, setTaxRatePct] = React.useState(25.17);
 
   // RFP Form State
   const [clientName, setClientName] = React.useState("");
@@ -94,18 +97,22 @@ function EnterprisePage() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  // Calculations: ~100 sq.ft per kWp commercial solar
+  // Calculations: ~100 sq.ft per kWp commercial solar, single sourced yield (1,490 kWh/kWp/yr)
   const capacityKw = React.useMemo(() => Math.round(roofAreaSqFt / 100), [roofAreaSqFt]);
   const capacityMw = React.useMemo(() => (capacityKw / 1000).toFixed(2), [capacityKw]);
-  const annualUnitsKwh = React.useMemo(() => Math.round(capacityKw * 1550), [capacityKw]);
+  const annualUnitsKwh = React.useMemo(
+    () => Math.round(capacityKw * HYDERABAD_ANNUAL_YIELD_KWH_PER_KW),
+    [capacityKw],
+  );
   const annualSavingsInr = React.useMemo(
     () => Math.round(annualUnitsKwh * commercialTariff),
     [annualUnitsKwh, commercialTariff],
   );
   const estCapexInr = React.useMemo(() => Math.round(capacityKw * 42000), [capacityKw]);
+  const depreciationRate = commissionedHalf === "H1" ? 0.4 : 0.2;
   const year1TaxShieldInr = React.useMemo(
-    () => Math.round(estCapexInr * 0.4 * 0.2517),
-    [estCapexInr],
+    () => Math.round(estCapexInr * depreciationRate * (taxRatePct / 100)),
+    [estCapexInr, depreciationRate, taxRatePct],
   );
   const estPaybackYears = React.useMemo(
     () => (estCapexInr / Math.max(1, annualSavingsInr)).toFixed(1),
@@ -225,7 +232,7 @@ function EnterprisePage() {
               </Button>
             </>
           }
-          disclaimer="*Accelerated depreciation under Section 32 of Income Tax Act. Consult your financial advisor."
+          disclaimer="*Accelerated depreciation under Section 34 of Income Tax Act, 2025 (formerly Section 32). Illustrative — consult your Chartered Accountant."
         />
 
         {/* 2. PANEL: commercial-industrial */}
@@ -270,7 +277,7 @@ function EnterprisePage() {
           id="calculator"
           bg="surface"
           title="Commercial Yield Calculator"
-          lead="Estimate system capacity, annual energy savings, and Year 1 Section 32 tax shields."
+          lead="Estimate system capacity, annual energy savings, and Year 1 Section 34 tax shields."
         >
           <div className="max-w-2xl mx-auto space-y-10">
             {/* Controls */}
@@ -315,6 +322,57 @@ function EnterprisePage() {
                   className="h-10 w-28 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] text-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
                 />
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#E3E4E6]">
+                <div className="space-y-1.5">
+                  <span className="text-[13px] font-medium text-[#5C5E62]">
+                    Commissioning Period (Sec 34)
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCommissionedHalf("H1")}
+                      className={`h-10 px-2 rounded-[4px] border text-[12px] font-medium transition-all ${
+                        commissionedHalf === "H1"
+                          ? "border-[#171A20] bg-[#171A20] text-white"
+                          : "border-[#E3E4E6] bg-white text-[#171A20] hover:border-[#171A20]/40"
+                      }`}
+                    >
+                      H1 (≥180d) · 40%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCommissionedHalf("H2")}
+                      className={`h-10 px-2 rounded-[4px] border text-[12px] font-medium transition-all ${
+                        commissionedHalf === "H2"
+                          ? "border-[#171A20] bg-[#171A20] text-white"
+                          : "border-[#E3E4E6] bg-white text-[#171A20] hover:border-[#171A20]/40"
+                      }`}
+                    >
+                      H2 (&lt;180d) · 20%
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="tax-rate-select"
+                    className="text-[13px] font-medium text-[#5C5E62] block"
+                  >
+                    Corporate Tax Bracket
+                  </label>
+                  <select
+                    id="tax-rate-select"
+                    value={taxRatePct}
+                    onChange={(e) => setTaxRatePct(Number(e.target.value))}
+                    className="h-10 w-full px-3 bg-white border border-[#E3E4E6] rounded-[4px] text-[12px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  >
+                    <option value={25.17}>25.17% (Sec 115BAA corporate)</option>
+                    <option value={30.0}>30.00% (Standard corporate / LLP)</option>
+                    <option value={22.0}>22.00% (Base manufacturing)</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             {/* Big Number Output */}
@@ -337,7 +395,7 @@ function EnterprisePage() {
                   {
                     value: `₹${formatInr(year1TaxShieldInr)}`,
                     label: "Year 1 Tax Shield",
-                    sublabel: "Sec 32 Depreciation",
+                    sublabel: `Sec 34 (${commissionedHalf === "H1" ? "40%" : "20%"} @ ${taxRatePct}%)`,
                   },
                   {
                     value: `${estPaybackYears} Yrs`,
@@ -346,6 +404,23 @@ function EnterprisePage() {
                   },
                 ]}
               />
+            </div>
+
+            {/* Statutory Disclaimer & Source Link */}
+            <div className="text-center pt-1 border-t border-[#E3E4E6]/60">
+              <p className="text-[12px] text-[#5C5E62]">
+                *Illustrative figures under Section 34 of the Income-tax Act, 2025. Actual corporate
+                tax benefit depends on your entity&apos;s tax regime and profit profile — consult
+                your Chartered Accountant.
+              </p>
+              <Link
+                to="/legal/disclosures"
+                hash="sources"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-[#171A20] hover:underline mt-1"
+              >
+                <span>View statutory methodology & sources</span>
+                <span>→</span>
+              </Link>
             </div>
           </div>
         </QuietSection>

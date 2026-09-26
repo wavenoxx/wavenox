@@ -174,7 +174,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             label: "Request Industrial Site Survey",
             action: () => openConsultationDrawer(),
           },
-          { label: "Section 32 40% Tax Depreciation", to: "/enterprise" },
+          { label: "Section 34 40% Tax Depreciation", to: "/enterprise" },
           { label: "Commercial Yield Calculator", to: "/enterprise#calculator" },
           { label: "CAPEX vs OPEX / RESCO Models", to: "/enterprise" },
           { label: "Grid Wheeling & HT Open Access", to: "/enterprise" },

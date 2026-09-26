@@ -31,7 +31,7 @@ export const Route = createFileRoute("/technology")({
       {
         name: "description",
         content:
-          "The engineering science behind WAVENOX: N-type TOPCon bifacial cell physics, 170 km/h cyclone-rated pergolas, <20ms microgrid switchgear, and zero terrace slab damage.",
+          "The engineering science behind WAVENOX: N-type TOPCon bifacial cell physics, IS 875 (Part 3) 44 m/s wind-load compliant pergolas, <20ms microgrid switchgear, and zero terrace slab damage.",
       },
       {
         property: "og:title",
@@ -117,9 +117,9 @@ function TechnologyPage() {
               { value: "22.8%", label: "Module Efficiency", sub: "STC Certified" },
               { value: "-0.30%", label: "Temp. Coeff.", sub: "Per °C Rise" },
               { value: "< 20 ms", label: "Islanding Speed", sub: "Solid-State" },
-              { value: "170 km/h", label: "Cyclone Rating", sub: "IS 875 Part 3" },
+              { value: "44 m/s", label: "Basic Wind Speed", sub: "IS 875 Part 3 (158 km/h)" },
               { value: "14.3 kWh", label: "Modular LFP", sub: "Expandable" },
-              { value: "25 Years", label: "Asset Warranty", sub: "≥ 84.8% Output" },
+              { value: "25 Years", label: "Asset Warranty", sub: "≥ 89.4% Output" },
             ].map((stat, idx) => (
               <div
                 key={idx}
@@ -379,7 +379,7 @@ function TechnologyPage() {
                   Structural Metallurgy &amp; Cyclone Physics
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
-                  170 km/h Cyclone Wind Certified Pergola
+                  IS 875 (Part 3) Wind Load Pergola (44 m/s)
                 </h3>
                 <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-relaxed">
                   Engineered in compliance with Indian Standard IS 875 (Part 3), our elevated
@@ -562,15 +562,13 @@ function TechnologyPage() {
                 <span className="sm:col-span-2 text-[#5C5E62]">
                   Elevated 6063-T6 Anodized Aluminum Pergola / Non-Penetrating Ballast
                 </span>
-                <span className="font-semibold text-[#171A20] sm:text-right">
-                  170 km/h Certified
-                </span>
+                <span className="font-semibold text-[#171A20] sm:text-right">IS 875 (44 m/s)</span>
               </div>
 
               <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-baseline">
                 <span className="font-medium text-[#171A20]">Asset Warranty</span>
                 <span className="sm:col-span-2 text-[#5C5E62]">
-                  25-Year Linear Power Guarantee (≥ 84.8% at Year 25)
+                  25-Year Linear Power Guarantee (≥ 89.4% at Year 25)
                 </span>
                 <span className="font-semibold text-[#171A20] sm:text-right">
                   10-Yr Battery / 10-Yr Inverter

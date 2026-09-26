@@ -28,7 +28,7 @@ export const Route = createFileRoute("/architects")({
       {
         name: "description",
         content:
-          "Turnkey rooftop solar integration for architects, interior designers, and luxury estate builders in India. Zero-penetration structural engineering, concealed conduit raceways, 170 km/h wind resilience, and BIM/CAD specifications.",
+          "Turnkey rooftop solar integration for architects, interior designers, and luxury estate builders in India. Zero-penetration structural engineering, concealed conduit raceways, IS 875 (Part 3) 44 m/s wind resilience, and BIM/CAD specifications.",
       },
       {
         property: "og:title",
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/architects")({
       {
         property: "og:description",
         content:
-          "Engineering solar into modern architectural design language. Concealed conduits, zero terrace punctures, and 170 km/h cyclone resistance.",
+          "Engineering solar into modern architectural design language. Concealed conduits, zero terrace punctures, and IS 875 (Part 3) 44 m/s wind-load design.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/architects` },
@@ -79,8 +79,8 @@ const ARCHITECT_PILLARS = [
   },
   {
     icon: Wind,
-    title: "170 km/h Wind Resilience (IS 875 Part 3)",
-    desc: "Engineered with structural 6005-T5 anodized aluminum and marine-grade SS304 fasteners. FEA wind-tunnel tested to withstand severe monsoon and coastal cyclone gale forces.",
+    title: "IS 875 (Part 3) Wind Load Engineering (44 m/s)",
+    desc: "Engineered with structural 6005-T5 anodized aluminum and marine-grade SS304 fasteners to meet IS 875 (Part 3) basic wind speed standards (44 m/s in Hyderabad; 50 m/s in coastal zones).",
   },
 ];
 

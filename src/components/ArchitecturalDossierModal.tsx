@@ -248,8 +248,8 @@ export function ArchitecturalDossierModal({
                     <tr>
                       <td className="py-2.5 font-medium">Structural Pergola &amp; Mounting</td>
                       <td className="py-2.5 text-[#5C5E62]">
-                        Anodized Extruded Aluminum (6005-T5), SS304 Fasteners, 170 km/h Wind
-                        Resilience (IS 875 Part 3), Zero Terrace Slab Penetration.
+                        Anodized Extruded Aluminum (6005-T5), SS304 Fasteners, IS 875 (Part 3) 44
+                        m/s Wind Compliance, Zero Terrace Slab Penetration.
                       </td>
                       <td className="py-2.5 text-right font-mono font-medium">
                         Custom Architectural Fit

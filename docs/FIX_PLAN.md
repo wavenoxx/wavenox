@@ -47,37 +47,50 @@ Use these defaults unless I say otherwise:
 ## PHASE 1 — P0 functional bugs
 
 ### 1.1 Enterprise leads are silently discarded
+
 `src/routes/enterprise.tsx` shows a visible field "Company Website (Optional)" bound to `company_website`. `src/functions/leads.ts` treats a non-empty `company_website` as the **bot honeypot** and returns a fake success with a random reference code without saving. Any real business that types its website is lost.
+
 - Rename the honeypot to a non-guessable name (e.g. `hp_extra`) in the schema and all three forms; render it visually hidden (off-screen absolute positioning, `aria-hidden`, `tabIndex={-1}`, `autoComplete="off"`), not `display:none`.
 - Add real optional fields `company_name` and `company_url` to the zod schema and a new migration `supabase/migrations/20260926_consultations_v3.sql`. Stop stuffing the company name into `city`.
 - **Accept:** enterprise form with website filled → row created (live) / honest demo success (demo). Honeypot filled → no row.
 
 ### 1.2 Two forms pretend to submit
+
 `src/routes/net-metering.tsx` (`handleFeasibilityCheck`) and `src/routes/architects.tsx` (`handleSubmit`) only set local state, then say "Feasibility Request Logged… our utility engineer will cross-reference your service connection with DISCOM substation records within 24 hours" and "Architectural Dossier Request Confirmed". Nothing is sent.
+
 - Either wire them to `submitLead` (add `source` values `net_metering` and `architects` to the zod enum and the DB check constraint; add labelled inputs and the consent checkbox), or replace them with an honest WhatsApp deep link.
 - Delete promises we cannot keep (DISCOM substation lookups, 24-hour turnaround, BIM downloads).
 - Never show a "confirmed" state unless a request was actually sent (or demo mode says clearly that nothing was sent).
 
 ### 1.3 Home calculator → Studio hand-off is broken
+
 Home recommends 7.7 kW for a ₹8,000 bill; clicking "Order Now" opens `/deploy?bill=8000&discom=TGSPDCL`, which shows **13.2 kW, 24 panels, 1 battery pre-selected, ₹10.2 lakh net, 10.6-year payback**. `SystemConfigurator` ignores `initialBill` when sizing, and `handleBillChange` uses its own hardcoded thresholds.
+
 - Initialise `panelCount` from `estimate({ monthlyBillInr, discomCode }).recommendedPanels`; delete the hardcoded thresholds; default battery = 0 units.
 - Clamp panel count to the engine's residential maximum and show why (sanctioned load / net-metering limits). The drawer's "Luxury Villa 25–50 kW" tier must match the engine.
 - **Accept:** for any bill and DISCOM, the kW on `/` equals the kW on `/deploy`.
 
 ### 1.4 Header is invisible on two pages
+
 `src/components/Header.tsx` decides transparent vs solid with a hardcoded `isLightPage` list. `/net-metering` and `/architects` start on a light background, so the white logo and nav disappear at the top.
+
 - Replace the list with route `staticData: { headerTone: "overlay" | "solid" }` (default `solid`), set `overlay` only on routes whose first section is a dark photo panel.
 - **Accept:** a Playwright test confirms logo and nav meet 4.5:1 contrast at `scrollY=0` on every route.
 
 ### 1.5 Hero stats wrap 2 + 1 on desktop
+
 `src/components/system/StatRow.tsx` keeps `max-w-sm / sm:max-w-md` at `md:` widths, so three stats wrap into two lines on `/`, `/residential`, `/omnigrid`, `/enterprise` at 1440 px.
+
 - Remove the max-width at `md:` and above; never wrap three stats. Test at 768, 1024, 1440, 1920.
 
 ### 1.6 Template favicon
+
 `public/favicon.ico` is the Lovable template heart logo; it is also used as the Organization `logo` in JSON-LD.
+
 - Design a WAVENOX mark (SVG). Ship `favicon.svg`, 32 px `favicon.ico`, 180 px `apple-touch-icon.png`, 512 px `icon-512.png`, `site.webmanifest`, `theme-color`. Use the 512 px PNG (absolute URL) as the JSON-LD logo.
 
 ### 1.7 SEO fundamentals
+
 - `og:image` is relative on every page (e.g. `/media/home-hero-1600w.jpg`) → make it absolute from `BRAND_CONFIG.domain`; add `og:url` per page; add `og:image` to legal pages.
 - No page has `<link rel="canonical">` → add per route.
 - `/`, `/residential`, `/omnigrid`, `/enterprise` have **no `<h1>` and no `<main>`**. Give `Panel` an `as="h1"` option for the first panel and wrap page content in `<main>`.
@@ -86,12 +99,14 @@ Home recommends 7.7 kW for a ₹8,000 bill; clicking "Order Now" opens `/deploy?
 - Remove `twitter:site @wavenox` and default social URLs (Instagram, LinkedIn, YouTube, X) unless I confirm I own them.
 
 ### 1.8 Domain, sitemap and email
+
 - Keep `wavenox.in` (planned domain). Generate `sitemap.xml` and `robots.txt` at build time from the route list and `VITE_SITE_URL`, so nothing is hardcoded.
 - `src/functions/leads.ts` sends email `from: "WAVENOX Leads <leads@wavenox.com>"`. `wavenox.com` is a different live site (creator tools), not ours. Read the sender from env `LEADS_FROM_EMAIL` (future `leads@wavenox.in`), and skip sending when it is unset or the domain is not verified in Resend.
 - `DEFAULT_EMAIL = advisory@wavenox.in` will bounce until the domain and mailbox exist; in demo mode show the owner's real contact instead.
 - `.gitignore` lists `public/robots.txt`, `public/sitemap.xml`, `public/favicon.ico` although they are tracked — clean this up.
 
 ### 1.9 Form UX and labels
+
 - `submitLead` uses `.parse` in the validator, so any zod error reaches the client as a generic "Failed to submit". Use `safeParse` and return `{ success:false, fieldErrors }`; show per-field messages.
 - `ConsultationDrawer.tsx` inputs have no `id`/`htmlFor`, so screen readers get no labels. Label every input in every form.
 - Reset drawer step and fields after a successful submit or close.
@@ -104,6 +119,7 @@ Home recommends 7.7 kW for a ₹8,000 bill; clicking "Order Now" opens `/deploy?
 Create `src/config/regulatory.ts` (typed, every constant carries `source`). Add Vitest tests for each item. Show a small "Source · verified <date>" chip under every calculator result, linking to `/legal/disclosures#sources`.
 
 ### 2.1 PM Surya Ghar subsidy (CFA)
+
 - General category: ₹30,000/kW for the first 2 kW + ₹18,000 for the 3rd kW → **cap ₹78,000**.
 - Special-category states/UTs (Uttarakhand, Himachal Pradesh, J&K, Ladakh, North-East incl. Sikkim, Andaman & Nicobar, Lakshadweep): ₹33,000/kW for the first 2 kW + ₹19,800 → **cap ₹85,800**.
 - RWA/Group Housing: ₹18,000/kW for common facilities, up to 500 kW (3 kW per house).
@@ -113,7 +129,9 @@ Create `src/config/regulatory.ts` (typed, every constant carries `source`). Add 
 - Tests: `subsidy(1)=30000`, `subsidy(2)=60000`, `subsidy(3)=78000`, `subsidy(10)=78000`, `subsidy(3,{specialCategory:true})=85800`, commercial = 0.
 
 ### 2.2 Tariffs: slabs, not a flat rate
+
 The engine converts bill → units with one flat ₹/kWh (`TGSPDCL 9.2`). Real domestic tariffs are telescopic slabs plus fixed and customer charges, so the flat model under-estimates units by roughly 25–35 % for ₹2,000–₹3,000 bills (the main PM Surya Ghar audience).
+
 - Model Telangana domestic tariff from the **TGERC Retail Supply Tariff Order FY 2025-26** (download the official PDF from tgerc.telangana.gov.in / tgsouthernpower.org and verify every value before committing):
   - LT-I(A) ≤100 units/month: 0–50 @ ₹1.95, 51–100 @ ₹3.10
   - LT-I(B) 101–200: 0–100 @ ₹3.40, 101–200 @ ₹4.80
@@ -126,39 +144,52 @@ The engine converts bill → units with one flat ₹/kWh (`TGSPDCL 9.2`). Real d
 - Rename everywhere: TSNPDCL → **TGNPDCL**, TSSPDCL → **TGSPDCL**; `https://www.tssouthernpower.com` → `https://tgsouthernpower.org`; verify the current TGNPDCL domain. The residential application portal is `https://pmsuryaghar.gov.in`.
 
 ### 2.3 Net-metering economics and batteries
+
 - The engine values 30 % of generation as "export at ₹3" and 70 % at retail, and raises self-consumption to 90 % when a battery is added. Under net metering, exported units offset imported units at the retail tariff within the billing/settlement period; only year-end surplus is paid at the SERC-notified rate. Model monthly netting, make the surplus rate a sourced per-DISCOM constant, and remove the "battery increases savings" effect for net-metered homes.
 - Telangana's Time-of-Day order (TGERC, Nov 2025) applies only to HT commercial/industrial categories: peak 6–10 AM and 6–10 PM +₹1.00/unit; the night rebate was withdrawn from 1 Dec 2025. Homes in Telangana have no ToD tariff, so a home battery is **backup**, not savings. Use ToD only in the C&I calculator.
 - Simulator copy "Omnigrid completely avoids grid bills" must go.
 
 ### 2.4 Solar yield
+
 The site uses three different yields: 1,450 kWh/kWp/yr (engine), 1,550 (enterprise calculator) and "1,550–1,680 units/kW/yr" (service areas, Hyderabad).
+
 - Pull monthly irradiance/yield for Hyderabad once from **NASA POWER** (no key) or **NREL PVWatts v8** (free key, NSRDB covers India), commit the monthly numbers with source and date (no API key in the client), and use that single value everywhere. Show a 12-month generation chart (the monsoon dip is a nice, honest detail).
 
 ### 2.5 Tax (commercial)
+
 The **Income-tax Act, 2025 is in force from 1 April 2026**; depreciation is now **Section 34** (was Section 32 of the 1961 Act). The 40 % rate for solar and the half-rate rule (assets used < 180 days in the year) continue.
+
 - Replace all 17 "Section 32 / Sec 32" references in `src/`. Enterprise calculator: add the half-year toggle and a tax-rate selector; label results "illustrative — consult your CA".
 
 ### 2.6 Loans
+
 The studio uses 9.5 % for 60 months. Replace with a sourced config (verify on sbi.co.in; as of Sep 2026 secondary sources report): SBI PM Surya Ghar loan up to ₹2 lakh ≈ 5.75 % p.a. (collateral-free), ₹2–6 lakh ≈ 7.90 %, tenure up to 120 months, up to 90 % of system cost, floating (EBLR-linked).
+
 - EMI principal = 90 % of gross cost (not gross − subsidy); show the subsidy pre-payment effect separately.
 - Delete "partner lending institutions (SBI, HDFC, Canara, Tata Capital)" — there are no partnerships. Link to the lender list on the national portal instead.
 
 ### 2.7 Wind loads (IS 875 Part 3:2015 basic wind speed)
+
 Hyderabad **44 m/s (158 km/h)**, Vijayawada and Visakhapatnam **50 m/s (180 km/h)**, Chennai 50, Delhi 47, Mumbai 44, Pune 39, Bengaluru 33. The site says "150 km/h" for Hyderabad and "170 km/h severe cyclone rating" for coastal Andhra — both **below** the code's basic wind speed. Remove every "150/170 km/h certified / FEA wind-tunnel tested" claim (16 occurrences of "170 km/h"). Replace with: "Structures are designed to IS 875 (Part 3) for the site's basic wind speed — e.g. 44 m/s in Hyderabad."
 
 ### 2.8 ALMM and DCR
+
 From 1 June 2026 ALMM List-II (cells) applies to net-metering projects; MNRE clarified that net-metered projects commissioned by 31 Dec 2026 are exempt; PM Surya Ghar subsidy always requires DCR modules. Add this to the FAQ with sources. Delete "guaranteeing unconditional subsidy approval".
 
 ### 2.9 Rooftop connection rules (Ministry of Power)
+
 Technical feasibility is deemed/waived up to 10 kW, deemed load enhancement up to 10 kW, and connection + meter + commissioning within 15 days (verify against the Gazette text of the Electricity (Rights of Consumers) Amendment Rules, 2024 and the MoP PM Surya Ghar guidelines). Update the FAQ "Can I install more than my sanctioned load?" and the net-metering page's hardcoded "transformerCapPct: 80/70" values (delete them unless sourced).
 
 ### 2.10 One projection, used everywhere
+
 For the same inputs the studio shows "25-Year Est. Net Savings ₹24.8 L" (from `estimate`) and the chart shows ₹22.96 L (its own maths in `WealthCurveVisualizer`). Create one `project25Years()` in the engine; both must use it. The chart must show the negative cumulative (the investment dip before payback) instead of clamping to 0, have axis labels, and support keyboard and touch scrubbing. Rename "Grid Loss" to "Spent on electricity without solar".
 
 ### 2.11 Energy-flow simulator must obey physics
+
 `EnergyFlowSimulator.tsx` shows the battery going from 82 % to 62 % while supplying ~16 kWh from a 14.3 kWh pack (and similar later). Generate the 24-hour timeline from a small model: `SOC(t+Δt) = SOC(t) + P_batt·Δt·η / capacity`, clamp to [10 %, 100 %]. Test energy balance each step: `solar + import = load + charge + export` (±0.05 kW).
 
 ### 2.12 Degradation and warranty maths
+
 Warranty page: "≥ 99.0 % in Year 1, ≤ 0.55 %/yr, ≥ 84.8 % in Year 25" — but 99 − 0.55 × 24 = **85.8 %**. `products.ts` says 1.0 % + 0.4 %/yr (→ 89.4 %); README says 0.5 %/yr. Take all values from one real module datasheet (Phase 3) and generate the table from a function with a test.
 
 ---
@@ -194,11 +225,13 @@ Use grep to find and fix every item. Commit per bullet group.
 ## PHASE 4 — Premium polish (keep the Tesla-grade DNA, make it unmistakably WAVENOX)
 
 ### 4.1 Keep the DNA, own the words
+
 **Keep exactly:** full-bleed `100svh` photo panels, centred title + one-line lead, bottom-docked stat row with two pill CTAs, quiet white/`#F4F4F4` sections between panels, the monochrome palette with the single amber accent, Inter, 4 px buttons, generous whitespace, the mega menu pattern. Do not add sections, colours, gradients or decoration.
 
 **Refine only the words:** several headings are Tesla's verbatim ("Solar Panels", "Power Through Outages", "Pay Less for Electricity", "Schedule a Virtual Consultation", "Monitor from Anywhere"). Propose WAVENOX-voiced alternatives of the same length and tone for each, show me a side-by-side, and apply only the ones I approve. "Order Now" promises an ordering flow that does not exist; propose a same-length alternative (e.g. "Design Yours", "Get Estimate") for my approval. Remove the words "exact replica" from the docs; describe Tesla as the benchmark for restraint.
 
 ### 4.2 Consistency inside the existing identity
+
 - Tokens only: add an ESLint rule that fails on raw hex colours inside `className` (current code mixes `#171A20`, `#F9FAFB`, `#E5E7EB`, `#9CA3AF`, `#16181D`, `#10B981`, `#EF4444`…). Map everything to the existing tokens (`--ink`, `--ink-2`, `--muted`, `--line`, `--surface`, `--white`, `--accent`, `--danger`). One radius scale (today: 2/3/4/6/8 px and `rounded-full`), one shadow scale (mostly none).
 - Minimum text size 12 px (every page currently has 5–34 elements at 9–11 px). Add a Playwright check.
 - Rebuild `EnergyFlowSimulator` and `WealthCurveVisualizer` in the site's own monochrome + amber language (like the rest of the site) — no neon emerald/red/purple icon bubbles, no uppercase monospace labels. Keep them cinematic: large numbers, smooth amber flow lines, generous space.
@@ -207,7 +240,9 @@ Use grep to find and fix every item. Commit per bullet group.
 - Remove `select-none` from header, footer and panels (users cannot copy the phone number or email today).
 
 ### 4.3 Imagery — regenerate, don't downgrade
+
 Follow `docs/IMAGE_BRIEF.md` exactly (shot list, prompts, style and realism blocks, reject list). Problems to fix in the current renders:
+
 - Non-Indian scenes: US-style streets and "ONLY" road markings (`commercial-hero`), an American-style suburb (`home-outage`), ocean clifftops (`res-hero`, `res-terrace`).
 - Wrong story: the "power cut" in `home-outage` has lit streetlights and lit neighbours; `home-heat` is a black tablet, not a solar panel; `omnigrid-hero` reads as a TV bezel; `omnigrid-night` as a server rack.
 - Engineering: panels lying flat with no visible mounting (`home-design`), arrays that no Indian installer would build.
@@ -219,10 +254,12 @@ Follow `docs/IMAGE_BRIEF.md` exactly (shot list, prompts, style and realism bloc
 - Show me 4 variants per shot and wait for my pick before replacing files.
 
 ### 4.4 Copy
+
 Add `scripts/copy-lint.mjs` (run in `npm run lint`) that fails on these words in `src/`: Atelier, Monolithic, Sovereign, Bespoke, Institutional, Obsidian, Quantum, Dossier, Seamless, Apex, Kinetic, Nocturnal, Charter, Pillars, Command Center, Masterpiece, Ultra-luxury, Unparalleled, Elevate, Unleash, "Absolute power", "Zero compromise". (Today: Atelier 25×, Monolithic 18×, Dossier 53×, Architectural 64×, Estate 119×, Guarantee 35×.)
 Voice: a calm Hyderabad engineer. Short sentences, specific sourced numbers, Indian English, ₹ with en-IN grouping, lakhs.
 
 ### 4.5 Clean-up
+
 Remove unused shadcn components and unused dependencies (`framer-motion`, `recharts`, etc.) after confirming no imports. Keep the 4-column footer if you like it, but update the docs.
 
 ---

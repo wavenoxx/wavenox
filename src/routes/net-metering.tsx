@@ -79,7 +79,6 @@ interface DiscomRegulatoryData {
   portalUrl: string;
   portalName: string;
   maxSolarCapacityPct: number;
-  transformerCapPct: number;
   sanctionDays: number;
   meterTypeSinglePhaseLimitKw: number;
   meterTypeWholeCurrentLimitKw: number;
@@ -91,11 +90,10 @@ const REGULATORY_DATA: Record<string, DiscomRegulatoryData> = {
     code: "TGSPDCL",
     name: "Telangana Southern Power Distribution Company",
     state: "Telangana",
-    portalUrl: "https://www.tssouthernpower.com",
-    portalName: "TGSPDCL Solar Rooftop Portal",
+    portalUrl: "https://tgsouthernpower.org",
+    portalName: "TGSPDCL Official Consumer Portal",
     maxSolarCapacityPct: 100, // Up to 100% of sanctioned connected load
-    transformerCapPct: 80, // DT capacity capped at 80%
-    sanctionDays: 21,
+    sanctionDays: 15, // MoP 2024 statutory limit
     meterTypeSinglePhaseLimitKw: 5,
     meterTypeWholeCurrentLimitKw: 19,
     inspectionRequired: true,
@@ -104,52 +102,12 @@ const REGULATORY_DATA: Record<string, DiscomRegulatoryData> = {
     code: "TGNPDCL",
     name: "Telangana Northern Power Distribution Company",
     state: "Telangana",
-    portalUrl: "https://www.tsnorthernpower.com",
-    portalName: "TGNPDCL Solar Portal",
+    portalUrl: "https://tgnpdcl.com",
+    portalName: "TGNPDCL Official Portal",
     maxSolarCapacityPct: 100,
-    transformerCapPct: 80,
-    sanctionDays: 21,
+    sanctionDays: 15,
     meterTypeSinglePhaseLimitKw: 5,
     meterTypeWholeCurrentLimitKw: 19,
-    inspectionRequired: true,
-  },
-  APEPDCL: {
-    code: "APEPDCL",
-    name: "Andhra Pradesh Eastern Power Distribution",
-    state: "Andhra Pradesh",
-    portalUrl: "https://www.apeasternpower.com",
-    portalName: "AP Online Solar Rooftop Portal",
-    maxSolarCapacityPct: 100,
-    transformerCapPct: 80,
-    sanctionDays: 25,
-    meterTypeSinglePhaseLimitKw: 5,
-    meterTypeWholeCurrentLimitKw: 19,
-    inspectionRequired: true,
-  },
-  BESCOM: {
-    code: "BESCOM",
-    name: "Bangalore Electricity Supply Company",
-    state: "Karnataka",
-    portalUrl: "https://bescom.karnataka.gov.in",
-    portalName: "BESCOM e-Surya Portal",
-    maxSolarCapacityPct: 100,
-    transformerCapPct: 80,
-    sanctionDays: 28,
-    meterTypeSinglePhaseLimitKw: 4,
-    meterTypeWholeCurrentLimitKw: 25,
-    inspectionRequired: true,
-  },
-  MSEDCL: {
-    code: "MSEDCL",
-    name: "Maharashtra State Electricity Distribution",
-    state: "Maharashtra",
-    portalUrl: "https://www.mahadiscom.in",
-    portalName: "Mahavitaran RTS Portal",
-    maxSolarCapacityPct: 100,
-    transformerCapPct: 70,
-    sanctionDays: 30,
-    meterTypeSinglePhaseLimitKw: 5,
-    meterTypeWholeCurrentLimitKw: 20,
     inspectionRequired: true,
   },
 };
@@ -361,9 +319,11 @@ function NetMeteringPage() {
                     </span>
                   </div>
                   <div className="flex justify-between border-b border-[#E3E4E6] pb-2">
-                    <span className="text-[#5C5E62]">Transformer (DT) Cap:</span>
-                    <span className="text-[#171A20]">
-                      {reg.transformerCapPct}% of Distribution Feeder
+                    <span className="text-[#5C5E62]">Technical Feasibility:</span>
+                    <span className="text-[#171A20] text-right font-sans font-medium text-[11px] max-w-[200px]">
+                      {sanctionedLoadKw <= 10
+                        ? "Waived / Deemed Approved (≤ 10 kW)"
+                        : "Subject to DT Feeder Capacity"}
                     </span>
                   </div>
                   <div className="flex justify-between border-b border-[#E3E4E6] pb-2">

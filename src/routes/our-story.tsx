@@ -191,7 +191,7 @@ function OurStoryPage() {
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Solar engineered in Northern Europe fails in Indian 46°C heatwaves and coastal
                 monsoons. We utilize N-Type TOPCon cells with ultra-low thermal derating (-0.30%/°C)
-                and 170 km/h wind-rated pergola metallurgy.
+                and IS 875 (Part 3) 44 m/s wind-load compliant pergola metallurgy.
               </p>
             </div>
 

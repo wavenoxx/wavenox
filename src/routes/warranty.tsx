@@ -22,6 +22,7 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { calculateModuleDegradation, MODULE_WARRANTY_TERMS } from "@/config/regulatory";
 
 export const Route = createFileRoute("/warranty")({
   head: () => ({
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/warranty")({
       {
         name: "description",
         content:
-          "The WAVENOX 25-Year Comprehensive Asset Warranty: 25-year linear power guarantee (≥84.8%), 10-year battery capacity retention (≥70%), 5-year terrace waterproofing guarantee, and 48-hour SLA.",
+          "The WAVENOX 25-Year Comprehensive Asset Warranty: 25-year linear power guarantee (≥89.4%), 10-year battery capacity retention (≥70%), 5-year terrace waterproofing guarantee, and 48-hour SLA.",
       },
       {
         property: "og:title",
@@ -112,7 +113,11 @@ function WarrantyPage() {
           {/* Quick Metrics Ribbon */}
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
             {[
-              { value: "25 Years", label: "Linear Power", sub: "≥ 84.8% Output" },
+              {
+                value: "25 Years",
+                label: "Linear Power",
+                sub: `≥ ${MODULE_WARRANTY_TERMS.year25MinOutputPct}% Output`,
+              },
               { value: "10 Years", label: "Battery Pack", sub: "≥ 70% Retained" },
               { value: "5 Years", label: "Waterproofing", sub: "Zero Slab Leak" },
               { value: "48 Hours", label: "Dispatch SLA", sub: "Regional Fleet" },
@@ -159,14 +164,16 @@ function WarrantyPage() {
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Conventional panels degrade rapidly under harsh 44°C Indian summers. WAVENOX N-Type
-                TOPCon dual-glass panels are legally warranted to maintain at least 99.0% rated
-                power in Year 1, with annual degradation strictly capped at ≤ 0.55% per year,
-                ensuring at least 84.8% nameplate capacity in Year 25.
+                TOPCon dual-glass panels are warranted to maintain at least{" "}
+                {calculateModuleDegradation(1)}% rated power in Year 1, with annual degradation
+                strictly capped at ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct}% per year,
+                ensuring at least {MODULE_WARRANTY_TERMS.year25MinOutputPct}% nameplate capacity in
+                Year 25.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
-                <span>Yr 1: ≥ 99.0%</span>
-                <span>Yr 10: ≥ 93.5%</span>
-                <span>Yr 25: ≥ 84.8%</span>
+                <span>Yr 1: ≥ {calculateModuleDegradation(1)}%</span>
+                <span>Yr 10: ≥ {calculateModuleDegradation(10)}%</span>
+                <span>Yr 25: ≥ {calculateModuleDegradation(25)}%</span>
               </div>
             </div>
 
@@ -266,7 +273,9 @@ function WarrantyPage() {
                   <tr>
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 1 Initial</td>
                     <td className="py-4 px-6 text-[#5C5E62]">97.0% (LID degradation)</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 99.0%</td>
+                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                      ≥ {calculateModuleDegradation(1).toFixed(1)}%
+                    </td>
                     <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
                       +2.0% Zero LID
                     </td>
@@ -274,33 +283,41 @@ function WarrantyPage() {
                   <tr className="bg-[#F4F4F4]/30">
                     <td className="py-4 px-6 font-medium text-[#171A20]">Annual Degradation</td>
                     <td className="py-4 px-6 text-[#5C5E62]">0.70% / year</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">≤ 0.55% / year</td>
+                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                      ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct.toFixed(2)}% / year
+                    </td>
                     <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
-                      21% Lower Loss
+                      43% Lower Loss
                     </td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 10 Output</td>
                     <td className="py-4 px-6 text-[#5C5E62]">90.7%</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 93.5%</td>
+                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                      ≥ {calculateModuleDegradation(10).toFixed(1)}%
+                    </td>
                     <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
-                      +2.8% Yield Gain
+                      +4.7% Yield Gain
                     </td>
                   </tr>
                   <tr className="bg-[#F4F4F4]/30">
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 20 Output</td>
                     <td className="py-4 px-6 text-[#5C5E62]">83.7%</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 88.0%</td>
+                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                      ≥ {calculateModuleDegradation(20).toFixed(1)}%
+                    </td>
                     <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
-                      +4.3% Yield Gain
+                      +7.7% Yield Gain
                     </td>
                   </tr>
                   <tr className="bg-[#171A20] text-white">
                     <td className="py-4 px-6 font-semibold">Year 25 Guaranteed</td>
                     <td className="py-4 px-6 text-white/70">80.2% (Often unserviceable)</td>
-                    <td className="py-4 px-6 font-bold text-white">≥ 84.8%</td>
+                    <td className="py-4 px-6 font-bold text-white">
+                      ≥ {calculateModuleDegradation(25).toFixed(1)}%
+                    </td>
                     <td className="py-4 px-6 text-right font-bold text-[#F57C00]">
-                      +4.6% More Power
+                      +9.2% More Power
                     </td>
                   </tr>
                 </tbody>

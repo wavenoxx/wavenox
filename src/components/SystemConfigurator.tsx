@@ -455,6 +455,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   </button>
                 ))}
               </div>
+              <p className="text-[11px] text-[#5C5E62] pt-1 leading-normal">
+                * Telangana Gruha Jyothi scheme provides eligible households up to 200 free
+                units/month. Calculated using official TGERC FY 2025-26 telescopic tariffs.
+              </p>
             </div>
           </div>
 
@@ -632,16 +636,29 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <span className="font-medium tabular-nums">-₹{formatInr(subsidyInr)}</span>
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
-                <span className="font-medium">Net Payable Investment</span>
+                <span className="font-medium">Effective cost after subsidy</span>
                 <span className="text-[18px] font-semibold tabular-nums">
                   ₹{formatInr(netPayableInr)}
                 </span>
               </div>
-              <div className="pt-1 flex justify-between text-[12px] text-[#5C5E62]">
+              <p className="text-[11px] text-[#5C5E62] leading-tight pt-0.5">
+                *Subsidy is credited via DBT to your bank account post-commissioning (typically
+                within 15–45 days of DISCOM inspection).
+              </p>
+              <div className="pt-2 border-t border-[#E3E4E6] flex justify-between text-[12px] text-[#5C5E62]">
                 <span>25-Year Est. Net Savings</span>
                 <span className="font-medium tabular-nums text-[#171A20]">
                   ₹{twentyFiveYearLakhs} Lakhs
                 </span>
+              </div>
+              <div className="pt-1 flex items-center justify-end">
+                <a
+                  href="/legal/disclosures#sources"
+                  className="inline-flex items-center gap-1.5 text-[11px] text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                  <span>Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)</span>
+                </a>
               </div>
             </div>
 
@@ -854,7 +871,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* Sticky Mobile Bottom Bar */}
       <div className="fixed bottom-0 inset-x-0 z-30 bg-[#FFFFFF] border-t border-[#E3E4E6] px-6 py-3 flex sm:hidden items-center justify-between shadow-lg">
         <div>
-          <div className="text-[12px] text-[#5C5E62]">Net Payable</div>
+          <div className="text-[12px] text-[#5C5E62]">Effective Cost</div>
           <div className="text-[16px] font-semibold tabular-nums text-[#171A20]">
             ₹{formatInr(netPayableInr)}
           </div>

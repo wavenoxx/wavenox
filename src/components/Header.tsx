@@ -199,7 +199,7 @@ export function Header() {
             </div>
             <div className="py-4 space-y-3 text-[14px]">
               <div className="p-3 bg-[#F4F4F4] rounded-[4px]">
-                <div className="font-medium text-[#171A20]">Telangana (TGSPDCL / TSNPDCL)</div>
+                <div className="font-medium text-[#171A20]">Telangana (TGSPDCL / TGNPDCL)</div>
                 <div className="text-[12px] text-[#5C5E62]">
                   Hyderabad, Secunderabad, Rangareddy, Warangal. PM Surya Ghar ready.
                 </div>

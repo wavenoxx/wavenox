@@ -27,7 +27,7 @@ export const Route = createFileRoute("/service-areas")({
       {
         name: "description",
         content:
-          "WAVENOX solar engineering hubs across Telangana (TGSPDCL/TSNPDCL), Andhra Pradesh (APEPDCL/APSPDCL), and Karnataka (BESCOM). Turnkey DISCOM net-metering synchronization and 48-hour service dispatch.",
+          "WAVENOX solar engineering hubs across Telangana (TGSPDCL/TGNPDCL), Andhra Pradesh (APEPDCL/APSPDCL), and Karnataka (BESCOM). Turnkey DISCOM net-metering synchronization and 48-hour service dispatch.",
       },
       {
         property: "og:title",
@@ -112,7 +112,7 @@ const REGION_HUBS: RegionHub[] = [
     headline: "Hyderabad Metropolitan & Innovation Corridor",
     discoms: [
       "TGSPDCL (Southern Power Distribution Company of Telangana)",
-      "TSNPDCL (Northern Power Distribution Company of Telangana)",
+      "TGNPDCL (Northern Power Distribution Company of Telangana)",
     ],
     keyDistricts: [
       "Hyderabad (Jubilee Hills, Banjara Hills, Gachibowli, Madhapur)",
@@ -123,8 +123,8 @@ const REGION_HUBS: RegionHub[] = [
     ],
     headquarters: "Financial District, Gachibowli, Hyderabad — 500032",
     irradiance: "5.4 – 5.8 kWh/m²/day",
-    annualGenerationPerKw: "1,550 – 1,680 Units / kW / Year",
-    cycloneRating: "150 km/h Wind Resistance (IS 875)",
+    annualGenerationPerKw: "1,490 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 44 m/s (158 km/h)",
     netMeteringPortal: "TGSPDCL Solar Net-Metering Portal",
     netMeteringPortalUrl: "https://tgspdcl.cgg.gov.in/",
     leadTimeWeeks: "2 to 3 Weeks (Portal Sanction to Meter Synchronization)",
@@ -148,8 +148,8 @@ const REGION_HUBS: RegionHub[] = [
     ],
     headquarters: "Regional Liaison Office: MVP Colony, Visakhapatnam",
     irradiance: "5.3 – 5.7 kWh/m²/day",
-    annualGenerationPerKw: "1,520 – 1,640 Units / kW / Year",
-    cycloneRating: "170 km/h Severe Cyclone Rating (Coastal Structural Grade)",
+    annualGenerationPerKw: "1,490 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Coastal Wind Speed: 50 m/s (180 km/h)",
     netMeteringPortal: "AP Online Solar Rooftop Portal",
     netMeteringPortalUrl: "https://www.apeasternpower.com/",
     leadTimeWeeks: "3 to 4 Weeks",
@@ -168,8 +168,8 @@ const REGION_HUBS: RegionHub[] = [
     ],
     headquarters: "Service Dispatch Hub: Indiranagar 100ft Road, Bengaluru",
     irradiance: "5.1 – 5.5 kWh/m²/day",
-    annualGenerationPerKw: "1,480 – 1,580 Units / kW / Year",
-    cycloneRating: "150 km/h Wind Resistance (IS 875)",
+    annualGenerationPerKw: "1,490 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 33 m/s (120 km/h)",
     netMeteringPortal: "BESCOM Rooftop Solar Portal",
     netMeteringPortalUrl: "https://bescom.karnataka.gov.in/",
     leadTimeWeeks: "3 to 4 Weeks",

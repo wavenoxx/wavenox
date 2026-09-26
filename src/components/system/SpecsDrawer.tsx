@@ -40,7 +40,7 @@ const defaultSolarSpecs: SpecCategory[] = [
     title: "Mounting & Structural",
     items: [
       { label: "Structure Material", value: "HDG Anodized Aluminium (6063-T6)" },
-      { label: "Wind Rating", value: "Engineered up to 170 km/h gusts" },
+      { label: "Wind Rating", value: "IS 875 (Part 3) 44 m/s (158 km/h)" },
       { label: "Roof Attachment", value: "Non-penetrating chemical anchoring / ballast" },
     ],
   },
@@ -48,7 +48,7 @@ const defaultSolarSpecs: SpecCategory[] = [
     title: "Warranty & Protection",
     items: [
       { label: "Product Workmanship", value: "10 Years Turnkey WAVENOX Warranty" },
-      { label: "Linear Power Output", value: "25 Years (≥ 84.8% output at Year 25)", verify: true },
+      { label: "Linear Power Output", value: "25 Years (≥ 89.4% output at Year 25)", verify: true },
       { label: "Battery Performance", value: "10 Years (≥ 70% capacity retention)" },
     ],
   },

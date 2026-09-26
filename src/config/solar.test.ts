@@ -98,7 +98,7 @@ describe("Solar Engine — estimate() Core Calculations", () => {
   it("correctly models 25-year compounding with degradation and tariff escalation", () => {
     const result = estimate({
       monthlyBillInr: 15000,
-      discomCode: "BESCOM",
+      discomCode: "TGSPDCL",
     });
 
     expect(result.savings25YearsInr).toBeGreaterThan(0);
