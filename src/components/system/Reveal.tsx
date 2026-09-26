@@ -8,9 +8,6 @@ export interface RevealProps {
   immediate?: boolean;
 }
 
-export function Reveal({
-  children,
-  className = "",
-}: RevealProps) {
+export function Reveal({ children, className = "" }: RevealProps) {
   return <div className={className}>{children}</div>;
 }

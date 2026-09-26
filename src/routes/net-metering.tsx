@@ -215,8 +215,8 @@ function NetMeteringPage() {
 
           <p className="text-[16px] sm:text-[18px] text-[#5C5E62] max-w-2xl mx-auto leading-relaxed">
             Eliminating regulatory ambiguity. WAVENOX manages 100% of the DISCOM engineering
-            applications, technical feasibility studies, bi-directional meter synchronization, and PM
-            Surya Ghar subsidies for your estate.
+            applications, technical feasibility studies, bi-directional meter synchronization, and
+            PM Surya Ghar subsidies for your estate.
           </p>
         </section>
 
@@ -228,7 +228,8 @@ function NetMeteringPage() {
                 Interactive Permissible Capacity &amp; Metering Engine
               </h2>
               <p className="text-xs text-[#5C5E62] mt-1">
-                Select your designated electricity distribution utility to calculate your statutory solar limits.
+                Select your designated electricity distribution utility to calculate your statutory
+                solar limits.
               </p>
             </div>
 
@@ -293,7 +294,8 @@ function NetMeteringPage() {
                     <span>50 kW (Mansion)</span>
                   </div>
                   <p className="text-[11px] text-[#5C5E62] mt-3 leading-relaxed">
-                    * Found on your monthly electricity bill under &quot;Sanctioned Load&quot; or &quot;Contracted Demand&quot;.
+                    * Found on your monthly electricity bill under &quot;Sanctioned Load&quot; or
+                    &quot;Contracted Demand&quot;.
                   </p>
                 </div>
 
@@ -337,7 +339,8 @@ function NetMeteringPage() {
               Statutory Documentation Requirements
             </h3>
             <p className="text-[14px] text-[#5C5E62]">
-              We handle all paperwork and physical utility inspections. You only provide these 4 documents.
+              We handle all paperwork and physical utility inspections. You only provide these 4
+              documents.
             </p>
           </div>
 
@@ -370,8 +373,8 @@ function NetMeteringPage() {
                 Verify Your Transformer DT Clearance
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Provide your Service Connection Number to let our regulatory liaison team verify available
-                feeder capacity on your local distribution transformer.
+                Provide your Service Connection Number to let our regulatory liaison team verify
+                available feeder capacity on your local distribution transformer.
               </p>
             </div>
 
@@ -382,8 +385,8 @@ function NetMeteringPage() {
                   Feasibility Request Logged for {reg.code}
                 </h4>
                 <p className="text-[13px] text-[#15803D] max-w-md mx-auto">
-                  Our utility engineer will cross-reference your service connection with the local DISCOM
-                  substation records within 24 hours.
+                  Our utility engineer will cross-reference your service connection with the local
+                  DISCOM substation records within 24 hours.
                 </p>
               </div>
             ) : (

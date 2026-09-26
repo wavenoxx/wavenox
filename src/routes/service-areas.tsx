@@ -195,8 +195,8 @@ function ServiceAreasPage() {
             Service Areas &amp; DISCOM Jurisdictions
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
-            Direct turnkey execution from site survey to DISCOM bi-directional meter
-            synchronization across Telangana, Andhra Pradesh, and Karnataka.
+            Direct turnkey execution from site survey to DISCOM bi-directional meter synchronization
+            across Telangana, Andhra Pradesh, and Karnataka.
           </p>
 
           {/* Regional Switcher Pills */}
@@ -306,9 +306,9 @@ function ServiceAreasPage() {
                     Turnkey Net-Metering Liaison
                   </h3>
                   <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                    WAVENOX handles the entire end-to-end liaison process: feasibility check,
-                    portal registration, CEIG / Electrical Inspectorate filings, CT/PT inspection,
-                    and bi-directional meter synchronization. Typical completion window:{" "}
+                    WAVENOX handles the entire end-to-end liaison process: feasibility check, portal
+                    registration, CEIG / Electrical Inspectorate filings, CT/PT inspection, and
+                    bi-directional meter synchronization. Typical completion window:{" "}
                     <strong className="text-[#171A20]">{currentHub.leadTimeWeeks}</strong>.
                   </p>
                 </div>

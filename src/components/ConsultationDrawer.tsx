@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft, Building2, Home, Factory, ShieldCheck, AlertCircle } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Building2,
+  Home,
+  Factory,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
 import { estimate } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
@@ -124,7 +132,9 @@ export function ConsultationDrawer() {
 
     const cleanPin = pinCode.trim();
     if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
-      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
+      setSubmitError(
+        "Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).",
+      );
       return;
     }
 
@@ -407,7 +417,8 @@ export function ConsultationDrawer() {
                 </div>
               </div>
               <p className="text-[11px] text-[#5C5E62]/80">
-                PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar clearance.
+                PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar
+                clearance.
               </p>
 
               {/* Bot suppression */}
@@ -436,8 +447,9 @@ export function ConsultationDrawer() {
                   htmlFor="drawer-consent"
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX engineers
-                  in accordance with the <strong>DPDP Act 2023</strong>. Zero spam guarantee.
+                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX
+                  engineers in accordance with the <strong>DPDP Act 2023</strong>. Zero spam
+                  guarantee.
                 </label>
               </div>
 

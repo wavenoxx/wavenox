@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Plus, Minus, ShieldCheck, AlertCircle, MessageSquare, CheckCircle2, FileText } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  ShieldCheck,
+  AlertCircle,
+  MessageSquare,
+  CheckCircle2,
+  FileText,
+} from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
@@ -135,43 +143,46 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     else setPanelCount(SYSTEM_TIERS[3].panels);
   };
 
-  const currentDossierData: DossierData = React.useMemo(() => ({
-    refCode: "WNX-PREVIEW",
-    clientName: userName || "Prospective Estate Owner",
-    phone: userPhone,
-    address: address || "Site Assessment Required",
-    pinCode: pinCode || "Verified Local Hub",
-    discomName: discom.name,
-    systemKw: systemKw,
-    panelCount: panelCount,
-    batteryUnits: selectedBatteryUnits,
-    batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
-    monthlyBill: monthlyBill,
-    grossCapex: totalGrossInr,
-    subsidyInr: subsidyInr,
-    netPayable: netPayableInr,
-    monthlyEmi: monthlyEmiInr,
-    paybackYears: calculation.paybackYears,
-    annualSavings: calculation.annualSavingsInr,
-    twentyFiveYearSavings: twentyFiveYearWealthInr,
-  }), [
-    userName,
-    userPhone,
-    address,
-    pinCode,
-    discom.name,
-    systemKw,
-    panelCount,
-    selectedBatteryUnits,
-    monthlyBill,
-    totalGrossInr,
-    subsidyInr,
-    netPayableInr,
-    monthlyEmiInr,
-    calculation.paybackYears,
-    calculation.annualSavingsInr,
-    twentyFiveYearWealthInr,
-  ]);
+  const currentDossierData: DossierData = React.useMemo(
+    () => ({
+      refCode: "WNX-PREVIEW",
+      clientName: userName || "Prospective Estate Owner",
+      phone: userPhone,
+      address: address || "Site Assessment Required",
+      pinCode: pinCode || "Verified Local Hub",
+      discomName: discom.name,
+      systemKw: systemKw,
+      panelCount: panelCount,
+      batteryUnits: selectedBatteryUnits,
+      batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
+      monthlyBill: monthlyBill,
+      grossCapex: totalGrossInr,
+      subsidyInr: subsidyInr,
+      netPayable: netPayableInr,
+      monthlyEmi: monthlyEmiInr,
+      paybackYears: calculation.paybackYears,
+      annualSavings: calculation.annualSavingsInr,
+      twentyFiveYearSavings: twentyFiveYearWealthInr,
+    }),
+    [
+      userName,
+      userPhone,
+      address,
+      pinCode,
+      discom.name,
+      systemKw,
+      panelCount,
+      selectedBatteryUnits,
+      monthlyBill,
+      totalGrossInr,
+      subsidyInr,
+      netPayableInr,
+      monthlyEmiInr,
+      calculation.paybackYears,
+      calculation.annualSavingsInr,
+      twentyFiveYearWealthInr,
+    ],
+  );
 
   const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,7 +193,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
     const cleanPin = pinCode.trim();
     if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
-      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
+      setSubmitError(
+        "Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).",
+      );
       return;
     }
 
@@ -240,7 +253,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears: calculation.paybackYears,
               annualSavings: calculation.annualSavingsInr,
               twentyFiveYearSavings: twentyFiveYearWealthInr,
-            })
+            }),
           );
         } catch {
           // ignore storage quota errors
@@ -715,7 +728,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </div>
               </div>
               <p className="text-[11px] text-[#5C5E62]/80">
-                PIN code is required to verify local DISCOM substation transformer capacity and PM Surya Ghar feeder clearance.
+                PIN code is required to verify local DISCOM substation transformer capacity and PM
+                Surya Ghar feeder clearance.
               </p>
 
               {/* Bot honeypot */}
@@ -745,8 +759,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
                 >
                   I consent to receive my bespoke solar proposal and be contacted by WAVENOX solar
-                  structural engineers in accordance with the <strong>Digital Personal Data
-                  Protection (DPDP) Act 2023</strong>. Zero spam guarantee.
+                  structural engineers in accordance with the{" "}
+                  <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>. Zero spam
+                  guarantee.
                 </label>
               </div>
 
@@ -757,9 +772,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   className="flex-1 h-12 px-5 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-                  <span>
-                    {isSubmitting ? "Generating Dossier..." : "Request Proposal Dossier"}
-                  </span>
+                  <span>{isSubmitting ? "Generating Dossier..." : "Request Proposal Dossier"}</span>
                 </button>
 
                 <button

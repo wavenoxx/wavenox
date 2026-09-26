@@ -467,9 +467,9 @@ function TechnologyPage() {
                 <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-relaxed">
                   Every inverter and battery unit streams encrypted telemetry over Wi-Fi and 4G
                   cellular IoT back to our Hyderabad Command Center. Proprietary algorithms detect
-                  panel mismatch, shading anomalies, and grid voltage fluctuations in real time.
-                  If a fault occurs, our team dispatches a service engineer before you notice a drop
-                  in yield.
+                  panel mismatch, shading anomalies, and grid voltage fluctuations in real time. If
+                  a fault occurs, our team dispatches a service engineer before you notice a drop in
+                  yield.
                 </p>
                 <div className="space-y-2 pt-2 text-[14px] text-[#171A20]">
                   <div className="flex items-center gap-2">

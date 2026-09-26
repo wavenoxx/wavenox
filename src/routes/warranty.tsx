@@ -102,8 +102,8 @@ function WarrantyPage() {
             The 25-Year Sovereign Warranty Charter
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
-            Solar is a quarter-century financial asset. We stand behind every kilowatt with
-            tier-one linear power guarantees, non-penetrating waterproofing bonds, and 48-hour field
+            Solar is a quarter-century financial asset. We stand behind every kilowatt with tier-one
+            linear power guarantees, non-penetrating waterproofing bonds, and 48-hour field
             dispatch.
           </p>
 
@@ -157,9 +157,9 @@ function WarrantyPage() {
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Conventional panels degrade rapidly under harsh 44°C Indian summers. WAVENOX N-Type
-                TOPCon dual-glass panels are legally warranted to maintain at least 99.0% rated power
-                in Year 1, with annual degradation strictly capped at ≤ 0.55% per year, ensuring at
-                least 84.8% nameplate capacity in Year 25.
+                TOPCon dual-glass panels are legally warranted to maintain at least 99.0% rated
+                power in Year 1, with annual degradation strictly capped at ≤ 0.55% per year,
+                ensuring at least 84.8% nameplate capacity in Year 25.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Yr 1: ≥ 99.0%</span>
@@ -178,9 +178,9 @@ function WarrantyPage() {
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Automotive-grade Lithium Iron Phosphate (LiFePO4) chemistry ensures cobalt-free
-                thermal stability. Omnigrid is guaranteed to maintain at least 70% of its initial 14.3
-                kWh usable capacity for 10 continuous years or 6,000 full daily cycles, whichever
-                comes first.
+                thermal stability. Omnigrid is guaranteed to maintain at least 70% of its initial
+                14.3 kWh usable capacity for 10 continuous years or 6,000 full daily cycles,
+                whichever comes first.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Cycle Life: 6,000 cycles</span>
@@ -265,31 +265,41 @@ function WarrantyPage() {
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 1 Initial</td>
                     <td className="py-4 px-6 text-[#5C5E62]">97.0% (LID degradation)</td>
                     <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 99.0%</td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">+2.0% Zero LID</td>
+                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                      +2.0% Zero LID
+                    </td>
                   </tr>
                   <tr className="bg-[#F4F4F4]/30">
                     <td className="py-4 px-6 font-medium text-[#171A20]">Annual Degradation</td>
                     <td className="py-4 px-6 text-[#5C5E62]">0.70% / year</td>
                     <td className="py-4 px-6 font-semibold text-[#171A20]">≤ 0.55% / year</td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">21% Lower Loss</td>
+                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                      21% Lower Loss
+                    </td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 10 Output</td>
                     <td className="py-4 px-6 text-[#5C5E62]">90.7%</td>
                     <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 93.5%</td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">+2.8% Yield Gain</td>
+                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                      +2.8% Yield Gain
+                    </td>
                   </tr>
                   <tr className="bg-[#F4F4F4]/30">
                     <td className="py-4 px-6 font-medium text-[#171A20]">Year 20 Output</td>
                     <td className="py-4 px-6 text-[#5C5E62]">83.7%</td>
                     <td className="py-4 px-6 font-semibold text-[#171A20]">≥ 88.0%</td>
-                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">+4.3% Yield Gain</td>
+                    <td className="py-4 px-6 text-right font-medium text-[#F57C00]">
+                      +4.3% Yield Gain
+                    </td>
                   </tr>
                   <tr className="bg-[#171A20] text-white">
                     <td className="py-4 px-6 font-semibold">Year 25 Guaranteed</td>
                     <td className="py-4 px-6 text-white/70">80.2% (Often unserviceable)</td>
                     <td className="py-4 px-6 font-bold text-white">≥ 84.8%</td>
-                    <td className="py-4 px-6 text-right font-bold text-[#F57C00]">+4.6% More Power</td>
+                    <td className="py-4 px-6 text-right font-bold text-[#F57C00]">
+                      +4.6% More Power
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -307,8 +317,8 @@ function WarrantyPage() {
               How Warranty Claims Are Resolved
             </h2>
             <p className="text-[14px] sm:text-[16px] text-[#5C5E62] mt-2">
-              No warranty cards to lose, no distributor middle-men. Your system’s encrypted telemetry
-              serves as its own transparent ledger.
+              No warranty cards to lose, no distributor middle-men. Your system’s encrypted
+              telemetry serves as its own transparent ledger.
             </p>
           </div>
 

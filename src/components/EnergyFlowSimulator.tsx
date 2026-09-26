@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Sun, Home, Battery, Zap, AlertTriangle, ShieldCheck, Play, Pause, RotateCcw } from "lucide-react";
+import {
+  Sun,
+  Home,
+  Battery,
+  Zap,
+  AlertTriangle,
+  ShieldCheck,
+  Play,
+  Pause,
+  RotateCcw,
+} from "lucide-react";
 import { PRODUCTS_CONFIG } from "@/config/products";
 
 interface SimulationState {
@@ -171,7 +181,9 @@ export function EnergyFlowSimulator() {
       <div className="py-6">
         <div className="flex items-center justify-between text-[11px] font-mono text-[#9CA3AF] mb-2.5">
           <span>06:00 AM (Dawn)</span>
-          <span className="text-[#F57C00] font-bold text-[13px]">{current.timeStr} — {current.label}</span>
+          <span className="text-[#F57C00] font-bold text-[13px]">
+            {current.timeStr} — {current.label}
+          </span>
           <span>02:00 AM (Night)</span>
         </div>
 
@@ -192,7 +204,9 @@ export function EnergyFlowSimulator() {
                     : "bg-[#1B1E24] hover:bg-[#23272F] text-[#9CA3AF]"
                 }`}
               >
-                <div className="text-[10px] sm:text-[11px] font-mono leading-tight">{item.timeStr.split(" ")[0]}</div>
+                <div className="text-[10px] sm:text-[11px] font-mono leading-tight">
+                  {item.timeStr.split(" ")[0]}
+                </div>
                 <div className="text-[9px] truncate opacity-70 hidden sm:block">{item.label}</div>
               </button>
             );
@@ -218,21 +232,21 @@ export function EnergyFlowSimulator() {
 
         {/* Network Layout */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center text-center relative z-10">
-          
           {/* Node 1: Solar */}
           <div className="p-5 rounded-[6px] bg-[#1B1E24] border border-[#2C323C] flex flex-col items-center">
-            <div className={`p-3 rounded-full mb-3 ${current.solarKw > 0 ? "bg-[#F57C00]/20 text-[#F57C00]" : "bg-[#23272F] text-[#5C5E62]"}`}>
+            <div
+              className={`p-3 rounded-full mb-3 ${current.solarKw > 0 ? "bg-[#F57C00]/20 text-[#F57C00]" : "bg-[#23272F] text-[#5C5E62]"}`}
+            >
               <Sun className="w-6 h-6" />
             </div>
             <div className="text-[11px] uppercase tracking-wider text-[#9CA3AF] font-mono">
               Monolithic PV
             </div>
             <div className="text-[24px] font-semibold tabular-nums text-[#FFFFFF] mt-0.5">
-              {current.solarKw.toFixed(1)} <span className="text-[13px] text-[#9CA3AF] font-normal">kW</span>
+              {current.solarKw.toFixed(1)}{" "}
+              <span className="text-[13px] text-[#9CA3AF] font-normal">kW</span>
             </div>
-            <div className="text-[11px] text-[#9CA3AF] mt-1">
-              550W N-Type TOPCon
-            </div>
+            <div className="text-[11px] text-[#9CA3AF] mt-1">550W N-Type TOPCon</div>
           </div>
 
           {/* Node 2: Central Inverter & Gateway */}
@@ -246,9 +260,7 @@ export function EnergyFlowSimulator() {
             <div className="text-[20px] font-semibold tabular-nums text-[#FFFFFF] mt-0.5">
               98.4% <span className="text-[13px] text-[#9CA3AF] font-normal">Eff.</span>
             </div>
-            <div className="text-[11px] text-[#10B981] mt-1 font-mono">
-              Solid-State Switchgear
-            </div>
+            <div className="text-[11px] text-[#10B981] mt-1 font-mono">Solid-State Switchgear</div>
           </div>
 
           {/* Node 3: Omnigrid Battery */}
@@ -260,13 +272,16 @@ export function EnergyFlowSimulator() {
               Omnigrid Storage
             </div>
             <div className="text-[24px] font-semibold tabular-nums text-[#FFFFFF] mt-0.5">
-              {current.batterySoc}% <span className="text-[13px] text-[#9CA3AF] font-normal">SOC</span>
+              {current.batterySoc}%{" "}
+              <span className="text-[13px] text-[#9CA3AF] font-normal">SOC</span>
             </div>
             <div className="text-[11px] font-mono mt-1">
               {current.batteryKw > 0 ? (
                 <span className="text-[#10B981]">Charging +{current.batteryKw.toFixed(1)} kW</span>
               ) : current.batteryKw < 0 ? (
-                <span className="text-[#F57C00]">Discharging {current.batteryKw.toFixed(1)} kW</span>
+                <span className="text-[#F57C00]">
+                  Discharging {current.batteryKw.toFixed(1)} kW
+                </span>
               ) : (
                 <span className="text-[#9CA3AF]">Standby · Ready</span>
               )}
@@ -282,13 +297,11 @@ export function EnergyFlowSimulator() {
               Villa Load
             </div>
             <div className="text-[24px] font-semibold tabular-nums text-[#FFFFFF] mt-0.5">
-              {current.homeKw.toFixed(1)} <span className="text-[13px] text-[#9CA3AF] font-normal">kW</span>
+              {current.homeKw.toFixed(1)}{" "}
+              <span className="text-[13px] text-[#9CA3AF] font-normal">kW</span>
             </div>
-            <div className="text-[11px] text-[#9CA3AF] mt-1">
-              HVAC + Estate Power
-            </div>
+            <div className="text-[11px] text-[#9CA3AF] mt-1">HVAC + Estate Power</div>
           </div>
-
         </div>
 
         {/* Dynamic Status Bar */}
@@ -301,7 +314,11 @@ export function EnergyFlowSimulator() {
           <div className="text-[#9CA3AF]">
             Net DISCOM Balance:{" "}
             <span className={current.gridKw > 0 ? "text-[#10B981] font-bold" : "text-[#FFFFFF]"}>
-              {current.gridKw > 0 ? `Exporting +${current.gridKw.toFixed(1)} kW` : current.gridKw < 0 ? `Importing ${Math.abs(current.gridKw).toFixed(1)} kW` : "Zero Grid Draw (0.0 kW)"}
+              {current.gridKw > 0
+                ? `Exporting +${current.gridKw.toFixed(1)} kW`
+                : current.gridKw < 0
+                  ? `Importing ${Math.abs(current.gridKw).toFixed(1)} kW`
+                  : "Zero Grid Draw (0.0 kW)"}
             </span>
           </div>
         </div>

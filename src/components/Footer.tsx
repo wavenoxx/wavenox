@@ -180,7 +180,9 @@ export function Footer() {
           <div className="flex items-center gap-3">
             <BrandLogo size="sm" asLink={false} />
             <span className="text-[#5C5E62]/40">|</span>
-            <span className="text-[12px]">Financial District, Gachibowli, Hyderabad, Telangana — 500032</span>
+            <span className="text-[12px]">
+              Financial District, Gachibowli, Hyderabad, Telangana — 500032
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-5">

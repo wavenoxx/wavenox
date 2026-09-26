@@ -6,7 +6,10 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button, TextLink } from "@/components/system";
 import { BRAND_CONFIG } from "@/config/brand";
-import { ArchitecturalDossierModal, type DossierData } from "@/components/ArchitecturalDossierModal";
+import {
+  ArchitecturalDossierModal,
+  type DossierData,
+} from "@/components/ArchitecturalDossierModal";
 import { PRODUCTS_CONFIG } from "@/config/products";
 
 const orderReceivedSearchSchema = z.object({

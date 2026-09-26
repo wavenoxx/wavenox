@@ -1,6 +1,7 @@
 export interface FaqTopic {
   id: string;
-  category: "subsidies" | "battery" | "terrace" | "technology" | "billing" | "commercial" | "warranty";
+  category:
+    "subsidies" | "battery" | "terrace" | "technology" | "billing" | "commercial" | "warranty";
   categoryLabel: string;
   question: string;
   answer: string;

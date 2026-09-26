@@ -145,8 +145,8 @@ function ArchitectsPage() {
 
           <p className="text-[16px] sm:text-[18px] text-[#5C5E62] max-w-2xl mx-auto leading-relaxed">
             We partner with premier architects, structural engineers, and luxury villa developers to
-            seamlessly embed monolithic clean power into bespoke residences without compromising form
-            or terrace usability.
+            seamlessly embed monolithic clean power into bespoke residences without compromising
+            form or terrace usability.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -261,9 +261,9 @@ function ArchitectsPage() {
                 Register Your Architectural Studio
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Connect directly with our Lead Solar Structural Engineers to receive 3D shadow models,
-                custom Pergola structural calculations, and turnkey DISCOM utility liaison for your
-                client villas.
+                Connect directly with our Lead Solar Structural Engineers to receive 3D shadow
+                models, custom Pergola structural calculations, and turnkey DISCOM utility liaison
+                for your client villas.
               </p>
             </div>
 

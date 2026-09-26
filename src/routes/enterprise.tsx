@@ -343,7 +343,10 @@ function EnterprisePage() {
             )}
 
             <div>
-              <label htmlFor="rfp-name" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+              <label
+                htmlFor="rfp-name"
+                className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+              >
                 Full Name *
               </label>
               <input
@@ -358,7 +361,10 @@ function EnterprisePage() {
             </div>
 
             <div>
-              <label htmlFor="rfp-phone" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+              <label
+                htmlFor="rfp-phone"
+                className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+              >
                 Mobile Phone / WhatsApp (+91) *
               </label>
               <div className="relative flex items-center">
@@ -380,7 +386,10 @@ function EnterprisePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label htmlFor="rfp-company" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="rfp-company"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Company / Facility Name
                 </label>
                 <input
@@ -394,7 +403,10 @@ function EnterprisePage() {
               </div>
 
               <div>
-                <label htmlFor="rfp-website" className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="rfp-website"
+                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Company Website (Optional)
                 </label>
                 <input
@@ -422,8 +434,9 @@ function EnterprisePage() {
                 htmlFor="rfp-consent"
                 className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
               >
-                I authorize WAVENOX commercial solar engineers to evaluate facility interconnection and
-                contact me in accordance with the <strong>DPDP Act 2023</strong>. Zero spam guarantee.
+                I authorize WAVENOX commercial solar engineers to evaluate facility interconnection
+                and contact me in accordance with the <strong>DPDP Act 2023</strong>. Zero spam
+                guarantee.
               </label>
             </div>
 
@@ -433,7 +446,9 @@ function EnterprisePage() {
               className="w-full h-12 px-6 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-              <span>{isSubmitting ? "Generating Assessment..." : "Request Commercial Proposal"}</span>
+              <span>
+                {isSubmitting ? "Generating Assessment..." : "Request Commercial Proposal"}
+              </span>
             </button>
 
             <div className="pt-2 text-center">

@@ -158,7 +158,9 @@ function FaqPage() {
           {filteredFaqs.length === 0 ? (
             <div className="p-12 text-center border border-[#E3E4E6] rounded-[8px] bg-[#F4F4F4]/40 space-y-3">
               <HelpCircle className="w-8 h-8 text-[#5C5E62] mx-auto opacity-60" />
-              <div className="text-[17px] font-medium text-[#171A20]">No matching answers found</div>
+              <div className="text-[17px] font-medium text-[#171A20]">
+                No matching answers found
+              </div>
               <p className="text-[14px] text-[#5C5E62] max-w-sm mx-auto">
                 Could not find anything matching "{searchQuery}". Try a different keyword or contact
                 our solar engineering advisory team.

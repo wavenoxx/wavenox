@@ -104,7 +104,9 @@ export function WealthCurveVisualizer({
           <div>
             <span className="text-[#9CA3AF] text-[10px] uppercase">Year {activePoint.year}</span>
             <div className="font-bold text-[#10B981] text-[14px]">
-              {activePoint.netWealth > 0 ? `+${formatInr(activePoint.netWealth)}` : formatInr(activePoint.netWealth)}
+              {activePoint.netWealth > 0
+                ? `+${formatInr(activePoint.netWealth)}`
+                : formatInr(activePoint.netWealth)}
             </div>
           </div>
           <div className="border-l border-[#2C323C] pl-3">
@@ -118,10 +120,7 @@ export function WealthCurveVisualizer({
 
       {/* Interactive Vector Chart */}
       <div className="relative w-full overflow-hidden select-none">
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-auto overflow-visible"
-        >
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
           {/* Grid lines */}
           <line
             x1={paddingX}
@@ -152,12 +151,7 @@ export function WealthCurveVisualizer({
           />
 
           {/* Wealth Line (Emerald Retained Net Cash) */}
-          <path
-            d={wealthPath}
-            fill="none"
-            stroke="#10B981"
-            strokeWidth="2.5"
-          />
+          <path d={wealthPath} fill="none" stroke="#10B981" strokeWidth="2.5" />
 
           {/* Payback marker line */}
           {paybackYears > 0 && paybackYears <= 25 && (

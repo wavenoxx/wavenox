@@ -15,7 +15,12 @@ export interface StatRowProps {
 export function StatRow({ stats, align = "center", className = "" }: StatRowProps) {
   const isCenter = align === "center";
   const count = stats.length;
-  const gridCols = count === 2 ? "grid-cols-2 max-w-xs" : count === 3 ? "grid-cols-3 max-w-sm sm:max-w-md" : "grid-cols-2 max-w-sm";
+  const gridCols =
+    count === 2
+      ? "grid-cols-2 max-w-xs"
+      : count === 3
+        ? "grid-cols-3 max-w-sm sm:max-w-md"
+        : "grid-cols-2 max-w-sm";
 
   return (
     <div
@@ -24,7 +29,10 @@ export function StatRow({ stats, align = "center", className = "" }: StatRowProp
       } ${className}`}
     >
       {stats.map((stat, idx) => (
-        <div key={idx} className="flex flex-col items-center md:items-start text-center md:text-left px-1">
+        <div
+          key={idx}
+          className="flex flex-col items-center md:items-start text-center md:text-left px-1"
+        >
           <span className="text-[19px] sm:text-[26px] md:text-[34px] font-semibold tracking-tight leading-tight tabular-nums text-inherit drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
             {stat.value}
           </span>

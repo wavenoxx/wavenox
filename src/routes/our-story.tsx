@@ -116,11 +116,11 @@ function OurStoryPage() {
               Why Luxury Residences Deserved Better
             </h2>
             <p>
-              When an architect designs an exquisite modern villa in Jubilee Hills or Sadashivanagar,
-              every reveal, basalt stone texture, and floor-to-ceiling glass edge is deliberated for
-              months. Yet the moment the owner seeks solar energy, generic utility contractors
-              arrive with sledgehammers, piercing the slab membrane and bolting diagonal galvanized
-              struts that ruin the skyline.
+              When an architect designs an exquisite modern villa in Jubilee Hills or
+              Sadashivanagar, every reveal, basalt stone texture, and floor-to-ceiling glass edge is
+              deliberated for months. Yet the moment the owner seeks solar energy, generic utility
+              contractors arrive with sledgehammers, piercing the slab membrane and bolting diagonal
+              galvanized struts that ruin the skyline.
             </p>
             <p>
               We asked a simple engineering question:{" "}
@@ -171,7 +171,9 @@ function OurStoryPage() {
               <div className="w-10 h-10 rounded-[6px] bg-[#171A20] text-white flex items-center justify-center">
                 <Shield className="w-5 h-5 text-[#F57C00]" />
               </div>
-              <h3 className="text-[20px] font-medium text-[#171A20]">2. Structural Inviolability</h3>
+              <h3 className="text-[20px] font-medium text-[#171A20]">
+                2. Structural Inviolability
+              </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 We refuse to puncture terrace waterproofing slabs. Through custom pre-cast ballast
                 foundations and chemical epoxy anchors, we guarantee 100% leak-proof structural
@@ -186,8 +188,8 @@ function OurStoryPage() {
               <h3 className="text-[20px] font-medium text-[#171A20]">3. Indian Climatic Physics</h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Solar engineered in Northern Europe fails in Indian 46°C heatwaves and coastal
-                monsoons. We utilize N-Type TOPCon cells with ultra-low thermal derating
-                (-0.30%/°C) and 170 km/h wind-rated pergola metallurgy.
+                monsoons. We utilize N-Type TOPCon cells with ultra-low thermal derating (-0.30%/°C)
+                and 170 km/h wind-rated pergola metallurgy.
               </p>
             </div>
 
@@ -197,9 +199,9 @@ function OurStoryPage() {
               </div>
               <h3 className="text-[20px] font-medium text-[#171A20]">4. Sovereign Ownership</h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Zero multi-tiered subcontracting. When you invest in WAVENOX, our in-house
-                Hyderabad engineers perform the site survey, design the 3D model, handle DISCOM
-                net-metering, and service the installation under a direct 48-hour SLA.
+                Zero multi-tiered subcontracting. When you invest in WAVENOX, our in-house Hyderabad
+                engineers perform the site survey, design the 3D model, handle DISCOM net-metering,
+                and service the installation under a direct 48-hour SLA.
               </p>
             </div>
           </div>
