@@ -162,7 +162,8 @@ export const REGION_HUBS: RegionHub[] = [
     headquarters: "Bandra Kurla Complex (BKC), Mumbai — 400051",
     irradiance: "5.1 – 5.5 kWh/m²/day",
     annualGenerationPerKw: "1,440 Units / kW / Year (NASA POWER / PVWatts v8)",
-    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 44 m/s (Up to 50 m/s marine gusts in Alibaug)",
+    cycloneRating:
+      "IS 875 (Part 3) Basic Wind Speed: 44 m/s (Up to 50 m/s marine gusts in Alibaug)",
     netMeteringPortal: "MSEDCL Solar Rooftop Portal & MERC Guidelines",
     netMeteringPortalUrl: "https://www.mahadiscom.in",
     leadTimeWeeks: "3 to 4 Weeks (DISCOM Sanction to Grid Synchronization)",

@@ -72,7 +72,7 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
       },
       {
         title: "Independent Villa Solar",
-        description: "Bespoke engineering with zero grid export leakage",
+        description: "Turnkey villa engineering with zero grid export leakage",
         to: "/residential",
       },
     ],
@@ -489,7 +489,10 @@ export function Header() {
                   </div>
 
                   {/* Level 0: Main Hierarchical Drill-Down Categories */}
-                  <nav className="flex flex-col py-4 divide-y divide-[#E3E4E6]/60" aria-label="Mobile Navigation">
+                  <nav
+                    className="flex flex-col py-4 divide-y divide-[#E3E4E6]/60"
+                    aria-label="Mobile Navigation"
+                  >
                     {MOBILE_CATEGORIES.map((cat) => (
                       <button
                         key={cat.id}
