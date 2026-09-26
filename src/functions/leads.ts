@@ -235,12 +235,26 @@ export const submitLead = createServerFn({ method: "POST" })
       const { getServerSupabaseClient } = await import("@/server/supabase");
       const db = getServerSupabaseClient();
 
+      // Format combined notes (safely embedding company details without requiring missing DB columns)
+      let combinedNotes = validData.notes || "";
+      if (validData.company_name) {
+        const compInfo = `Company: ${validData.company_name}${validData.company_url ? ` (${validData.company_url})` : ""}`;
+        combinedNotes = combinedNotes ? `${compInfo} | ${combinedNotes}` : compInfo;
+      } else if (validData.company_url) {
+        const urlInfo = `Website: ${validData.company_url}`;
+        combinedNotes = combinedNotes ? `${urlInfo} | ${combinedNotes}` : urlInfo;
+      }
+
+      // Safe source mapping for DB check constraint ('drawer', 'studio', 'enterprise')
+      let dbSource = validData.source;
+      if (dbSource !== "drawer" && dbSource !== "studio" && dbSource !== "enterprise") {
+        dbSource = "drawer";
+      }
+
       const insertPayload = (refCode: string) => ({
         reference_code: refCode,
         client_name: validData.name,
         phone: normalizedPhone,
-        company_name: validData.company_name || null,
-        company_url: validData.company_url || null,
         city: validData.city || "Hyderabad",
         pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
         property_tier: validData.property_tier,
@@ -250,8 +264,8 @@ export const submitLead = createServerFn({ method: "POST" })
         battery_units: validData.battery_units ?? 0,
         net_price_inr: validData.net_price_inr ?? null,
         roof_area_sqft: validData.roof_area_sqft ?? null,
-        source: validData.source,
-        notes: validData.notes || null,
+        source: dbSource,
+        notes: combinedNotes || null,
         consent_given: validData.consent_given,
         consent_version: validData.consent_version,
         consent_at: new Date().toISOString(),
