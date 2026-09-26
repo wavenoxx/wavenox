@@ -191,10 +191,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/about-this-project"
-                  className="hover:text-[#171A20] transition-colors font-medium text-[#171A20]"
-                >
+                <Link to="/about-this-project" className="hover:text-[#171A20] transition-colors">
                   Colophon &amp; Case Study
                 </Link>
               </li>
@@ -265,7 +262,8 @@ export function Footer() {
         <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#393C41] text-center sm:text-left">
           <div>
             {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
-            calculations for Telangana (TGSPDCL &amp; TGNPDCL).
+            calculations across operational jurisdictions (Telangana, Karnataka, Maharashtra, Andhra
+            Pradesh, Delhi-NCR, Goa &amp; Tamil Nadu).
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -291,7 +289,7 @@ export function Footer() {
             <span>·</span>
             <Link
               to="/about-this-project"
-              className="text-[#393C41] hover:text-[#171A20] transition-colors font-medium"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
             >
               Colophon
             </Link>

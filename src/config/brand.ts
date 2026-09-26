@@ -17,7 +17,7 @@ const DEFAULT_PHONE_DIAL = "+919154626354";
 const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
 const DEFAULT_WHATSAPP_DIAL = "917075870054";
 const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
-const DEFAULT_EMAIL = "advisory@wavenox.in";
+const DEFAULT_EMAIL = "wavennox@gmail.com";
 const DEFAULT_ADDRESS = "Hyderabad, Telangana, India";
 
 const DEFAULT_INSTAGRAM_URL = "";

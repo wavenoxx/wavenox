@@ -102,7 +102,7 @@ Home recommends 7.7 kW for a ₹8,000 bill; clicking "Order Now" opens `/deploy?
 
 - Keep `wavenox.in` (planned domain). Generate `sitemap.xml` and `robots.txt` at build time from the route list and `VITE_SITE_URL`, so nothing is hardcoded.
 - `src/functions/leads.ts` sends email `from: "WAVENOX Leads <leads@wavenox.com>"`. `wavenox.com` is a different live site (creator tools), not ours. Read the sender from env `LEADS_FROM_EMAIL` (future `leads@wavenox.in`), and skip sending when it is unset or the domain is not verified in Resend.
-- `DEFAULT_EMAIL = advisory@wavenox.in` will bounce until the domain and mailbox exist; in demo mode show the owner's real contact instead.
+- `DEFAULT_EMAIL = wavennox@gmail.com` as the active direct contact mailbox for all advisory inquiries.
 - `.gitignore` lists `public/robots.txt`, `public/sitemap.xml`, `public/favicon.ico` although they are tracked — clean this up.
 
 ### 1.9 Form UX and labels
