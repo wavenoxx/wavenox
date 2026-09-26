@@ -1,22 +1,11 @@
 import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
-import {
-  X,
-  Phone,
-  MessageSquare,
-  Globe,
-  User,
-  ChevronRight,
-  ChevronLeft,
-  ArrowRight,
-  CheckCircle2,
-} from "lucide-react";
+import { X, Phone, MessageSquare, Globe, User, ChevronRight, ChevronLeft } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
 import { openConsultationDrawer } from "@/lib/consultation";
-import { LanguageToggle } from "./LanguageToggle";
 import { REGION_HUBS } from "@/routes/service-areas";
 
 interface NavItem {
@@ -42,7 +31,6 @@ interface MobileCategoryItem {
 interface MobileCategory {
   id: string;
   label: string;
-  badge?: string;
   items: MobileCategoryItem[];
   actions: {
     label: string;
@@ -90,7 +78,6 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
   {
     id: "omnigrid",
     label: "Omnigrid Storage",
-    badge: "LFP",
     items: [
       {
         title: "Omnigrid 14.3 kWh Pack",
@@ -121,7 +108,6 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
   {
     id: "commercial",
     label: "Commercial & Industrial",
-    badge: "MW",
     items: [
       {
         title: "Industrial Rooftop Arrays",
@@ -469,126 +455,102 @@ export function Header() {
       <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-          <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md bg-[#FFFFFF] text-[#171A20] shadow-2xl flex flex-col justify-between p-6 sm:p-7 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-200 overflow-y-auto">
+          <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md bg-[#FFFFFF] text-[#171A20] shadow-2xl flex flex-col justify-between p-6 sm:p-8 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-200 overflow-y-auto">
             {activeMobileCategory === null ? (
-              /* ================= LEVEL 0: ROOT MAIN CATEGORIES ================= */
+              /* ================= LEVEL 0: ROOT MAIN CATEGORIES (Tesla DNA) ================= */
               <div className="flex flex-col h-full justify-between">
                 <div>
-                  {/* Drawer Header: WAVENOX Brand Logo (22px) & Close X */}
-                  <div className="flex items-center justify-between pb-6 border-b border-[#E3E4E6]">
+                  {/* Top Bar: Brand Logo & Close X (Clean, No Divider Lines) */}
+                  <div className="flex items-center justify-between pb-6">
                     <BrandLogo size="md" asLink={false} />
                     <Dialog.Close asChild>
                       <button
                         type="button"
-                        className="p-2 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                        className="p-2 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
                         aria-label="Close navigation menu"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-5 h-5 stroke-[1.75]" />
                       </button>
                     </Dialog.Close>
                   </div>
 
-                  {/* Level 0: Main Hierarchical Drill-Down Categories */}
-                  <nav
-                    className="flex flex-col py-4 divide-y divide-[#E3E4E6]/60"
-                    aria-label="Mobile Navigation"
-                  >
+                  {/* Level 0: Main Categories (Pure Tesla DNA: Zero dividing borders, unified typography, generous touch targets) */}
+                  <nav className="flex flex-col space-y-1 pt-1" aria-label="Mobile Navigation">
                     {MOBILE_CATEGORIES.map((cat) => (
                       <button
                         key={cat.id}
                         type="button"
                         onClick={() => setActiveMobileCategory(cat.id)}
-                        className="w-full flex items-center justify-between py-3.5 px-1 text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors cursor-pointer group text-left"
+                        className="w-full flex items-center justify-between py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors cursor-pointer group text-left"
                       >
-                        <div className="flex items-center gap-2.5">
-                          <span>{cat.label}</span>
-                          {cat.badge && (
-                            <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[#F4F4F4] text-[#5C5E62] border border-[#E3E4E6]">
-                              {cat.badge}
-                            </span>
-                          )}
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-[#5C5E62]/60 group-hover:translate-x-1 transition-transform" />
+                        <span>{cat.label}</span>
+                        <ChevronRight className="w-4 h-4 text-[#171A20]/60 group-hover:translate-x-0.5 group-hover:text-[#171A20] transition-all stroke-[1.75]" />
                       </button>
                     ))}
-                  </nav>
 
-                  {/* Secondary Direct Utility Links */}
-                  <div className="pt-3 pb-4 border-t border-[#E3E4E6] flex flex-col space-y-2.5">
+                    {/* Secondary Direct Utility Links (Unified Font Size, Weight, and Padding with Zero Dividing Lines) */}
                     <Link
                       to="/deploy"
                       onClick={() => setMenuOpen(false)}
-                      className="text-[14px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors py-1 px-1 flex items-center justify-between"
+                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
                     >
-                      <span>Solar Sizing Studio</span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                      Solar Sizing Studio
                     </Link>
                     <Link
                       to="/service-areas"
                       onClick={() => setMenuOpen(false)}
-                      className="text-[14px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors py-1 px-1 flex items-center justify-between"
+                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
                     >
-                      <span>Service Areas &amp; 7 DISCOM Hubs</span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                      Service Areas &amp; Jurisdictions
                     </Link>
                     <Link
                       to="/warranty"
                       onClick={() => setMenuOpen(false)}
-                      className="text-[14px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors py-1 px-1 flex items-center justify-between"
+                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
                     >
-                      <span>25-Year Linear Power Warranty</span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                      25-Year Linear Power Warranty
                     </Link>
                     <Link
                       to="/our-story"
                       onClick={() => setMenuOpen(false)}
-                      className="text-[14px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors py-1 px-1 flex items-center justify-between"
+                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
                     >
-                      <span>Our Story &amp; Ethos</span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                      Our Story &amp; Ethos
                     </Link>
-                  </div>
+                  </nav>
                 </div>
 
-                {/* Bottom Dock: Action Button, Contacts, and Language/Region */}
-                <div className="pt-5 border-t border-[#E3E4E6] space-y-4">
+                {/* Bottom Dock: Action Button and Refined Contact Touchpoints (Zero Globe / Zero Language Box) */}
+                <div className="pt-6 mt-6 space-y-4">
                   <button
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
                       openConsultationDrawer();
                     }}
-                    className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors flex items-center justify-center cursor-pointer shadow-sm"
+                    className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-sm"
                   >
                     Schedule Consultation
                   </button>
 
-                  <div className="flex flex-col space-y-2 text-[12px] text-[#5C5E62]">
+                  <div className="flex items-center justify-center gap-4 text-[13px] text-[#5C5E62] pt-1">
                     <a
                       href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
-                      className="flex items-center gap-2 hover:text-[#171A20] transition-colors"
+                      className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5 text-[#F57C00]" />
                       <span>{BRAND_CONFIG.contact.phone.display}</span>
                     </a>
+                    <span>·</span>
                     <a
                       href={BRAND_CONFIG.contact.whatsapp.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 hover:text-[#171A20] transition-colors"
+                      className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors"
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-[#F57C00]" />
-                      <span>WhatsApp: {BRAND_CONFIG.contact.whatsapp.display}</span>
+                      <span>WhatsApp</span>
                     </a>
-                  </div>
-
-                  {/* Tesla-Style Quiet Region & Language Selector at Bottom */}
-                  <div className="pt-2 border-t border-[#E3E4E6]/60 flex items-center justify-between text-[12px] text-[#5C5E62]">
-                    <div className="flex items-center gap-1.5">
-                      <Globe className="w-3.5 h-3.5" />
-                      <span>India (National Grid)</span>
-                    </div>
-                    <LanguageToggle tone="light" />
                   </div>
                 </div>
               </div>
@@ -597,35 +559,35 @@ export function Header() {
               <div className="flex flex-col h-full justify-between">
                 <div>
                   {/* Top Bar: Back Button & Close X */}
-                  <div className="flex items-center justify-between pb-4 border-b border-[#E3E4E6]">
+                  <div className="flex items-center justify-between pb-6">
                     <button
                       type="button"
                       onClick={() => setActiveMobileCategory(null)}
-                      className="inline-flex items-center gap-1.5 text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors cursor-pointer py-1 -ml-1"
+                      className="inline-flex items-center gap-1.5 text-[15px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors cursor-pointer py-1 -ml-1"
                     >
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-5 h-5 stroke-[1.75]" />
                       <span>Back</span>
                     </button>
                     <Dialog.Close asChild>
                       <button
                         type="button"
-                        className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                        className="p-2 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
                         aria-label="Close navigation menu"
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-5 h-5 stroke-[1.75]" />
                       </button>
                     </Dialog.Close>
                   </div>
 
                   {/* Sub-Category Title */}
-                  <div className="pt-5 pb-3">
+                  <div className="pt-2 pb-3">
                     <h3 className="text-[22px] font-medium tracking-tight text-[#171A20]">
                       {currentMobileCat?.label}
                     </h3>
                   </div>
 
-                  {/* Sub-Category Product Cards */}
-                  <div className="space-y-2.5 py-2">
+                  {/* Sub-Category Product Offerings (Clean Minimalist Cards) */}
+                  <div className="space-y-1 py-1">
                     {currentMobileCat?.items.map((item, idx) => (
                       <Link
                         key={idx}
@@ -634,15 +596,15 @@ export function Header() {
                           setMenuOpen(false);
                           setActiveMobileCategory(null);
                         }}
-                        className="p-3.5 rounded-[6px] bg-[#F4F4F4]/70 hover:bg-[#EAEAEA] border border-[#E3E4E6]/80 transition-all block group"
+                        className="py-3 px-3 rounded-[6px] hover:bg-[#F4F4F4] transition-colors block group"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-[15px] font-semibold text-[#171A20] group-hover:text-[#000000]">
+                          <span className="text-[16px] font-medium text-[#171A20] group-hover:text-[#000000]">
                             {item.title}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-[#5C5E62] group-hover:translate-x-0.5 transition-transform" />
+                          <ChevronRight className="w-4 h-4 text-[#171A20]/50 group-hover:translate-x-0.5 group-hover:text-[#171A20] transition-all stroke-[1.75]" />
                         </div>
-                        <p className="text-[12px] text-[#5C5E62] mt-1 leading-snug">
+                        <p className="text-[13px] text-[#5C5E62] mt-0.5 leading-snug">
                           {item.description}
                         </p>
                       </Link>
@@ -651,8 +613,8 @@ export function Header() {
 
                   {/* Sub-Category Quick Links */}
                   {currentMobileCat?.actions && currentMobileCat.actions.length > 0 && (
-                    <div className="pt-4 border-t border-[#E3E4E6] mt-3 space-y-2">
-                      <span className="text-[11px] font-semibold text-[#5C5E62] uppercase tracking-wider block">
+                    <div className="pt-4 mt-3 space-y-1">
+                      <span className="text-[11px] font-semibold text-[#5C5E62] uppercase tracking-wider block px-3 pb-1">
                         Specifications &amp; Guides
                       </span>
                       {currentMobileCat.actions.map((act, idx) => (
@@ -663,10 +625,10 @@ export function Header() {
                             setMenuOpen(false);
                             setActiveMobileCategory(null);
                           }}
-                          className="text-[13px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors py-1 flex items-center justify-between"
+                          className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] py-2 px-3 rounded-[6px] hover:bg-[#F4F4F4] transition-colors flex items-center justify-between"
                         >
                           <span>{act.label}</span>
-                          <ArrowRight className="w-3.5 h-3.5 opacity-40" />
+                          <ChevronRight className="w-3.5 h-3.5 text-[#171A20]/40 stroke-[1.75]" />
                         </Link>
                       ))}
                     </div>
@@ -674,7 +636,7 @@ export function Header() {
                 </div>
 
                 {/* Sub-view Bottom CTA */}
-                <div className="pt-5 border-t border-[#E3E4E6] space-y-2.5">
+                <div className="pt-6 mt-6 space-y-2.5">
                   {currentMobileCat?.primaryCta && (
                     <button
                       type="button"
@@ -687,7 +649,7 @@ export function Header() {
                           window.location.href = currentMobileCat.primaryCta.to;
                         }
                       }}
-                      className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#171A20]/90 transition-colors flex items-center justify-center cursor-pointer shadow-sm"
+                      className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-sm"
                     >
                       {currentMobileCat.primaryCta.label}
                     </button>

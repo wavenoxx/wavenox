@@ -191,20 +191,37 @@ export const submitLead = createServerFn({ method: "POST" })
 
     const finalReferenceCode = generateReferenceCode();
 
-    // 5. Demo Mode Evaluation (Default: demo)
-    const leadMode =
-      (typeof process !== "undefined"
-        ? process.env?.VITE_LEAD_MODE || process.env?.LEAD_MODE
-        : undefined) || "demo";
+    // 5. Supabase Database Configuration & Environment Resolution
+    const supabaseUrl =
+      typeof process !== "undefined"
+        ? process.env?.SUPABASE_URL || process.env?.VITE_SUPABASE_URL || ""
+        : "";
+    const supabaseKey =
+      typeof process !== "undefined" ? process.env?.SUPABASE_SERVICE_ROLE_KEY || "" : "";
 
-    if (leadMode === "demo") {
-      // In demo mode: Show full experience, store nothing, return honest demo status
+    const envLeadMode =
+      typeof process !== "undefined"
+        ? process.env?.LEAD_MODE || process.env?.VITE_LEAD_MODE
+        : undefined;
+
+    // Persist to Supabase if credentials are present, unless explicitly forced to demo mode
+    const isExplicitDemo = envLeadMode === "demo";
+    const canPersist = Boolean(supabaseUrl && supabaseKey) && !isExplicitDemo;
+
+    if (!canPersist) {
+      if (isExplicitDemo) {
+        console.info("[submitLead] Explicit demo mode active. Skipping database persistence.");
+      } else {
+        console.warn(
+          "[submitLead] Supabase credentials (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) are not set. Falling back to simulated response.",
+        );
+      }
       return {
         success: true,
         referenceCode: finalReferenceCode,
         isDemo: true,
         message:
-          "Demo Simulation: Your proposal has been prepared. As WAVENOX is a portfolio design concept, no lead data is stored.",
+          "Demo Simulation: Your proposal has been prepared. As database credentials are not configured, no lead data is stored.",
       };
     }
 
