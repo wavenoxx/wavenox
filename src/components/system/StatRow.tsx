@@ -33,10 +33,10 @@ export function StatRow({ stats, align = "center", className = "" }: StatRowProp
           key={idx}
           className="flex flex-col items-center md:items-start text-center md:text-left px-1"
         >
-          <span className="text-[19px] sm:text-[26px] md:text-[34px] font-semibold tracking-tight leading-tight tabular-nums text-inherit drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
+          <span className="text-[19px] sm:text-[26px] md:text-[34px] font-semibold tracking-tight leading-tight tabular-nums text-inherit">
             {stat.value}
           </span>
-          <span className="text-[12px] md:text-[13px] font-medium leading-tight tracking-[0.06em] uppercase text-inherit/80 mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+          <span className="text-[12px] md:text-[13px] font-medium leading-tight tracking-[0.06em] uppercase text-inherit/80 mt-1">
             {stat.label}
           </span>
           {stat.sublabel && (

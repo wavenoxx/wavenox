@@ -93,23 +93,66 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
-                <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
-                  Regional Service Areas
-                </Link>
-              </li>
-              <li>
-                <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
+                <Link
+                  to="/service-areas"
+                  search={{ state: "telangana" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
                   Telangana (TGSPDCL / TGNPDCL)
                 </Link>
               </li>
               <li>
-                <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
+                <Link
+                  to="/service-areas"
+                  search={{ state: "karnataka" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
+                  Karnataka (BESCOM / KREDL)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/service-areas"
+                  search={{ state: "maharashtra" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
+                  Maharashtra (MSEDCL / Tata Power)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/service-areas"
+                  search={{ state: "andhra-pradesh" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
                   Andhra Pradesh (APEPDCL / APSPDCL)
                 </Link>
               </li>
               <li>
-                <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
-                  Karnataka (BESCOM)
+                <Link
+                  to="/service-areas"
+                  search={{ state: "delhi-ncr" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
+                  Delhi-NCR (BSES / DHBVN)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/service-areas"
+                  search={{ state: "goa" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
+                  Goa Coastal (GED)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/service-areas"
+                  search={{ state: "tamil-nadu" }}
+                  className="hover:text-[#171A20] transition-colors"
+                >
+                  Tamil Nadu (TANGEDCO)
                 </Link>
               </li>
               <li>

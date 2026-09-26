@@ -10,15 +10,14 @@ interface BrandLogoProps {
 
 export function BrandLogo({ className = "", asLink = true, size = "md" }: BrandLogoProps) {
   const sizeClasses = {
-    sm: "text-[13px] tracking-[0.32em]",
-    md: "text-[15px] tracking-[0.36em]",
-    lg: "text-[20px] tracking-[0.40em]",
+    sm: "text-[18px] tracking-[0.28em]",
+    md: "text-[22px] tracking-[0.30em]",
+    lg: "text-[30px] tracking-[0.32em]",
   };
 
   const content = (
     <span
-      className={`inline-flex items-center font-semibold uppercase transition-opacity duration-200 hover:opacity-80 ${sizeClasses[size]} ${className}`}
-      style={{ letterSpacing: size === "lg" ? "0.40em" : "0.36em" }}
+      className={`inline-flex items-center font-bold uppercase transition-opacity duration-200 hover:opacity-80 select-none ${sizeClasses[size]} ${className}`}
     >
       {BRAND_CONFIG.name}
     </span>

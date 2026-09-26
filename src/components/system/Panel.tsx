@@ -87,16 +87,16 @@ export function Panel({
         <Reveal immediate={priority}>
           {title &&
             (as === "h1" ? (
-              <h1 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+              <h1 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
                 {title}
               </h1>
             ) : (
-              <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+              <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
                 {title}
               </h2>
             ))}
           {lead && (
-            <p className="text-[13px] sm:text-[15px] md:text-[17px] font-normal leading-relaxed text-inherit/85 max-w-md sm:max-w-xl mx-auto mt-2 text-balance drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
+            <p className="text-[13px] sm:text-[15px] md:text-[17px] font-normal leading-relaxed text-inherit/85 max-w-md sm:max-w-xl mx-auto mt-2 text-balance">
               {lead}
             </p>
           )}
