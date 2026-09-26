@@ -17,37 +17,39 @@ import { Button } from "@/components/system/Button";
 import { Media } from "@/components/system/Media";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export const Route = createFileRoute("/our-story")({
   head: () => ({
     meta: [
-      { title: `Atelier Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}` },
+      { title: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content:
-          "The founding philosophy of WAVENOX: Why we rejected conventional solar utility scaffolding to engineer monolithic, architectural clean energy for India’s finest residences.",
+          "The founding philosophy of WAVENOX: Why we rejected conventional solar utility scaffolding to engineer integrated, architectural clean energy for India’s finest residences.",
       },
       {
         property: "og:title",
-        content: `Atelier Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
+        content: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
       },
       {
         property: "og:description",
         content:
           "Discover how WAVENOX transformed solar from an unsightly utility into an architectural crown for luxury residences.",
       },
-      { property: "og:image", content: "/media/home-design-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-design-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/our-story` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/our-story` }],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "AboutPage",
-          name: "WAVENOX Atelier Ethos and Architectural History",
+          name: "WAVENOX Design Ethos and Architectural History",
           description:
             "The founding principles of WAVENOX clean energy architecture, rooted in Hyderabad, Telangana.",
           publisher: {
@@ -71,16 +73,16 @@ function OurStoryPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
-            Atelier Ethos &amp; Heritage
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+            Design Concept &amp; Architectural Study
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
             The Reimagination of the Rooftop
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
-            For three decades, rooftop solar was treated as an industrial utility afterthought:
-            crude galvanized iron pipes, dangling orange wires, and punctured terraces. We founded
-            WAVENOX to build an architectural sovereign alternative.
+            For decades, rooftop solar has been treated as an industrial utility afterthought: crude
+            galvanized iron struts, dangling wires, and punctured terrace slabs. WAVENOX was
+            conceptualized in Hyderabad to explore an architectural alternative.
           </p>
         </section>
 
@@ -96,11 +98,11 @@ function OurStoryPage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 inset-x-0 p-6 sm:p-10 text-white z-10 max-w-xl">
-              <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block mb-1">
-                Monolithic Vision
+              <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#F57C00] block mb-1">
+                Design Vision
               </span>
               <h2 className="text-[20px] sm:text-[26px] font-medium tracking-tight leading-snug">
-                Where Clean Energy Meets Architectural Permanence
+                Where Clean Energy Meets Architectural Restraint
               </h2>
             </div>
           </div>
@@ -109,48 +111,47 @@ function OurStoryPage() {
         {/* 3. THE THESIS */}
         <section className="max-w-3xl mx-auto px-6 mt-20 sm:mt-28 space-y-8 text-[15px] sm:text-[16px] leading-relaxed text-[#5C5E62]">
           <div className="space-y-4">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#171A20] block">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#171A20] block">
               The Genesis
             </span>
             <h2 className="text-[26px] sm:text-[32px] font-medium tracking-tight text-[#171A20] leading-snug">
-              Why Luxury Residences Deserved Better
+              Why Indian Residences Deserved Better
             </h2>
             <p>
-              When an architect designs an exquisite modern villa in Jubilee Hills or Sadashivanagar,
-              every reveal, basalt stone texture, and floor-to-ceiling glass edge is deliberated for
-              months. Yet the moment the owner seeks solar energy, generic utility contractors
-              arrive with sledgehammers, piercing the slab membrane and bolting diagonal galvanized
-              struts that ruin the skyline.
+              When an architect designs a contemporary home in Hyderabad or Bengaluru, every reveal,
+              stone texture, and glass proportion is deliberated for months. Yet the moment rooftop
+              solar is introduced, conventional contractors erect chaotic industrial scaffolding
+              that disrupts the building&apos;s proportions and punctures waterproof membranes.
             </p>
             <p>
-              We asked a simple engineering question:{" "}
+              We explored a simple architectural question:{" "}
               <strong className="text-[#171A20]">
-                What if solar wasn’t mounted ON the house, but became the architectural crown OF the
-                house?
+                What if solar wasn&apos;t bolted ON the house, but became an integrated
+                architectural crown OF the house?
               </strong>
             </p>
           </div>
 
           <div className="p-6 rounded-[8px] border-l-2 border-[#171A20] bg-[#F4F4F4]/50 space-y-2">
             <p className="font-medium text-[#171A20] text-[15px]">
-              “The roof of an Indian luxury home is not an industrial mechanical yard. It is where
-              families gather during monsoon evenings, host dinners beneath starlit skies, and take
-              morning walks. Solar must respect and elevate that space.”
+              “The terrace of an Indian home is living space — where families gather on monsoon
+              evenings, host dinners, and take morning walks. Rooftop solar must respect, shade, and
+              enhance that space rather than consume it.”
             </p>
             <span className="text-[12px] text-[#5C5E62] block">
-              — WAVENOX Architectural Engineering Studio
+              — Architectural Solar Design Study, Hyderabad
             </span>
           </div>
         </section>
 
-        {/* 4. FOUR PILLARS OF OUR DESIGN PHILOSOPHY */}
+        {/* 4. FOUR PRINCIPLES OF OUR DESIGN PHILOSOPHY */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
+            <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Our Principles
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
-              The Four Atelier Tenets
+              The Four Design Tenets
             </h2>
           </div>
 
@@ -159,11 +160,11 @@ function OurStoryPage() {
               <div className="w-10 h-10 rounded-[6px] bg-[#171A20] text-white flex items-center justify-center">
                 <Eye className="w-5 h-5 text-[#F57C00]" />
               </div>
-              <h3 className="text-[20px] font-medium text-[#171A20]">1. Absolute Restraint</h3>
+              <h3 className="text-[20px] font-medium text-[#171A20]">1. Visual Restraint</h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                No visible matrix busbars. No garish silver aluminium frames. No zig-zagging exposed
-                conduits. Every line is parallel to the architectural roof parapet. All DC wiring is
-                internally routed through structural columns.
+                All-black dual-glass modules, anodized matte black aluminum extrusions, and
+                concealed cable raceways. Every line is aligned parallel to the roof parapet to
+                preserve clean architectural sightlines.
               </p>
             </div>
 
@@ -171,11 +172,11 @@ function OurStoryPage() {
               <div className="w-10 h-10 rounded-[6px] bg-[#171A20] text-white flex items-center justify-center">
                 <Shield className="w-5 h-5 text-[#F57C00]" />
               </div>
-              <h3 className="text-[20px] font-medium text-[#171A20]">2. Structural Inviolability</h3>
+              <h3 className="text-[20px] font-medium text-[#171A20]">2. Slab Preservation</h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                We refuse to puncture terrace waterproofing slabs. Through custom pre-cast ballast
-                foundations and chemical epoxy anchors, we guarantee 100% leak-proof structural
-                waterproofing backed by our 5-year remedial warranty.
+                Protecting terrace waterproofing is paramount. Designs specify precast
+                non-penetrating ballasted foundation blocks or chemical epoxy anchor pedestals
+                sealed with multi-layer elastomeric membranes.
               </p>
             </div>
 
@@ -183,11 +184,13 @@ function OurStoryPage() {
               <div className="w-10 h-10 rounded-[6px] bg-[#171A20] text-white flex items-center justify-center">
                 <Compass className="w-5 h-5 text-[#F57C00]" />
               </div>
-              <h3 className="text-[20px] font-medium text-[#171A20]">3. Indian Climatic Physics</h3>
+              <h3 className="text-[20px] font-medium text-[#171A20]">
+                3. Indian Climatic Engineering
+              </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Solar engineered in Northern Europe fails in Indian 46°C heatwaves and coastal
-                monsoons. We utilize N-Type TOPCon cells with ultra-low thermal derating
-                (-0.30%/°C) and 170 km/h wind-rated pergola metallurgy.
+                Engineered for Indian conditions: N-Type TOPCon cells with low thermal derating
+                (-0.30%/°C) in harsh 45°C summers and IS 875 (Part 3) 44 m/s wind-load compliant
+                pergola structures.
               </p>
             </div>
 
@@ -195,30 +198,29 @@ function OurStoryPage() {
               <div className="w-10 h-10 rounded-[6px] bg-[#171A20] text-white flex items-center justify-center">
                 <Cpu className="w-5 h-5 text-[#F57C00]" />
               </div>
-              <h3 className="text-[20px] font-medium text-[#171A20]">4. Sovereign Ownership</h3>
+              <h3 className="text-[20px] font-medium text-[#171A20]">4. Sourced Transparency</h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Zero multi-tiered subcontracting. When you invest in WAVENOX, our in-house
-                Hyderabad engineers perform the site survey, design the 3D model, handle DISCOM
-                net-metering, and service the installation under a direct 48-hour SLA.
+                Zero fabricated claims or hidden shortcuts. Every yield calculation, tariff
+                schedule, wind specification, and subsidy rule is derived directly from official
+                gazettes and statutory standards.
               </p>
             </div>
           </div>
         </section>
 
-        {/* 5. HYDERABAD COMMAND HEADQUARTERS */}
+        {/* 5. CONCEPT DESIGN STUDY SUMMARY */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="border border-[#E3E4E6] rounded-[10px] bg-[#F4F4F4]/50 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
-                Engineering Atelier
+              <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
+                Concept Study
               </span>
               <h3 className="text-[22px] sm:text-[26px] font-medium text-[#171A20]">
-                Headquartered in Hyderabad, Operating Regionally
+                Conceptualized in Hyderabad, Designed for Indian Homes
               </h3>
               <p className="text-[14px] text-[#5C5E62] max-w-xl leading-relaxed">
-                Our design studio, structural prototyping center, and 24/7 telemetry command hub are
-                located in the Financial District, Gachibowli, Hyderabad, serving premier estates
-                across Telangana, Andhra Pradesh, and Karnataka.
+                An architectural study exploring how high-performance solar generation and
+                contemporary living spaces coexist across Greater Hyderabad and Telangana.
               </p>
             </div>
             <div className="shrink-0">

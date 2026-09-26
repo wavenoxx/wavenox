@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="108" fill="#111215"/>
+  <!-- Subtle ambient inner glow -->
+  <rect x="12" y="12" width="488" height="488" rx="96" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="2"/>
+  
+  <g transform="translate(0, 8)">
+    <!-- Architectural W Monogram -->
+    <!-- Left outer wing -->
+    <path d="M 104 168 L 168 360 H 204 L 140 168 Z" fill="#FFFFFF"/>
+    <!-- Left inner diagonal -->
+    <path d="M 188 360 L 256 168 H 220 L 160 336 Z" fill="#E2E4E8"/>
+    <!-- Right inner diagonal with precision cut -->
+    <path d="M 256 168 L 324 360 H 288 L 228 192 Z" fill="#E2E4E8"/>
+    <!-- Right outer wing -->
+    <path d="M 372 168 L 308 360 H 344 L 408 168 Z" fill="#FFFFFF"/>
+
+    <!-- Center apex solar beam facet (amber accent) -->
+    <polygon points="256,128 274,158 238,158" fill="#F57C00"/>
+    
+    <!-- Clean horizontal datum baseline -->
+    <line x1="168" y1="360" x2="344" y2="360" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-opacity="0.3"/>
+  </g>
+</svg>

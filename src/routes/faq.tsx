@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/system/Button";
 import { BRAND_CONFIG } from "@/config/brand";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { FAQ_DATA, FAQ_CATEGORIES, type FaqCategoryId } from "@/data/faqData";
 
 export const Route = createFileRoute("/faq")({
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/faq")({
       {
         name: "description",
         content:
-          "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 32 tax depreciation.",
+          "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 34 tax depreciation.",
       },
       { property: "og:title", content: `FAQ & Solar Knowledge Center — ${BRAND_CONFIG.name}` },
       {
@@ -23,10 +23,12 @@ export const Route = createFileRoute("/faq")({
         content:
           "Authoritative advisory on PM Surya Ghar subsidies, DISCOM net-metering approvals, Omnigrid battery safety, and terrace pergolas.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/faq` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/faq` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -89,7 +91,7 @@ function FaqPage() {
       <main className="pt-24 sm:pt-28 md:pt-32 pb-20">
         {/* Editorial Hero Header */}
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-[11px] sm:text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
+          <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
             Knowledge Base &amp; Regulatory Advisory
           </span>
           <h1 className="text-[32px] sm:text-[42px] md:text-[50px] font-medium tracking-tight leading-[1.12] text-[#171A20] text-balance">
@@ -126,15 +128,21 @@ function FaqPage() {
           </div>
 
           {/* Category Filter Pills */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <div
+            role="tablist"
+            aria-label="FAQ categories"
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
             {FAQ_CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   type="button"
+                  role="tab"
+                  aria-selected={active}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`min-h-[38px] px-4 py-1.5 rounded-[4px] text-[13px] font-medium transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
+                  className={`min-h-[38px] px-4 py-1.5 rounded-[4px] text-[13px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
                     active
                       ? "bg-[#171A20] text-[#FFFFFF] shadow-sm"
                       : "bg-[#F4F4F4] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#EAEAEA]"
@@ -158,7 +166,9 @@ function FaqPage() {
           {filteredFaqs.length === 0 ? (
             <div className="p-12 text-center border border-[#E3E4E6] rounded-[8px] bg-[#F4F4F4]/40 space-y-3">
               <HelpCircle className="w-8 h-8 text-[#5C5E62] mx-auto opacity-60" />
-              <div className="text-[17px] font-medium text-[#171A20]">No matching answers found</div>
+              <div className="text-[17px] font-medium text-[#171A20]">
+                No matching answers found
+              </div>
               <p className="text-[14px] text-[#5C5E62] max-w-sm mx-auto">
                 Could not find anything matching "{searchQuery}". Try a different keyword or contact
                 our solar engineering advisory team.
@@ -189,7 +199,7 @@ function FaqPage() {
                     className="w-full min-h-[58px] py-4 px-5 sm:px-6 flex items-start justify-between text-left gap-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] rounded-[6px]"
                   >
                     <div>
-                      <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-[#5C5E62] block mb-1">
+                      <span className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#5C5E62] block mb-1">
                         {item.categoryLabel}
                       </span>
                       <span className="text-[15px] sm:text-[16px] font-medium text-[#171A20] leading-snug">

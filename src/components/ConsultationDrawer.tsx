@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft, Building2, Home, Factory, ShieldCheck, AlertCircle } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Building2,
+  Home,
+  Factory,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
 import { estimate } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
@@ -12,54 +20,71 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-export const CONSULTATION_EVENT = "open-wavenox-consultation";
-
-export function openConsultationDrawer(initialTier?: string) {
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(CONSULTATION_EVENT, { detail: { tier: initialTier } }));
-  }
-}
+import { CONSULTATION_EVENT } from "@/lib/consultation";
 
 const PROPERTY_TIERS = [
   {
     id: "villa" as const,
     title: "Luxury Villa",
-    capacity: "25 kW – 50 kW",
+    capacity: "15 kW – 25 kW",
     desc: "Single-family residences requiring flush architectural mounting and 24/7 outage protection.",
     icon: Home,
   },
   {
     id: "independent_home" as const,
     title: "Independent Home / Penthouse",
-    capacity: "10 kW – 25 kW",
+    capacity: "5 kW – 15 kW",
     desc: "Terrace installations with elevated pergola structure and net-metering export.",
     icon: Building2,
   },
   {
     id: "commercial" as const,
     title: "Commercial & Industrial",
-    capacity: "50 kW – 500 kW+",
-    desc: "Commercial rooftops and factories with 40% Section 32 accelerated depreciation.",
+    capacity: "25 kW – 500 kW+",
+    desc: "Commercial rooftops and factories with 40% Section 34 accelerated depreciation.",
     icon: Factory,
   },
 ];
 
-export function ConsultationDrawer() {
+export interface ConsultationDrawerProps {
+  defaultOpen?: boolean;
+  initialTier?: string;
+}
+
+export function ConsultationDrawer({
+  defaultOpen = false,
+  initialTier,
+}: ConsultationDrawerProps = {}) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(defaultOpen);
   const [step, setStep] = React.useState<1 | 2 | 3>(1);
   const [selectedTier, setSelectedTier] = React.useState<
     "villa" | "independent_home" | "commercial"
-  >("villa");
+  >(
+    initialTier === "commercial" || initialTier === "independent_home" || initialTier === "villa"
+      ? initialTier
+      : "villa",
+  );
   const [monthlyBill, setMonthlyBill] = React.useState(12000);
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [city, setCity] = React.useState("Hyderabad");
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
-  const [companyWebsite, setCompanyWebsite] = React.useState("");
+  const [hpExtra, setHpExtra] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+
+  const resetForm = React.useCallback(() => {
+    setStep(1);
+    setName("");
+    setPhone("");
+    setCity("Hyderabad");
+    setPinCode("");
+    setConsentGiven(false);
+    setHpExtra("");
+    setSubmitError(null);
+  }, []);
 
   const calculation = React.useMemo(
     () =>
@@ -110,8 +135,11 @@ export function ConsultationDrawer() {
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (!open && typeof window !== "undefined" && window.location.hash === "#consultation") {
-      history.replaceState(null, "", window.location.pathname + window.location.search);
+    if (!open) {
+      resetForm();
+      if (typeof window !== "undefined" && window.location.hash === "#consultation") {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
     }
   };
 
@@ -124,7 +152,9 @@ export function ConsultationDrawer() {
 
     const cleanPin = pinCode.trim();
     if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
-      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
+      setSubmitError(
+        "Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).",
+      );
       return;
     }
 
@@ -146,7 +176,7 @@ export function ConsultationDrawer() {
           source: "drawer",
           consent_given: true,
           consent_version: "2026-09-v1",
-          company_website: companyWebsite.trim() || undefined,
+          hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
       });
@@ -157,6 +187,19 @@ export function ConsultationDrawer() {
         return;
       }
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            ref: res.referenceCode || "WNX-PROPOSAL",
+            name,
+            isDemo: res.isDemo ?? true,
+            timestamp: new Date().toISOString(),
+          }),
+        );
+      }
+
+      resetForm();
       setIsOpen(false);
       navigate({
         to: "/order/received",
@@ -204,7 +247,7 @@ export function ConsultationDrawer() {
               </p>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2.5" role="radiogroup" aria-label="Property architecture tier">
               {PROPERTY_TIERS.map((tier) => {
                 const Icon = tier.icon;
                 const isSelected = selectedTier === tier.id;
@@ -212,6 +255,8 @@ export function ConsultationDrawer() {
                   <button
                     key={tier.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => setSelectedTier(tier.id)}
                     className={`w-full text-left p-3.5 rounded-[4px] border transition-all cursor-pointer flex items-start gap-3.5 ${
                       isSelected
@@ -279,6 +324,7 @@ export function ConsultationDrawer() {
                 onChange={(e) => setMonthlyBill(Number(e.target.value))}
                 className="range-slider"
                 aria-label="Monthly electricity bill"
+                aria-valuetext={`₹${monthlyBill.toLocaleString("en-IN")} per month`}
               />
               <div className="flex justify-between text-[12px] text-[#5C5E62]">
                 <span>₹3,000 / mo</span>
@@ -342,10 +388,14 @@ export function ConsultationDrawer() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="drawer-name"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Full Name *
                 </label>
                 <input
+                  id="drawer-name"
                   type="text"
                   required
                   placeholder="First and last name"
@@ -356,7 +406,10 @@ export function ConsultationDrawer() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                <label
+                  htmlFor="drawer-phone"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
                 <div className="relative flex items-center">
@@ -364,6 +417,7 @@ export function ConsultationDrawer() {
                     +91
                   </span>
                   <input
+                    id="drawer-phone"
                     type="tel"
                     required
                     placeholder="10-digit mobile number"
@@ -377,10 +431,14 @@ export function ConsultationDrawer() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                  <label
+                    htmlFor="drawer-city"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
                     City / Locality *
                   </label>
                   <input
+                    id="drawer-city"
                     type="text"
                     required
                     placeholder="e.g. Hyderabad, Bengaluru"
@@ -390,10 +448,14 @@ export function ConsultationDrawer() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5">
+                  <label
+                    htmlFor="drawer-pincode"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  >
                     6-Digit PIN Code *
                   </label>
                   <input
+                    id="drawer-pincode"
                     type="text"
                     required
                     maxLength={6}
@@ -406,21 +468,32 @@ export function ConsultationDrawer() {
                   />
                 </div>
               </div>
-              <p className="text-[11px] text-[#5C5E62]/80">
-                PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar clearance.
+              <p className="text-[12px] text-[#5C5E62]/80">
+                PIN code determines local DISCOM net-metering feasibility and PM Surya Ghar
+                clearance.
               </p>
 
-              {/* Bot suppression */}
-              <input
-                type="text"
-                name="company_website"
-                value={companyWebsite}
-                onChange={(e) => setCompanyWebsite(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
+              {/* Bot suppression honeypot */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  opacity: 0,
+                  height: 0,
+                  overflow: "hidden",
+                }}
                 aria-hidden="true"
-              />
+              >
+                <input
+                  type="text"
+                  name="hp_extra"
+                  id="drawer-hp-extra"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpExtra}
+                  onChange={(e) => setHpExtra(e.target.value)}
+                />
+              </div>
 
               {/* DPDP Consent */}
               <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
@@ -434,10 +507,15 @@ export function ConsultationDrawer() {
                 />
                 <label
                   htmlFor="drawer-consent"
-                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX engineers
-                  in accordance with the <strong>DPDP Act 2023</strong>. Zero spam guarantee.
+                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
+                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
+                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
+                  <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                    Privacy Policy
+                  </a>
+                  .
                 </label>
               </div>
 

@@ -2,101 +2,104 @@
 
 ---
 
-## 1. The Tesla Solar Clean-Tech Standard (The Non-Negotiable Soul)
+## 1. The Tesla-Inspired Clean-Tech Standard (Benchmark for Restraint)
 
-WAVENOX is modeled **100% after the design DNA, architectural restraint, typography, color palette, and section flow of the live Tesla Solar website (`https://www.tesla.com/solarpanels` & `https://www.tesla.com/energy/design`)**, adapted exclusively for **India** (rupees, DISCOM net-metering, and PM Surya Ghar Muft Bijli Yojana subsidies).
+WAVENOX draws inspiration from the design DNA, architectural restraint, typography, and section flow of the world's leading clean-tech interfaces, adapted rigorously for **India** (rupees, state DISCOM net-metering regulations, and PM Surya Ghar Muft Bijli Yojana subsidies).
 
-### Commandment 1: The Tesla Color Palette (Showroom Cleanliness)
+Tesla serves as the benchmark for restraint, typography, and radical subtraction—not as an exact replica. WAVENOX speaks with its own engineering voice tailored to Indian conditions.
 
-- **Primary Background**: **Pure White (`#FFFFFF`) & Soft Studio Light Gray (`#F8F8FA` / `#F4F4F6`)** across all content sections, calculators, engineering specs, drawers, and configurators.
-- **Cinematic Contrast**: Dark backgrounds are reserved exclusively for full-bleed photography viewports (like the Hero and hardware macro shots) where the dark sky and roof contrast naturally with crisp white text.
-- **Typography**: Deep, engineered neutrals:
-  - **Carbon Dark (`#171A20`)**: Display titles, H1/H2 headings, key data points.
-  - **Graphite (`#393C41`)**: Body copy, descriptions, subtitles.
-  - **Pewter / Slate (`#5C5E62`)**: Spec labels, footnotes, disclaimers.
+### Commandment 1: The Monochrome Palette with Single Amber Accent
+
+- **Primary Background**: **Pure White (`#FFFFFF`) & Soft Studio Light Gray (`#F8F8FA` / `#F4F4F4`)** across content sections, calculators, engineering specs, drawers, and configurators.
+- **Cinematic Contrast**: Dark backgrounds (`#171A20` / `#111215`) are reserved for full-bleed photography viewports (like the Hero and hardware macro panels) and high-contrast telemetry cards.
+- **Typography Scale**: Deep, engineered neutrals:
+  - **Carbon Dark (`#171A20`)**: Display titles, H1/H2 headings, primary metrics.
+  - **Graphite (`#393C41`)**: Body copy, descriptions, subtitles (minimum 4.5:1 WCAG AA contrast).
+  - **Pewter / Slate (`#5C5E62`)**: Spec labels, footnotes, disclaimers on light backgrounds.
+  - **Light Slate (`#9CA3AF`)**: Spec labels and secondary text on dark backgrounds.
 - **Buttons & Pills**:
   - Primary CTA: **Solid Carbon Dark (`#171A20`) with Pure White text**.
-  - Secondary CTA: **Cloud Gray (`#EEEEEE` / `#E5E7EB`) with Carbon Dark text**, or Frosted Glass (`rgba(255,255,255,0.85)` with dark text).
-  - Hover states: Smooth 0.2s transitions with subtle micro-scale or tone shift.
-- **Accent**: Precise Sunburst Amber / Electric Accent (`#F57C00` / `#3E6AE1`) reserved for active battery flow lines, live telemetry, and selected states.
+  - Secondary CTA: **Cloud Gray (`#EEEEEE` / `#E5E7EB`) with Carbon Dark text**, or translucent glass with crisp text.
+  - Micro-radii: 4px button border radius.
+- **Accent**: Sunburst Amber (`#F57C00` / `#B45309`) reserved strictly for active energy flow, sun azimuth paths, and verified regulatory badges.
 
-### Commandment 2: Tesla-Grade Minimalism & Radical Subtraction
+### Commandment 2: Minimalism & Radical Subtraction
 
 - **Rule**: Ruthlessly eliminate clutter. No cheap AI-style floating cards, no busy rainbow glow borders, no cluttered multi-colored badges.
-- **Soul**: Everything is edge-to-edge, disciplined, confident, monolithic, and uncluttered. Content breathes with generous whitespace (`py-24` to `py-36` or full `100vh` viewports).
+- **Soul**: Everything is edge-to-edge, disciplined, confident, and uncluttered. Content breathes with generous whitespace (`py-16` to `py-24` or full `100svh` viewports).
 
-### Commandment 3: The Full-Bleed 100vh Hero with Bottom Dock
+### Commandment 3: The Full-Bleed 100svh Hero with Bottom Dock
 
-- **Rule**: The homepage hero is a full-bleed `100vh` cinematic viewport.
-- **Top**: Clean centered title (`Solar for Existing Roofs` / `Solar Panels`), subtitle link (`Schedule a Virtual Consultation →`).
+- **Rule**: Homepage hero sections feature a full-bleed `100svh` cinematic viewport.
+- **Top**: Clean centered title, single-line lead, and consultation link.
 - **Bottom**: Bottom-docked floating specification bar featuring:
-  - 3 clean specs (e.g. `Guaranteed Lowest Price in India`, `25-Year Complete Warranty`, `24/7 Outage Protection`).
-  - Dual Tesla-style pill CTAs:
-    - Primary: Solid Carbon Dark pill button with white text (`Order Now`).
-    - Secondary: Translucent dark glass pill button with white text (`Schedule Consultation`).
+  - 3 clean sourced specs (e.g. `₹78,000 Surya Ghar Subsidy`, `25-Year Linear Warranty`, `24/7 Outage Protection`).
+  - Dual pill CTAs:
+    - Primary: Solid Carbon Dark pill button (`Design Yours` / `Get Estimate`).
+    - Secondary: Translucent dark glass pill button (`Schedule Consultation`).
 
-### Commandment 4: The Minimalist 1-Line Showroom Footer
+### Commandment 4: The 4-Column Architectural Footer
 
-- **Rule**: Strictly FORBIDDEN to use a bloated 4-column footer with dozens of links.
-- **Tesla Standard**: A single clean line of understated text and links at the very bottom:
-  `WAVENOX © 2026 | Privacy & Legal | Consumer Disclosures | PM Surya Ghar Guidelines | Locations | Contact`
+- **Rule**: The platform utilizes an organized, accessible 4-column footer providing structured navigation across:
+  1. Residential Solutions (`/residential`, `/omnigrid`, `/deploy`)
+  2. Commercial & Architecture (`/enterprise`, `/architects`, `/technology`)
+  3. Regulatory & Grid Guidelines (`/net-metering`, `/warranty`, `/service-areas`, `/faq`, `/about-this-project`)
+  4. Direct Advisory & WhatsApp Inquiries
+- **Fine-Print Strip**: Displays clear portfolio concept credit line, copyright, and links to Privacy, Terms, Disclosures, Colophon, and FAQ with verified WCAG contrast.
 
-### Commandment 5: True Fluid Mobile Responsiveness
+### Commandment 5: True Fluid Mobile Responsiveness & 12px Text Floor
 
-- **Rule**: Every typography scale and interactive element must be fluid.
-- **H1 Scaling**: Never render oversized text on mobile viewports. Use responsive sizing (e.g., `text-3xl sm:text-4xl md:text-5xl lg:text-6xl`).
+- **Rule**: Every typography scale and interactive element must be fluid across mobile and desktop.
+- **Text Floor**: **Zero text below 12px** anywhere on the platform (enforced by automated Playwright assertions).
+- **H1 Scaling**: Never render oversized text on mobile viewports. Use responsive sizing (e.g., `text-3xl sm:text-5xl md:text-6xl`).
 - **Button Sizing**: CTA buttons must be ergonomic on mobile (`w-full sm:w-auto px-6 py-3`). Touch targets must never be smaller than 44px.
 
-### Commandment 6: Mobile Navigation Drawer
+### Commandment 6: Accessible Navigation Menu
 
-- **Rule**: Desktop navigation links must collapse into an elegant, full-viewport light/dark glass drawer with a clean close trigger (`✕`), mirroring Tesla's mobile menu.
+- **Rule**: Header navigation utilizes accessible Radix UI primitives with keyboard support (Enter/ArrowDown to open, Escape to close), clean focus rings, and a dedicated mobile slide drawer.
 
-### Commandment 7: Indian Localization Exclusivity
+### Commandment 7: Indian Localization & Sourced Truth
 
-- **Rule**: Every calculation, regulatory claim, and financial figure must be strictly tailored for the Indian market:
-  - Currency: Indian Rupees (`₹`, Lakhs, Crores).
-  - Tariffs: State DISCOMs (Telangana TSSPDCL, Karnataka BESCOM, Maharashtra MSEDCL, Tamil Nadu TANGEDCO, Delhi BSES).
-  - Subsidies: PM Surya Ghar Muft Bijli Yojana (up to ₹78,000 direct credit).
+- **Rule**: Every calculation, regulatory claim, and financial figure must be strictly tailored for the Indian market and verified against official sources:
+  - Currency: Indian Rupees (`₹`, Lakhs, Crores) with `en-IN` number formatting.
+  - Tariffs: Telangana Electricity Regulatory Commission (TGERC) FY 2025–26 LT-I(C) telescopic slabs.
+  - Subsidies: PM Surya Ghar Muft Bijli Yojana (up to ₹78,000 central assistance).
   - Roof Types: RCC Flat Slab Terrace (standard Indian homes), Sloped Mangalore Tile, Industrial Metal Sheet.
-  - Hubs: Tier-1 Indian hubs (Hyderabad HQ, Bengaluru, Mumbai, Vijayawada, Delhi-NCR).
+  - Structure: IS 875 (Part 3): 2015 basic wind speed of 44 m/s (Zone II).
+  - Solar Irradiance: NASA POWER / NREL PVWatts v8 multi-year insolation data for Hyderabad (1,490 kWh/kWp/yr).
 
-### Commandment 8: Tone of Voice & Copywriting
+### Commandment 8: Tone of Voice & Copy Integrity
 
-- **Rule**: WAVENOX speaks with authoritative, institutional prestige.
-- **Forbidden Vocabulary**: Never use cheap clean-tech cliches like _"Go Green"_, _"Eco-friendly saving"_, _"Budget solar"_, _"Cheap panels"_.
-- **Mandatory Vocabulary**: Use words like _"Solar for Existing Roofs"_, _"Concealed mounting hardware"_, _"24/7 Outage protection"_, _"Pay less for electricity"_, _"Built to last"_, _"Order to power on"_, _"Energy independence"_.
+- **Rule**: WAVENOX speaks with the calm, precise voice of an experienced Hyderabad solar architect. Short sentences, specific numbers, and verifiable facts.
+- **Banned Vocabulary**: Enforced via `scripts/copy-lint.mjs`. Never use hyperbolic buzzwords:
+  _Atelier_, _Monolithic_, _Sovereign_, _Bespoke_, _Institutional_, _Obsidian_, _Quantum_, _Dossier_, _Seamless_, _Apex_, _Kinetic_, _Nocturnal_, _Charter_, _Pillars_, _Command Center_, _Masterpiece_, _Ultra-luxury_, _Unparalleled_, _Elevate_, _Unleash_, _Absolute power_, _Zero compromise_, _Guaranteed Lowest Price_.
+- **Approved Vocabulary**: Sourced, calm technical terms: _Architectural solar_, _Concealed mounting_, _Low-profile_, _N-type TOPCon_, _LiFePO4 storage_, _Net-metering feasibility_, _BEE star-rated_.
 
 ---
 
-## 2. Reusability & "Sale-Ready" Engineering Standards
+## 2. Decoupled Engineering Architecture
 
 ### Commandment 9: Zero Hardcoded Business Details
 
-- **Rule**: NEVER hardcode the brand name, contact phone, WhatsApp number, email, domain, or physical address inside UI components or routes.
-- **Implementation**: Always import from `src/config/brand.ts` or `src/config/business.ts`:
+- **Rule**: NEVER hardcode brand names, contact phones, WhatsApp numbers, emails, domains, or physical addresses inside UI components or routes.
+- **Implementation**: Always import from `src/config/brand.ts`:
   ```tsx
   import { BRAND_CONFIG } from "@/config/brand";
-  import { BUSINESS } from "@/config/business";
   ```
-- **Reason**: When the website is sold to a real-world solar business owner, changing `brand.ts` or `.env` must instantly rebrand the entire website without touching component code.
 
-### Commandment 10: Solar Constants Decoupling
+### Commandment 10: Sourced Constants Decoupling
 
 - **Rule**: Mathematical and financial assumptions (tariffs, kWh yields, watts/sq.ft, subsidy formulas) must NEVER be hardcoded inside calculator components.
-- **Implementation**: Always import from `src/config/solar.ts`:
-  ```tsx
-  import { SOLAR_CONFIG, computeSolarYield } from "@/config/solar";
-  ```
+- **Implementation**: Always import from `src/config/solar.ts`, `src/config/regulatory.ts`, or `src/config/sources.ts`.
 
-### Commandment 11: High-Aesthetic Placeholder Imagery Contract
+### Commandment 11: High-Aesthetic Sourced Imagery Contract
 
-- **Rule**: All images are cinema-grade placeholders stored in `src/assets/`. Keep filenames descriptive and clean (`luxury_solar_villa.jpg`, `liquid_glass_macro.jpg`, `enterprise_mw_rooftop.jpg`). When the buyer replaces them with real client photos, layouts must remain rock-solid.
+- **Rule**: All imagery must depict authentic Indian rooftop architecture (RCC flat slabs, urban villas, industrial sheds), correct solar hardware (tilt angle, walkways, setbacks), and consistent lighting. Renders are attributed honestly as architectural concept visuals.
 
 ---
 
-## 3. TypeScript & Code Standards
+## 3. TypeScript & Quality Assurance Standards
 
-1. **Zero `any`**: Do not use `any`. Always create strict types or interfaces for component props, slide models, data matrices, and API responses.
-2. **Error Boundary Protection**: Every calculator and dynamic component must safely handle edge cases (undefined inputs, NaN, negative numbers) so pages NEVER throw error boundaries.
-3. **Semantic HTML**: Use `<main>`, `<section>`, `<article>`, `<header>`, `<footer>`, `<nav>`.
-4. **Framer Motion Performance**: Animate only GPU-accelerated properties (`opacity`, `transform`).
+1. **Zero `any`**: Strictly enforce TypeScript types for all component props, calculation engines, and lead payloads.
+2. **Automated E2E Audit**: Every route must return status 200, exactly one `<h1>`, exactly one `<main>`, logo visible at scrollY=0, zero sub-12px elements, and zero serious/critical axe accessibility violations.
+3. **Vitest Unit Test Suite**: All calculations (subsidies, slab tariffs, EMI, 25-yr compounding wealth, battery runtime) must pass automated regression testing.

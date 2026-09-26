@@ -1,16 +1,29 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Plus, Minus, ShieldCheck, AlertCircle, MessageSquare, CheckCircle2, FileText } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  ShieldCheck,
+  AlertCircle,
+  MessageSquare,
+  CheckCircle2,
+  FileText,
+  Ruler,
+} from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS, estimate } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
-import { openConsultationDrawer } from "@/components/ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow, Button, TextLink } from "@/components/system";
 import { media } from "@/config/media";
 import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
 import { WealthCurveVisualizer } from "./WealthCurveVisualizer";
+import { BillDecoder } from "./BillDecoder";
+import { MonthlyGenerationChart } from "./MonthlyGenerationChart";
+import { RoofSketcher } from "./RoofSketcher";
+import { SourcePopover } from "./SourcePopover";
 
 export interface SystemConfiguratorProps {
   initialBill?: number;
@@ -39,7 +52,7 @@ const BATTERY_OPTIONS = [
     label: "2 Units",
     sublabel: `${(batteryCap * 2).toFixed(1)} kWh`,
     capacityKwh: batteryCap * 2,
-    headline: "Whole-home backup. Seamless transfer powering up to 4 air conditioners.",
+    headline: "Whole-home backup. Fast transfer powering up to 4 air conditioners.",
   },
   {
     units: 3,
@@ -69,24 +82,38 @@ function formatInr(val: number): string {
 export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfiguratorProps) {
   const navigate = useNavigate();
 
+  const maxResidentialPanels = Math.ceil(
+    (SOLAR_ASSUMPTIONS.maxResidentialKw * 1000) / SOLAR_ASSUMPTIONS.panelWatt,
+  );
+
   // State
   const [address, setAddress] = React.useState("");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(
     initialDiscom || DISCOMS[0].code,
   );
   const [monthlyBill, setMonthlyBill] = React.useState(initialBill || 12000);
-  const [panelCount, setPanelCount] = React.useState(24);
-  const [selectedBatteryUnits, setSelectedBatteryUnits] = React.useState(1);
+  const [panelCount, setPanelCount] = React.useState(() => {
+    return Math.min(
+      maxResidentialPanels,
+      estimate({
+        monthlyBillInr: initialBill || 12000,
+        discomCode: initialDiscom || DISCOMS[0].code,
+        segment: "residential",
+      }).recommendedPanels,
+    );
+  });
+  const [selectedBatteryUnits, setSelectedBatteryUnits] = React.useState(0);
   const [roofProfile, setRoofProfile] = React.useState("rcc-flat");
   const [paymentMode, setPaymentMode] = React.useState<"cash" | "loan">("loan");
   const [estateView, setEstateView] = React.useState<"villa" | "estate">("villa");
+  const [showRoofSketcher, setShowRoofSketcher] = React.useState(false);
 
   // Lead Form State
   const [userName, setUserName] = React.useState("");
   const [userPhone, setUserPhone] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
-  const [companyWebsite, setCompanyWebsite] = React.useState("");
+  const [hpExtra, setHpExtra] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [previewDossierOpen, setPreviewDossierOpen] = React.useState(false);
@@ -124,54 +151,69 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
   // Panel adjustment
   const handlePanelIncrement = (amount: number) => {
-    setPanelCount((prev) => Math.min(60, Math.max(6, prev + amount)));
+    setPanelCount((prev) => Math.min(maxResidentialPanels, Math.max(6, prev + amount)));
   };
 
   const handleBillChange = (val: number) => {
     setMonthlyBill(val);
-    if (val <= 6000) setPanelCount(SYSTEM_TIERS[0].panels);
-    else if (val <= 11000) setPanelCount(SYSTEM_TIERS[1].panels);
-    else if (val <= 18000) setPanelCount(SYSTEM_TIERS[2].panels);
-    else setPanelCount(SYSTEM_TIERS[3].panels);
+    const rec = estimate({
+      monthlyBillInr: val,
+      discomCode: selectedDiscomCode,
+      segment: "residential",
+    });
+    setPanelCount(Math.min(maxResidentialPanels, rec.recommendedPanels));
   };
 
-  const currentDossierData: DossierData = React.useMemo(() => ({
-    refCode: "WNX-PREVIEW",
-    clientName: userName || "Prospective Estate Owner",
-    phone: userPhone,
-    address: address || "Site Assessment Required",
-    pinCode: pinCode || "Verified Local Hub",
-    discomName: discom.name,
-    systemKw: systemKw,
-    panelCount: panelCount,
-    batteryUnits: selectedBatteryUnits,
-    batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
-    monthlyBill: monthlyBill,
-    grossCapex: totalGrossInr,
-    subsidyInr: subsidyInr,
-    netPayable: netPayableInr,
-    monthlyEmi: monthlyEmiInr,
-    paybackYears: calculation.paybackYears,
-    annualSavings: calculation.annualSavingsInr,
-    twentyFiveYearSavings: twentyFiveYearWealthInr,
-  }), [
-    userName,
-    userPhone,
-    address,
-    pinCode,
-    discom.name,
-    systemKw,
-    panelCount,
-    selectedBatteryUnits,
-    monthlyBill,
-    totalGrossInr,
-    subsidyInr,
-    netPayableInr,
-    monthlyEmiInr,
-    calculation.paybackYears,
-    calculation.annualSavingsInr,
-    twentyFiveYearWealthInr,
-  ]);
+  const handleDiscomChange = (newDiscomCode: string) => {
+    setSelectedDiscomCode(newDiscomCode);
+    const rec = estimate({
+      monthlyBillInr: monthlyBill,
+      discomCode: newDiscomCode,
+      segment: "residential",
+    });
+    setPanelCount(Math.min(maxResidentialPanels, rec.recommendedPanels));
+  };
+
+  const currentDossierData: DossierData = React.useMemo(
+    () => ({
+      refCode: "WNX-PREVIEW",
+      clientName: userName || "Prospective Estate Owner",
+      phone: userPhone,
+      address: address || "Site Assessment Required",
+      pinCode: pinCode || "Verified Local Hub",
+      discomName: discom.name,
+      systemKw: systemKw,
+      panelCount: panelCount,
+      batteryUnits: selectedBatteryUnits,
+      batteryKwh: selectedBatteryUnits * SOLAR_ASSUMPTIONS.battery.unitCapacityKwh,
+      monthlyBill: monthlyBill,
+      grossCapex: totalGrossInr,
+      subsidyInr: subsidyInr,
+      netPayable: netPayableInr,
+      monthlyEmi: monthlyEmiInr,
+      paybackYears: calculation.paybackYears,
+      annualSavings: calculation.annualSavingsInr,
+      twentyFiveYearSavings: twentyFiveYearWealthInr,
+    }),
+    [
+      userName,
+      userPhone,
+      address,
+      pinCode,
+      discom.name,
+      systemKw,
+      panelCount,
+      selectedBatteryUnits,
+      monthlyBill,
+      totalGrossInr,
+      subsidyInr,
+      netPayableInr,
+      monthlyEmiInr,
+      calculation.paybackYears,
+      calculation.annualSavingsInr,
+      twentyFiveYearWealthInr,
+    ],
+  );
 
   const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,7 +224,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
     const cleanPin = pinCode.trim();
     if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
-      setSubmitError("Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).");
+      setSubmitError(
+        "Please enter a valid 6-digit postal PIN code for DISCOM feasibility (e.g. 500033).",
+      );
       return;
     }
 
@@ -206,7 +250,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           source: "studio",
           consent_given: true,
           consent_version: "2026-09-v1",
-          company_website: companyWebsite.trim() || undefined,
+          hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
       });
@@ -240,7 +284,17 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears: calculation.paybackYears,
               annualSavings: calculation.annualSavingsInr,
               twentyFiveYearSavings: twentyFiveYearWealthInr,
-            })
+            }),
+          );
+
+          sessionStorage.setItem(
+            "wavenox_last_submission",
+            JSON.stringify({
+              ref: res.referenceCode || "WNX-PROPOSAL",
+              name: userName,
+              isDemo: res.isDemo ?? true,
+              timestamp: new Date().toISOString(),
+            }),
           );
         } catch {
           // ignore storage quota errors
@@ -266,7 +320,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* 2-Column Responsive Layout */}
       <div className="flex flex-col lg:flex-row w-full min-h-[calc(100svh-56px)]">
         {/* LEFT COLUMN: 58% Sticky Media Showroom */}
-        <div className="w-full lg:w-[58%] relative min-h-[480px] lg:h-[calc(100svh-56px)] lg:sticky lg:top-14 flex flex-col justify-between p-6 sm:p-10 text-[#FFFFFF] overflow-hidden select-none bg-[#171A20]">
+        <div className="w-full lg:w-[58%] relative min-h-[480px] lg:h-[calc(100svh-56px)] lg:sticky lg:top-14 flex flex-col justify-between p-6 sm:p-10 text-[#FFFFFF] overflow-hidden bg-[#171A20]">
           {/* Background image with subtle scrims */}
           <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
             <Media
@@ -361,7 +415,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <select
                 id="studio-discom"
                 value={selectedDiscomCode}
-                onChange={(e) => setSelectedDiscomCode(e.target.value)}
+                onChange={(e) => handleDiscomChange(e.target.value)}
                 className="w-full h-10 px-3 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[4px] text-[14px] text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
               >
                 {DISCOMS.map((d) => (
@@ -390,12 +444,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 onChange={(e) => handleBillChange(Number(e.target.value))}
                 className="range-slider"
                 aria-label="Monthly electricity bill"
+                aria-valuetext={`₹${formatInr(monthlyBill)} per month`}
               />
-              <div className="flex justify-between gap-2 pt-1">
+              <div
+                role="radiogroup"
+                aria-label="Monthly bill presets"
+                className="flex justify-between gap-2 pt-1"
+              >
                 {BILL_PRESETS.map((preset) => (
                   <button
                     key={preset}
                     type="button"
+                    role="radio"
+                    aria-checked={monthlyBill === preset}
                     onClick={() => handleBillChange(preset)}
                     className={`flex-1 py-1 text-[12px] tabular-nums rounded-[4px] border transition-colors ${
                       monthlyBill === preset
@@ -407,6 +468,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   </button>
                 ))}
               </div>
+              <p className="text-[12px] text-[#5C5E62] pt-1 leading-normal">
+                * Telangana Gruha Jyothi scheme provides eligible households up to 200 free
+                units/month. Calculated using official TGERC FY 2025-26 telescopic tariffs.
+              </p>
+              <BillDecoder
+                monthlyBill={monthlyBill}
+                discomCode={selectedDiscomCode}
+                className="mt-3"
+              />
             </div>
           </div>
 
@@ -420,13 +490,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             </div>
 
             {/* Sizing Tier Buttons */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="System sizing capacity tiers"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+            >
               {SYSTEM_TIERS.map((tier) => {
                 const isActive = panelCount === tier.panels;
                 return (
                   <button
                     key={tier.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setPanelCount(tier.panels)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -479,13 +555,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Omnigrid battery capacity options"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+            >
               {BATTERY_OPTIONS.map((opt) => {
                 const isActive = selectedBatteryUnits === opt.units;
                 return (
                   <button
                     key={opt.units}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setSelectedBatteryUnits(opt.units)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -509,13 +591,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           {/* Section 4: Roof Profile */}
           <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
             <h2 className="text-[18px] font-medium text-[#171A20]">4. Terrace Architecture</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Terrace architecture roof profiles"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2"
+            >
               {ROOF_PROFILES.map((prof) => {
                 const isActive = roofProfile === prof.id;
                 return (
                   <button
                     key={prof.id}
                     type="button"
+                    role="radio"
+                    aria-checked={isActive}
                     onClick={() => setRoofProfile(prof.id)}
                     className={`p-3 text-left rounded-[4px] border transition-all ${
                       isActive
@@ -533,14 +621,55 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 );
               })}
             </div>
+
+            {/* Satellite Roof Sketcher Drawer */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowRoofSketcher((prev) => !prev)}
+                className="w-full p-3 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] text-[#171A20] text-[13px] font-medium flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-[#F57C00]" />
+                  <span>
+                    {showRoofSketcher
+                      ? "Hide Satellite Terrace Usability Sketcher"
+                      : "Sketch Usable Terrace on Satellite Map (Calculates Panels)"}
+                  </span>
+                </div>
+                <span className="text-[12px] uppercase tracking-wider text-[#5C5E62] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E3E4E6]">
+                  {showRoofSketcher ? "Close Sketcher" : "Open Tool"}
+                </span>
+              </button>
+
+              {showRoofSketcher && (
+                <div className="mt-3">
+                  <RoofSketcher
+                    onApplyKw={(_kw, panels, _area) => {
+                      setPanelCount(Math.min(maxResidentialPanels, Math.max(6, panels)));
+                      setShowRoofSketcher(false);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Section 5: Payment Structure */}
           <div className="space-y-4 pt-6 border-t border-[#E3E4E6]">
-            <h2 className="text-[18px] font-medium text-[#171A20]">5. Investment Structure</h2>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[18px] font-medium text-[#171A20]">5. Investment Structure</h2>
+              <SourcePopover sourceId="sbiSolarLoan" label="SBI Concessional Loan" />
+            </div>
+            <div
+              role="radiogroup"
+              aria-label="Investment payment mode"
+              className="grid grid-cols-2 gap-2"
+            >
               <button
                 type="button"
+                role="radio"
+                aria-checked={paymentMode === "loan"}
                 onClick={() => setPaymentMode("loan")}
                 className={`p-3 text-left rounded-[4px] border transition-all ${
                   paymentMode === "loan"
@@ -557,6 +686,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={paymentMode === "cash"}
                 onClick={() => setPaymentMode("cash")}
                 className={`p-3 text-left rounded-[4px] border transition-all ${
                   paymentMode === "cash"
@@ -579,21 +710,40 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <span className="text-[#5C5E62]">System Equipment & Turnkey Installation</span>
                 <span className="font-medium tabular-nums">₹{formatInr(totalGrossInr)}</span>
               </div>
-              <div className="flex justify-between text-[#171A20]">
-                <span className="text-[#5C5E62]">PM Surya Ghar National Subsidy</span>
+              <div className="flex justify-between items-center text-[#171A20]">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#5C5E62]">PM Surya Ghar National Subsidy</span>
+                  <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
+                </div>
                 <span className="font-medium tabular-nums">-₹{formatInr(subsidyInr)}</span>
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
-                <span className="font-medium">Net Payable Investment</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium">Effective cost after subsidy</span>
+                  <SourcePopover sourceId="tgercTariffs" showIconOnly />
+                </div>
                 <span className="text-[18px] font-semibold tabular-nums">
                   ₹{formatInr(netPayableInr)}
                 </span>
               </div>
-              <div className="pt-1 flex justify-between text-[12px] text-[#5C5E62]">
+              <p className="text-[12px] text-[#5C5E62] leading-tight pt-0.5">
+                *Subsidy is credited via DBT to your bank account post-commissioning (typically
+                within 15–45 days of DISCOM inspection).
+              </p>
+              <div className="pt-2 border-t border-[#E3E4E6] flex justify-between text-[12px] text-[#5C5E62]">
                 <span>25-Year Est. Net Savings</span>
                 <span className="font-medium tabular-nums text-[#171A20]">
                   ₹{twentyFiveYearLakhs} Lakhs
                 </span>
+              </div>
+              <div className="pt-1 flex items-center justify-end">
+                <a
+                  href="/legal/disclosures#sources"
+                  className="inline-flex items-center gap-1.5 text-[12px] text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                  <span>Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)</span>
+                </a>
               </div>
             </div>
 
@@ -605,23 +755,26 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears={calculation.paybackYears}
               tariffPerKwh={discom.residentialTariffInr}
             />
+
+            {/* NASA POWER / PVWatts Monthly Solar Generation Curve */}
+            <MonthlyGenerationChart systemKw={systemKw} className="mt-6" />
           </div>
 
           {/* Section 6: Proposal Request Form */}
           <div className="space-y-5 pt-8 border-t border-[#E3E4E6]">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#F57C00] bg-[#F57C00]/10 px-2.5 py-0.5 rounded-[3px]">
-                  Bespoke Dossier
+                <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#92400E] bg-[#FEF3C7] px-2.5 py-0.5 rounded-[3px]">
+                  Solar Proposal
                 </span>
-                <span className="text-[11px] text-[#5C5E62]">· 24-Hour Engineering Review</span>
+                <span className="text-[12px] text-[#5C5E62]">· 24-Hour Engineering Review</span>
               </div>
               <h2 className="text-[20px] font-medium tracking-tight text-[#171A20]">
-                6. Request Architectural Feasibility Dossier
+                6. Request Architectural Feasibility Proposal
               </h2>
               <p className="text-[13px] text-[#5C5E62] mt-1 leading-relaxed">
                 Our solar structural engineers review rooftop satellite irradiance, shadow profile,
-                and DISCOM feeder capacity to generate your custom 3D proposal dossier.
+                and DISCOM feeder capacity to generate your custom 3D solar proposal.
               </p>
             </div>
 
@@ -636,7 +789,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <div>
                 <label
                   htmlFor="user-name"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Full Name *
                 </label>
@@ -654,7 +807,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <div>
                 <label
                   htmlFor="user-phone"
-                  className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                  className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                 >
                   Mobile Phone / WhatsApp (+91) *
                 </label>
@@ -679,7 +832,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div>
                   <label
                     htmlFor="user-address"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     City / Locality *
                   </label>
@@ -696,7 +849,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div>
                   <label
                     htmlFor="user-pin"
-                    className="block text-[11px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
+                    className="block text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.08em] mb-1.5"
                   >
                     6-Digit PIN Code *
                   </label>
@@ -714,21 +867,32 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   />
                 </div>
               </div>
-              <p className="text-[11px] text-[#5C5E62]/80">
-                PIN code is required to verify local DISCOM substation transformer capacity and PM Surya Ghar feeder clearance.
+              <p className="text-[12px] text-[#5C5E62]/80">
+                PIN code is required to verify local DISCOM substation transformer capacity and PM
+                Surya Ghar feeder clearance.
               </p>
 
-              {/* Bot honeypot */}
-              <input
-                type="text"
-                name="company_website"
-                value={companyWebsite}
-                onChange={(e) => setCompanyWebsite(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
+              {/* Bot suppression honeypot */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  opacity: 0,
+                  height: 0,
+                  overflow: "hidden",
+                }}
                 aria-hidden="true"
-              />
+              >
+                <input
+                  type="text"
+                  name="hp_extra"
+                  id="studio-hp-extra"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={hpExtra}
+                  onChange={(e) => setHpExtra(e.target.value)}
+                />
+              </div>
 
               {/* DPDP Consent */}
               <div className="p-3.5 rounded-[6px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-3">
@@ -742,11 +906,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 />
                 <label
                   htmlFor="studio-consent"
-                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer select-none"
+                  className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my bespoke solar proposal and be contacted by WAVENOX solar
-                  structural engineers in accordance with the <strong>Digital Personal Data
-                  Protection (DPDP) Act 2023</strong>. Zero spam guarantee.
+                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
+                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
+                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
+                  <a href="/legal/privacy" className="underline hover:text-[#171A20]">
+                    Privacy Policy
+                  </a>
+                  .
                 </label>
               </div>
 
@@ -757,9 +925,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   className="flex-1 h-12 px-5 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-[0.02em] hover:bg-[#2B2F36] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4 text-[#F57C00]" />
-                  <span>
-                    {isSubmitting ? "Generating Dossier..." : "Request Proposal Dossier"}
-                  </span>
+                  <span>{isSubmitting ? "Generating Proposal..." : "Request Solar Proposal"}</span>
                 </button>
 
                 <button
@@ -769,7 +935,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   title="View instant architectural feasibility preview"
                 >
                   <FileText className="w-4 h-4 text-[#5C5E62]" />
-                  <span>Preview Dossier (PDF)</span>
+                  <span>Preview Proposal (PDF)</span>
                 </button>
               </div>
 
@@ -792,7 +958,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* Sticky Mobile Bottom Bar */}
       <div className="fixed bottom-0 inset-x-0 z-30 bg-[#FFFFFF] border-t border-[#E3E4E6] px-6 py-3 flex sm:hidden items-center justify-between shadow-lg">
         <div>
-          <div className="text-[12px] text-[#5C5E62]">Net Payable</div>
+          <div className="text-[12px] text-[#5C5E62]">Effective Cost</div>
           <div className="text-[16px] font-semibold tabular-nums text-[#171A20]">
             ₹{formatInr(netPayableInr)}
           </div>
@@ -810,7 +976,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         </button>
       </div>
 
-      {/* Bespoke Architectural Feasibility Dossier Preview Modal */}
+      {/* Architectural Feasibility Proposal Preview Modal */}
       <ArchitecturalDossierModal
         isOpen={previewDossierOpen}
         onClose={() => setPreviewDossierOpen(false)}

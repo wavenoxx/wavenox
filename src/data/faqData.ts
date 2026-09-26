@@ -1,6 +1,7 @@
 export interface FaqTopic {
   id: string;
-  category: "subsidies" | "battery" | "terrace" | "technology" | "billing" | "commercial" | "warranty";
+  category:
+    "subsidies" | "battery" | "terrace" | "technology" | "billing" | "commercial" | "warranty";
   categoryLabel: string;
   question: string;
   answer: string;
@@ -14,7 +15,7 @@ export const FAQ_CATEGORIES = [
   { id: "terrace", label: "Terrace & Pergolas" },
   { id: "technology", label: "TOPCon Technology" },
   { id: "billing", label: "Net Metering & DISCOMs" },
-  { id: "commercial", label: "Commercial & Tax (Sec 32)" },
+  { id: "commercial", label: "Commercial & Tax (Section 34)" },
   { id: "warranty", label: "Warranties & Service" },
 ] as const;
 
@@ -46,7 +47,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Subsidies & Surya Ghar",
     question: "Do I have to visit DISCOM offices or government departments myself?",
     answer:
-      "No. WAVENOX handles the entire regulatory liaison process end-to-end. Our regulatory engineering team creates your National Portal registration, submits technical single-line diagrams (SLD) to your local DISCOM (such as TGSPDCL, TSNPDCL, APEPDCL, APSPDCL, or BESCOM), secures the feasibility sanction, coordinates the physical meter inspection, and submits the commissioning certificate.",
+      "No. WAVENOX handles the entire regulatory liaison process end-to-end. Our regulatory engineering team creates your National Portal registration, submits technical single-line diagrams (SLD) to your local DISCOM (such as TGSPDCL, TGNPDCL, APEPDCL, APSPDCL, or BESCOM), secures the feasibility sanction, coordinates the physical meter inspection, and submits the commissioning certificate.",
     featured: true,
   },
   {
@@ -55,7 +56,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Subsidies & Surya Ghar",
     question: "Are WAVENOX solar modules compliant with MNRE ALMM and DCR mandates?",
     answer:
-      "Yes. Every solar panel deployed by WAVENOX for residential subsidy projects is certified under the MNRE Approved List of Models and Manufacturers (ALMM) and complies with Domestic Content Requirement (DCR) rules, guaranteeing unconditional subsidy approval from the central portal.",
+      "Yes. Every solar panel deployed by WAVENOX for residential subsidy projects is certified under the MNRE Approved List of Models and Manufacturers (ALMM) and complies with Domestic Content Requirement (DCR) rules with Indian-made solar cells. Under MNRE guidelines, residential PM Surya Ghar CFA strictly mandates DCR modules; while ALMM List-II (cells) is being phased in with net-metering exemptions for projects commissioned through 31 Dec 2026, our procurement adheres to full DCR compliance.",
     featured: false,
   },
 
@@ -93,7 +94,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Omnigrid & Outages",
     question: "Can I start with solar first and add an Omnigrid battery later?",
     answer:
-      "Yes. All WAVENOX residential installations utilize hybrid-ready inverters. You can install our low-profile monolithic solar array today and seamlessly plug in an Omnigrid storage stack at any point in the future. Battery capacity can also be scaled modularly in 14.3 kWh increments (up to 28.6 kWh dual-pack or 42.9 kWh triple-stack) as your family's evening consumption or EV charging requirements expand.",
+      "Yes. All WAVENOX residential installations utilize hybrid-ready inverters. You can install our low-profile all-black solar array today and connect an Omnigrid storage stack at any point in the future. Battery capacity can also be scaled modularly in 14.3 kWh increments (up to 28.6 kWh dual-pack or 42.9 kWh triple-stack) as your family's evening consumption or EV charging requirements expand.",
     featured: false,
   },
 
@@ -113,7 +114,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Terrace & Pergolas",
     question: "Will installing solar on my terrace cause roof leakage or crack the slab?",
     answer:
-      "Never. WAVENOX enforces a strict Zero Slab Damage protocol. Depending on your terrace structure, we employ pre-cast ballasted foundation blocks (requiring zero slab penetration) or chemical-anchor fastener pedestals sealed with multi-layer marine-grade polyurethane elastomeric membranes. Every installation includes a 5-year structural waterproofing guarantee.",
+      "We design mounting structures to protect your terrace integrity without compromising waterproofing. Depending on your terrace construction, we specify pre-cast ballasted foundation blocks (requiring zero slab penetration) or chemical-anchor pedestals sealed with multi-layer polyurethane elastomeric membranes to ensure weather-tight performance.",
     featured: true,
   },
   {
@@ -122,7 +123,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Terrace & Pergolas",
     question: "How do WAVENOX elevated structures perform during cyclones and monsoons?",
     answer:
-      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Engineered in accordance with IS 875 (Part 3) wind load standards, our pergolas are structurally rated to withstand 170 km/h wind gusts, ensuring total resilience through coastal cyclones and severe squalls.",
+      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Structures are engineered in accordance with IS 875 (Part 3) for the site's basic wind speed — e.g. 44 m/s (158 km/h) in Hyderabad and 50 m/s in coastal zones — ensuring total structural stability through severe monsoonal squalls.",
     featured: false,
   },
 
@@ -133,7 +134,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "TOPCon Technology",
     question: "What makes N-type TOPCon panels superior to conventional P-type PERC panels?",
     answer:
-      "N-type Tunnel Oxide Passivated Contact (TOPCon) represents the cutting edge of silicon photovoltaics. Compared to older P-type PERC panels, TOPCon modules offer higher conversion efficiency (22.8% vs ~20.5%), zero Light-Induced Degradation (LID), significantly better weak-light generation during dawn and overcast monsoon days, and an industry-leading -0.30%/°C temperature coefficient.",
+      "N-type Tunnel Oxide Passivated Contact (TOPCon) represents advanced silicon photovoltaics. Compared to legacy P-type PERC modules, TOPCon delivers higher conversion efficiency (up to 22.8%), lower initial degradation (<1.0% in Year 1), superior low-light performance during dawn and overcast monsoon days, and a low -0.30%/°C temperature coefficient.",
     featured: false,
   },
   {
@@ -142,7 +143,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "TOPCon Technology",
     question: "Do solar panels produce less power when the ambient temperature is 42°C+?",
     answer:
-      "All solar panels experience reduced voltage as temperatures rise. However, WAVENOX N-type TOPCon cells feature an ultra-low temperature coefficient of -0.30% per °C (compared to -0.38% to -0.42% for standard panels). During scorching 44°C peak summer afternoons across Telangana and Andhra Pradesh, WAVENOX panels deliver up to 8% more energy than standard modules.",
+      "All solar panels experience reduced voltage as temperatures rise above 25°C STC. Under peak summer ambient temperatures of 44°C in Hyderabad, rooftop cell temperatures typically reach ~65°C–70°C (ΔT ≈ 45°C). At -0.30%/°C, thermal derating is ~13.5% (yielding 86.5% relative output), compared to ~18.0% loss (-0.40%/°C, yielding 82.0% output) for legacy PERC. This delivers ~5.5% higher actual power output under harsh midday summer heat: [(86.5 − 82.0) / 82.0 ≈ +5.49%].",
     featured: true,
   },
   {
@@ -180,7 +181,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Net Metering & DISCOMs",
     question: "What are the solar banking rules in Telangana, Andhra Pradesh, and Karnataka?",
     answer:
-      "In Telangana (TGSPDCL / TSNPDCL) and Andhra Pradesh (APEPDCL / APSPDCL), excess solar credits bank month-to-month and settle annually at the tariff determined by the respective State Electricity Regulatory Commission (SERC). In Karnataka (BESCOM), net metering is available for domestic consumers up to sanctioned transformer capacity. WAVENOX coordinates all utility tariff filings automatically.",
+      "In Telangana (TGSPDCL / TGNPDCL) and Andhra Pradesh (APEPDCL / APSPDCL), excess solar credits bank month-to-month and settle annually at the tariff determined by the respective State Electricity Regulatory Commission (SERC). In Karnataka (BESCOM), net metering is available for domestic consumers up to sanctioned transformer capacity. WAVENOX coordinates all utility tariff filings automatically.",
     featured: false,
   },
   {
@@ -189,33 +190,33 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Net Metering & DISCOMs",
     question: "Can I install a solar system larger than my DISCOM sanctioned connected load?",
     answer:
-      "Utility regulations require that your rooftop solar plant capacity cannot exceed your sanctioned connected load (e.g., if your sanctioned load is 5 kW, maximum permitted solar is 5 kW). If your roof has space for a 10 kW system to offset heavy AC usage, WAVENOX will file an official load enhancement application with your DISCOM alongside your solar application.",
+      "Under the Ministry of Power Electricity (Rights of Consumers) Amendment Rules, 2024, technical feasibility studies are waived (deemed approved) for rooftop systems up to 10 kW, with deemed load enhancement up to 10 kW. For systems larger than 10 kW, utility regulations evaluate distribution transformer capacity, and WAVENOX files official load enhancement requests on your behalf through the national portal.",
     featured: false,
   },
 
-  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 32)
+  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 34)
   {
-    id: "section-32-accelerated-depreciation",
+    id: "section-34-accelerated-depreciation",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
-    question: "How does Section 32 40% accelerated tax depreciation work for businesses?",
+    categoryLabel: "Commercial & Tax (Section 34)",
+    question: "How does Section 34 40% accelerated tax depreciation work for businesses?",
     answer:
-      "Under Section 32 of the Indian Income Tax Act, commercial and industrial enterprises investing in rooftop solar capital assets can claim 40% accelerated depreciation in Year 1 (or 20% if commissioned in the second half of the fiscal year). For a profitable corporate entity in the 25%–30% corporate tax bracket, this delivers immediate tax savings equal to roughly 10%–12% of the total project CAPEX in the first year alone.",
+      "Under Section 34 of the Income-tax Act, 2025 (in force 1 April 2026, replacing Section 32 of the 1961 Act), commercial and industrial enterprises investing in rooftop solar capital assets can claim 40% accelerated depreciation in Year 1 (or 20% if put to use for less than 180 days in the fiscal year). For a corporate entity in the 25%–30% corporate tax bracket, this delivers immediate tax savings equal to roughly 10%–12% of total project CAPEX in the first year alone. (Illustrative — consult your Chartered Accountant).",
     featured: true,
   },
   {
     id: "commercial-payback-period",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
+    categoryLabel: "Commercial & Tax (Section 34)",
     question: "What is the typical return on investment (ROI) for commercial solar in India?",
     answer:
-      "Commercial and industrial tariffs across Telangana, Andhra Pradesh, and Karnataka range between ₹8.50 and ₹12.50 per unit. Combined with 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
+      "Commercial and industrial tariffs in Telangana (TGSPDCL/TGNPDCL HT tariffs) range between ₹8.50 and ₹11.80 per unit. Combined with Section 34 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
     featured: false,
   },
   {
     id: "open-access-vs-rooftop",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Sec 32)",
+    categoryLabel: "Commercial & Tax (Section 34)",
     question: "What is the difference between captive rooftop solar and group captive open access?",
     answer:
       "Captive rooftop solar generates electricity directly on your facility roof behind the commercial meter, eliminating all grid transmission losses, wheeling charges, and cross-subsidy surcharges. Open access involves procuring power from an off-site solar park across the utility transmission grid, which is typically recommended only when your facility roof area is insufficient to meet your total electrical demand.",
@@ -229,16 +230,16 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "What does the 25-Year Linear Power Guarantee actually cover?",
     answer:
-      "Our 25-Year Linear Asset Guarantee guarantees that power degradation will not exceed 1.0% in Year 1 and will degrade by no more than 0.40% to 0.55% per year thereafter. At Year 25, your solar panels are guaranteed to produce at least 84.8% of their original nameplate output. If a module fails to meet this curve, it is repaired or replaced at zero cost under warranty.",
+      "Our 25-Year Linear Performance Guarantee guarantees that power degradation will not exceed 1.0% in Year 1 and will degrade by no more than 0.40% per year thereafter. At Year 25, your solar panels are guaranteed to produce at least 89.4% of their original nameplate output under the Tier-1 OEM manufacturer performance warranty.",
     featured: true,
   },
   {
     id: "inverter-and-battery-warranties",
     category: "warranty",
     categoryLabel: "Warranties & Service",
-    question: "What are the warranty terms for the inverter and Omnigrid battery?",
+    question: "What are the warranty terms for the inverter and battery storage?",
     answer:
-      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Omnigrid battery storage units carry a 10-year / 6,000-cycle performance warranty guaranteeing at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
+      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Modular LiFePO4 battery storage units carry a 10-year / 6,000-cycle performance warranty guaranteeing at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
     featured: false,
   },
   {
@@ -247,7 +248,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "How do I monitor solar generation and battery levels from my phone?",
     answer:
-      "Every WAVENOX system is equipped with encrypted Wi-Fi and 4G IoT telemetry. Through the WAVENOX mobile application, you can view realtime generation, home power consumption, battery state-of-charge, grid import/export, and carbon offsets in sub-second intervals from anywhere in the world.",
+      "Every system connects via encrypted Wi-Fi or cellular IoT directly to your inverter manufacturer's mobile app and cloud portal (such as SolarEdge, Enphase, or Deye). You can track live solar production, household consumption, battery state-of-charge, and net-metering export from any device.",
     featured: false,
   },
   {
@@ -256,7 +257,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "What is your Service Level Agreement (SLA) if my system has an issue?",
     answer:
-      "Our central command center monitors system telemetry 24/7. In the rare event of an inverter fault, grid anomaly, or panel mismatch, our monitoring algorithms trigger an automated alert. For residential customers across Hyderabad, Bengaluru, and Vijayawada, we provide a guaranteed 48-hour on-site dispatch SLA by certified solar service engineers.",
+      "Your inverter cloud system provides automated fault detection and alert notifications. In the event of an inverter anomaly, grid synchronization fault, or panel variance, diagnostic logs can be reviewed remotely to dispatch appropriate on-site technical support across Hyderabad.",
     featured: false,
   },
 ];

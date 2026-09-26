@@ -6,14 +6,25 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
-const outDir = path.resolve(rootDir, "qa-artifacts/phase2/before");
+const outDir = path.resolve(rootDir, "qa-artifacts/before");
 
 const routes = [
   { name: "home", path: "/" },
-  { name: "deploy", path: "/deploy" },
   { name: "residential", path: "/residential" },
-  { name: "enterprise", path: "/enterprise" },
   { name: "omnigrid", path: "/omnigrid" },
+  { name: "enterprise", path: "/enterprise" },
+  { name: "deploy", path: "/deploy" },
+  { name: "technology", path: "/technology" },
+  { name: "our-story", path: "/our-story" },
+  { name: "architects", path: "/architects" },
+  { name: "net-metering", path: "/net-metering" },
+  { name: "service-areas", path: "/service-areas" },
+  { name: "warranty", path: "/warranty" },
+  { name: "faq", path: "/faq" },
+  { name: "legal-terms", path: "/legal/terms" },
+  { name: "legal-privacy", path: "/legal/privacy" },
+  { name: "legal-disclosures", path: "/legal/disclosures" },
+  { name: "order-received", path: "/order/received" },
 ];
 
 const viewports = [

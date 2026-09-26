@@ -38,3 +38,5 @@ dist-ssr
 
 # QA Artifacts & Playwright screenshots
 qa-artifacts/
+.npm/
+Library/

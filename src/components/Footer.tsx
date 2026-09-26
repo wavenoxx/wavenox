@@ -3,13 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { Phone, MessageSquare, MapPin, Mail, ArrowUpRight } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#FFFFFF] text-[#171A20] border-t border-[#E3E4E6] select-none">
+    <footer className="w-full bg-[#FFFFFF] text-[#171A20] border-t border-[#E3E4E6]">
       {/* 4-COLUMN ARCHITECTURAL SITEMAP */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 pt-16 pb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-12">
@@ -21,7 +21,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
                 <Link to="/" className="hover:text-[#171A20] transition-colors">
-                  Monolithic Solar Panels
+                  All-Black Solar Panels
                 </Link>
               </li>
               <li>
@@ -41,7 +41,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/deploy" className="hover:text-[#171A20] transition-colors">
-                  Bespoke Solar Studio
+                  Solar Sizing Studio
                 </Link>
               </li>
             </ul>
@@ -55,12 +55,12 @@ export function Footer() {
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
                 <Link to="/technology" className="hover:text-[#171A20] transition-colors">
-                  Technology Atelier
+                  Solar Engineering
                 </Link>
               </li>
               <li>
                 <Link to="/warranty" className="hover:text-[#171A20] transition-colors">
-                  25-Year Asset Warranty Charter
+                  25-Year Warranty Standards
                 </Link>
               </li>
               <li>
@@ -70,12 +70,12 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/technology" className="hover:text-[#171A20] transition-colors">
-                  170 km/h Cyclone Metallurgy
+                  IS 875 (Part 3) 44 m/s Metallurgy
                 </Link>
               </li>
               <li>
                 <Link to="/architects" className="hover:text-[#171A20] transition-colors">
-                  Architectural Atelier &amp; BIM
+                  Architectural Solar Specs
                 </Link>
               </li>
               <li>
@@ -99,7 +99,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/service-areas" className="hover:text-[#171A20] transition-colors">
-                  Telangana (TGSPDCL / TSNPDCL)
+                  Telangana (TGSPDCL / TGNPDCL)
                 </Link>
               </li>
               <li>
@@ -136,15 +136,23 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* COLUMN 4: ATELIER & LEGAL */}
+          {/* COLUMN 4: COMPANY & LEGAL */}
           <div className="space-y-4">
             <h4 className="text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.16em]">
-              Atelier &amp; Governance
+              Company &amp; Governance
             </h4>
             <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
               <li>
                 <Link to="/our-story" className="hover:text-[#171A20] transition-colors">
                   Our Story &amp; Ethos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about-this-project"
+                  className="hover:text-[#171A20] transition-colors font-medium text-[#171A20]"
+                >
+                  Colophon &amp; Case Study
                 </Link>
               </li>
               <li>
@@ -180,7 +188,7 @@ export function Footer() {
           <div className="flex items-center gap-3">
             <BrandLogo size="sm" asLink={false} />
             <span className="text-[#5C5E62]/40">|</span>
-            <span className="text-[12px]">Financial District, Gachibowli, Hyderabad, Telangana — 500032</span>
+            <span className="text-[12px]">{BRAND_CONFIG.contact.address}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-5">
@@ -211,25 +219,41 @@ export function Footer() {
         </div>
 
         {/* BOTTOM FINE-PRINT STRIP */}
-        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#5C5E62]/80 text-center sm:text-left">
+        <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#393C41] text-center sm:text-left">
           <div>
-            {BRAND_CONFIG.name} Clean Energy Systems India Private Limited © {currentYear}. All
-            rights reserved. BIS, IEC 61215, ALMM Approved Hardware.
+            {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
+            calculations for Telangana (TGSPDCL &amp; TGNPDCL).
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/legal/privacy" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/privacy"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Privacy
             </Link>
             <span>·</span>
-            <Link to="/legal/terms" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/terms"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Terms
             </Link>
             <span>·</span>
-            <Link to="/legal/disclosures" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/legal/disclosures"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               Disclosures
             </Link>
             <span>·</span>
-            <Link to="/faq" className="hover:text-[#171A20] transition-colors">
+            <Link
+              to="/about-this-project"
+              className="text-[#393C41] hover:text-[#171A20] transition-colors font-medium"
+            >
+              Colophon
+            </Link>
+            <span>·</span>
+            <Link to="/faq" className="text-[#393C41] hover:text-[#171A20] transition-colors">
               FAQ
             </Link>
           </div>

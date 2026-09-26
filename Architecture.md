@@ -4,128 +4,148 @@
 
 ## 1. High-Level Architecture Overview
 
-WAVENOX is engineered as a high-performance, full-stack, reusable web platform built on the **TanStack Start** meta-framework. It marries **Tesla Solar's showroom design system (`https://www.tesla.com/solarpanels` & `https://www.tesla.com/energy/design`)** with an Indian localized financial and regulatory engine, decoupled via a centralized configuration system.
+WAVENOX is engineered as a high-performance, full-stack, reusable clean-technology platform built on the **TanStack Start** meta-framework. It pairs **Tesla-grade architectural showroom restraint** with an authentic Indian localized financial, meteorological, and regulatory engine, decoupled via a centralized configuration system.
 
 ```
                               ┌──────────────────────────────────────────────┐
                               │            CONFIGURATION ENGINE              │
-                              │    src/config/brand.ts   (Identity/Links)    │
-                              │    src/config/business.ts (Hubs/Reviews)     │
-                              │    src/config/solar.ts   (Tariffs/Specs)     │
+                              │    src/config/brand.ts      (Identity)       │
+                              │    src/config/regulatory.ts (TGERC/MNRE/IS)  │
+                              │    src/config/solar.ts      (Physics/Yield)  │
+                              │    src/config/sources.ts    (Sourced Truth)  │
                               └──────────────────────┬───────────────────────┘
                                                      │ Type-Safe Config
                                                      ▼
                               ┌──────────────────────────────────────────────┐
-                              │           TESLA SHOWROOM UI TIER             │
-                              │  React 19 • Framer Motion 12 • Tailwind v4   │
-                              │  Pure White (#FFFFFF) & Studio Gray (#F8F8FA)│
-                              │  Carbon Dark Typography • Tesla Pill Buttons │
+                              │            SYSTEM DESIGN & UI TIER           │
+                              │  React 19 • Tailwind CSS v4 • Radix UI       │
+                              │  Pure White (#FFFFFF) & Studio (#F4F4F4)     │
+                              │  Carbon Dark (#171A20) • 12px Text Floor     │
                               └──────────────────────┬───────────────────────┘
                                                      │ HTTP / Hydration
                                                      ▼
                               ┌──────────────────────────────────────────────┐
                               │            ROUTING & SSR ENGINE              │
-                              │    TanStack Router (File-based routes)       │
+                              │    TanStack Router (17 File-based routes)    │
                               │    Dynamic JSON-LD Schema & Meta Tags        │
                               └──────────────────────┬───────────────────────┘
                                                      │ Vite SSR Bundle
                                                      ▼
                               ┌──────────────────────────────────────────────┐
                               │           SYSTEM DESIGN STUDIO               │
-                              │   6-Step Interactive Configurator (/deploy)  │
-                              │   Stateful System Sizing, Battery & Subsidy  │
+                              │   Interactive Configurator (/deploy)         │
+                              │   Satellite Roof Sketcher & Battery Advisor  │
                               └──────────────────────┬───────────────────────┘
-                                                     │ Direct Connect
+                                                     │ Zero-Trust RPC
                                                      ▼
                               ┌──────────────────────────────────────────────┐
-                              │            COMMUNICATION TIER                │
-                              │    WhatsApp Direct Link (Pre-filled Dossier) │
-                              │    Optional Supabase Lead Storage            │
+                              │            LEAD & PROPOSAL ENGINE            │
+                              │    Server Function (submitLead)              │
+                              │    DPDP Act 2023 Consent Audit Logging       │
+                              │    Supabase Private Service-Role Client      │
                               └──────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Configuration & Reusability Engine (`src/config/`)
+## 2. Configuration & Decoupling Engine (`src/config/`)
 
-To guarantee that any solar EPC contractor in India can acquire and rebrand this platform within 30 minutes, all business-specific, geographic, and solar physics variables are centralized:
+All business-specific, geographic, and statutory physics variables are centralized:
 
 ### 2.1 `src/config/brand.ts`
 
-- Single source of truth for: Brand name, legal entity, phone numbers (display and dialable E.164), WhatsApp links, email addresses, social profiles, and domain.
+- Single source of truth for: Brand name, legal concept attribution, phone numbers (display and E.164), WhatsApp links, email addresses, social profiles, and domain.
 - Built-in validation and normalization helpers (`validSiteUrl`, `normalizedDial`, `normalizedWhatsAppDial`, `validWhatsAppLink`).
 
-### 2.2 `src/config/business.ts`
+### 2.2 `src/config/sources.ts` & `docs/SOURCES.md`
 
-- Primary operating city (Hyderabad HQ), regional coverage, GPS coordinates for Schema.org LocalBusiness microdata, and verified service hubs across India (Bengaluru, Mumbai, Vijayawada, Delhi-NCR).
-- Customer review registry (auto-hides when empty to comply with consumer protection laws).
+- Authoritative regulatory register containing issuing authority, publication date, gazette link, and verification date for every constant displayed on the platform.
 
-### 2.3 `src/config/solar.ts`
+### 2.3 `src/config/regulatory.ts`
 
-- Complete solar physics and Indian financial models:
-  - Energy density: `WATTS_PER_SQFT_WAVENOX = 13` W/sq.ft.
-  - Annual effective solar hours: `GEN_HOURS_PER_YEAR = 1600` hrs.
-  - State utility tariff schedules: TSSPDCL (Telangana), BESCOM (Karnataka), MSEDCL (Maharashtra), TANGEDCO (Tamil Nadu), BSES (Delhi).
-  - Central Government Subsidies: PM Surya Ghar Muft Bijli Yojana calculation rules (up to ₹78,000 direct credit).
-  - Robust calculation function `computeSolarYield` supporting both object parameters and positional numbers.
+- PM Surya Ghar CFA subsidy slabs (including standard and special category states).
+- TGERC FY 2025–26 LT-I(C) telescopic tariff schedules with Gruha Jyothi scheme handling.
+- Accelerated depreciation rules (Section 32/34: 40% WDV).
+- Concessional green loan terms (SBI PM Surya Ghar at 7.00% floating).
+- Basic wind speed standard ($V_b = 44\text{ m/s}$ per IS 875 Part 3).
+
+### 2.4 `src/config/solar.ts`
+
+- Solar generation physics and calculations:
+  - Specific yield: `1,490 kWh/kWp/year` based on NASA POWER / NREL PVWatts v8 insolation in Hyderabad.
+  - Self-consumption: 70% direct solar, 90% with LiFePO4 battery pack.
+  - Linear degradation curve: 1.0% Year 1, 0.40%/year linear (≥89.4% Year 25).
+  - Reverse bill decoder: `decodeTelanganaBill` converting ₹ bill amount to exact units consumed.
 
 ---
 
-## 3. Directory Layout & 3-Layer Component Hierarchy
+## 3. Directory Layout & System Architecture
 
 ```
 wavenox/
+├── docs/
+│   ├── FIX_PLAN.md           # Master architectural audit & implementation plan
+│   ├── IMAGE_BRIEF.md        # Comprehensive visual direction & rendering specs
+│   └── SOURCES.md            # Complete statutory & meteorological register
+├── scripts/
+│   ├── copy-lint.mjs         # Static analyzer forbidding marketing buzzwords
+│   └── run-e2e-audit.mjs     # Playwright E2E & Axe accessibility audit script
 ├── src/
-│   ├── assets/               # High-res cinema-grade renders
-│   │   ├── luxury_solar_villa.jpg     # 100vh Hero background
-│   │   ├── liquid_glass_macro.jpg     # Sleek low-profile macro
-│   │   └── enterprise_mw_rooftop.jpg  # Enterprise rooftop render
 │   ├── config/               # Single-source-of-truth configuration
-│   │   ├── brand.ts          # Identity & communication links
-│   │   ├── business.ts       # Service hubs & Indian regions
-│   │   └── solar.ts          # Tariffs, DISCOMs & subsidy engine
-│   ├── components/           # Tesla Solar UI Component Tree
-│   │   │                     # --- LAYER 1: SHOWCASE MODULES ---
-│   │   ├── Header.tsx        # Floating blur header with navigation links & pills
-│   │   ├── Hero.tsx          # 100vh full-bleed hero with bottom dock & dual pills
-│   │   ├── SleekDesign.tsx   # Sleek low-profile design & concealed hardware (White)
-│   │   ├── OutageProtection.tsx # 24/7 Outage protection with Omnigrid (Studio Gray)
-│   │   ├── BillSavingsSlider.tsx # Interactive monthly bill slider for India (White)
-│   │   ├── EfficiencyTech.tsx # Efficiency & all-weather cascading cells (Studio Gray)
-│   │   ├── EnergyControl.tsx # Monitor and optimize (Mobile app telemetry) (White)
-│   │   ├── TechSpecs.tsx     # Built to last: Tesla-style 2-column specs drawer
-│   │   ├── OrderProcess.tsx  # Order to power on: 5-step timeline (Studio Gray)
-│   │   ├── ConsultationModal.tsx # Tesla Energy Advisor virtual consultation modal
-│   │   ├── SupportFaq.tsx    # Comprehensive Indian rooftop solar FAQ
-│   │   ├── Footer.tsx        # Sleek 1-line Tesla-style showroom footer
-│   │   │                     # --- LAYER 2: DESIGN STUDIO ---
-│   │   └── SystemConfigurator.tsx # 6-Step interactive solar & storage configurator
-│   └── routes/               # TanStack file-based routes
-│       ├── __root.tsx        # Root HTML layout & dynamic metadata
-│       ├── index.tsx         # Layer 1: Tesla Solar Panels Showcase
-│       ├── deploy.tsx        # Layer 2: Interactive System Design Studio (/energy/design)
-│       ├── residential.tsx   # Layer 3: Solar for Homes
-│       ├── enterprise.tsx    # Layer 3: Commercial & Industrial Solar (MW scale)
-│       └── omnigrid.tsx      # Layer 3: Omnigrid Battery Storage
+│   │   ├── brand.ts          # Identity & contact links
+│   │   ├── regulatory.ts     # Statutory subsidies, tariffs & taxes
+│   │   ├── solar.ts          # Solar physics, degradation & bill decoder
+│   │   └── sources.ts        # Verified citations registry
+│   ├── components/
+│   │   ├── system/           # Core design system primitives
+│   │   │   ├── Button.tsx    # Accessible showroom poly-button (pill)
+│   │   │   ├── Media.tsx     # Responsive picture with AVIF/WebP/JPG
+│   │   │   ├── Panel.tsx     # Full-bleed 100svh showcase section
+│   │   │   ├── QuietSection.tsx # Generously padded content section
+│   │   │   ├── StatRow.tsx   # Unboxed numerical metrics row
+│   │   │   └── SpecsDrawer.tsx # Verified hardware datasheets drawer
+│   │   ├── Header.tsx        # Navigation menu with mobile drawer & language switcher
+│   │   ├── Footer.tsx        # 4-Column footer with verified concept strip
+│   │   ├── BillDecoder.tsx   # Sourced TGERC tariff slab breakdown
+│   │   ├── MonthlyGenerationChart.tsx # NASA POWER monthly yield chart
+│   │   ├── RoofSketcher.tsx  # Leaflet satellite terrace geometry engine
+│   │   ├── BatteryHonestyAdvisor.tsx # Sourced BEE appliance runtime calculator
+│   │   ├── PmSuryaGharJourney.tsx    # Official National Portal workflow & checklist
+│   │   ├── SunPathSimulator.tsx      # Real-time astronomical sun-path & shadow preview
+│   │   └── SystemConfigurator.tsx    # Interactive solar design studio (/deploy)
+│   └── routes/               # 17 Type-safe file-based routes
 ```
 
 ---
 
-## 4. Route Architecture & Page Mapping
+## 4. Route Architecture (17 Verified Routes)
 
-| Route          | Page Name                    | Primary Focus & Tesla Equivalent                                                                                                                                  |
-| :------------- | :--------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`            | **Solar Panels Showcase**    | Exact replica of `https://www.tesla.com/solarpanels` section hierarchy on Pure White & Studio Gray canvas.                                                        |
-| `/deploy`      | **System Design Studio**     | Interactive 6-step configurator mirroring `https://www.tesla.com/energy/design` with custom kW sizing, Omnigrid battery count, and PM Surya Ghar subsidy credits. |
-| `/residential` | **Solar for Homes**          | Architectural solar for luxury villas, independent houses, and penthouses.                                                                                        |
-| `/enterprise`  | **Commercial & Industrial**  | Megawatt-scale solar, Section 32 40% Year-1 tax depreciation, corporate campuses.                                                                                 |
-| `/omnigrid`    | **Omnigrid Battery Storage** | Whole-home outage backup, seamless sub-millisecond islanding, compact wall-mounted battery.                                                                       |
+| Route                 | Page Name                       | Primary Capability                                                                     |
+| :-------------------- | :------------------------------ | :------------------------------------------------------------------------------------- |
+| `/`                   | **Rooftop Solar Showcase**      | Full-bleed panels, outage protection, bill savings slider, specs drawer, FAQ           |
+| `/residential`        | **Luxury Residential**          | Pergola terrace mounting, architectural integration, PM Surya Ghar subsidy breakdown   |
+| `/omnigrid`           | **Home Battery Storage**        | LiFePO4 home storage, &lt;20ms UPS transfer, ToD tariff peak shaving                   |
+| `/enterprise`         | **Commercial & Industrial**     | Megawatt-scale solar, Section 32/34 40% Year-1 tax depreciation, corporate RFP         |
+| `/deploy`             | **Interactive Design Studio**   | Sizing tiers (3kW–25kW), satellite roof sketcher, battery advisor, proposal submission |
+| `/technology`         | **Engineering & Physics**       | N-Type TOPCon cell physics, 3D sun-path solar shading simulator, wind tolerances       |
+| `/our-story`          | **Design Philosophy**           | The motivation for architectural solar in India, engineering principles                |
+| `/architects`         | **Architectural Specification** | Structural tolerances, 6005-T5 aluminium specs, CAD load tables, Dossier modal         |
+| `/net-metering`       | **DISCOM Feasibility**          | TGERC net-metering regulations, DT transformer caps, bi-directional meter workflow     |
+| `/service-areas`      | **Operational Hubs**            | Coverage across Telangana & AP, solar insolation metrics, consultation liaison         |
+| `/warranty`           | **25-Year Performance**         | Linear degradation curve (≤1.0% Yr 1, ≤0.40%/yr), inverter & battery terms             |
+| `/faq`                | **Frequently Asked Questions**  | PM Surya Ghar eligibility, net metering, power cuts, terrace usability                 |
+| `/about-this-project` | **Colophon & Case Study**       | Complete audit before/after matrix, architectural decision log, sources catalog        |
+| `/legal/terms`        | **Indicative Terms**            | Preliminary quotation disclaimers, DISCOM grid approval dependencies                   |
+| `/legal/privacy`      | **Privacy Policy**              | DPDP Act 2023 & DPDP Rules 2025 compliance, data fiduciary declaration                 |
+| `/legal/disclosures`  | **Calculation Methodology**     | Complete mathematical formulas, specific yield derivations (1,490 kWh/kWp/yr)          |
+| `/order/received`     | **Demo Confirmation**           | Displays unambiguous concept reference code (`WNX-PREVIEW-XXXXXX`)                     |
 
 ---
 
-## 5. Security, Performance & Code Quality
+## 5. Security, Performance & Quality Assurance
 
 1. **Strict TypeScript (Zero `any`)**: All props, states, and solar calculator interfaces are strongly typed.
-2. **Defensive Programming**: Functions like `computeSolarYield` handle edge cases gracefully, preventing any client-side runtime errors.
-3. **Hardware-Accelerated Animation**: Framer Motion transitions operate strictly on `opacity` and `transform` (`y`, `scale`).
-4. **Instant 200 OK Response**: All routes build and hydrate without SSR mismatches or hydration glitches.
+2. **Strict 12px Text Floor**: Zero micro-text below 12px across all pages.
+3. **Automated Axe Accessibility**: 0 serious and 0 critical violations across all 17 routes (WCAG 2.1 AA compliant).
+4. **Copywriting Integrity**: Automated static linting rejects banned hyperbolic marketing words.
+5. **Zero-Trust Server Functions**: Sensitive database operations and `SUPABASE_SERVICE_ROLE_KEY` are isolated to server functions.

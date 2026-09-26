@@ -5,7 +5,8 @@ import { X, Phone, MessageSquare, HelpCircle, Globe, User, ChevronRight } from "
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
+import { LanguageToggle } from "./LanguageToggle";
 
 interface NavItem {
   key: Exclude<MegaMenuCategory, null>;
@@ -14,7 +15,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: "solar", label: "Solar Panels", to: "/" },
+  { key: "solar", label: "Rooftop Solar", to: "/" },
   { key: "homes", label: "Homes", to: "/residential" },
   { key: "omnigrid", label: "Omnigrid", to: "/omnigrid" },
   { key: "commercial", label: "Commercial", to: "/enterprise" },
@@ -32,15 +33,10 @@ export function Header() {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
 
-  const isLightPage =
-    pathname.startsWith("/deploy") ||
-    pathname.startsWith("/legal") ||
-    pathname.startsWith("/order") ||
-    pathname.startsWith("/faq") ||
-    pathname.startsWith("/technology") ||
-    pathname.startsWith("/warranty") ||
-    pathname.startsWith("/service-areas") ||
-    pathname.startsWith("/our-story");
+  const currentMatch = routerState.matches[routerState.matches.length - 1];
+  const headerTone =
+    (currentMatch?.staticData as { headerTone?: "overlay" | "solid" } | undefined)?.headerTone ??
+    "solid";
 
   // Auto-close menus on route navigation
   React.useEffect(() => {
@@ -54,6 +50,16 @@ export function Header() {
     }
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setActiveCategory(null);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleMouseEnter = (key: Exclude<MegaMenuCategory, null>) => {
@@ -81,13 +87,14 @@ export function Header() {
   };
 
   const isMenuVisible = activeCategory !== null;
-  const showSolidHeader = isScrolled || isLightPage || isMenuVisible;
+  const isOverlay = headerTone === "overlay";
+  const showSolidHeader = isScrolled || !isOverlay || isMenuVisible;
 
   return (
     <>
       <header
         onMouseLeave={handleMouseLeave}
-        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 select-none ${
+        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 ${
           showSolidHeader
             ? "bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6]"
             : "bg-transparent text-[#FFFFFF]"
@@ -107,6 +114,16 @@ export function Header() {
                 key={item.key}
                 to={item.to}
                 onMouseEnter={() => handleMouseEnter(item.key)}
+                onFocus={() => handleMouseEnter(item.key)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                    setActiveCategory(item.key);
+                  } else if (e.key === "Escape") {
+                    setActiveCategory(null);
+                  }
+                }}
+                aria-expanded={isHovered}
+                aria-haspopup="true"
                 className={`relative px-4 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
                   isHovered
                     ? "bg-[#F4F4F4] text-[#171A20]"
@@ -135,6 +152,9 @@ export function Header() {
           >
             <HelpCircle className="w-[18px] h-[18px]" />
           </button>
+
+          {/* Language Switcher (Telugu / English) */}
+          <LanguageToggle tone={showSolidHeader ? "light" : "dark"} />
 
           {/* Region / Grid Icon */}
           <button
@@ -195,6 +215,7 @@ export function Header() {
               <Dialog.Close asChild>
                 <button
                   type="button"
+                  aria-label="Close region selector"
                   className="p-1 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4]"
                 >
                   <X className="w-5 h-5" />
@@ -203,7 +224,7 @@ export function Header() {
             </div>
             <div className="py-4 space-y-3 text-[14px]">
               <div className="p-3 bg-[#F4F4F4] rounded-[4px]">
-                <div className="font-medium text-[#171A20]">Telangana (TGSPDCL / TSNPDCL)</div>
+                <div className="font-medium text-[#171A20]">Telangana (TGSPDCL / TGNPDCL)</div>
                 <div className="text-[12px] text-[#5C5E62]">
                   Hyderabad, Secunderabad, Rangareddy, Warangal. PM Surya Ghar ready.
                 </div>
@@ -254,15 +275,18 @@ export function Header() {
             <div>
               <div className="flex items-center justify-between pb-8">
                 <BrandLogo size="sm" asLink={false} />
-                <Dialog.Close asChild>
-                  <button
-                    type="button"
-                    className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none"
-                    aria-label="Close navigation menu"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </Dialog.Close>
+                <div className="flex items-center gap-2">
+                  <LanguageToggle tone="light" />
+                  <Dialog.Close asChild>
+                    <button
+                      type="button"
+                      className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                      aria-label="Close navigation menu"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </Dialog.Close>
+                </div>
               </div>
 
               <nav className="flex flex-col space-y-4" aria-label="Menu Items">
@@ -290,7 +314,7 @@ export function Header() {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                 >
-                  <span>Technology Atelier</span>
+                  <span>Solar Engineering</span>
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
                 <Link
@@ -338,7 +362,15 @@ export function Header() {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
                 >
-                  <span>Architects &amp; BIM Atelier</span>
+                  <span>Architectural Solar Specs</span>
+                  <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
+                </Link>
+                <Link
+                  to="/about-this-project"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] transition-colors py-1.5"
+                >
+                  <span>About Project (Case Study)</span>
                   <ChevronRight className="w-4 h-4 text-[#5C5E62]/40" />
                 </Link>
               </nav>

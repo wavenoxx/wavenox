@@ -13,7 +13,16 @@ export const Route = createFileRoute("/legal/terms")({
         name: "description",
         content: `Standard Terms of Service, engineering quotation policies, and warranty definitions for ${BRAND_CONFIG.legalName}.`,
       },
+      { property: "og:title", content: `Terms of Service — ${BRAND_CONFIG.name}` },
+      {
+        property: "og:description",
+        content: `Standard Terms of Service, engineering quotation policies, and warranty definitions for ${BRAND_CONFIG.legalName}.`,
+      },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/legal/terms` },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/legal/terms` }],
   }),
   component: TermsPage,
 });
@@ -70,7 +79,7 @@ function TermsPage() {
             <p>
               All online calculations, design studio proposals, and automated estimates provided via
               this website are preliminary models based on standard regional solar irradiance data
-              (1,450 kWh/kWp/year) and prevailing electricity distribution tariffs.
+              (1,490 kWh/kWp/year) and prevailing electricity distribution tariffs.
             </p>
             <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 text-xs text-amber-900 space-y-1">
               <div className="font-semibold flex items-center gap-1.5">
@@ -93,7 +102,7 @@ function TermsPage() {
             <p>
               Grid-tied solar systems require regulatory net-metering approval and bidirectional
               meter commissioning from your respective state electricity distribution company
-              (DISCOM, e.g., TGSPDCL, TGNPDCL, BESCOM, MSEDCL, APEPDCL).
+              (DISCOM, e.g., TGSPDCL, TGNPDCL).
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-[#5C5E62]">
               <li>
@@ -135,8 +144,8 @@ function TermsPage() {
               </li>
               <li>
                 <strong className="text-[#171A20]">Commercial Ineligibility:</strong> Commercial,
-                industrial, and institutional rooftop segments are strictly ineligible for PM Surya
-                Ghar residential subsidies under central guidelines.
+                industrial, and government/educational rooftop segments are strictly ineligible for
+                PM Surya Ghar residential subsidies under central guidelines.
               </li>
             </ul>
           </section>
@@ -155,7 +164,8 @@ function TermsPage() {
                 </div>
                 <p className="text-xs text-[#5C5E62]">
                   {PRODUCTS_CONFIG.module.performanceWarrantyYears}-year linear performance warranty
-                  backed directly by Tier-1 OEM manufacturers, guaranteeing ≥80% output at Year 25.
+                  backed directly by Tier-1 OEM manufacturers, guaranteeing ≥89.4% output at Year
+                  25.
                 </p>
               </div>
 
@@ -174,11 +184,11 @@ function TermsPage() {
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>WAVENOX Workmanship (5 Years)</span>
+                  <span>Structural Mounting (5 Years)</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
-                  Comprehensive engineering coverage against roof penetrations, anodized aluminum
-                  structural clamp failures, and AC/DC cable conduits.
+                  Engineering coverage for structural pergola integrity, anodized aluminum clamps,
+                  and weather-tight terrace pedestals.
                 </p>
               </div>
 

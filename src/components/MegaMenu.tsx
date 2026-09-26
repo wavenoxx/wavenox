@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { openConsultationDrawer } from "./ConsultationDrawer";
+import { openConsultationDrawer } from "@/lib/consultation";
 
 export type MegaMenuCategory = "solar" | "homes" | "omnigrid" | "commercial" | "discover" | null;
 
@@ -54,7 +54,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
       {
         links: [
           {
-            label: "Schedule a Virtual Consultation",
+            label: "Speak with a Solar Engineer",
             action: () => openConsultationDrawer(),
           },
           { label: "Why WAVENOX Solar", to: "/residential" },
@@ -62,7 +62,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "DISCOM Net-Metering & Sanctions", to: "/net-metering" },
           { label: "Calculate Savings", to: "/deploy" },
-          { label: "Technology Atelier & Specifications", to: "/technology" },
+          { label: "Solar Engineering & Specifications", to: "/technology" },
         ],
       },
     ],
@@ -174,7 +174,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             label: "Request Industrial Site Survey",
             action: () => openConsultationDrawer(),
           },
-          { label: "Section 32 40% Tax Depreciation", to: "/enterprise" },
+          { label: "Section 34 40% Tax Depreciation", to: "/enterprise" },
           { label: "Commercial Yield Calculator", to: "/enterprise#calculator" },
           { label: "CAPEX vs OPEX / RESCO Models", to: "/enterprise" },
           { label: "Grid Wheeling & HT Open Access", to: "/enterprise" },
@@ -190,18 +190,17 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
           { label: "Solar Savings Calculator", to: "/deploy" },
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
           { label: "PM Surya Ghar Subsidy Guide", to: "/legal/disclosures" },
-          { label: "Customer Stories & Installations", to: "/residential" },
-          { label: "Safety & Cyclone Wind Standards", to: "/residential" },
+          { label: "Structural Wind Load Standards", to: "/technology" },
           { label: "Regional Jurisdictions & DISCOMs", to: "/service-areas" },
-          { label: "Architectural Atelier & BIM", to: "/architects" },
+          { label: "Architectural Solar & CAD Specs", to: "/architects" },
         ],
       },
       {
         title: "Technology",
         links: [
           { label: "N-Type TOPCon Cell Architecture", to: "/technology" },
-          { label: "Omnigrid Solid-State Islanding", to: "/omnigrid" },
-          { label: "Realtime Mobile Telemetry", to: "/#monitoring" },
+          { label: "Home Battery Backup System", to: "/omnigrid" },
+          { label: "Smart Inverter Cloud Telemetry", to: "/#monitoring" },
           { label: "Linear 25-Year Performance Curve", to: "/warranty" },
         ],
       },
@@ -212,7 +211,8 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             label: "Speak with Solar Advisor",
             action: () => openConsultationDrawer(),
           },
-          { label: "Atelier Story & Philosophy", to: "/our-story" },
+          { label: "Design Story & Concept", to: "/our-story" },
+          { label: "Colophon & Case Study", to: "/about-this-project" },
           { label: "Terms of Service", to: "/legal/terms" },
           { label: "Privacy Policy", to: "/legal/privacy" },
           { label: "Regulatory Disclosures", to: "/legal/disclosures" },
@@ -251,6 +251,11 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
         className="fixed top-14 left-0 right-0 z-40 bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6] shadow-2xl transition-all duration-200 animate-in fade-in-0 slide-in-from-top-1"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            onClose();
+          }
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-10 py-10">
           {isDiscover ? (

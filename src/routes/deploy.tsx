@@ -27,9 +27,11 @@ export const Route = createFileRoute("/deploy")({
         content:
           "Configure modular solar capacity, battery autonomy, and 25-year wealth generation.",
       },
-      { property: "og:image", content: "/media/home-hero-1600w.jpg" },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:url", content: `${BRAND_CONFIG.domain}/deploy` },
       { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/deploy` }],
     scripts: [
       {
         type: "application/ld+json",
