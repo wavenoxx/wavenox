@@ -20,34 +20,34 @@ const defaultSolarSpecs: SpecCategory[] = [
     title: "Photovoltaic Modules",
     items: [
       { label: "Cell Technology", value: "N-type TOPCon Monocrystalline Bifacial", verify: true },
-      { label: "Nominal Module Power", value: "550W per panel", verify: true },
-      { label: "Cell Efficiency", value: "Up to 22.8%", verify: true },
+      { label: "Nominal Module Power", value: "580W per panel (Reference DCR)", verify: true },
+      { label: "Module Efficiency (STC)", value: "22.45% – 22.8%", verify: true },
       { label: "Temperature Coefficient (Pmax)", value: "-0.30% / °C" },
-      { label: "Front Surface", value: "3.2mm Anti-reflective tempered glass" },
+      { label: "Glass Construction", value: "Dual Tempered Glass (2.0mm + 2.0mm)" },
       { label: "Listing & Compliance", value: "MNRE ALMM Approved / BIS Certified" },
     ],
   },
   {
     title: "Inverter & Power Electronics",
     items: [
-      { label: "Architecture", value: "Smart Hybrid Inverter with Dual MPPT" },
+      { label: "Architecture", value: "Smart Hybrid String Inverter with Dual MPPT" },
       { label: "Maximum Efficiency", value: "98.4%" },
-      { label: "Transfer Time", value: "< 10 milliseconds (Uninterrupted)" },
-      { label: "Monitoring", value: "Wi-Fi + 4G LTE Live Telemetry" },
+      { label: "Transfer Time", value: "< 20 milliseconds (UPS Grade)" },
+      { label: "Monitoring", value: "Inverter Cloud App (Wi-Fi / 4G IoT)" },
     ],
   },
   {
     title: "Mounting & Structural",
     items: [
-      { label: "Structure Material", value: "HDG Anodized Aluminium (6063-T6)" },
+      { label: "Structure Material", value: "Anodized Aluminium (6063-T6 / 6005-T5) & SS304" },
       { label: "Wind Rating", value: "IS 875 (Part 3) 44 m/s (158 km/h)" },
-      { label: "Roof Attachment", value: "Non-penetrating chemical anchoring / ballast" },
+      { label: "Roof Attachment", value: "Non-penetrating ballasted blocks / chemical anchors" },
     ],
   },
   {
     title: "Warranty & Protection",
     items: [
-      { label: "Product Workmanship", value: "10 Years Turnkey WAVENOX Warranty" },
+      { label: "Module Product Warranty", value: "12 Years OEM Manufacturer Warranty" },
       { label: "Linear Power Output", value: "25 Years (≥ 89.4% output at Year 25)", verify: true },
       { label: "Battery Performance", value: "10 Years (≥ 70% capacity retention)" },
     ],

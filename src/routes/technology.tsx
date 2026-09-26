@@ -253,15 +253,17 @@ function TechnologyPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#F57C00] shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white">Pure Obsidian Crystalline Surface:</strong> Deep
-                    matte black anti-reflective glass, black backsheet, and anodized black frame.
+                    <strong className="text-white">All-Black Dual-Glass Architecture:</strong> Deep
+                    matte anti-reflective semi-tempered dual glass with black anodized aluminum
+                    frame.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#F57C00] shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white">Zero Slab Damage Guarantee:</strong> Chemical
-                    anchors or non-penetrating ballasted blocks with 5-year waterproofing warranty.
+                    <strong className="text-white">Waterproof Terrace Mounting:</strong> Chemical
+                    anchors or precast non-penetrating ballasted blocks with multi-layer elastomeric
+                    waterproofing membranes.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -281,8 +283,10 @@ function TechnologyPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#F57C00] shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white">N-Type TOPCon Heat Resilience:</strong> Industry
-                    leading -0.30%/°C temp coefficient produces up to 8% more power at 44°C.
+                    <strong className="text-white">N-Type TOPCon Heat Resilience:</strong> Rated
+                    −0.30%/°C temperature coefficient delivers ~5.5% higher output vs standard
+                    p-type PERC (−0.40%/°C) at typical ~70°C summer roof cell temperatures [(86.5 −
+                    82.0) / 82.0 ≈ +5.49%].
                   </span>
                 </li>
               </ul>
@@ -306,7 +310,7 @@ function TechnologyPage() {
             {[
               { id: "cell", label: "N-Type TOPCon Physics", icon: Sun },
               { id: "pergola", label: "Terrace Pergola Structure", icon: Wind },
-              { id: "storage", label: "Omnigrid Microgrid Islanding", icon: Zap },
+              { id: "storage", label: "LiFePO4 Microgrid Islanding", icon: Zap },
               { id: "iot", label: "Realtime Telemetry & IoT", icon: Activity },
             ].map((tab) => {
               const Icon = tab.icon;
@@ -340,10 +344,10 @@ function TechnologyPage() {
                   Why N-Type TOPCon Outperforms Every Legacy Panel
                 </h3>
                 <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-relaxed">
-                  In traditional P-type silicon, boron-oxygen complexes cause Light-Induced
-                  Degradation (LID), bleeding up to 3% output in the first month. WAVENOX N-type
-                  cells use phosphorus-doped wafers coated with an ultra-thin 1.5 nm silicon oxide
-                  tunneling layer and microcrystalline silicon passivating contact.
+                  In traditional P-type silicon, boron-oxygen complexes cause significant
+                  Light-Induced Degradation (LID). N-type cells use phosphorus-doped wafers coated
+                  with an ultra-thin 1.5 nm silicon oxide tunneling layer and doped poly-Si
+                  passivating contacts, keeping first-year degradation under 1.0%.
                 </p>
                 <div className="pt-2 grid grid-cols-2 gap-4">
                   <div className="p-3 bg-white rounded-[4px] border border-[#E3E4E6]">
@@ -424,11 +428,10 @@ function TechnologyPage() {
                   Sub-20ms Transfer: Zero Flickers, Zero Diesel Noise
                 </h3>
                 <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-relaxed">
-                  Omnigrid replaces dirty, loud diesel generators and inefficient lead-acid inverter
-                  batteries. Its solid-state islanding switchgear constantly samples the grid at
-                  kilohertz frequencies. The instant grid voltage drops below tolerance, it
-                  decouples the home in under 20 milliseconds, providing unbroken power to your
-                  entire electrical panel.
+                  The home storage architecture replaces noisy diesel generators and inefficient
+                  lead-acid battery banks. Its automatic islanding switchgear monitors grid voltage
+                  and frequency, seamlessly decoupling the home in under 20 milliseconds (&lt;20 ms
+                  UPS-grade transfer) to provide unbroken power to your backup circuits.
                 </p>
                 <div className="pt-2 grid grid-cols-2 gap-4">
                   <div className="p-3 bg-white rounded-[4px] border border-[#E3E4E6]">
@@ -450,7 +453,7 @@ function TechnologyPage() {
                   media={media["omnigrid-switchover"]}
                   fill={true}
                   className="w-full h-full object-cover"
-                  alt="Omnigrid solid state switchgear telemetry"
+                  alt="LiFePO4 battery islanding telemetry and switchgear"
                 />
               </div>
             </div>
@@ -461,17 +464,16 @@ function TechnologyPage() {
             <div className="p-8 sm:p-10 rounded-[10px] border border-[#E3E4E6] bg-[#F4F4F4]/40 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
                 <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#F57C00] block">
-                  Encrypted Sub-Second Telemetry
+                  Cloud Telemetry &amp; Diagnostics
                 </span>
                 <h3 className="text-[24px] sm:text-[28px] font-medium text-[#171A20] leading-snug">
-                  Realtime Telemetry &amp; Autonomous Fleet Dispatch
+                  Realtime Telemetry &amp; Inverter Cloud Monitoring
                 </h3>
                 <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-relaxed">
-                  Every inverter and battery unit streams encrypted telemetry over Wi-Fi and 4G
-                  cellular IoT back to our Hyderabad Command Center. Proprietary algorithms detect
-                  panel mismatch, shading anomalies, and grid voltage fluctuations in real time. If
-                  a fault occurs, our team dispatches a service engineer before you notice a drop in
-                  yield.
+                  Every hybrid inverter and storage installation streams encrypted system telemetry
+                  over Wi-Fi or 4G IoT directly to your inverter maker&apos;s cloud app and portal.
+                  Integrated diagnostics track module strings, generation yields, and grid
+                  synchronization events in real time.
                 </p>
                 <div className="space-y-2 pt-2 text-[14px] text-[#171A20]">
                   <div className="flex items-center gap-2">
@@ -484,7 +486,7 @@ function TechnologyPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#F57C00]" />
-                    <span>Guaranteed 48-Hour Technical Dispatch SLA across service hubs</span>
+                    <span>Prompt field technical support and remote inverter diagnostics</span>
                   </div>
                 </div>
               </div>
@@ -509,12 +511,12 @@ function TechnologyPage() {
                   Master Technical Datasheet
                 </span>
                 <h3 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
-                  Verified Component Specifications
+                  Component Specifications &amp; Architecture
                 </h3>
               </div>
               <div className="flex items-center gap-2 text-[12px] font-medium text-[#5C5E62] bg-[#F4F4F4] px-3 py-1.5 rounded-[4px]">
                 <CheckCircle2 className="w-4 h-4 text-[#F57C00]" />
-                <span>BIS, IEC 61215, ALMM Certified</span>
+                <span>BIS &amp; ALMM Compliant Hardware</span>
               </div>
             </div>
 

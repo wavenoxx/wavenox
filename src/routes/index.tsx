@@ -46,13 +46,13 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "waterproofing",
     question: "Will installing solar on my terrace cause roof leakage or slab damage?",
     answer:
-      "Never. WAVENOX enforces a strict Zero Slab Damage protocol utilizing non-penetrating ballasted blocks or chemical-anchor pedestals sealed with marine-grade elastomeric waterproofing membranes, covered by a 5-year guarantee.",
+      "We utilize non-penetrating precast ballasted foundation blocks or chemical-anchor pedestals sealed with multi-layer elastomeric waterproofing membranes to protect the structural integrity of your terrace roof slab.",
   },
   {
     id: "timeline",
     question: "How long does installation and net metering take?",
     answer:
-      "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 3 to 4 weeks depending on your state distribution utility.",
+      "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 2 to 4 weeks under Ministry of Power 2024 deemed approval timelines.",
   },
 ];
 
@@ -106,7 +106,7 @@ export const Route = createFileRoute("/")({
           url: BRAND_CONFIG.domain,
           logo: `${BRAND_CONFIG.domain}/icon-512.png`,
           description:
-            "Low-profile architectural solar installations and smart storage systems across Telangana and Andhra Pradesh.",
+            "Architectural rooftop solar design and statutory feasibility calculations for Telangana (TGSPDCL & TGNPDCL).",
           contactPoint: {
             "@type": "ContactPoint",
             telephone: BRAND_CONFIG.contact.phone.dial,
@@ -440,7 +440,7 @@ function IndexPage() {
           id="monitoring"
           bg="white"
           title="Monitor from Anywhere"
-          lead="Track generation, home consumption, and battery storage in real time from your phone."
+          lead="Track generation, home consumption, and battery storage in real time through your inverter maker's cloud app."
         >
           <div className="flex flex-col items-center">
             {/* Minimalist Phone Mockup */}
@@ -448,7 +448,7 @@ function IndexPage() {
               {/* Phone Screen */}
               <div className="rounded-[24px] bg-[#171A20] p-5 space-y-6">
                 <div className="flex justify-between items-center text-[12px] text-[#FFFFFF]/60">
-                  <span>WAVENOX Live</span>
+                  <span>Inverter Cloud App</span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#F57C00] animate-pulse" />
                     Realtime
@@ -508,7 +508,7 @@ function IndexPage() {
           id="process"
           bg="surface"
           title="From Order to Power On"
-          lead="A dedicated project engineer manages every step from permit to commissioning."
+          lead="Turnkey milestone management from DISCOM application to bi-directional meter energization."
         >
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-6 pt-4">
             {STEPS.map((step) => (

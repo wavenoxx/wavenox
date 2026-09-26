@@ -114,7 +114,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
+    "@type": "Organization",
     name: `${BRAND_CONFIG.name} Architectural Solar`,
     legalName: BRAND_CONFIG.legalName,
     url: BRAND_CONFIG.domain,
@@ -124,19 +124,14 @@ function RootShell({ children }: { children: ReactNode }) {
     email: BRAND_CONFIG.contact.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: BRAND_CONFIG.contact.address,
       addressLocality: BUSINESS.primaryCity,
+      addressRegion: BUSINESS.primaryRegion,
       addressCountry: "IN",
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: BUSINESS.geo.latitude,
-      longitude: BUSINESS.geo.longitude,
+    areaServed: {
+      "@type": "State",
+      name: "Telangana",
     },
-    areaServed: BUSINESS.serviceHubs.map((hub) => ({
-      "@type": "City",
-      name: hub.schemaName || hub.city,
-    })),
   };
 
   return (

@@ -41,12 +41,12 @@ const NEXT_STEPS = [
   {
     num: "02",
     title: "Technical Advisory Consultation",
-    desc: "A dedicated solar engineer contacts you to review your DISCOM sanction requirements, historical bills, and storage needs.",
+    desc: "Our solar team contacts you to review your DISCOM sanction requirements, historical bills, and storage needs.",
   },
   {
     num: "03",
     title: "Engineering Survey & Proposal Dossier",
-    desc: "We perform an on-site terrace measurement to produce sub-millimeter 3D shadow models and engineering single-line diagrams.",
+    desc: "We conduct an on-site terrace measurement to verify parapet heights, shading obstructions, and single-line electrical layouts.",
   },
 ];
 

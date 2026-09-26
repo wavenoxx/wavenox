@@ -53,7 +53,7 @@ async function main() {
   await fs.mkdir(outDir, { recursive: true });
 
   const port = 8080;
-  const baseUrl = `http://localhost:${port}`;
+  const baseUrl = `http://127.0.0.1:${port}`;
 
   let serverProcess = null;
 

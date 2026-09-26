@@ -86,32 +86,32 @@ const ARCHITECT_PILLARS = [
 
 const BIM_SPECS = [
   {
-    category: "550W N-Type TOPCon Bifacial PV Module",
+    category: "580W N-Type TOPCon Bifacial PV Module (Reference Standard)",
     dimensions: "2278 mm (L) × 1134 mm (W) × 30 mm (H)",
     weight: "28.5 kg / module",
-    loading: "5400 Pa front (snow/uplift) / 2400 Pa rear (wind)",
-    cadFormats: "DWG · DXF · Revit .RFA · IFC",
+    loading: "5400 Pa front (downward static / snow load) / 2400 Pa rear (wind uplift)",
+    cadFormats: "DWG · DXF · IFC",
   },
   {
-    category: "Omnigrid Modular LiFePO4 Energy Storage",
-    dimensions: "750 mm (W) × 1150 mm (H) × 150 mm (D)",
-    weight: "115 kg per 14.3 kWh pack",
-    mounting: "Wall-hung or floor-standing (IP65 outdoor rated)",
-    cadFormats: "DWG · 3D STEP · Revit .RFA",
+    category: "Modular High-Voltage LiFePO4 Energy Storage (Concept Reference)",
+    dimensions: "580 mm (W) × 1200 mm (H) × 380 mm (D) vertical stack",
+    weight: "165 kg (3 × 4.8 kWh stackable modules + BMS)",
+    mounting: "Floor-standing plinth (IP65 rated)",
+    cadFormats: "DWG · 3D STEP",
   },
   {
     category: "Three-Phase Hybrid String Inverter",
     dimensions: "580 mm (W) × 650 mm (H) × 230 mm (D)",
     weight: "32 kg",
     acoustics: "< 35 dBA whisper quiet convection cooling",
-    cadFormats: "DWG · DXF · Revit .RFA",
+    cadFormats: "DWG · DXF",
   },
   {
     category: "Elevated Terrace Pergola Living Canopy",
-    dimensions: "Custom parametric spans (2.4m to 3.2m clear height)",
+    dimensions: "Custom spans (2.4m to 3.2m clear height)",
     material: "Structural 6005-T5 Anodized Architectural Aluminum",
-    finish: "Matte Black Anodized (25-micron coating) or Custom RAL",
-    cadFormats: "BIM Family · Structural Calcs · FEA Reports",
+    finish: "Matte Black Anodized (25-micron coating)",
+    cadFormats: "Structural Layouts · Single-Line Diagrams",
   },
 ];
 
@@ -266,8 +266,8 @@ function ArchitectsPage() {
               </h3>
             </div>
             <div className="text-[13px] text-[#5C5E62] max-w-md">
-              Download parametric Revit families, 2D AutoCAD details, and structural calculation
-              reports formatted for architectural drawings.
+              Reference dimensional specifications and structural properties for architectural
+              schematic design and terrace spatial planning.
             </div>
           </div>
 
@@ -278,7 +278,7 @@ function ArchitectsPage() {
                   <th className="py-3.5 px-4">Hardware Component</th>
                   <th className="py-3.5 px-4">Physical Dimensions</th>
                   <th className="py-3.5 px-4">Structural / Mechanical Properties</th>
-                  <th className="py-3.5 px-4 text-right">Available CAD Formats</th>
+                  <th className="py-3.5 px-4 text-right">Reference CAD Standards</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E9ECEF] text-[#171A20]">

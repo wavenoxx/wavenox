@@ -53,7 +53,7 @@ export interface BusinessConfig {
 }
 
 export const BUSINESS: BusinessConfig = {
-  regionLabel: "Telangana, Andhra Pradesh & Pan-India",
+  regionLabel: "Hyderabad, Telangana (TGSPDCL & TGNPDCL)",
   primaryCity: "Hyderabad",
   primaryRegion: "Telangana",
   country: "IN",
@@ -65,67 +65,10 @@ export const BUSINESS: BusinessConfig = {
       shortName: "Hyderabad",
       schemaName: "Hyderabad",
       state: "Telangana",
-      tag: "HEADQUARTERS & R&D LAB",
+      tag: "PRIMARY REGION (TGSPDCL & TGNPDCL)",
       description:
-        "Primary engineering hub, 24/7 technical monitoring command center, and residential villa deployment crews.",
-      keyProjects: [
-        "Jubilee Hills Estates",
-        "Banjara Hills Villas",
-        "Financial District Tech Parks",
-        "Gachibowli High-Rises",
-      ],
-    },
-    {
-      city: "Bengaluru",
-      shortName: "Bengaluru",
-      schemaName: "Bengaluru",
-      state: "Karnataka",
-      tag: "INNOVATION & ENTERPRISE",
-      description:
-        "Enterprise commercial rooftop solar, data centers, and luxury tech estate architectures.",
-      keyProjects: [
-        "Whitefield Commercial Hubs",
-        "Indiranagar Luxury Estates",
-        "Electronic City Campuses",
-      ],
-    },
-    {
-      city: "Vijayawada & Amaravati",
-      shortName: "Vijayawada",
-      schemaName: "Vijayawada",
-      state: "Andhra Pradesh",
-      tag: "COASTAL & AGRI-SOLAR",
-      description:
-        "High-wind resilient coastal installations, riverfront villas, and industrial cold storage solar systems.",
-      keyProjects: [
-        "Bhavanipuram Commercial Hub",
-        "Benz Circle Residences",
-        "Amaravati Institutional Capital",
-      ],
-    },
-    {
-      city: "Mumbai & Pune",
-      shortName: "Mumbai",
-      schemaName: "Mumbai",
-      state: "Maharashtra",
-      tag: "HIGH-RISE & INDUSTRIAL",
-      description:
-        "High-density urban solar glass facades, luxury penthouses, and Chakan manufacturing plant arrays.",
-      keyProjects: ["Bandra Kurla Complex", "Alibaug Luxury Compounds", "Pune Industrial Belts"],
-    },
-    {
-      city: "Delhi-NCR",
-      shortName: "Delhi",
-      schemaName: "Delhi",
-      state: "Delhi",
-      tag: "GOVERNMENT & DIPLOMATIC",
-      description:
-        "High-security diplomatic compound solar, farmhouse estates, and Gurgaon corporate towers.",
-      keyProjects: [
-        "Lutyens' Delhi Residences",
-        "Gurgaon DLF Villas",
-        "Noida Expressway Tech Parks",
-      ],
+        "Architectural rooftop solar design and statutory feasibility calculations for residential villas and commercial rooftops across Greater Hyderabad.",
+      keyProjects: [],
     },
   ],
 

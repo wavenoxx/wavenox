@@ -47,8 +47,8 @@ function PrivacyPage() {
             Privacy Policy & Data Protection
           </h1>
           <p className="text-xs text-[#5C5E62] mt-2">
-            Effective Date: September 24, 2026 | Compliant with India's Digital Personal Data
-            Protection Act, 2023 (DPDP Act)
+            Effective Date: September 2026 | Compliant with India&apos;s Digital Personal Data
+            Protection Act, 2023 (DPDP Act) and DPDP Rules, 2025
           </p>
         </div>
 
@@ -59,15 +59,14 @@ function PrivacyPage() {
               <ShieldCheck className="h-5 w-5 text-[#171A20] shrink-0 mt-0.5" />
               <div>
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[#171A20]">
-                  DPDP Act 2023 Statutory Notice
+                  DPDP Act 2023 &amp; Concept Study Notice
                 </h2>
                 <p className="text-xs text-[#5C5E62] mt-1 leading-relaxed">
-                  {BRAND_CONFIG.legalName} (&quot;{BRAND_CONFIG.name}&quot;, &quot;we&quot;,
-                  &quot;us&quot;) operates as a Data Fiduciary under the Digital Personal Data
-                  Protection Act, 2023. We collect and process personal data exclusively for
-                  specified, legitimate purposes associated with assessing solar feasibility,
-                  engineering design, regulatory net-metering approvals, and MNRE subsidy
-                  processing.
+                  {BRAND_CONFIG.legalName} (&quot;{BRAND_CONFIG.name}&quot;) operates as a Data
+                  Fiduciary under the Digital Personal Data Protection Act, 2023 and DPDP Rules,
+                  2025. In demonstration and concept mode, user-entered inputs are processed locally
+                  to generate indicative solar models; contact details submitted for advisory are
+                  held securely and never sold or shared with third-party telemarketers.
                 </p>
               </div>
             </div>
@@ -234,16 +233,14 @@ function PrivacyPage() {
           {/* Section 6 */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              6. Grievance Officer & Data Protection Contact
+              6. Data Privacy &amp; Inquiries Contact
             </h2>
             <p>
-              In accordance with the Digital Personal Data Protection Act, 2023 and Information
-              Technology Rules, the details of our designated Data Grievance Redressal Officer are:
+              In accordance with the Digital Personal Data Protection Act, 2023, for any data
+              access, correction, or erasure requests, contact:
             </p>
             <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] space-y-2 text-xs">
-              <div className="font-semibold text-[#171A20]">
-                Designated Grievance & Compliance Officer
-              </div>
+              <div className="font-semibold text-[#171A20]">Data Protection &amp; Privacy Desk</div>
               <div>{BRAND_CONFIG.legalName}</div>
               <div className="flex items-center gap-2 text-[#5C5E62]">
                 <MapPin size={13} className="shrink-0 text-[#171A20]" />
@@ -265,7 +262,8 @@ function PrivacyPage() {
                 </a>
               </div>
               <div className="text-[12px] text-[#5C5E62] pt-1">
-                Grievances are acknowledged within 24 hours and redressed within 15 working days.
+                Data requests are acknowledged within 24 hours and addressed in accordance with DPDP
+                statutory timelines.
               </div>
             </div>
           </section>

@@ -314,7 +314,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* 2-Column Responsive Layout */}
       <div className="flex flex-col lg:flex-row w-full min-h-[calc(100svh-56px)]">
         {/* LEFT COLUMN: 58% Sticky Media Showroom */}
-        <div className="w-full lg:w-[58%] relative min-h-[480px] lg:h-[calc(100svh-56px)] lg:sticky lg:top-14 flex flex-col justify-between p-6 sm:p-10 text-[#FFFFFF] overflow-hidden select-none bg-[#171A20]">
+        <div className="w-full lg:w-[58%] relative min-h-[480px] lg:h-[calc(100svh-56px)] lg:sticky lg:top-14 flex flex-col justify-between p-6 sm:p-10 text-[#FFFFFF] overflow-hidden bg-[#171A20]">
           {/* Background image with subtle scrims */}
           <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
             <Media

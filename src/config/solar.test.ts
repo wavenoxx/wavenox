@@ -86,12 +86,14 @@ describe("Solar Engine — estimate() Core Calculations", () => {
     expect(res1.annualGenKwh).toBe(res2.annualGenKwh);
   });
 
-  it("scales tiers according to 550W panel specification", () => {
-    expect(SOLAR_ASSUMPTIONS.panelWatt).toBe(550);
+  it("scales tiers according to panel specification", () => {
+    expect(SOLAR_ASSUMPTIONS.panelWatt).toBe(580);
 
     for (const tier of SYSTEM_TIERS) {
-      expect(tier.panels).toBe(Math.ceil((tier.targetKw * 1000) / 550));
-      expect(tier.systemKw).toBe(Number(((tier.panels * 550) / 1000).toFixed(2)));
+      expect(tier.panels).toBe(Math.ceil((tier.targetKw * 1000) / SOLAR_ASSUMPTIONS.panelWatt));
+      expect(tier.systemKw).toBe(
+        Number(((tier.panels * SOLAR_ASSUMPTIONS.panelWatt) / 1000).toFixed(2)),
+      );
     }
   });
 

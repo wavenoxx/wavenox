@@ -9,7 +9,7 @@ import { BUSINESS, hubCityList } from "./business";
  * financial constants live in ./solar.ts.
  */
 export const DEFAULT_BRAND_NAME = "WAVENOX";
-const DEFAULT_LEGAL_NAME = "WAVENOX Technologies Private Limited";
+const DEFAULT_LEGAL_NAME = "WAVENOX · Architectural Solar Concept";
 const DEFAULT_SITE_URL = "https://wavenox.in";
 const DEFAULT_TAGLINE = "Absolute power. Zero compromise.";
 const DEFAULT_PHONE_DISPLAY = "+91 91546 26354";
@@ -18,8 +18,7 @@ const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
 const DEFAULT_WHATSAPP_DIAL = "917075870054";
 const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
 const DEFAULT_EMAIL = "advisory@wavenox.in";
-const DEFAULT_ADDRESS =
-  "WAVENOX Innovation Lab, Financial District, Gachibowli, Hyderabad, Telangana 500032";
+const DEFAULT_ADDRESS = "Hyderabad, Telangana, India";
 
 const DEFAULT_INSTAGRAM_URL = "";
 const DEFAULT_LINKEDIN_URL = "";
@@ -162,7 +161,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
     description,
     domain,
     domainHost,
-    hasMonitoringApp: true,
+    hasMonitoringApp: false,
     installDaysTypical: 3,
     contact: {
       enabled: contactEnabled,

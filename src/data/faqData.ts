@@ -114,7 +114,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Terrace & Pergolas",
     question: "Will installing solar on my terrace cause roof leakage or crack the slab?",
     answer:
-      "Never. WAVENOX enforces a strict Zero Slab Damage protocol. Depending on your terrace structure, we employ pre-cast ballasted foundation blocks (requiring zero slab penetration) or chemical-anchor fastener pedestals sealed with multi-layer marine-grade polyurethane elastomeric membranes. Every installation includes a 5-year structural waterproofing guarantee.",
+      "We design mounting structures to protect your terrace integrity without compromising waterproofing. Depending on your terrace construction, we specify pre-cast ballasted foundation blocks (requiring zero slab penetration) or chemical-anchor pedestals sealed with multi-layer polyurethane elastomeric membranes to ensure weather-tight performance.",
     featured: true,
   },
   {
@@ -134,7 +134,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "TOPCon Technology",
     question: "What makes N-type TOPCon panels superior to conventional P-type PERC panels?",
     answer:
-      "N-type Tunnel Oxide Passivated Contact (TOPCon) represents the cutting edge of silicon photovoltaics. Compared to older P-type PERC panels, TOPCon modules offer higher conversion efficiency (22.8% vs ~20.5%), zero Light-Induced Degradation (LID), significantly better weak-light generation during dawn and overcast monsoon days, and an industry-leading -0.30%/°C temperature coefficient.",
+      "N-type Tunnel Oxide Passivated Contact (TOPCon) represents advanced silicon photovoltaics. Compared to legacy P-type PERC modules, TOPCon delivers higher conversion efficiency (up to 22.8%), lower initial degradation (<1.0% in Year 1), superior low-light performance during dawn and overcast monsoon days, and a low -0.30%/°C temperature coefficient.",
     featured: false,
   },
   {
@@ -143,7 +143,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "TOPCon Technology",
     question: "Do solar panels produce less power when the ambient temperature is 42°C+?",
     answer:
-      "All solar panels experience reduced voltage as temperatures rise. However, WAVENOX N-type TOPCon cells feature an ultra-low temperature coefficient of -0.30% per °C (compared to -0.38% to -0.42% for standard panels). During scorching 44°C peak summer afternoons across Telangana and Andhra Pradesh, WAVENOX panels deliver up to 8% more energy than standard modules.",
+      "All solar panels experience reduced voltage as temperatures rise above 25°C STC. Under peak summer ambient temperatures of 44°C in Hyderabad, rooftop cell temperatures typically reach ~65°C–70°C (ΔT ≈ 45°C). At -0.30%/°C, thermal derating is ~13.5% (yielding 86.5% relative output), compared to ~18.0% loss (-0.40%/°C, yielding 82.0% output) for legacy PERC. This delivers ~5.5% higher actual power output under harsh midday summer heat: [(86.5 − 82.0) / 82.0 ≈ +5.49%].",
     featured: true,
   },
   {
@@ -210,7 +210,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Commercial & Tax (Section 34)",
     question: "What is the typical return on investment (ROI) for commercial solar in India?",
     answer:
-      "Commercial and industrial tariffs across Telangana, Andhra Pradesh, and Karnataka range between ₹8.50 and ₹12.50 per unit. Combined with 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
+      "Commercial and industrial tariffs in Telangana (TGSPDCL/TGNPDCL HT tariffs) range between ₹8.50 and ₹11.80 per unit. Combined with Section 34 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
     featured: false,
   },
   {
@@ -230,16 +230,16 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "What does the 25-Year Linear Power Guarantee actually cover?",
     answer:
-      "Our 25-Year Linear Asset Guarantee guarantees that power degradation will not exceed 1.0% in Year 1 and will degrade by no more than 0.40% to 0.55% per year thereafter. At Year 25, your solar panels are guaranteed to produce at least 84.8% of their original nameplate output. If a module fails to meet this curve, it is repaired or replaced at zero cost under warranty.",
+      "Our 25-Year Linear Performance Guarantee guarantees that power degradation will not exceed 1.0% in Year 1 and will degrade by no more than 0.40% per year thereafter. At Year 25, your solar panels are guaranteed to produce at least 89.4% of their original nameplate output under the Tier-1 OEM manufacturer performance warranty.",
     featured: true,
   },
   {
     id: "inverter-and-battery-warranties",
     category: "warranty",
     categoryLabel: "Warranties & Service",
-    question: "What are the warranty terms for the inverter and Omnigrid battery?",
+    question: "What are the warranty terms for the inverter and battery storage?",
     answer:
-      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Omnigrid battery storage units carry a 10-year / 6,000-cycle performance warranty guaranteeing at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
+      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Modular LiFePO4 battery storage units carry a 10-year / 6,000-cycle performance warranty guaranteeing at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
     featured: false,
   },
   {
@@ -248,7 +248,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "How do I monitor solar generation and battery levels from my phone?",
     answer:
-      "Every WAVENOX system is equipped with encrypted Wi-Fi and 4G IoT telemetry. Through the WAVENOX mobile application, you can view realtime generation, home power consumption, battery state-of-charge, grid import/export, and carbon offsets in sub-second intervals from anywhere in the world.",
+      "Every system connects via encrypted Wi-Fi or cellular IoT directly to your inverter manufacturer's mobile app and cloud portal (such as SolarEdge, Enphase, or Deye). You can track live solar production, household consumption, battery state-of-charge, and net-metering export from any device.",
     featured: false,
   },
   {
@@ -257,7 +257,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "What is your Service Level Agreement (SLA) if my system has an issue?",
     answer:
-      "Our central command center monitors system telemetry 24/7. In the rare event of an inverter fault, grid anomaly, or panel mismatch, our monitoring algorithms trigger an automated alert. For residential customers across Hyderabad, Bengaluru, and Vijayawada, we provide a guaranteed 48-hour on-site dispatch SLA by certified solar service engineers.",
+      "Your inverter cloud system provides automated fault detection and alert notifications. In the event of an inverter anomaly, grid synchronization fault, or panel variance, diagnostic logs can be reviewed remotely to dispatch appropriate on-site technical support across Hyderabad.",
     featured: false,
   },
 ];

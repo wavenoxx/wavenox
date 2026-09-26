@@ -79,7 +79,7 @@ function TermsPage() {
             <p>
               All online calculations, design studio proposals, and automated estimates provided via
               this website are preliminary models based on standard regional solar irradiance data
-              (1,450 kWh/kWp/year) and prevailing electricity distribution tariffs.
+              (1,490 kWh/kWp/year) and prevailing electricity distribution tariffs.
             </p>
             <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 text-xs text-amber-900 space-y-1">
               <div className="font-semibold flex items-center gap-1.5">
@@ -102,7 +102,7 @@ function TermsPage() {
             <p>
               Grid-tied solar systems require regulatory net-metering approval and bidirectional
               meter commissioning from your respective state electricity distribution company
-              (DISCOM, e.g., TGSPDCL, TGNPDCL, BESCOM, MSEDCL, APEPDCL).
+              (DISCOM, e.g., TGSPDCL, TGNPDCL).
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-[#5C5E62]">
               <li>
@@ -164,7 +164,8 @@ function TermsPage() {
                 </div>
                 <p className="text-xs text-[#5C5E62]">
                   {PRODUCTS_CONFIG.module.performanceWarrantyYears}-year linear performance warranty
-                  backed directly by Tier-1 OEM manufacturers, guaranteeing ≥80% output at Year 25.
+                  backed directly by Tier-1 OEM manufacturers, guaranteeing ≥89.4% output at Year
+                  25.
                 </p>
               </div>
 
@@ -183,11 +184,11 @@ function TermsPage() {
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>WAVENOX Workmanship (5 Years)</span>
+                  <span>Structural Mounting (5 Years)</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
-                  Comprehensive engineering coverage against roof penetrations, anodized aluminum
-                  structural clamp failures, and AC/DC cable conduits.
+                  Engineering coverage for structural pergola integrity, anodized aluminum clamps,
+                  and weather-tight terrace pedestals.
                 </p>
               </div>
 

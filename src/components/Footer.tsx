@@ -180,9 +180,7 @@ export function Footer() {
           <div className="flex items-center gap-3">
             <BrandLogo size="sm" asLink={false} />
             <span className="text-[#5C5E62]/40">|</span>
-            <span className="text-[12px]">
-              Financial District, Gachibowli, Hyderabad, Telangana — 500032
-            </span>
+            <span className="text-[12px]">{BRAND_CONFIG.contact.address}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-5">
@@ -215,8 +213,8 @@ export function Footer() {
         {/* BOTTOM FINE-PRINT STRIP */}
         <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#5C5E62]/80 text-center sm:text-left">
           <div>
-            {BRAND_CONFIG.name} Clean Energy Systems India Private Limited © {currentYear}. All
-            rights reserved. BIS, IEC 61215, ALMM Approved Hardware.
+            {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
+            calculations for Telangana (TGSPDCL &amp; TGNPDCL).
           </div>
           <div className="flex items-center gap-4">
             <Link to="/legal/privacy" className="hover:text-[#171A20] transition-colors">

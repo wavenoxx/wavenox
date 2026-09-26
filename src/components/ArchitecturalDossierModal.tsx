@@ -136,10 +136,10 @@ export function ArchitecturalDossierModal({
                     {BRAND_CONFIG.name}
                   </div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5C5E62] mt-0.5">
-                    Architectural Clean Energy Atelier &amp; Engineering Lab
+                    Architectural Solar Concept &amp; Feasibility Study
                   </div>
                   <div className="text-[10px] text-[#5C5E62] mt-1 font-mono">
-                    Financial District, Hyderabad · Telangana &amp; Pan-India Operations
+                    Hyderabad · Telangana (TGSPDCL &amp; TGNPDCL)
                   </div>
                 </div>
 
@@ -148,8 +148,8 @@ export function ArchitecturalDossierModal({
                     DOCUMENT ID: {data.refCode}
                   </div>
                   <div className="text-[#5C5E62]">DATE OF ISSUE: {currentDate}</div>
-                  <div className="text-[#F57C00] font-semibold">
-                    CLASSIFICATION: BESPOKE ENGINEERING PROPOSAL
+                  <div className="text-[#5C5E62] font-semibold">
+                    INDICATIVE SOLAR ESTIMATE — NOT A COMMERCIAL QUOTATION
                   </div>
                 </div>
               </div>
@@ -189,8 +189,8 @@ export function ArchitecturalDossierModal({
                   <div className="font-semibold text-[#171A20] mt-0.5">
                     {data.discomName || "Regional Net-Metering Feeder"}
                   </div>
-                  <div className="text-[#2E7D32] text-[11px] font-medium mt-0.5">
-                    ✓ Net-Metering Sanction Feasible
+                  <div className="text-[#5C5E62] text-[11px] font-medium mt-0.5">
+                    Subject to DISCOM technical feasibility review
                   </div>
                 </div>
               </div>
@@ -427,27 +427,28 @@ export function ArchitecturalDossierModal({
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>25-Year Linear Power Guarantee (&ge; 84.8% Year 25)</span>
+                    <span>25-Year Linear Power Degradation Curve (&ge; 89.4% Year 25)</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>10-Year Omnigrid Battery Storage Warranty (6,000 cycles)</span>
+                    <span>10-Year Inverter &amp; Battery Storage Lifecycle Warranty</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>5-Year Terrace Structural Weatherproofing SLA</span>
+                    <span>Pre-cast Ballast / Chemical Anchor Slab Weather-Tight Protection</span>
                   </div>
                 </div>
 
                 <div className="p-4 bg-[#F8F9FA] rounded-[4px] border border-[#E9ECEF] text-center font-mono">
                   <div className="text-[10px] uppercase font-bold tracking-widest text-[#5C5E62]">
-                    WAVENOX INNOVATION LAB
+                    WAVENOX CONCEPT STUDY
                   </div>
-                  <div className="text-[12px] font-bold text-[#171A20] my-1">
-                    CERTIFIED SOLAR ARCHITECTURE
+                  <div className="text-[12px] font-semibold text-[#171A20] my-1">
+                    INDICATIVE SOLAR ESTIMATE
                   </div>
                   <div className="text-[9px] text-[#5C5E62]">
-                    Authorized Electronic Issuance · Gachibowli, Hyderabad 500032
+                    Generated {currentDate} · Based on TGERC FY 2025-26 &amp; PM Surya Ghar
+                    Guidelines
                   </div>
                 </div>
               </div>
