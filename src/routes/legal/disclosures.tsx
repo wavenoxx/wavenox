@@ -233,18 +233,19 @@ function DisclosuresPage() {
             </div>
           </section>
 
-          {/* Section 4: Commercial 40% Accelerated Depreciation */}
+          {/* Section 4: Commercial Tax Depreciation (Section 33) */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              4. Commercial & Industrial Tax Depreciation (Section 34)
+              4. Commercial &amp; Industrial Tax Depreciation (Section 33)
             </h2>
             <p>
-              Under Section 34 of the Income-tax Act, 2025 (in force 1 April 2026, succeeding
+              Under Section 33 of the Income-tax Act, 2025 (in force 1 April 2026, succeeding
               Section 32 of the 1961 Act), commercial and industrial enterprises investing in
-              rooftop solar capital assets can claim{" "}
-              <strong className="text-[#171A20]">40% Accelerated Depreciation (AD)</strong> in Year
-              1 if the asset is put to use for 180 days or more in the financial year (20% if put to
-              use for less than 180 days).
+              rooftop solar capital assets can claim Written Down Value (WDV) depreciation
+              deductions (modeled at <strong className="text-[#171A20]">40% WDV in Year 1</strong>{" "}
+              when put to use for 180 days or more in the financial year, or 20% under the half-year
+              rule, subject to applicable 2026 depreciation block rules and corporate tax regime
+              eligibility).
             </p>
             <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1 text-xs">
               <div className="font-semibold text-[#171A20]">Tax Shield Disclaimer</div>
@@ -252,8 +253,8 @@ function DisclosuresPage() {
                 Tax benefits shown in commercial proposals are illustrative models based on a
                 corporate tax rate of 25.17% (Section 115BAA) or 30% for partnership firms. The
                 actual tax shield realized depends on the company&apos;s taxable profit, tax regime,
-                and asset capitalization date. Clients must consult their Chartered Accountant
-                before financial commitment.
+                applicable 2026 block schedule, and asset capitalization date. Clients must consult
+                their Chartered Accountant before financial commitment.
               </p>
             </div>
           </section>

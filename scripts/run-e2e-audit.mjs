@@ -310,13 +310,84 @@ async function runAudit() {
       await page.close();
     }
 
-    // 12. Multi-Viewport Responsive Overflow Check (Mobile 390x844, Tablet 768x1024, Desktop 1440x900)
+    // 12. Step 2 UX Checks: Homepage Product Families, CTAs & Mobile Menu
     console.log(
-      "Verifying zero horizontal overflow across Mobile (390x844) and Tablet (768x1024)...",
+      "Verifying Step 2 Homepage Product Families, CTAs, and Mobile Navigation Drawer...",
+    );
+    {
+      const page = await context.newPage();
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+
+      // Verify 3 product family links inside #solutions
+      const solutionsSection = page.locator("#solutions");
+      if ((await solutionsSection.count()) !== 1) {
+        failures.push("Homepage is missing #solutions Three Solar Paths section");
+      } else {
+        for (const href of ["/residential", "/omnigrid", "/enterprise"]) {
+          const linkCount = await solutionsSection.locator(`a[href="${href}"]`).count();
+          if (linkCount < 1) {
+            failures.push(`Homepage #solutions section missing link to ${href}`);
+          }
+        }
+      }
+
+      // Verify Hero Primary CTA ("Get Solar Estimate" -> /deploy)
+      const heroEstimateBtn = page
+        .locator('#solar-panels a[href="/deploy"]:has-text("Get Solar Estimate")')
+        .first();
+      if (!(await heroEstimateBtn.isVisible())) {
+        failures.push("Homepage hero primary CTA 'Get Solar Estimate' not visible");
+      }
+
+      // Verify Hero Secondary CTA ("Talk to a Solar Advisor" opens ConsultationDrawer)
+      const heroAdvisorBtn = page
+        .locator('#solar-panels button:has-text("Talk to a Solar Advisor")')
+        .first();
+      if (!(await heroAdvisorBtn.isVisible())) {
+        failures.push("Homepage hero secondary CTA 'Talk to a Solar Advisor' not visible");
+      } else {
+        await heroAdvisorBtn.click();
+        await page.waitForTimeout(350);
+        const dialogVisible = await page.locator('[role="dialog"]').first().isVisible();
+        if (!dialogVisible) {
+          failures.push("Clicking 'Talk to a Solar Advisor' did not open ConsultationDrawer");
+        }
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(250);
+      }
+
+      // Verify Mobile Menu Open / Drill-Down / Escape Close at 390x844
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      const menuBtn = page.locator('header button:has-text("Menu")').first();
+      if (!(await menuBtn.isVisible())) {
+        failures.push("Mobile 'Menu' button not visible at 390x844");
+      } else {
+        await menuBtn.click();
+        await page.waitForTimeout(300);
+        const mobileNavVisible = await page
+          .locator('[aria-label="Mobile Navigation"]')
+          .first()
+          .isVisible();
+        if (!mobileNavVisible) {
+          failures.push("Mobile navigation drawer did not open when clicking 'Menu'");
+        }
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(250);
+      }
+
+      await page.close();
+    }
+
+    // 13. Multi-Viewport Responsive Overflow Check (Mobile 390x844, Tablet 768x1024, Landscape 1024x768)
+    console.log(
+      "Verifying zero horizontal overflow across Mobile (390x844), Tablet (768x1024), and Landscape (1024x768)...",
     );
     const VIEWPORTS = [
       { label: "mobile-390x844", width: 390, height: 844 },
       { label: "tablet-768x1024", width: 768, height: 1024 },
+      { label: "landscape-1024x768", width: 1024, height: 768 },
     ];
     for (const vp of VIEWPORTS) {
       const page = await context.newPage();

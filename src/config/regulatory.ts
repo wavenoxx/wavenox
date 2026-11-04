@@ -578,23 +578,23 @@ export const WIND_SPEED_STANDARDS = {
 };
 
 // ----------------------------------------------------------------------------
-// 6. COMMERCIAL TAX DEPRECIATION (INCOME-TAX ACT, 2025 — SECTION 34)
+// 6. COMMERCIAL TAX DEPRECIATION (INCOME-TAX ACT, 2025 — SECTION 33)
 // ----------------------------------------------------------------------------
 export const INCOME_TAX_SECTION_34_SOURCE: DataSource = {
-  title: "Income-tax Act, 2025 (in force 1 April 2026) — Section 34 Depreciation Allowances",
+  title: "Income-tax Act, 2025 (in force 1 April 2026) — Section 33 Depreciation Allowances",
   url: "https://incometaxindia.gov.in",
   verifiedOn: "2026-08-15",
-  documentRef: "Income-tax Act, 2025 Section 34 (formerly Section 32 of 1961 Act)",
+  documentRef: "Income-tax Act, 2025 Section 33 (formerly Section 32 of 1961 Act)",
 };
 
 export const TAX_DEPRECIATION_CONFIG = {
-  sectionName: "Section 34",
+  sectionName: "Section 33",
   actName: "Income-tax Act, 2025",
   solarAssetRatePct: 40,
   halfYearRatePct: 20, // Put to use < 180 days in financial year
   applicableEntity: "Commercial and Industrial corporate tax filers",
   disclaimer:
-    "Tax benefits depend on corporate entity status and tax slab. Consult your Chartered Accountant.",
+    "Tax benefits depend on corporate entity status, applicable 2026 block schedules, and tax slab. Consult your Chartered Accountant.",
   source: INCOME_TAX_SECTION_34_SOURCE,
 };
 

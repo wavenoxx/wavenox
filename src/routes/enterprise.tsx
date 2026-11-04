@@ -20,7 +20,7 @@ export const Route = createFileRoute("/enterprise")({
       {
         name: "description",
         content:
-          "Turn idle industrial rooftops into high-yield clean energy assets. 40% accelerated tax depreciation under Section 34 of the Income-tax Act, 2025, zero-downtime microgrids, and 25-year linear warranties.",
+          "Turn idle industrial rooftops into high-yield clean energy assets. Section 33 tax depreciation modeling under the Income-tax Act, 2025, daytime tariff offset, and 25-year OEM linear warranties.",
       },
       { property: "og:title", content: `Commercial Solar — ${BRAND_CONFIG.name}` },
       {
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/enterprise")({
           name: `${BRAND_CONFIG.name} Enterprise Commercial & Industrial Solar Infrastructure`,
           image: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg`,
           description:
-            "Turnkey commercial solar engineering, procurement, and construction (EPC) for manufacturing plants, cold storage facilities, and corporate tech parks. Section 34 40% tax depreciation optimization.",
+            "Turnkey commercial solar engineering, procurement, and construction (EPC) for manufacturing plants, cold storage facilities, and corporate tech parks, with Section 33 tax depreciation modeling.",
           provider: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -211,8 +211,8 @@ function EnterprisePage() {
           stats={
             <StatRow
               stats={[
-                { value: "40%", label: "Tax Depreciation" },
-                { value: "3 to 4 Yrs", label: "Average Payback" },
+                { value: "Sec 33", label: "Tax Depreciation*" },
+                { value: "3 to 4 Yrs", label: "Indicative Payback" },
                 { value: "25 Years", label: "Linear Warranty" },
               ]}
             />
@@ -237,7 +237,7 @@ function EnterprisePage() {
               </Button>
             </>
           }
-          disclaimer="*Accelerated depreciation under Section 34 of Income Tax Act, 2025 (formerly Section 32). Illustrative — consult your Chartered Accountant."
+          disclaimer="*Depreciation deductions under Section 33 of the Income-tax Act, 2025 (formerly Section 32) depend on applicable 2026 block rules and corporate tax regime. Illustrative — consult your Chartered Accountant."
         />
 
         {/* 2. PANEL: commercial-industrial */}
@@ -282,7 +282,7 @@ function EnterprisePage() {
           id="calculator"
           bg="surface"
           title="Commercial Yield Calculator"
-          lead="Estimate system capacity, annual energy savings, and Year 1 Section 34 tax shields."
+          lead="Estimate system capacity, annual energy savings, and illustrative Year 1 Section 33 tax shields."
         >
           <div className="max-w-2xl mx-auto space-y-10">
             {/* Controls */}
@@ -332,7 +332,7 @@ function EnterprisePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#E3E4E6]">
                 <div className="space-y-1.5">
                   <span className="text-[13px] font-medium text-[#5C5E62]">
-                    Commissioning Period (Sec 34)
+                    Commissioning Period (Sec 33 Model)
                   </span>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -400,8 +400,8 @@ function EnterprisePage() {
                   },
                   {
                     value: `₹${formatInr(year1TaxShieldInr)}`,
-                    label: "Year 1 Tax Shield",
-                    sublabel: `Sec 34 (${commissionedHalf === "H1" ? "40%" : "20%"} @ ${taxRatePct}%)`,
+                    label: "Year 1 Tax Shield*",
+                    sublabel: `Sec 33 (${commissionedHalf === "H1" ? "40%" : "20%"} @ ${taxRatePct}%)`,
                   },
                   {
                     value: `${estPaybackYears} Yrs`,
@@ -415,9 +415,10 @@ function EnterprisePage() {
             {/* Statutory Disclaimer & Source Link */}
             <div className="text-center pt-1 border-t border-[#E3E4E6]/60">
               <p className="text-[12px] text-[#5C5E62]">
-                *Illustrative figures under Section 34 of the Income-tax Act, 2025. Actual corporate
-                tax benefit depends on your entity&apos;s tax regime and profit profile — consult
-                your Chartered Accountant.
+                *Illustrative figures under Section 33 of the Income-tax Act, 2025 (succeeding
+                Section 32 of the 1961 Act). Applicable 2026 depreciation block rates, commissioning
+                windows, and corporate tax benefits depend on your entity&apos;s tax regime and
+                profit profile — consult your Chartered Accountant.
               </p>
               <Link
                 to="/legal/disclosures"
@@ -595,6 +596,36 @@ function EnterprisePage() {
                 </a>
               </div>
             </form>
+
+            {/* Cross-Solution Navigation */}
+            <div className="mt-14 pt-8 border-t border-[#E3E4E6]">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
+                Explore Related WAVENOX Solutions
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                <Link
+                  to="/residential"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Solar Panels</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Homes &amp; villas</div>
+                </Link>
+                <Link
+                  to="/omnigrid"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Solar + Storage</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Omnigrid LFP backup</div>
+                </Link>
+                <Link
+                  to="/deploy"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive sizing</div>
+                </Link>
+              </div>
+            </div>
           </div>
         </QuietSection>
       </main>
