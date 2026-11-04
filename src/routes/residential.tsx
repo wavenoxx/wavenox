@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
@@ -119,17 +119,17 @@ function ResidentialPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Design Yours
+                Get Solar Estimate
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Schedule Consultation
+                Talk to a Solar Advisor
               </Button>
             </>
           }
@@ -157,17 +157,17 @@ function ResidentialPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Design Yours
+                Get Solar Estimate
               </Button>
               <Button
                 onClick={() => setSpecsOpen(true)}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                View Specs
+                View Technical Specs
               </Button>
             </>
           }
@@ -195,17 +195,17 @@ function ResidentialPage() {
                 to="/omnigrid"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Explore Omnigrid
+                Explore Battery Storage
               </Button>
               <Button
                 to="/deploy"
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Design Yours
+                Get Solar Estimate
               </Button>
             </>
           }
@@ -230,10 +230,40 @@ function ResidentialPage() {
             ))}
           </div>
 
-          <div className="mt-12 text-center">
+          <div className="mt-10 text-center">
             <TextLink to="/deploy" arrow>
               Configure your residential system
             </TextLink>
+          </div>
+
+          {/* Cross-Solution Navigation */}
+          <div className="mt-12 pt-8 border-t border-[#E3E4E6] max-w-3xl mx-auto">
+            <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
+              Explore Related WAVENOX Solutions
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+              <Link
+                to="/omnigrid"
+                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+              >
+                <div className="text-[14px] font-medium text-[#171A20]">Solar + Storage</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">Omnigrid LFP backup</div>
+              </Link>
+              <Link
+                to="/enterprise"
+                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+              >
+                <div className="text-[14px] font-medium text-[#171A20]">Commercial Solar</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">Factories &amp; campuses</div>
+              </Link>
+              <Link
+                to="/deploy"
+                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+              >
+                <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive roof sizing</div>
+              </Link>
+            </div>
           </div>
         </QuietSection>
 
@@ -242,33 +272,33 @@ function ResidentialPage() {
           id="consultation"
           media={media["home-final"]}
           tone="dark"
-          title="Speak with a Solar Engineer"
-          lead="Speak with a solar engineer to review your roof layout, subsidy eligibility, and savings."
+          title="Plan Your Residential Solar System"
+          lead="Get an indicative solar estimate for your home or speak with a WAVENOX advisor to review roof layout and subsidy eligibility."
           stats={
             <StatRow
               stats={[
-                { value: "15 Mins", label: "Virtual Consultation" },
-                { value: "₹0", label: "Feasibility Design" },
+                { value: "15 Mins", label: "Initial Advisory Call" },
+                { value: "₹0", label: "Indicative Roof Sizing" },
               ]}
             />
           }
           actions={
             <>
               <Button
-                onClick={() => openConsultationDrawer()}
+                to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Schedule Consultation
+                Get Solar Estimate
               </Button>
               <Button
-                to="/deploy"
+                onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Design Yours
+                Request Consultation
               </Button>
             </>
           }

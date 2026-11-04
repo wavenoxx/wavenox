@@ -83,20 +83,20 @@ export function Panel({
       </div>
 
       {/* Top Section: Title & Lead */}
-      <div className="relative pt-20 sm:pt-24 md:pt-32 px-5 sm:px-6 text-center z-20 w-full max-w-4xl mx-auto">
+      <div className="relative pt-20 sm:pt-24 lg:pt-28 px-5 sm:px-6 text-center z-20 w-full max-w-4xl mx-auto">
         <Reveal immediate={priority}>
           {title &&
             (as === "h1" ? (
-              <h1 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
+              <h1 className="text-[28px] sm:text-[36px] lg:text-[46px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
                 {title}
               </h1>
             ) : (
-              <h2 className="text-[28px] sm:text-[38px] md:text-[48px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
+              <h2 className="text-[28px] sm:text-[36px] lg:text-[46px] font-medium tracking-[-0.015em] leading-[1.12] text-inherit text-balance">
                 {title}
               </h2>
             ))}
           {lead && (
-            <p className="text-[13px] sm:text-[15px] md:text-[17px] font-normal leading-relaxed text-inherit/85 max-w-md sm:max-w-xl mx-auto mt-2 text-balance">
+            <p className="text-[13px] sm:text-[15px] lg:text-[17px] font-normal leading-relaxed text-inherit/85 max-w-md sm:max-w-xl mx-auto mt-2 text-balance">
               {lead}
             </p>
           )}
@@ -110,7 +110,7 @@ export function Panel({
       )}
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
-      <div className="relative pb-8 sm:pb-12 md:pb-14 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-5 md:gap-6 z-20 w-full max-w-4xl mx-auto text-center">
+      <div className="relative pb-8 sm:pb-10 lg:pb-12 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-5 z-20 w-full max-w-4xl mx-auto text-center">
         {stats && (
           <Reveal immediate={priority} delay={0.1} className="w-full">
             {stats}

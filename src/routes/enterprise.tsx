@@ -595,6 +595,36 @@ function EnterprisePage() {
                 </a>
               </div>
             </form>
+
+            {/* Cross-Solution Navigation */}
+            <div className="mt-14 pt-8 border-t border-[#E3E4E6]">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
+                Explore Related WAVENOX Solutions
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                <Link
+                  to="/residential"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Solar Panels</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Homes &amp; villas</div>
+                </Link>
+                <Link
+                  to="/omnigrid"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Solar + Storage</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Omnigrid LFP backup</div>
+                </Link>
+                <Link
+                  to="/deploy"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#F4F4F4] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive sizing</div>
+                </Link>
+              </div>
+            </div>
           </div>
         </QuietSection>
       </main>

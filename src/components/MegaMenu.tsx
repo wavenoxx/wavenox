@@ -2,10 +2,11 @@ import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { openConsultationDrawer } from "@/lib/consultation";
 
-export type MegaMenuCategory = "solar" | "homes" | "omnigrid" | "commercial" | "discover" | null;
+export type MegaMenuCategory = "solar" | "omnigrid" | "commercial" | "studio" | "discover" | null;
 
 interface ProductItem {
   name: string;
+  subtitle?: string;
   image: string;
   learnTo: string;
   orderTo?: string;
@@ -29,79 +30,43 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
   solar: {
     products: [
       {
-        name: "Low-Profile Solar Panels",
-        image: "/media/home-design-640w.webp",
+        name: "Residential Rooftop Solar",
+        subtitle: "Independent homes & villas",
+        image: "/media/home-hero-640w.webp",
         learnTo: "/residential",
         orderTo: "/deploy",
-        orderLabel: "Order",
+        orderLabel: "Get Estimate",
+      },
+      {
+        name: "Low-Profile Terrace Mount",
+        subtitle: "Concealed conduit raceways",
+        image: "/media/home-design-640w.webp",
+        learnTo: "/residential#terrace-design",
+        orderTo: "/deploy",
+        orderLabel: "Get Estimate",
       },
       {
         name: "Elevated Solar Pergola",
-        image: "/media/home-final-640w.webp",
-        learnTo: "/residential",
-        orderTo: "/deploy",
-        orderLabel: "Order",
-      },
-      {
-        name: "Bifacial Commercial Array",
-        image: "/media/commercial-hero-640w.webp",
-        learnTo: "/enterprise",
-        orderTo: "/enterprise#assessment",
-        orderLabel: "Request RFP",
-      },
-    ],
-    quickLinks: [
-      {
-        links: [
-          {
-            label: "Speak with a Solar Engineer",
-            action: () => openConsultationDrawer(),
-          },
-          { label: "Why WAVENOX Solar", to: "/residential" },
-          { label: "PM Surya Ghar Subsidy Guide (₹78,000)", to: "/legal/disclosures" },
-          { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
-          { label: "DISCOM Net-Metering & Sanctions", to: "/net-metering" },
-          { label: "Calculate Savings", to: "/deploy" },
-          { label: "Solar Engineering & Specifications", to: "/technology" },
-        ],
-      },
-    ],
-  },
-  homes: {
-    products: [
-      {
-        name: "Independent Villa Solar",
+        subtitle: "Shaded usable terrace space",
         image: "/media/res-hero-640w.webp",
-        learnTo: "/residential",
+        learnTo: "/residential#terrace-design",
         orderTo: "/deploy",
-        orderLabel: "Order",
-      },
-      {
-        name: "Terrace Living Pergola",
-        image: "/media/res-terrace-640w.webp",
-        learnTo: "/residential",
-        orderTo: "/deploy",
-        orderLabel: "Order",
-      },
-      {
-        name: "Severe Storm Resilience",
-        image: "/media/res-weather-640w.webp",
-        learnTo: "/residential",
-        orderTo: "/deploy",
-        orderLabel: "Order",
+        orderLabel: "Get Estimate",
       },
     ],
     quickLinks: [
       {
         links: [
           {
-            label: "Book Rooftop Feasibility Survey",
+            label: "Talk to a Solar Advisor",
             action: () => openConsultationDrawer(),
           },
-          { label: "Zero Terrace Damage Guarantee", to: "/residential" },
-          { label: "Utility Sanctions (TGSPDCL / APSPDCL)", to: "/legal/disclosures" },
-          { label: "25-Year Linear Power Warranty", to: "/warranty" },
-          { label: "Residential Financing & Subsidies", to: "/deploy" },
+          { label: "Get Solar Estimate (Design Studio)", to: "/deploy" },
+          { label: "PM Surya Ghar Subsidy Guide (Up to ₹78,000)", to: "/net-metering" },
+          { label: "DISCOM Net-Metering & Approvals", to: "/net-metering" },
+          { label: "25-Year Linear Module Warranty", to: "/warranty" },
+          { label: "Service Areas & Priority Hubs", to: "/service-areas" },
+          { label: "Frequently Asked Questions", to: "/faq" },
         ],
       },
     ],
@@ -109,7 +74,8 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
   omnigrid: {
     products: [
       {
-        name: "Omnigrid 14.3 kWh",
+        name: "Omnigrid 14.3 kWh Storage",
+        subtitle: "Single-unit LFP home backup",
         image: "/media/omnigrid-hero-640w.webp",
         learnTo: "/omnigrid",
         orderTo: "/deploy",
@@ -117,28 +83,32 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
       },
       {
         name: "Omnigrid Dual-Pack (28.6 kWh)",
+        subtitle: "Extended nighttime & AC backup",
         image: "/media/omnigrid-night-640w.webp",
-        learnTo: "/omnigrid",
+        learnTo: "/omnigrid#sunset-power",
         orderTo: "/deploy",
         orderLabel: "Configure",
       },
       {
-        name: "Solid-State Gateway (<20ms)",
+        name: "Sub-20ms Islanding Gateway",
+        subtitle: "Automatic grid outage switchover",
         image: "/media/omnigrid-switchover-640w.webp",
-        learnTo: "/omnigrid",
+        learnTo: "/omnigrid#outage-defense",
+        orderTo: "/deploy",
+        orderLabel: "Configure",
       },
     ],
     quickLinks: [
       {
         links: [
           {
-            label: "Schedule Storage Consultation",
+            label: "Talk to a Storage Advisor",
             action: () => openConsultationDrawer(),
           },
-          { label: "Blackout Duration Estimator", to: "/omnigrid#estimator" },
-          { label: "Diesel Generator Replacement ROI", to: "/omnigrid" },
-          { label: "Nighttime Solar Self-Consumption", to: "/omnigrid" },
-          { label: "LFP Chemistry & Safety Standards", to: "/omnigrid" },
+          { label: "Appliance Backup Duration Estimator", to: "/omnigrid#estimator" },
+          { label: "24-Hour Solar & Storage Flow", to: "/omnigrid#flow-simulation" },
+          { label: "Why Standard Solar Needs Battery for Outages", to: "/omnigrid" },
+          { label: "10-Year OEM Battery & Inverter Warranty", to: "/warranty" },
         ],
       },
     ],
@@ -146,38 +116,82 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
   commercial: {
     products: [
       {
-        name: "Industrial Rooftop Arrays",
+        name: "Industrial Rooftop Solar",
+        subtitle: "Manufacturing & logistics plants",
         image: "/media/commercial-hero-640w.webp",
         learnTo: "/enterprise",
         orderTo: "/enterprise#assessment",
-        orderLabel: "Request RFP",
+        orderLabel: "Request Assessment",
       },
       {
-        name: "Manufacturing & Pharma",
+        name: "High-Yield Bifacial Arrays",
+        subtitle: "Daytime peak tariff offset",
         image: "/media/commercial-industrial-640w.webp",
-        learnTo: "/enterprise",
-        orderTo: "/enterprise#assessment",
-        orderLabel: "Request RFP",
+        learnTo: "/enterprise#operating-costs",
+        orderTo: "/enterprise#calculator",
+        orderLabel: "Calculate Yield",
       },
       {
-        name: "Corporate Tech Campuses",
+        name: "Corporate & Campus Solar",
+        subtitle: "Offices, campuses & hospitals",
         image: "/media/commercial-campus-640w.webp",
         learnTo: "/enterprise",
         orderTo: "/enterprise#assessment",
-        orderLabel: "Request RFP",
+        orderLabel: "Request Assessment",
       },
     ],
     quickLinks: [
       {
         links: [
           {
-            label: "Request Industrial Site Survey",
+            label: "Request Commercial Site Assessment",
             action: () => openConsultationDrawer(),
           },
-          { label: "Section 34 40% Tax Depreciation", to: "/enterprise" },
-          { label: "Commercial Yield Calculator", to: "/enterprise#calculator" },
-          { label: "CAPEX vs OPEX / RESCO Models", to: "/enterprise" },
-          { label: "Grid Wheeling & HT Open Access", to: "/enterprise" },
+          { label: "Commercial Yield & Payback Calculator", to: "/enterprise#calculator" },
+          { label: "Section 34 (40%) Accelerated Depreciation", to: "/enterprise#calculator" },
+          { label: "Architectural & CAD/BIM Specifications", to: "/architects" },
+          { label: "DISCOM HT/LT Feeder Feasibility", to: "/net-metering" },
+        ],
+      },
+    ],
+  },
+  studio: {
+    products: [
+      {
+        name: "Interactive Solar Sizing Studio",
+        subtitle: "Estimate kW size, savings & subsidy",
+        image: "/media/home-hero-640w.webp",
+        learnTo: "/deploy",
+        orderTo: "/deploy",
+        orderLabel: "Open Studio",
+      },
+      {
+        name: "Satellite Terrace Sketcher",
+        subtitle: "Map usable roof area & setbacks",
+        image: "/media/studio-estate-640w.webp",
+        learnTo: "/deploy",
+        orderTo: "/deploy",
+        orderLabel: "Sketch Roof",
+      },
+      {
+        name: "Solar + Battery Configurator",
+        subtitle: "Compare solar-only vs battery backup",
+        image: "/media/omnigrid-hero-640w.webp",
+        learnTo: "/deploy",
+        orderTo: "/deploy",
+        orderLabel: "Configure",
+      },
+    ],
+    quickLinks: [
+      {
+        links: [
+          { label: "Start With Monthly Electricity Bill", to: "/deploy" },
+          {
+            label: "Prefer a Guided Review? Talk to an Advisor",
+            action: () => openConsultationDrawer(),
+          },
+          { label: "How We Calculate Savings & Tariffs", to: "/legal/disclosures" },
+          { label: "Check DISCOM Net-Metering Rules", to: "/net-metering" },
         ],
       },
     ],
@@ -185,37 +199,35 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
   discover: {
     quickLinks: [
       {
-        title: "Resources",
+        title: "Solar Guides & Feasibility",
         links: [
-          { label: "Solar Savings Calculator", to: "/deploy" },
+          { label: "Get Solar Estimate (Design Studio)", to: "/deploy" },
+          { label: "DISCOM Net-Metering & Subsidy Guide", to: "/net-metering" },
+          { label: "Service Areas & Priority Hubs", to: "/service-areas" },
           { label: "Frequently Asked Questions (FAQ)", to: "/faq" },
-          { label: "PM Surya Ghar Subsidy Guide", to: "/legal/disclosures" },
-          { label: "Structural Wind Load Standards", to: "/technology" },
-          { label: "Regional Jurisdictions & DISCOMs", to: "/service-areas" },
-          { label: "Architectural Solar & CAD Specs", to: "/architects" },
+          { label: "Calculation Methodology & Sources", to: "/legal/disclosures" },
         ],
       },
       {
-        title: "Technology",
+        title: "Engineering & Architecture",
         links: [
-          { label: "N-Type TOPCon Cell Architecture", to: "/technology" },
-          { label: "Home Battery Backup System", to: "/omnigrid" },
-          { label: "Smart Inverter Cloud Telemetry", to: "/#monitoring" },
-          { label: "Linear 25-Year Performance Curve", to: "/warranty" },
+          { label: "Solar Physics & N-Type TOPCon Tech", to: "/technology" },
+          { label: "For Architects & Villa Builders (CAD)", to: "/architects" },
+          { label: "OEM, Workmanship & Support Warranties", to: "/warranty" },
+          { label: "Omnigrid Battery Storage Architecture", to: "/omnigrid" },
         ],
       },
       {
-        title: "Company",
+        title: "Company & Governance",
         links: [
           {
-            label: "Speak with Solar Advisor",
+            label: "Talk to a Solar Advisor",
             action: () => openConsultationDrawer(),
           },
-          { label: "Design Story & Concept", to: "/our-story" },
-          { label: "Colophon & Case Study", to: "/about-this-project" },
+          { label: "Our Story & Delivery Model", to: "/our-story" },
+          { label: "Colophon & Engineering Case Study", to: "/about-this-project" },
           { label: "Terms of Service", to: "/legal/terms" },
-          { label: "Privacy Policy", to: "/legal/privacy" },
-          { label: "Regulatory Disclosures", to: "/legal/disclosures" },
+          { label: "Privacy Policy (DPDP 2023)", to: "/legal/privacy" },
         ],
       },
     ],
@@ -248,6 +260,8 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
 
       {/* Flyout White Panel */}
       <div
+        role="region"
+        aria-label={`${activeCategory} navigation menu`}
         className="fixed top-14 left-0 right-0 z-40 bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6] shadow-2xl transition-all duration-200 animate-in fade-in-0 slide-in-from-top-1"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -264,7 +278,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
               {data.quickLinks?.map((col, idx) => (
                 <div key={idx} className="space-y-4">
                   {col.title && (
-                    <div className="text-[13px] font-medium text-[#5C5E62] uppercase tracking-[0.05em]">
+                    <div className="text-[12px] font-semibold text-[#5C5E62] uppercase tracking-[0.06em]">
                       {col.title}
                     </div>
                   )}
@@ -278,7 +292,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                               onClose();
                               link.action?.();
                             }}
-                            className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors text-left cursor-pointer"
+                            className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors text-left cursor-pointer focus-visible:outline-none focus-visible:underline"
                           >
                             {link.label}
                           </button>
@@ -286,7 +300,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                           <Link
                             to={link.to}
                             onClick={onClose}
-                            className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors block"
+                            className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors block focus-visible:outline-none focus-visible:underline"
                           >
                             {link.label}
                           </Link>
@@ -308,7 +322,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                     <Link
                       to={prod.learnTo}
                       onClick={onClose}
-                      className="w-full aspect-[16/10] rounded-[6px] overflow-hidden bg-[#F4F4F4] mb-3 flex items-center justify-center p-2 relative group-hover:opacity-95 transition-opacity"
+                      className="w-full aspect-[16/10] rounded-[6px] overflow-hidden bg-[#F4F4F4] mb-3 flex items-center justify-center p-1.5 relative group-hover:opacity-95 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
                     >
                       <img
                         src={prod.image}
@@ -318,10 +332,13 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                       />
                     </Link>
 
-                    {/* Product Name */}
-                    <h3 className="text-[15px] font-medium text-[#171A20] leading-snug mb-2">
+                    {/* Product Name & Subtitle */}
+                    <h3 className="text-[15px] font-medium text-[#171A20] leading-snug">
                       {prod.name}
                     </h3>
+                    {prod.subtitle && (
+                      <p className="text-[12px] text-[#5C5E62] mt-0.5 mb-2">{prod.subtitle}</p>
+                    )}
 
                     {/* Action Links */}
                     <div className="flex items-center gap-3 text-[13px] text-[#5C5E62]">
@@ -338,9 +355,9 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                           <Link
                             to={prod.orderTo}
                             onClick={onClose}
-                            className="underline underline-offset-4 decoration-[#E3E4E6] hover:decoration-[#171A20] hover:text-[#171A20] transition-colors"
+                            className="underline underline-offset-4 decoration-[#E3E4E6] hover:decoration-[#171A20] hover:text-[#171A20] transition-colors font-medium text-[#171A20]"
                           >
-                            {prod.orderLabel || "Order"}
+                            {prod.orderLabel || "Get Estimate"}
                           </Link>
                         </>
                       )}
@@ -350,7 +367,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
               </div>
 
               {/* Right: Quick Links Separated by Hairline Divider */}
-              <div className="lg:col-span-4 lg:border-l lg:border-[#E3E4E6] lg:pl-8 space-y-3">
+              <div className="lg:col-span-4 lg:border-l lg:border-[#E3E4E6] lg:pl-8 space-y-2.5">
                 {data.quickLinks?.[0]?.links.map((link) => (
                   <div key={link.label}>
                     {link.action ? (
@@ -360,7 +377,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                           onClose();
                           link.action?.();
                         }}
-                        className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors text-left cursor-pointer py-1"
+                        className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors text-left cursor-pointer py-1 focus-visible:outline-none focus-visible:underline"
                       >
                         {link.label}
                       </button>
@@ -368,7 +385,7 @@ export function MegaMenu({ activeCategory, onClose, onMouseEnter, onMouseLeave }
                       <Link
                         to={link.to}
                         onClick={onClose}
-                        className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors block py-1"
+                        className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors block py-1 focus-visible:outline-none focus-visible:underline"
                       >
                         {link.label}
                       </Link>

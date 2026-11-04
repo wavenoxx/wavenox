@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import {
@@ -166,20 +166,21 @@ function OmnigridPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Configure Omnigrid
+                Configure Solar + Storage
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Schedule Consultation
+                Talk to a Solar Advisor
               </Button>
             </>
           }
+          disclaimer="Backup runtime depends on installed battery capacity, state of charge, and active household appliance loads."
         />
 
         {/* 2. PANEL: omnigrid-switchover */}
@@ -187,8 +188,8 @@ function OmnigridPage() {
           id="outage-defense"
           media={media["omnigrid-switchover"]}
           tone="dark"
-          title="Outage Protection"
-          lead="Fast switchover in under 20 milliseconds keeps your entire home running."
+          title="Automatic Outage Switchover"
+          lead="When utility power drops, the hybrid islanding gateway isolates from the street grid and switches your home to stored solar in under 20 milliseconds."
           stats={
             <StatRow
               stats={[
@@ -196,7 +197,7 @@ function OmnigridPage() {
                   value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs,
                   label: "Transfer Speed",
                 },
-                { value: "24/7", label: "Power Security" },
+                { value: "10.0 kW", label: "Peak Surge Rating" },
               ]}
             />
           }
@@ -206,17 +207,17 @@ function OmnigridPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Configure Omnigrid
+                Configure Solar + Storage
               </Button>
               <Button
                 onClick={() => setSpecsOpen(true)}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                View Specs
+                View Technical Specs
               </Button>
             </>
           }
@@ -228,11 +229,11 @@ function OmnigridPage() {
           media={media["omnigrid-night"]}
           tone="dark"
           title="Use Solar After Sunset"
-          lead="Store daytime excess generation to power nighttime air conditioning and appliances."
+          lead="Store daytime excess solar generation to power evening air conditioning and essential home circuits."
           stats={
             <StatRow
               stats={[
-                { value: "100%", label: "Solar Self-Use" },
+                { value: "Up to 90%", label: "Solar Self-Use" },
                 { value: "Zero", label: "Diesel Fumes" },
               ]}
             />
@@ -243,17 +244,17 @@ function OmnigridPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Configure Omnigrid
+                Configure Solar + Storage
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Schedule Consultation
+                Talk to a Solar Advisor
               </Button>
             </>
           }
@@ -284,13 +285,48 @@ function OmnigridPage() {
                 to="/deploy"
                 variant="primary"
                 tone="light"
-                className="w-full sm:w-auto min-w-[200px]"
+                className="w-full sm:w-auto min-w-[210px]"
               >
-                Configure Omnigrid
+                Configure Solar + Storage
               </Button>
-              <TextLink to="/residential" arrow>
-                Learn about solar integration
-              </TextLink>
+              <Button
+                onClick={() => openConsultationDrawer()}
+                variant="secondary"
+                tone="light"
+                className="w-full sm:w-auto min-w-[210px]"
+              >
+                Talk to a Solar Advisor
+              </Button>
+            </div>
+
+            {/* Cross-Solution Navigation */}
+            <div className="mt-12 pt-8 border-t border-[#E3E4E6] max-w-3xl mx-auto">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
+                Explore Related WAVENOX Solutions
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                <Link
+                  to="/residential"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Solar Panels</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Rooftop &amp; pergola</div>
+                </Link>
+                <Link
+                  to="/enterprise"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Commercial Solar</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Factories &amp; campuses</div>
+                </Link>
+                <Link
+                  to="/deploy"
+                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+                >
+                  <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive sizing</div>
+                </Link>
+              </div>
             </div>
           </div>
         </QuietSection>

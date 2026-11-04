@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Phone, MessageSquare, Globe, User, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, Phone, MessageSquare, Globe, ChevronRight, ChevronLeft } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
@@ -15,11 +15,11 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: "solar", label: "Rooftop Solar", to: "/" },
-  { key: "homes", label: "Homes", to: "/residential" },
-  { key: "omnigrid", label: "Omnigrid", to: "/omnigrid" },
+  { key: "solar", label: "Solar Panels", to: "/residential" },
+  { key: "omnigrid", label: "Solar + Storage", to: "/omnigrid" },
   { key: "commercial", label: "Commercial", to: "/enterprise" },
-  { key: "discover", label: "Discover", to: "/deploy" },
+  { key: "studio", label: "Design Studio", to: "/deploy" },
+  { key: "discover", label: "Discover", to: "/technology" },
 ];
 
 interface MobileCategoryItem {
@@ -46,89 +46,89 @@ interface MobileCategory {
 const MOBILE_CATEGORIES: MobileCategory[] = [
   {
     id: "residential",
-    label: "Residential Solar",
+    label: "Solar Panels for Homes",
     items: [
       {
-        title: "Low-Profile Solar Panels",
-        description: "Flush coplanar architectural glass with zero frame exposure",
+        title: "Low-Profile Rooftop Solar",
+        description: "All-black N-type TOPCon modules with concealed conduit raceways",
         to: "/residential",
       },
       {
-        title: "Elevated Solar Pergola",
-        description: "100% usable terrace living space with storm-certified steel",
+        title: "Elevated Terrace Pergola",
+        description: "7 to 9 ft clear headroom that keeps your terrace usable",
         to: "/residential",
       },
       {
-        title: "Independent Villa Solar",
-        description: "Turnkey villa engineering with zero grid export leakage",
+        title: "Independent Villa Systems",
+        description: "Custom 3D shadow mapping and coordinated DISCOM net-metering",
         to: "/residential",
       },
     ],
     actions: [
-      { label: "Configure & Price (Studio)", to: "/deploy" },
-      { label: "PM Surya Ghar ₹78,000 Subsidy Guide", to: "/legal/disclosures" },
-      { label: "Zero Terrace Damage Guarantee", to: "/residential" },
-      { label: "25-Year Linear Power Warranty", to: "/warranty" },
+      { label: "Get Solar Estimate (Design Studio)", to: "/deploy" },
+      { label: "PM Surya Ghar Subsidy Guide (Up to ₹78,000)", to: "/net-metering" },
+      { label: "25-Year OEM Linear Module Warranty", to: "/warranty" },
+      { label: "Calculation Methodology & Sources", to: "/legal/disclosures" },
     ],
     primaryCta: {
-      label: "Design Residential System",
+      label: "Get Residential Solar Estimate",
       to: "/deploy",
     },
   },
   {
     id: "omnigrid",
-    label: "Omnigrid Storage",
+    label: "Solar + Battery Storage",
     items: [
       {
-        title: "Omnigrid 14.3 kWh Pack",
-        description: "Integrated prismatic LFP energy storage with 10,000 cycles",
+        title: "Omnigrid 14.3 kWh Storage",
+        description: "Modular LiFePO4 home battery backup for grid outages",
         to: "/omnigrid",
       },
       {
         title: "Omnigrid Dual-Pack (28.6 kWh)",
-        description: "Whole-home whole-night autonomy and EV charging",
+        description: "Extended nighttime solar self-use and air-conditioning backup",
         to: "/omnigrid",
       },
       {
-        title: "Solid-State Gateway (<20ms)",
-        description: "Instantaneous sub-cycle grid failure protection",
+        title: "Sub-20ms Islanding Switchover",
+        description: "Automatic transfer when utility grid power drops",
         to: "/omnigrid",
       },
     ],
     actions: [
-      { label: "Blackout Duration Estimator", to: "/omnigrid" },
-      { label: "Diesel Generator Replacement ROI", to: "/omnigrid" },
-      { label: "LFP Chemistry & Safety Standards", to: "/omnigrid" },
+      { label: "Appliance Backup Duration Estimator", to: "/omnigrid" },
+      { label: "24-Hour Solar & Storage Flow", to: "/omnigrid" },
+      { label: "10-Year OEM Battery & Inverter Warranty", to: "/warranty" },
     ],
     primaryCta: {
-      label: "Configure Omnigrid Storage",
+      label: "Configure Solar + Storage",
       to: "/deploy",
     },
   },
   {
     id: "commercial",
-    label: "Commercial & Industrial",
+    label: "Commercial & Industrial Solar",
     items: [
       {
-        title: "Industrial Rooftop Arrays",
-        description: "High-yield commercial MW-scale turnkey projects",
+        title: "Industrial & Factory Rooftops",
+        description: "High-yield bifacial arrays engineered for daytime tariff offset",
         to: "/enterprise",
       },
       {
-        title: "Corporate Tech Campuses",
-        description: "Architectural solar carports and high-efficiency BIPV",
+        title: "Corporate Offices & Campuses",
+        description: "Elevated rooftop arrays and structural engineering layouts",
         to: "/enterprise",
       },
       {
-        title: "Manufacturing & Pharma",
-        description: "Continuous clean energy with 99.9% uptime compliance",
+        title: "Campuses & Healthcare",
+        description: "Coordinated HT/LT net-metering and hybrid storage integration",
         to: "/enterprise",
       },
     ],
     actions: [
-      { label: "Section 34 40% Tax Depreciation", to: "/enterprise" },
-      { label: "Commercial Yield Calculator", to: "/enterprise" },
-      { label: "CAPEX vs OPEX / RESCO Models", to: "/enterprise" },
+      { label: "Commercial Yield & Payback Calculator", to: "/enterprise" },
+      { label: "Section 34 (40%) Accelerated Depreciation", to: "/enterprise" },
+      { label: "For Architects & Villa Builders (CAD)", to: "/architects" },
     ],
     primaryCta: {
       label: "Request Commercial Assessment",
@@ -137,71 +137,67 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
   },
   {
     id: "technology",
-    label: "Technology & Engineering",
+    label: "Engineering & Warranties",
     items: [
       {
-        title: "Solar Engineering & Physics",
-        description: "N-Type TOPCon cell architecture and bifacial yield metrics",
+        title: "N-Type TOPCon Cell Physics",
+        description: "-0.30%/°C thermal coefficient engineered for Indian summer heat",
         to: "/technology",
       },
       {
-        title: "Structural Wind Load Standards",
-        description: "IS 875 Part 3 storm resistance up to 50 m/s (180 km/h)",
+        title: "IS 875 (Part 3) Wind Load Design",
+        description: "6005-T5 anodized aluminum rated for 44 m/s (158 km/h) wind speed",
         to: "/technology",
       },
       {
-        title: "Asset Warranty & Governance",
-        description: "25-year linear power guarantee with Tier-1 bankability",
+        title: "Warranties & Support Coordination",
+        description: "OEM hardware, partner workmanship, and WAVENOX support scope",
         to: "/warranty",
       },
       {
-        title: "Architectural Solar Specs (CAD)",
-        description: "Drawings and BIM specifications for architects and builders",
+        title: "Architectural Solar & CAD Specs",
+        description: "Structural load tables and drawings for architects and builders",
         to: "/architects",
       },
     ],
     actions: [
-      { label: "Download Engineering Specs", to: "/technology" },
       { label: "Review Statutory Disclosures", to: "/legal/disclosures" },
+      { label: "DISCOM Net-Metering Feasibility", to: "/net-metering" },
     ],
     primaryCta: {
-      label: "Speak with a Solar Engineer",
+      label: "Talk to a Solar Advisor",
       action: () => openConsultationDrawer(),
     },
   },
   {
     id: "discover",
-    label: "Discover & Resources",
+    label: "Guides & Company",
     items: [
       {
-        title: "Solar Sizing Studio",
-        description: "Instant 3D rooftop geometry and financial model",
-        to: "/deploy",
-      },
-      {
-        title: "Service Areas & Jurisdictions",
-        description: "Operational hubs across 7 premier Indian luxury states",
+        title: "Service Areas & Priority Hubs",
+        description: "Active consultation and partner coverage across Indian cities",
         to: "/service-areas",
       },
       {
-        title: "DISCOM Net-Metering Guide",
-        description: "Transformer allocations and bi-directional meter rules",
+        title: "DISCOM Net-Metering & Subsidies",
+        description: "Feeder rules, bi-directional meters, and PM Surya Ghar workflow",
         to: "/net-metering",
       },
       {
         title: "Frequently Asked Questions (FAQ)",
-        description: "Detailed answers on subsidies, equipment, and tariffs",
+        description: "Clear answers on subsidies, outages, roof safety, and timelines",
         to: "/faq",
       },
       {
-        title: "Our Story & Ethos",
-        description: "The philosophy of architectural energy independence",
+        title: "Our Story & Delivery Model",
+        description: "How WAVENOX coordinates design, approvals, and installation",
         to: "/our-story",
       },
     ],
     actions: [
-      { label: "Colophon & Case Study", to: "/about-this-project" },
-      { label: "Schedule Feasibility Survey", to: "/service-areas" },
+      { label: "Colophon & Engineering Case Study", to: "/about-this-project" },
+      { label: "Privacy Policy (DPDP Act 2023)", to: "/legal/privacy" },
+      { label: "Terms of Service", to: "/legal/terms" },
     ],
   },
 ];
@@ -214,6 +210,7 @@ export function Header() {
   const [activeMobileCategory, setActiveMobileCategory] = React.useState<string | null>(null);
 
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigate = useNavigate();
 
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
@@ -282,29 +279,32 @@ export function Header() {
     <>
       <header
         onMouseLeave={handleMouseLeave}
-        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-6 lg:px-10 ${
+        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-5 sm:px-6 lg:px-10 ${
           showSolidHeader
-            ? "bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6]"
+            ? "bg-[#FFFFFF]/95 backdrop-blur-md text-[#171A20] border-b border-[#E3E4E6]"
             : "bg-transparent text-[#FFFFFF]"
         }`}
       >
-        {/* Left: Brand Geometric Wordmark (Enlarged by +50% for commanding authority) */}
+        {/* Left: Brand Geometric Wordmark */}
         <div className="flex items-center">
           <BrandLogo size="md" className={showSolidHeader ? "text-[#171A20]" : "text-[#FFFFFF]"} />
         </div>
 
-        {/* Center: Tesla-Style Minimal Navigation Items */}
+        {/* Center: Product & Discovery Navigation */}
         <nav className="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
           {NAV_ITEMS.map((item) => {
             const isHovered = activeCategory === item.key;
+            const isCurrentRoute = pathname === item.to;
             return (
               <Link
                 key={item.key}
                 to={item.to}
+                aria-current={isCurrentRoute ? "page" : undefined}
                 onMouseEnter={() => handleMouseEnter(item.key)}
                 onFocus={() => handleMouseEnter(item.key)}
                 onKeyDown={(e) => {
-                  if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
                     setActiveCategory(item.key);
                   } else if (e.key === "Escape") {
                     setActiveCategory(null);
@@ -312,12 +312,16 @@ export function Header() {
                 }}
                 aria-expanded={isHovered}
                 aria-haspopup="true"
-                className={`relative px-4 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+                className={`relative px-3.5 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
                   isHovered
                     ? "bg-[#F4F4F4] text-[#171A20]"
                     : showSolidHeader
-                      ? "hover:bg-[#F4F4F4] text-[#171A20]"
-                      : "hover:bg-white/10 text-[#FFFFFF]"
+                      ? isCurrentRoute
+                        ? "bg-[#F4F4F4]/80 text-[#171A20]"
+                        : "hover:bg-[#F4F4F4] text-[#171A20]"
+                      : isCurrentRoute
+                        ? "bg-white/15 text-[#FFFFFF]"
+                        : "hover:bg-white/10 text-[#FFFFFF]"
                 }`}
               >
                 {item.label}
@@ -326,34 +330,35 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right: Clean Tesla-Style Utility Actions (Clutter stripped: No ? icon, No EN toggle) */}
-        <div className="flex items-center space-x-1 sm:space-x-2">
-          {/* Region / Grid Icon */}
+        {/* Right: Desktop Utility & Primary Advisor Action / Mobile Menu Trigger */}
+        <div className="flex items-center space-x-2">
+          {/* Desktop Region / DISCOM Selector */}
           <button
             type="button"
             onClick={() => setRegionModalOpen(true)}
             title="Supported States & DISCOMs"
-            aria-label="Regional Grid"
-            className={`p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+            aria-label="Supported States and DISCOMs"
+            className={`hidden md:inline-flex p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
               showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
             }`}
           >
             <Globe className="w-[18px] h-[18px]" />
           </button>
 
-          {/* Account / Design Studio Icon */}
-          <Link
-            to="/deploy"
-            title="Solar Design Studio"
-            aria-label="Solar Design Studio"
-            className={`p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
-              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+          {/* Desktop Direct Consultation Action */}
+          <button
+            type="button"
+            onClick={() => openConsultationDrawer()}
+            className={`hidden md:inline-flex items-center justify-center h-8 px-3.5 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              showSolidHeader
+                ? "bg-[#171A20] text-[#FFFFFF] hover:bg-[#2C3038]"
+                : "bg-white/15 border border-white/30 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
             }`}
           >
-            <User className="w-[18px] h-[18px]" />
-          </Link>
+            Talk to Advisor
+          </button>
 
-          {/* Mobile Menu Trigger */}
+          {/* Mobile Menu Trigger (Clean single button on mobile — zero icon clutter) */}
           <button
             type="button"
             onClick={() => {
@@ -361,8 +366,10 @@ export function Header() {
               setMenuOpen(true);
             }}
             aria-label="Open navigation menu"
-            className={`px-3 py-1.5 rounded-[4px] text-[14px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current md:hidden ${
-              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+            className={`md:hidden px-3.5 py-1.5 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              showSolidHeader
+                ? "bg-[#F4F4F4] text-[#171A20] hover:bg-[#EAEAEA]"
+                : "bg-white/15 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
             }`}
           >
             Menu
@@ -370,7 +377,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Tesla-Grade Full-Width Mega Menu Flyout */}
+      {/* Full-Width Desktop Mega Menu Flyout */}
       <MegaMenu
         activeCategory={activeCategory}
         onClose={() => setActiveCategory(null)}
@@ -378,7 +385,7 @@ export function Header() {
         onMouseLeave={handleMouseLeave}
       />
 
-      {/* Regional Grid Dialog (Expanded for all 7 Pan-India Luxury Hubs) */}
+      {/* Regional Grid Dialog */}
       <Dialog.Root open={regionModalOpen} onOpenChange={setRegionModalOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
@@ -388,15 +395,15 @@ export function Header() {
                 <Dialog.Title className="text-[17px] font-medium text-[#171A20]">
                   Active Solar Grid Jurisdictions
                 </Dialog.Title>
-                <p className="text-[12px] text-[#5C5E62] mt-0.5">
+                <Dialog.Description className="text-[12px] text-[#5C5E62] mt-0.5">
                   Select your state to view technical parameters and DISCOM net-metering.
-                </p>
+                </Dialog.Description>
               </div>
               <Dialog.Close asChild>
                 <button
                   type="button"
                   aria-label="Close region selector"
-                  className="p-1 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] cursor-pointer"
+                  className="p-1.5 rounded-[4px] text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4] cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -415,7 +422,7 @@ export function Header() {
                   <div>
                     <div className="font-semibold text-[#171A20] flex items-center gap-2">
                       <span>{hub.state}</span>
-                      <span className="text-[11px] font-normal text-[#5C5E62] bg-white px-2 py-0.5 rounded-[3px] border border-[#E3E4E6]">
+                      <span className="text-[12px] font-normal text-[#5C5E62] bg-white px-2 py-0.5 rounded-[3px] border border-[#E3E4E6]">
                         {hub.discoms[0].split("(")[0].trim()}
                       </span>
                     </div>
@@ -444,29 +451,35 @@ export function Header() {
                 }}
                 className="flex-1 h-10 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium hover:bg-[#171A20]/90 transition-colors cursor-pointer"
               >
-                Schedule Feasibility Check
+                Request Consultation
               </button>
             </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
 
-      {/* Tesla-Grade Drill-Down Mobile Navigation Drawer */}
+      {/* Mobile Navigation Drawer */}
       <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
           <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md bg-[#FFFFFF] text-[#171A20] shadow-2xl flex flex-col justify-between p-6 sm:p-8 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-200 overflow-y-auto">
+            <Dialog.Title className="sr-only">WAVENOX Navigation Menu</Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Explore residential solar panels, battery storage, commercial solar, and the solar
+              design studio.
+            </Dialog.Description>
+
             {activeMobileCategory === null ? (
-              /* ================= LEVEL 0: ROOT MAIN CATEGORIES (Tesla DNA) ================= */
+              /* ================= LEVEL 0: ROOT MAIN CATEGORIES ================= */
               <div className="flex flex-col h-full justify-between">
                 <div>
-                  {/* Top Bar: Brand Logo & Close X (Clean, No Divider Lines) */}
+                  {/* Top Bar: Brand Logo & Close X */}
                   <div className="flex items-center justify-between pb-6">
                     <BrandLogo size="md" asLink={false} />
                     <Dialog.Close asChild>
                       <button
                         type="button"
-                        className="p-2 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                        className="p-2.5 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
                         aria-label="Close navigation menu"
                       >
                         <X className="w-5 h-5 stroke-[1.75]" />
@@ -474,66 +487,66 @@ export function Header() {
                     </Dialog.Close>
                   </div>
 
-                  {/* Level 0: Main Categories (Pure Tesla DNA: Zero dividing borders, unified typography, generous touch targets) */}
+                  {/* Level 0: Product Families & Direct Links */}
                   <nav className="flex flex-col space-y-1 pt-1" aria-label="Mobile Navigation">
                     {MOBILE_CATEGORIES.map((cat) => (
                       <button
                         key={cat.id}
                         type="button"
                         onClick={() => setActiveMobileCategory(cat.id)}
-                        className="w-full flex items-center justify-between py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors cursor-pointer group text-left"
+                        className="w-full min-h-[48px] flex items-center justify-between py-3 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors cursor-pointer group text-left"
                       >
                         <span>{cat.label}</span>
                         <ChevronRight className="w-4 h-4 text-[#171A20]/60 group-hover:translate-x-0.5 group-hover:text-[#171A20] transition-all stroke-[1.75]" />
                       </button>
                     ))}
 
-                    {/* Secondary Direct Utility Links (Unified Font Size, Weight, and Padding with Zero Dividing Lines) */}
                     <Link
                       to="/deploy"
                       onClick={() => setMenuOpen(false)}
-                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
+                      className="min-h-[48px] py-3 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors flex items-center justify-between text-left"
                     >
-                      Solar Sizing Studio
+                      <span>Solar Design Studio</span>
+                      <span className="text-[12px] font-normal text-[#5C5E62]">Estimate</span>
                     </Link>
                     <Link
                       to="/service-areas"
                       onClick={() => setMenuOpen(false)}
-                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
+                      className="min-h-[48px] py-3 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors flex items-center text-left"
                     >
-                      Service Areas &amp; Jurisdictions
+                      Service Areas &amp; Hubs
                     </Link>
                     <Link
                       to="/warranty"
                       onClick={() => setMenuOpen(false)}
-                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
+                      className="min-h-[48px] py-3 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors flex items-center text-left"
                     >
-                      25-Year Linear Power Warranty
-                    </Link>
-                    <Link
-                      to="/our-story"
-                      onClick={() => setMenuOpen(false)}
-                      className="py-3.5 px-3 rounded-[6px] text-[17px] font-medium tracking-tight text-[#171A20] hover:text-[#5C5E62] hover:bg-[#F4F4F4]/70 transition-colors block text-left"
-                    >
-                      Our Story &amp; Ethos
+                      Warranties &amp; Support
                     </Link>
                   </nav>
                 </div>
 
-                {/* Bottom Dock: Action Button and Refined Contact Touchpoints (Zero Globe / Zero Language Box) */}
-                <div className="pt-6 mt-6 space-y-4">
+                {/* Bottom Dock: Primary Estimate + Secondary Consultation Actions */}
+                <div className="pt-6 mt-6 space-y-3 border-t border-[#E3E4E6]">
+                  <Link
+                    to="/deploy"
+                    onClick={() => setMenuOpen(false)}
+                    className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                  >
+                    Get Solar Estimate
+                  </Link>
                   <button
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
                       openConsultationDrawer();
                     }}
-                    className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                    className="w-full h-11 px-6 rounded-[4px] bg-[#F4F4F4] border border-[#E3E4E6] text-[#171A20] text-[14px] font-medium hover:bg-[#EAEAEA] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer"
                   >
-                    Schedule Consultation
+                    Talk to a Solar Advisor
                   </button>
 
-                  <div className="flex items-center justify-center gap-4 text-[13px] text-[#5C5E62] pt-1">
+                  <div className="flex items-center justify-center gap-4 text-[13px] text-[#5C5E62] pt-2">
                     <a
                       href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
                       className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors"
@@ -563,7 +576,7 @@ export function Header() {
                     <button
                       type="button"
                       onClick={() => setActiveMobileCategory(null)}
-                      className="inline-flex items-center gap-1.5 text-[15px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors cursor-pointer py-1 -ml-1"
+                      className="inline-flex items-center gap-1.5 text-[15px] font-medium text-[#171A20] hover:text-[#5C5E62] transition-colors cursor-pointer py-1.5 px-2 -ml-2 rounded-[4px]"
                     >
                       <ChevronLeft className="w-5 h-5 stroke-[1.75]" />
                       <span>Back</span>
@@ -571,7 +584,7 @@ export function Header() {
                     <Dialog.Close asChild>
                       <button
                         type="button"
-                        className="p-2 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none cursor-pointer"
+                        className="p-2.5 -mr-2 rounded-full text-[#171A20] hover:bg-[#F4F4F4] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
                         aria-label="Close navigation menu"
                       >
                         <X className="w-5 h-5 stroke-[1.75]" />
@@ -586,7 +599,7 @@ export function Header() {
                     </h3>
                   </div>
 
-                  {/* Sub-Category Product Offerings (Clean Minimalist Cards) */}
+                  {/* Sub-Category Product Offerings */}
                   <div className="space-y-1 py-1">
                     {currentMobileCat?.items.map((item, idx) => (
                       <Link
@@ -613,8 +626,8 @@ export function Header() {
 
                   {/* Sub-Category Quick Links */}
                   {currentMobileCat?.actions && currentMobileCat.actions.length > 0 && (
-                    <div className="pt-4 mt-3 space-y-1">
-                      <span className="text-[11px] font-semibold text-[#5C5E62] uppercase tracking-wider block px-3 pb-1">
+                    <div className="pt-4 mt-3 space-y-1 border-t border-[#E3E4E6]">
+                      <span className="text-[12px] font-semibold text-[#5C5E62] uppercase tracking-wider block px-3 pb-1">
                         Specifications &amp; Guides
                       </span>
                       {currentMobileCat.actions.map((act, idx) => (
@@ -625,7 +638,7 @@ export function Header() {
                             setMenuOpen(false);
                             setActiveMobileCategory(null);
                           }}
-                          className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] py-2 px-3 rounded-[6px] hover:bg-[#F4F4F4] transition-colors flex items-center justify-between"
+                          className="text-[14px] font-medium text-[#171A20] hover:text-[#5C5E62] py-2.5 px-3 rounded-[6px] hover:bg-[#F4F4F4] transition-colors flex items-center justify-between"
                         >
                           <span>{act.label}</span>
                           <ChevronRight className="w-3.5 h-3.5 text-[#171A20]/40 stroke-[1.75]" />
@@ -636,20 +649,22 @@ export function Header() {
                 </div>
 
                 {/* Sub-view Bottom CTA */}
-                <div className="pt-6 mt-6 space-y-2.5">
+                <div className="pt-6 mt-6 space-y-2.5 border-t border-[#E3E4E6]">
                   {currentMobileCat?.primaryCta && (
                     <button
                       type="button"
                       onClick={() => {
+                        const targetTo = currentMobileCat.primaryCta?.to;
+                        const targetAction = currentMobileCat.primaryCta?.action;
                         setMenuOpen(false);
                         setActiveMobileCategory(null);
-                        if (currentMobileCat.primaryCta?.action) {
-                          currentMobileCat.primaryCta.action();
-                        } else if (currentMobileCat.primaryCta?.to) {
-                          window.location.href = currentMobileCat.primaryCta.to;
+                        if (targetAction) {
+                          targetAction();
+                        } else if (targetTo) {
+                          navigate({ to: targetTo });
                         }
                       }}
-                      className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                      className="w-full h-11 px-6 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium hover:bg-[#000000] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer shadow-xs"
                     >
                       {currentMobileCat.primaryCta.label}
                     </button>
@@ -657,7 +672,7 @@ export function Header() {
                   <button
                     type="button"
                     onClick={() => setActiveMobileCategory(null)}
-                    className="w-full h-9 rounded-[4px] border border-[#E3E4E6] text-[#5C5E62] text-[12px] font-medium hover:bg-[#F4F4F4] transition-colors flex items-center justify-center cursor-pointer"
+                    className="w-full h-10 rounded-[4px] border border-[#E3E4E6] text-[#5C5E62] text-[12px] font-medium hover:bg-[#F4F4F4] transition-colors flex items-center justify-center cursor-pointer"
                   >
                     ← Back to All Products
                   </button>
