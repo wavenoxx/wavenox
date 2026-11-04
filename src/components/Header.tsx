@@ -127,7 +127,7 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
     ],
     actions: [
       { label: "Commercial Yield & Payback Calculator", to: "/enterprise" },
-      { label: "Section 34 (40%) Accelerated Depreciation", to: "/enterprise" },
+      { label: "Section 33 Tax Depreciation Guide", to: "/enterprise" },
       { label: "For Architects & Villa Builders (CAD)", to: "/architects" },
     ],
     primaryCta: {

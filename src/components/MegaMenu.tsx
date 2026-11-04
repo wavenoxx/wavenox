@@ -148,7 +148,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, CategoryContent> =
             action: () => openConsultationDrawer(),
           },
           { label: "Commercial Yield & Payback Calculator", to: "/enterprise#calculator" },
-          { label: "Section 34 (40%) Accelerated Depreciation", to: "/enterprise#calculator" },
+          { label: "Section 33 Tax Depreciation Guide", to: "/enterprise#calculator" },
           { label: "Architectural & CAD/BIM Specifications", to: "/architects" },
           { label: "DISCOM HT/LT Feeder Feasibility", to: "/net-metering" },
         ],

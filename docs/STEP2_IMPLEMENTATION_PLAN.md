@@ -57,7 +57,7 @@ Following the official Tesla Solar Panels reference principles (product-first cl
    - Restrained 3-column architectural showcase introducing:
      1. **Solar Panels** (`/residential`) — Low-profile terrace & pergola systems for independent homes and villas (`Explore Solar Panels →`).
      2. **Solar + Storage** (`/omnigrid`) — Modular LFP battery backup (`14.3 kWh` per unit, `< 20 ms` switchover) for grid outages and evening loads (`Explore Battery Storage →`).
-     3. **Commercial Solar** (`/enterprise`) — High-yield industrial and corporate rooftop arrays with Section 34 depreciation modeling (`Explore Commercial Solar →`).
+     3. **Commercial Solar** (`/enterprise`) — High-yield industrial and corporate rooftop arrays with Section 33 tax depreciation modeling (`Explore Commercial Solar →`).
 3. **03 — Architectural Solar Design (`#design` Panel)**:
    - Low-profile all-black N-type TOPCon modules and elevated terrace pergolas that preserve usable rooftop space, with concealed cable raceways and non-penetrating or sealed anchor options.
    - **CTAs**: `Explore Solar Panels` (`/residential`) and `Get Solar Estimate` (`/deploy`).

@@ -61,10 +61,10 @@ const SOLUTION_FAMILIES = [
     spec: "25 kW – Multi-MW · C&I",
     title: "Commercial Solar",
     description:
-      "High-yield rooftop and campus solar installations designed for daytime tariff reduction, accelerated depreciation, and ESG reporting.",
+      "High-yield rooftop and campus solar installations designed for daytime tariff reduction, tax depreciation planning, and ESG reporting.",
     highlights: [
       "3 to 4 year indicative payback*",
-      "40% Year-1 accelerated depreciation",
+      "Section 33 tax depreciation modeling*",
       "Coordinated HT/LT net-metering",
     ],
     mediaKey: "commercial-hero" as const,
@@ -230,14 +230,14 @@ const TRUST_CARDS = [
   {
     title: "Three-Tier Warranty Clarity",
     description:
-      "Clear separation between 25-year OEM module performance warranties, 10-year OEM inverter and battery coverage, and 5-year partner workmanship warranty.",
+      "Clear separation between 25-year OEM module performance warranties, 10-year OEM inverter and battery coverage, and authorized partner workmanship coverage as defined in your signed installation contract.",
     linkLabel: "Review Warranty Scope",
     to: "/warranty",
   },
   {
-    title: "Sourced Tariff & Subsidy Math",
+    title: "Transparent Tariff & Subsidy Basis",
     description:
-      "Every savings and payback estimate cites published TGERC/APERC retail tariff schedules, MNRE subsidy slabs, and NASA POWER solar irradiance data.",
+      "Indicative residential estimates reference published Telangana (TGERC FY 2025-26) tariff schedules, MNRE PM Surya Ghar subsidy slabs, and regional solar irradiance baselines; final project economics are verified for your specific state and DISCOM during site assessment.",
     linkLabel: "Inspect Calculation Sources",
     to: "/legal/disclosures",
   },
@@ -542,7 +542,9 @@ function IndexPage() {
               </div>
 
               <p className="text-[12px] text-[#5C5E62] text-center">
-                Indicative estimate only; final sizing requires an engineering site assessment.{" "}
+                Indicative estimate modeled on verified Telangana (TGERC FY 2025-26) retail tariff
+                slabs and MNRE central subsidy benchmarks; final sizing and state-specific DISCOM
+                tariff schedules are confirmed during engineering assessment.{" "}
                 <Link
                   to="/legal/disclosures"
                   hash="sources"

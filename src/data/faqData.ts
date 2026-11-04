@@ -15,7 +15,7 @@ export const FAQ_CATEGORIES = [
   { id: "terrace", label: "Terrace & Pergolas" },
   { id: "technology", label: "TOPCon Technology" },
   { id: "billing", label: "Net Metering & DISCOMs" },
-  { id: "commercial", label: "Commercial & Tax (Section 34)" },
+  { id: "commercial", label: "Commercial & Tax (Section 33)" },
   { id: "warranty", label: "Warranties & Service" },
 ] as const;
 
@@ -194,29 +194,29 @@ export const FAQ_DATA: FaqTopic[] = [
     featured: false,
   },
 
-  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 34)
+  // 6. COMMERCIAL, INDUSTRIAL & TAXES (SECTION 33)
   {
-    id: "section-34-accelerated-depreciation",
+    id: "section-33-accelerated-depreciation",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Section 34)",
-    question: "How does Section 34 40% accelerated tax depreciation work for businesses?",
+    categoryLabel: "Commercial & Tax (Section 33)",
+    question: "How does Section 33 tax depreciation work for commercial solar assets?",
     answer:
-      "Under Section 34 of the Income-tax Act, 2025 (in force 1 April 2026, replacing Section 32 of the 1961 Act), commercial and industrial enterprises investing in rooftop solar capital assets can claim 40% accelerated depreciation in Year 1 (or 20% if put to use for less than 180 days in the fiscal year). For a corporate entity in the 25%–30% corporate tax bracket, this delivers immediate tax savings equal to roughly 10%–12% of total project CAPEX in the first year alone. (Illustrative — consult your Chartered Accountant).",
+      "Under Section 33 of the Income-tax Act, 2025 (in force 1 April 2026, replacing Section 32 of the 1961 Act), commercial and industrial enterprises investing in rooftop solar capital assets can claim Written Down Value (WDV) depreciation deductions (modeled at 40% in Year 1 when put to use for 180 days or more, or 20% under the half-year rule, subject to applicable 2026 block schedules and corporate tax regime rules). Actual tax savings depend on your entity's corporate tax bracket and tax regime — consult your Chartered Accountant.",
     featured: true,
   },
   {
     id: "commercial-payback-period",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Section 34)",
+    categoryLabel: "Commercial & Tax (Section 33)",
     question: "What is the typical return on investment (ROI) for commercial solar in India?",
     answer:
-      "Commercial and industrial tariffs in Telangana (TGSPDCL/TGNPDCL HT tariffs) range between ₹8.50 and ₹11.80 per unit. Combined with Section 34 40% accelerated depreciation and GST input tax credits (ITC), typical payback periods range between 3.0 and 4.2 years. Over a 25-year asset lifecycle, commercial solar delivers an internal rate of return (IRR) typically exceeding 28%.",
+      "Commercial and industrial tariffs in Telangana (TGSPDCL/TGNPDCL HT tariffs) range between ₹8.50 and ₹11.80 per unit. Combined with Section 33 tax depreciation and GST input tax credits (ITC) where applicable, indicative payback periods typically range between 3.0 and 4.2 years depending on daytime load utilization and corporate tax regime.",
     featured: false,
   },
   {
     id: "open-access-vs-rooftop",
     category: "commercial",
-    categoryLabel: "Commercial & Tax (Section 34)",
+    categoryLabel: "Commercial & Tax (Section 33)",
     question: "What is the difference between captive rooftop solar and group captive open access?",
     answer:
       "Captive rooftop solar generates electricity directly on your facility roof behind the commercial meter, eliminating all grid transmission losses, wheeling charges, and cross-subsidy surcharges. Open access involves procuring power from an off-site solar park across the utility transmission grid, which is typically recommended only when your facility roof area is insufficient to meet your total electrical demand.",
