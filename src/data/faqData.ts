@@ -255,9 +255,9 @@ export const FAQ_DATA: FaqTopic[] = [
     id: "service-sla-response-time",
     category: "warranty",
     categoryLabel: "Warranties & Service",
-    question: "What is your Service Level Agreement (SLA) if my system has an issue?",
+    question: "How are post-installation service and warranty claims handled?",
     answer:
-      "Your inverter cloud system provides automated fault detection and alert notifications. In the event of an inverter anomaly, grid synchronization fault, or panel variance, diagnostic logs can be reviewed remotely to dispatch appropriate on-site technical support across Hyderabad.",
+      "Every hybrid inverter streams performance telemetry and fault alerts to its cloud monitoring portal. When an inverter alert, grid synchronization issue, or module variance occurs, WAVENOX assists in reviewing diagnostic logs and coordinates warranty service with the relevant Tier-1 OEM manufacturer or the authorized installation partner executing your project.",
     featured: false,
   },
 ];

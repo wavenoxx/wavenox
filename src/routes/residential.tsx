@@ -77,13 +77,13 @@ const RESIDENTIAL_STEPS = [
   },
   {
     num: "03",
-    title: "Precision Install",
-    desc: "2 to 3 day installation by certified solar engineers.",
+    title: "Coordinated Install",
+    desc: "Precision terrace installation fulfilled by authorized solar installation teams.",
   },
   {
     num: "04",
-    title: "Lifetime Support",
-    desc: "Realtime mobile app telemetry and 25-year warranty.",
+    title: "Ongoing Support",
+    desc: "Inverter mobile app telemetry and 25-year OEM linear module warranty.",
   },
 ];
 
@@ -109,7 +109,7 @@ function ResidentialPage() {
               stats={[
                 { value: "₹78,000", label: "Surya Ghar Subsidy" },
                 { value: "25 Years", label: "Linear Warranty" },
-                { value: "0%", label: "Terrace Damage" },
+                { value: "22.8%", label: "Module Efficiency" },
               ]}
             />
           }
@@ -215,8 +215,8 @@ function ResidentialPage() {
         <QuietSection
           id="turnkey"
           bg="surface"
-          title="One Team, Start to Finish"
-          lead="From DISCOM permits to precision terrace installation, WAVENOX manages everything."
+          title="Coordinated Journey, Start to Finish"
+          lead="From DISCOM net-metering coordination to authorized partner installation, WAVENOX guides every step."
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pt-4">
             {RESIDENTIAL_STEPS.map((step) => (

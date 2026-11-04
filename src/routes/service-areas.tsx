@@ -108,7 +108,7 @@ export const REGION_HUBS: RegionHub[] = [
       "Sangareddy (Tellapur, Patancheru)",
       "Warangal Urban & Suburbs",
     ],
-    headquarters: "Hyderabad, Telangana — 500032",
+    headquarters: "Primary Coordination Hub: Hyderabad, Telangana",
     irradiance: "5.4 – 5.8 kWh/m²/day",
     annualGenerationPerKw: "1,490 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 44 m/s (158 km/h)",
@@ -116,7 +116,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://tgspdcl.cgg.gov.in/",
     leadTimeWeeks: "2 to 3 Weeks (Portal Sanction to Meter Synchronization)",
     notes:
-      "Full turnkey support for PM Surya Ghar: Muft Bijli Yojana direct DBT subsidies (₹78,000 max). Pre-approved inverter rosters and CEA-certified protection relays.",
+      "Coordinated support for PM Surya Ghar: Muft Bijli Yojana direct DBT subsidies (up to ₹78,000 eligible cap). MNRE ALMM-approved module and inverter configurations.",
   },
   {
     id: "karnataka",
@@ -133,7 +133,7 @@ export const REGION_HUBS: RegionHub[] = [
       "Bengaluru North (Hebbal, Yelahanka Luxury Villa Estates)",
       "Mysuru Urban & Heritage Estates",
     ],
-    headquarters: "Bengaluru, Karnataka — 560001",
+    headquarters: "Service Coverage: Bengaluru & Mysuru (Coordinated via WAVENOX Delivery Network)",
     irradiance: "5.2 – 5.6 kWh/m²/day",
     annualGenerationPerKw: "1,460 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 39 m/s (140 km/h)",
@@ -141,7 +141,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://bescom.karnataka.gov.in",
     leadTimeWeeks: "3 to 4 Weeks (Technical Feasibility to Bi-Directional Meter Commissioning)",
     notes:
-      "Full compliance with KERC Net-Metering & Gross Metering frameworks. Fast-track technical feasibility sanctions for independent villa communities and tech campus solar carports.",
+      "Aligned with KERC Net-Metering & Gross Metering frameworks. Coordinated technical feasibility and installation scheduling through authorized regional partners.",
   },
   {
     id: "maharashtra",
@@ -159,7 +159,8 @@ export const REGION_HUBS: RegionHub[] = [
       "Lonavala & Khandala Luxury Hill Estates",
       "Pune Metropolitan (Koregaon Park, Baner, Hinjawadi)",
     ],
-    headquarters: "Bandra Kurla Complex (BKC), Mumbai — 400051",
+    headquarters:
+      "Service Coverage: Mumbai MMR, Alibaug & Pune (Coordinated via WAVENOX Delivery Network)",
     irradiance: "5.1 – 5.5 kWh/m²/day",
     annualGenerationPerKw: "1,440 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating:
@@ -168,7 +169,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://www.mahadiscom.in",
     leadTimeWeeks: "3 to 4 Weeks (DISCOM Sanction to Grid Synchronization)",
     notes:
-      "Marine-grade C5-M anti-corrosion anodized aluminum structures engineered specifically for saline air in Alibaug and coastal Mumbai. Zero terrace puncture ballast engineering.",
+      "Marine-grade corrosion-resistant anodized aluminum structures specified for saline coastal air in Alibaug and Mumbai. Non-penetrative ballasted and weather-sealed mounting options.",
   },
   {
     id: "andhra-pradesh",
@@ -185,7 +186,8 @@ export const REGION_HUBS: RegionHub[] = [
       "Vijayawada Urban (Benz Circle, Kanuru)",
       "Tirupati Metropolitan & Industrial Corridor",
     ],
-    headquarters: "Visakhapatnam, Andhra Pradesh — 530002",
+    headquarters:
+      "Service Coverage: Visakhapatnam, Amaravati & Vijayawada (Coordinated via WAVENOX Delivery Network)",
     irradiance: "5.5 – 5.9 kWh/m²/day",
     annualGenerationPerKw: "1,520 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 50 m/s (180 km/h — Cyclone Zone V)",
@@ -193,7 +195,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://www.apeasternpower.com",
     leadTimeWeeks: "2 to 3 Weeks (Portal Application to Meter Synchronization)",
     notes:
-      "Highest solar insolation in South India (~1,520 kWh/kWp). Structures custom-engineered with SS316 fasteners and aerodynamic wind spoilers for Bay of Bengal cyclone resilience.",
+      "High solar insolation (~1,520 kWh/kWp). Structures specified with SS316 fasteners and high-wind anchoring for Bay of Bengal coastal wind zones.",
   },
   {
     id: "delhi-ncr",
@@ -212,7 +214,8 @@ export const REGION_HUBS: RegionHub[] = [
       "Noida & Greater Noida Expressway Luxury Estates",
       "Chhatarpur & Mehrauli Farmhouse Enclaves",
     ],
-    headquarters: "Connaught Place, New Delhi — 110001",
+    headquarters:
+      "Service Coverage: New Delhi, Gurugram & Noida (Coordinated via WAVENOX Delivery Network)",
     irradiance: "4.9 – 5.4 kWh/m²/day",
     annualGenerationPerKw: "1,400 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 47 m/s (169 km/h — Zone IV)",
@@ -220,7 +223,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://www.bsesdelhi.com",
     leadTimeWeeks: "3 to 4 Weeks (Application to Bi-Directional Meter Setup)",
     notes:
-      "Hydrophobic anti-soiling nano-coating included standard to counter winter PM2.5 particulate deposition and smog attenuation. Support for Delhi Solar Policy generation-based incentives.",
+      "Anti-soiling glass coatings specified to help mitigate seasonal dust and particulate deposition. Coordinated net-metering filing under applicable state policies.",
   },
   {
     id: "goa",
@@ -232,7 +235,7 @@ export const REGION_HUBS: RegionHub[] = [
       "South Goa (Cavelossim, Varca, Benaulim luxury coastal villas)",
       "Panaji & Dona Paula Waterfront Estates",
     ],
-    headquarters: "Panaji, Goa — 403001",
+    headquarters: "Service Coverage: North & South Goa (Coordinated via WAVENOX Delivery Network)",
     irradiance: "5.2 – 5.6 kWh/m²/day",
     annualGenerationPerKw: "1,450 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 39 m/s (140 km/h)",
@@ -240,7 +243,7 @@ export const REGION_HUBS: RegionHub[] = [
     netMeteringPortalUrl: "https://goaelectricity.gov.in",
     leadTimeWeeks: "3 to 4 Weeks (GED Sanction to Synchronized Net-Meter)",
     notes:
-      "Specially contoured non-penetrative mounting clamps for Portuguese-Goan terracotta tiled roofs and concealed cable raceways preserving luxury estate aesthetics.",
+      "Contoured mounting solutions for pitched and flat roofs with concealed cable routing tailored to coastal villa architecture.",
   },
   {
     id: "tamil-nadu",
@@ -253,7 +256,8 @@ export const REGION_HUBS: RegionHub[] = [
       "Old Mahabalipuram Road (OMR Tech Corridor)",
       "Coimbatore (Race Course & Peelamedu)",
     ],
-    headquarters: "Chennai, Tamil Nadu — 600002",
+    headquarters:
+      "Service Coverage: Chennai, ECR & Coimbatore (Coordinated via WAVENOX Delivery Network)",
     irradiance: "5.4 – 5.8 kWh/m²/day",
     annualGenerationPerKw: "1,480 Units / kW / Year (NASA POWER / PVWatts v8)",
     cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 50 m/s (180 km/h — Coastal Cyclone Belt)",

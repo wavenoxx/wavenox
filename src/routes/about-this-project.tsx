@@ -73,7 +73,7 @@ const AUDIT_BEFORE_AFTER = [
     before:
       "Invented legal entities, fictional R&D labs in Gachibowli, and unverified 48-hour SLAs.",
     after:
-      "Honest concept disclosure: a design portfolio & engineering demonstration created by Bunny.",
+      "Transparent customer-facing brand identity with explicit contracting-entity disclosures and coordinated partner fulfillment.",
     badge: "100% Honest",
   },
   {
@@ -116,7 +116,7 @@ const AUDIT_BEFORE_AFTER = [
 const TECH_STACK_ITEMS = [
   {
     category: "Frontend Framework",
-    name: "React 18 & TypeScript",
+    name: "React 19 & TypeScript",
     detail: "Type-safe modular UI with strict linting",
   },
   {
@@ -141,8 +141,8 @@ const TECH_STACK_ITEMS = [
   },
   {
     category: "Unit & Logic Testing",
-    name: "Vitest (29 Tests)",
-    detail: "Tariff decoders, subsidy brackets, and degradation curves",
+    name: "Vitest Automated Suite",
+    detail: "Tariff decoders, subsidy brackets, and lead pipeline invariants",
   },
   {
     category: "Visual & A11y QA",
@@ -176,9 +176,9 @@ function AboutThisProjectPage() {
           </h1>
 
           <p className="text-[16px] sm:text-[19px] text-[#5C5E62] max-w-3xl mt-6 leading-relaxed">
-            WAVENOX is a design portfolio and technical demonstration exploring how residential
-            rooftop solar in India can achieve Tesla-grade restraint, beauty, and craftsmanship
-            without deceptive marketing, invented corporate facts, or opaque calculations.
+            WAVENOX is an architectural solar platform for India built to combine design restraint,
+            sourced statutory tariff modeling, and coordinated project delivery—without deceptive
+            marketing, invented corporate facts, or opaque calculations.
           </p>
 
           {/* Quick Metrics Bar */}
@@ -286,7 +286,7 @@ function AboutThisProjectPage() {
                 <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
               </div>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                Accurate Central Financial Assistance (CFA) math: ₹33,000 for 1 kW, ₹66,000 for 2
+                Accurate Central Financial Assistance (CFA) math: ₹30,000 for 1 kW, ₹60,000 for 2
                 kW, and ₹78,000 cap for ≥3 kW. Features the complete 5-step national workflow and
                 statutory document checklist.
               </p>
@@ -495,24 +495,20 @@ function AboutThisProjectPage() {
           </div>
         </section>
 
-        {/* SECTION 7: CREDITS & CONCEPT DISCLAIMER */}
+        {/* SECTION 7: PLATFORM GOVERNANCE & DELIVERY MODEL */}
         <section className="px-6 sm:px-12 max-w-5xl mx-auto w-full pt-16 space-y-6">
           <div className="p-8 rounded-[8px] bg-[#171A20] text-[#FFFFFF] space-y-4">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[4px] bg-[#FFFFFF]/10 text-[12px] font-medium text-[#FFFFFF]">
               <ShieldCheck className="w-3.5 h-3.5 text-[#F57C00]" />
-              <span>Portfolio Attribution &amp; Concept Scope</span>
+              <span>Platform Governance &amp; Delivery Model</span>
             </div>
 
             <h3 className="text-xl sm:text-2xl font-medium tracking-tight text-[#FFFFFF]">
-              Designed &amp; Engineered by Bunny
+              Coordinated Brand Experience, Sourced Engineering
             </h3>
 
             <p className="text-[14px] text-[#FFFFFF]/70 leading-relaxed max-w-3xl">
-              WAVENOX is an architectural design exploration and full-stack engineering
-              demonstration created by Bunny. It serves as a benchmark for how modern clean-tech
-              platforms can combine minimal aesthetic restraint with exhaustive regulatory
-              precision. All brand assets, 3D architectural renders, and interactive calculators are
-              created for portfolio demonstration purposes.
+              {BRAND_CONFIG.deliveryModelNotice} {BRAND_CONFIG.legalEntityNotice}
             </p>
 
             <div className="pt-4 border-t border-[#FFFFFF]/15 flex flex-wrap items-center gap-4 text-[13px] text-[#FFFFFF]/80">

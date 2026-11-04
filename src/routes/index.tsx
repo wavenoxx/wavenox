@@ -105,8 +105,7 @@ export const Route = createFileRoute("/")({
           name: BRAND_CONFIG.name,
           url: BRAND_CONFIG.domain,
           logo: `${BRAND_CONFIG.domain}/icon-512.png`,
-          description:
-            "Architectural rooftop solar design and statutory feasibility calculations for Telangana (TGSPDCL & TGNPDCL).",
+          description: BRAND_CONFIG.description,
           contactPoint: {
             "@type": "ContactPoint",
             telephone: BRAND_CONFIG.contact.phone.dial,

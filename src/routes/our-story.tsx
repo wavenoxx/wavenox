@@ -74,15 +74,15 @@ function OurStoryPage() {
         {/* 1. HERO HEADER */}
         <section className="max-w-4xl mx-auto px-6 text-center">
           <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-3">
-            Design Concept &amp; Architectural Study
+            Architectural Solar Philosophy &amp; Delivery Model
           </span>
           <h1 className="text-[32px] sm:text-[44px] md:text-[54px] font-medium tracking-tight leading-[1.1] text-[#171A20] text-balance">
             The Reimagination of the Rooftop
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
             For decades, rooftop solar has been treated as an industrial utility afterthought: crude
-            galvanized iron struts, dangling wires, and punctured terrace slabs. WAVENOX was
-            conceptualized in Hyderabad to explore an architectural alternative.
+            galvanized iron struts, exposed conduit runs, and punctured terrace slabs. WAVENOX was
+            founded in Hyderabad to deliver a design-led, full-service alternative across India.
           </p>
         </section>
 
@@ -139,7 +139,7 @@ function OurStoryPage() {
               enhance that space rather than consume it.”
             </p>
             <span className="text-[12px] text-[#5C5E62] block">
-              — Architectural Solar Design Study, Hyderabad
+              — WAVENOX Architectural Solar Principles, Hyderabad
             </span>
           </div>
         </section>
@@ -208,19 +208,21 @@ function OurStoryPage() {
           </div>
         </section>
 
-        {/* 5. CONCEPT DESIGN STUDY SUMMARY */}
+        {/* 5. COORDINATED DELIVERY MODEL SUMMARY */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="border border-[#E3E4E6] rounded-[10px] bg-[#F4F4F4]/50 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2">
               <span className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#F57C00] block">
-                Concept Study
+                Coordinated Delivery Network
               </span>
               <h3 className="text-[22px] sm:text-[26px] font-medium text-[#171A20]">
-                Conceptualized in Hyderabad, Designed for Indian Homes
+                Unified Brand Guidance, Authorized Partner Execution
               </h3>
               <p className="text-[14px] text-[#5C5E62] max-w-xl leading-relaxed">
-                An architectural study exploring how high-performance solar generation and
-                contemporary living spaces coexist across Greater Hyderabad and Telangana.
+                WAVENOX manages your complete solar journey—from initial consultation, indicative
+                sizing, and architectural solar design to utility net-metering coordination and
+                post-installation support—with physical installation fulfilled by authorized
+                installation partners operating within the WAVENOX delivery network.
               </p>
             </div>
             <div className="shrink-0">

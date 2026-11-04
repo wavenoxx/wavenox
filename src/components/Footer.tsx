@@ -261,9 +261,9 @@ export function Footer() {
         {/* BOTTOM FINE-PRINT STRIP */}
         <div className="mt-8 pt-6 border-t border-[#E3E4E6]/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#393C41] text-center sm:text-left">
           <div>
-            {BRAND_CONFIG.name} · Architectural Solar Concept © {currentYear}. Sourced statutory
-            calculations across operational jurisdictions (Telangana, Karnataka, Maharashtra, Andhra
-            Pradesh, Delhi-NCR, Goa &amp; Tamil Nadu).
+            {BRAND_CONFIG.name} · Architectural Solar &amp; Energy Storage © {currentYear}. Sourced
+            statutory calculations across operational jurisdictions (Telangana, Karnataka,
+            Maharashtra, Andhra Pradesh, Delhi-NCR, Goa &amp; Tamil Nadu).
           </div>
           <div className="flex items-center gap-4">
             <Link
