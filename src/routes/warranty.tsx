@@ -105,8 +105,9 @@ function WarrantyPage() {
             The 25-Year Solar Warranty Standards
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
-            Solar is a quarter-century financial asset. We stand behind every kilowatt with tier-one
-            linear power guarantees, weather-tight terrace mounting, and inverter cloud diagnostics.
+            Solar is a quarter-century financial asset. WAVENOX specifies Tier-1 ALMM-approved
+            components backed by manufacturer linear power warranties, authorized partner structural
+            workmanship coverage, and coordinated warranty support.
           </p>
 
           {/* Quick Metrics Ribbon */}
@@ -162,12 +163,12 @@ function WarrantyPage() {
                 25-Year Linear Power Production
               </h3>
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
-                Conventional panels degrade rapidly under harsh 44°C Indian summers. WAVENOX N-Type
-                TOPCon dual-glass panels are warranted to maintain at least{" "}
+                Conventional panels degrade rapidly under harsh 44°C Indian summers. Tier-1
+                ALMM-approved N-Type TOPCon dual-glass modules specified in WAVENOX systems carry an
+                OEM manufacturer linear power warranty to maintain at least{" "}
                 {calculateModuleDegradation(1)}% rated power in Year 1, with annual degradation
-                strictly capped at ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct}% per year,
-                ensuring at least {MODULE_WARRANTY_TERMS.year25MinOutputPct}% nameplate capacity in
-                Year 25.
+                capped at ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct}% per year, ensuring at
+                least {MODULE_WARRANTY_TERMS.year25MinOutputPct}% nameplate capacity in Year 25.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Yr 1: ≥ {calculateModuleDegradation(1)}%</span>
@@ -235,7 +236,7 @@ function WarrantyPage() {
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Telemetry: Wi-Fi / 4G IoT</span>
                 <span>Diagnostics: Automated Alerts</span>
-                <span>Service Region: Hyderabad (Telangana)</span>
+                <span>Coverage: WAVENOX Delivery Network</span>
               </div>
             </div>
           </div>
@@ -250,11 +251,11 @@ function WarrantyPage() {
                   Linear Output Degradation
                 </span>
                 <h3 className="text-[20px] sm:text-[24px] font-medium text-[#171A20]">
-                  WAVENOX vs Industry Standard Output Retention
+                  Specified N-Type TOPCon vs Conventional Output Retention
                 </h3>
               </div>
               <div className="text-[12px] font-medium text-[#5C5E62] bg-[#F4F4F4] px-3 py-1.5 rounded-[4px]">
-                N-Type TOPCon Dual-Glass Standard
+                Tier-1 N-Type TOPCon Dual-Glass Standard
               </div>
             </div>
 
@@ -264,7 +265,7 @@ function WarrantyPage() {
                   <tr className="border-b border-[#E3E4E6] bg-[#F4F4F4]/60 text-[12px] font-semibold text-[#5C5E62] uppercase tracking-wider">
                     <th className="py-3.5 px-6">Milestone</th>
                     <th className="py-3.5 px-6">Conventional Poly/Mono</th>
-                    <th className="py-3.5 px-6 text-[#171A20]">WAVENOX N-Type TOPCon</th>
+                    <th className="py-3.5 px-6 text-[#171A20]">Tier-1 N-Type TOPCon (OEM)</th>
                     <th className="py-3.5 px-6 text-right">Protection Advantage</th>
                   </tr>
                 </thead>
@@ -325,53 +326,62 @@ function WarrantyPage() {
           </div>
         </section>
 
-        {/* 4. HASSLE-FREE CLAIMS PROCESS */}
+        {/* 4. WARRANTY RESPONSIBILITY & CLAIMS COORDINATION */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
-              Autonomous Support
+              Clear Accountability
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-medium tracking-tight text-[#171A20]">
-              How Warranty Claims Are Resolved
+              Warranty Responsibility &amp; Claims Coordination
             </h2>
             <p className="text-[14px] sm:text-[16px] text-[#5C5E62] mt-2">
-              No warranty cards to lose, no distributor middle-men. Your system’s encrypted
-              telemetry serves as its own transparent ledger.
+              Every project agreement clearly separates equipment manufacturer coverage, installer
+              workmanship obligations, and WAVENOX support coordination.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-6 rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] space-y-3">
               <span className="text-[12px] font-bold text-[#5C5E62] uppercase tracking-widest">
-                Step 01
+                Tier 01 · Hardware
               </span>
-              <h4 className="text-[18px] font-medium text-[#171A20]">Automated Detection</h4>
+              <h4 className="text-[18px] font-medium text-[#171A20]">
+                OEM Manufacturer Warranties
+              </h4>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                If an inverter trips or a string shows voltage variance outside normal limits, our
-                cloud fleet monitor flags the anomaly automatically without requiring you to file a
-                ticket.
+                Solar modules (12-year product / 25-year linear power), hybrid inverters, and LFP
+                battery packs (10-year performance) are backed directly by the respective Tier-1 OEM
+                manufacturers under serial-numbered warranty certificates issued at handover.
               </p>
             </div>
 
             <div className="p-6 rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] space-y-3">
               <span className="text-[12px] font-bold text-[#5C5E62] uppercase tracking-widest">
-                Step 02
+                Tier 02 · Workmanship
               </span>
-              <h4 className="text-[18px] font-medium text-[#171A20]">Technical Field Support</h4>
+              <h4 className="text-[18px] font-medium text-[#171A20]">
+                Authorized Partner Installation Coverage
+              </h4>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                A qualified solar service technician reviews the telemetry diagnostic logs and
-                coordinates on-site service with genuine OEM replacement components.
+                Structural mounting integrity, roof penetration weatherproofing, earthing, and DC/AC
+                electrical workmanship are warranted by the authorized installation partner
+                executing your project in accordance with your signed installation agreement.
               </p>
             </div>
 
             <div className="p-6 rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] space-y-3">
               <span className="text-[12px] font-bold text-[#5C5E62] uppercase tracking-widest">
-                Step 03
+                Tier 03 · Coordination
               </span>
-              <h4 className="text-[18px] font-medium text-[#171A20]">Zero Out-of-Pocket</h4>
+              <h4 className="text-[18px] font-medium text-[#171A20]">
+                WAVENOX Diagnostic &amp; Claim Support
+              </h4>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                All certified repairs, component replacements, labor, and re-commissioning tests are
-                completed under your manufacturer warranty terms with ₹0 out-of-pocket fees.
+                When an inverter alert or performance issue arises, WAVENOX assists in reviewing
+                telemetry logs, preparing diagnostic documentation, and coordinating warranty claims
+                with the OEM manufacturer or assigned installation partner under applicable contract
+                terms.
               </p>
             </div>
           </div>

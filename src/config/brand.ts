@@ -2,23 +2,30 @@ import { BUSINESS, hubCityList } from "./business";
 
 /**
  * ============================================================================
- * BRAND IDENTITY & CONTACT — edit this block for each new solar business owner.
+ * BRAND IDENTITY & CONTACT — single source of truth for WAVENOX identity.
  * ============================================================================
  * Environment variables (see .env.example) override these defaults at build
- * time. Service hubs and reviews live in ./business.ts; solar physics and
- * financial constants live in ./solar.ts.
+ * or server runtime. Service hubs and delivery model live in ./business.ts;
+ * solar physics and financial constants live in ./solar.ts.
  */
 export const DEFAULT_BRAND_NAME = "WAVENOX";
-const DEFAULT_LEGAL_NAME = "WAVENOX · Architectural Solar Concept";
-const DEFAULT_SITE_URL = "https://wavenox.in";
-const DEFAULT_TAGLINE = "Architectural solar for Indian residences.";
-const DEFAULT_PHONE_DISPLAY = "+91 91546 26354";
-const DEFAULT_PHONE_DIAL = "+919154626354";
-const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
-const DEFAULT_WHATSAPP_DIAL = "917075870054";
-const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
-const DEFAULT_EMAIL = "wavennox@gmail.com";
-const DEFAULT_ADDRESS = "Hyderabad, Telangana, India";
+/**
+ * Neutral brand name used until a statutory corporate entity (e.g. Pvt. Ltd. / LLP)
+ * is explicitly configured and verified by the business owner via environment variables.
+ * Never invent a corporate registration or label live customer pages as a "portfolio concept".
+ */
+export const DEFAULT_LEGAL_NAME = "WAVENOX";
+export const DEFAULT_SITE_URL = "https://wavenox.in";
+export const DEFAULT_TAGLINE = "Architectural solar for Indian residences and enterprises.";
+export const DEFAULT_PHONE_DISPLAY = "+91 91546 26354";
+export const DEFAULT_PHONE_DIAL = "+919154626354";
+export const DEFAULT_SECONDARY_PHONE_DISPLAY = "+91 70758 70054";
+export const DEFAULT_SECONDARY_PHONE_DIAL = "+917075870054";
+export const DEFAULT_WHATSAPP_DISPLAY = "+91 70758 70054";
+export const DEFAULT_WHATSAPP_DIAL = "917075870054";
+export const DEFAULT_WHATSAPP_LINK = "https://wa.me/917075870054";
+export const DEFAULT_EMAIL = "wavennox@gmail.com";
+export const DEFAULT_ADDRESS = "Hyderabad, Telangana, India";
 
 const DEFAULT_INSTAGRAM_URL = "";
 const DEFAULT_LINKEDIN_URL = "";
@@ -27,12 +34,23 @@ const DEFAULT_TWITTER_URL = "";
 
 /* ========================================================================== */
 
+export type BrandSiteStatus = "pending" | "preview" | "active";
+export type BrandLeadMode = "live" | "demo";
+
 export interface BrandContactConfig {
   enabled: boolean;
   phoneDisplay: string;
   phoneDial: string;
   phoneHref: string;
   phone: {
+    dial: string;
+    display: string;
+    href: string;
+  };
+  secondaryPhoneDisplay: string;
+  secondaryPhoneDial: string;
+  secondaryPhoneHref: string;
+  secondaryPhone: {
     dial: string;
     display: string;
     href: string;
@@ -59,9 +77,14 @@ export interface BrandSocialsConfig {
 }
 
 export interface BrandConfig {
-  status: "pending" | "active";
+  status: BrandSiteStatus;
+  leadMode: BrandLeadMode;
+  isDemoMode: boolean;
   name: string;
   legalName: string;
+  legalEntityVerified: boolean;
+  legalEntityNotice: string;
+  deliveryModelNotice: string;
   tagline: string;
   description: string;
   domain: string;
@@ -72,7 +95,7 @@ export interface BrandConfig {
   socials: BrandSocialsConfig;
 }
 
-type PublicEnvironment = Record<string, string | undefined>;
+export type PublicEnvironment = Record<string, string | undefined>;
 
 function clean(value: string | undefined): string {
   return value?.trim() ?? "";
@@ -117,10 +140,59 @@ function validWhatsAppLink(value: string): { link: string; dial: string } | null
   }
 }
 
+/**
+ * Resolves the lead capture mode:
+ * - "demo" ONLY when explicitly configured via LEAD_MODE="demo" or VITE_LEAD_MODE="demo".
+ * - "live" in all other cases so live traffic never silently downgrades to demo.
+ */
+export function resolveBrandLeadMode(env: PublicEnvironment = {}): BrandLeadMode {
+  const rawMode = clean(env.LEAD_MODE || env.VITE_LEAD_MODE).toLowerCase();
+  return rawMode === "demo" ? "demo" : "live";
+}
+
+/**
+ * Resolves site status ("pending" | "preview" | "active") coherently:
+ * - If VITE_SITE_STATUS is explicitly "active", "preview", or "pending", honors it
+ *   (unless LEAD_MODE="demo" forces "preview").
+ * - If LEAD_MODE="demo" or VITE_LEAD_MODE="demo", returns "preview".
+ * - Otherwise defaults to "pending" until statutory entity verification or VITE_SITE_STATUS="active" is set.
+ */
+export function resolveSiteStatus(env: PublicEnvironment = {}): BrandSiteStatus {
+  const leadMode = resolveBrandLeadMode(env);
+  const explicitStatus = clean(env.VITE_SITE_STATUS).toLowerCase();
+
+  if (leadMode === "demo" || explicitStatus === "preview") {
+    return "preview";
+  }
+  if (explicitStatus === "active") {
+    return "active";
+  }
+  if (explicitStatus === "pending") {
+    return "pending";
+  }
+  return "pending";
+}
+
 export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
-  const status = clean(env.VITE_SITE_STATUS).toLowerCase() === "active" ? "active" : "pending";
+  const leadMode = resolveBrandLeadMode(env);
+  const status = resolveSiteStatus(env);
   const name = clean(env.VITE_BRAND_NAME) || DEFAULT_BRAND_NAME;
-  const legalName = clean(env.VITE_LEGAL_NAME) || DEFAULT_LEGAL_NAME;
+
+  const customLegalName = clean(env.VITE_LEGAL_NAME || env.VITE_COMPANY_LEGAL_NAME);
+  const explicitEntityVerified =
+    clean(
+      env.VITE_LEGAL_ENTITY_VERIFIED || env.VITE_COMPANY_LEGAL_ENTITY_VERIFIED,
+    ).toLowerCase() === "true";
+
+  // Never silently treat an unverified legal entity name as a registered corporate entity
+  const legalEntityVerified =
+    Boolean(customLegalName) && customLegalName !== DEFAULT_LEGAL_NAME && explicitEntityVerified;
+
+  const legalName = customLegalName || DEFAULT_LEGAL_NAME;
+  const legalEntityNotice = legalEntityVerified
+    ? `Operated by ${legalName}. Project-specific installation and EPC execution scopes are governed by your formal execution agreement.`
+    : `${name} operates as a customer-facing solar energy brand. Formal contracting entity registration (CIN/GSTIN) and assigned execution partner details require owner verification in platform configuration and are specified directly on your project-specific commercial quotation and installation agreement prior to contract execution.`;
+
   const tagline = clean(env.VITE_TAGLINE) || DEFAULT_TAGLINE;
   const domain = validSiteUrl(clean(env.VITE_SITE_URL) || DEFAULT_SITE_URL);
   let domainHost = "wavenox.in";
@@ -130,8 +202,17 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
     domainHost = "wavenox.in";
   }
 
-  const phoneDisplay = clean(env.VITE_BUSINESS_PHONE_DISPLAY) || DEFAULT_PHONE_DISPLAY;
-  const phoneDial = normalizedDial(env.VITE_BUSINESS_PHONE_DIAL || DEFAULT_PHONE_DIAL);
+  const phoneDisplay =
+    clean(env.VITE_BUSINESS_PHONE_DISPLAY || env.VITE_CONTACT_PHONE) || DEFAULT_PHONE_DISPLAY;
+  const phoneDial =
+    normalizedDial(env.VITE_BUSINESS_PHONE_DIAL || phoneDisplay) || DEFAULT_PHONE_DIAL;
+
+  const secondaryPhoneDisplay =
+    clean(env.VITE_BUSINESS_SECONDARY_PHONE_DISPLAY || env.VITE_CONTACT_SECONDARY_PHONE) ||
+    DEFAULT_SECONDARY_PHONE_DISPLAY;
+  const secondaryPhoneDial =
+    normalizedDial(env.VITE_BUSINESS_SECONDARY_PHONE_DIAL || secondaryPhoneDisplay) ||
+    DEFAULT_SECONDARY_PHONE_DIAL;
 
   const parsedWhatsAppLink = validWhatsAppLink(clean(env.VITE_BUSINESS_WHATSAPP_LINK));
   const whatsappDial =
@@ -143,7 +224,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
     parsedWhatsAppLink?.link ||
     (whatsappDial ? `https://wa.me/${whatsappDial}` : DEFAULT_WHATSAPP_LINK);
 
-  const email = clean(env.VITE_BUSINESS_EMAIL) || DEFAULT_EMAIL;
+  const email = clean(env.VITE_BUSINESS_EMAIL || env.VITE_CONTACT_EMAIL) || DEFAULT_EMAIL;
   const address = clean(env.VITE_BUSINESS_ADDRESS) || DEFAULT_ADDRESS;
 
   const contactEnabled =
@@ -151,12 +232,17 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
 
   const description =
     clean(env.VITE_BRAND_DESCRIPTION) ||
-    `${name} designs low-profile architectural solar for residential and commercial roofs in ${hubCityList}.`;
+    `${name} coordinates architectural rooftop solar and battery storage systems for residential and commercial properties across ${hubCityList}.`;
 
   return {
     status,
+    leadMode,
+    isDemoMode: leadMode === "demo",
     name,
     legalName,
+    legalEntityVerified,
+    legalEntityNotice,
+    deliveryModelNotice: `${BUSINESS.deliveryModel.brandRole} ${BUSINESS.deliveryModel.fulfillmentModel}`,
     tagline,
     description,
     domain,
@@ -172,6 +258,14 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
         dial: phoneDial,
         display: phoneDisplay,
         href: phoneDial ? `tel:${phoneDial}` : "#",
+      },
+      secondaryPhoneDisplay,
+      secondaryPhoneDial,
+      secondaryPhoneHref: secondaryPhoneDial ? `tel:${secondaryPhoneDial}` : "#",
+      secondaryPhone: {
+        dial: secondaryPhoneDial,
+        display: secondaryPhoneDisplay,
+        href: secondaryPhoneDial ? `tel:${secondaryPhoneDial}` : "#",
       },
       whatsappDisplay,
       whatsappDial,
@@ -195,8 +289,21 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
   };
 }
 
-export const BRAND_CONFIG = buildBrandConfig(
-  typeof import.meta !== "undefined" && import.meta.env
-    ? (import.meta.env as unknown as PublicEnvironment)
-    : {},
-);
+function readRuntimePublicEnv(): PublicEnvironment {
+  const metaEnv =
+    typeof import.meta !== "undefined" && import.meta.env
+      ? (import.meta.env as unknown as PublicEnvironment)
+      : {};
+  const procEnv =
+    typeof process !== "undefined" && process.env
+      ? (process.env as unknown as PublicEnvironment)
+      : {};
+  return {
+    ...procEnv,
+    ...metaEnv,
+    LEAD_MODE: procEnv.LEAD_MODE ?? metaEnv.LEAD_MODE,
+    VITE_LEAD_MODE: metaEnv.VITE_LEAD_MODE ?? procEnv.VITE_LEAD_MODE,
+  };
+}
+
+export const BRAND_CONFIG = buildBrandConfig(readRuntimePublicEnv());

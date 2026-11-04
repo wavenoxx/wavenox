@@ -136,10 +136,10 @@ export function ArchitecturalDossierModal({
                     {BRAND_CONFIG.name}
                   </div>
                   <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#5C5E62] mt-0.5">
-                    Architectural Solar Concept &amp; Feasibility Study
+                    Architectural Solar Design &amp; Feasibility Estimate
                   </div>
                   <div className="text-[12px] text-[#5C5E62] mt-1 font-mono">
-                    Hyderabad · Telangana (TGSPDCL &amp; TGNPDCL)
+                    Coordinated by {BRAND_CONFIG.name} · Primary Hub: Hyderabad, Telangana
                   </div>
                 </div>
 
@@ -423,32 +423,35 @@ export function ArchitecturalDossierModal({
               <div className="pt-6 border-t border-[#E3E4E6] grid grid-cols-1 sm:grid-cols-2 gap-6 items-end avoid-break">
                 <div className="space-y-2 text-[12px] text-[#5C5E62]">
                   <div className="font-bold uppercase tracking-wider text-[#171A20]">
-                    Equipment &amp; Performance Warranties:
+                    Hardware &amp; Installation Warranty Framework:
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>25-Year Linear Power Degradation Curve (&ge; 89.4% Year 25)</span>
+                    <span>
+                      Tier-1 OEM 25-Year Linear Module Power Warranty (&ge; 89.4% Year 25)
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>10-Year Inverter &amp; Battery Storage Lifecycle Warranty</span>
+                    <span>10-Year OEM Hybrid Inverter &amp; LFP Battery Hardware Warranty</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>Pre-cast Ballast / Chemical Anchor Slab Weather-Tight Protection</span>
+                    <span>Authorized Partner Structural &amp; Weather-Tight Mounting Warranty</span>
                   </div>
                 </div>
 
                 <div className="p-4 bg-[#F8F9FA] rounded-[4px] border border-[#E9ECEF] text-center font-mono">
                   <div className="text-[12px] uppercase font-bold tracking-widest text-[#5C5E62]">
-                    WAVENOX CONCEPT STUDY
+                    {data.refCode?.startsWith("WNX-DEMO-")
+                      ? "WAVENOX DEMO SIMULATION"
+                      : "WAVENOX FEASIBILITY BRIEF"}
                   </div>
                   <div className="text-[12px] font-semibold text-[#171A20] my-1">
                     INDICATIVE SOLAR ESTIMATE
                   </div>
                   <div className="text-[12px] text-[#5C5E62]">
-                    Generated {currentDate} · Based on TGERC FY 2025-26 &amp; PM Surya Ghar
-                    Guidelines
+                    Generated {currentDate} · Subject to On-Site Survey &amp; Project Contract
                   </div>
                 </div>
               </div>

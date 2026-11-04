@@ -93,7 +93,7 @@ const BIM_SPECS = [
     cadFormats: "DWG · DXF · IFC",
   },
   {
-    category: "Modular High-Voltage LiFePO4 Energy Storage (Concept Reference)",
+    category: "Modular High-Voltage LiFePO4 Energy Storage (Reference Envelope)",
     dimensions: "580 mm (W) × 1200 mm (H) × 380 mm (D) vertical stack",
     weight: "165 kg (3 × 4.8 kWh stackable modules + BMS)",
     mounting: "Floor-standing plinth (IP65 rated)",
@@ -155,7 +155,8 @@ function ArchitectsPage() {
           source: "architects",
           notes: `Architectural CAD/BIM inquiry from ${studioName.trim()} (${contactName.trim()}) for project in ${projectLocation.trim()}.`,
           consent_given: true,
-          consent_version: "2026-09-v1",
+          consent_version: "2026-11-v2",
+          consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
         },
       });
@@ -168,7 +169,7 @@ function ArchitectsPage() {
 
       setSubmissionResult({
         referenceCode: res.referenceCode,
-        isDemo: res.isDemo ?? true,
+        isDemo: Boolean(res.isDemo),
       });
     } catch (err: unknown) {
       console.error("[Architects] Lead submission error:", err);
@@ -321,12 +322,14 @@ function ArchitectsPage() {
               <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-4">
                 <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
                 <h4 className="text-[17px] font-semibold text-[#166534]">
-                  Architectural Inquiry Recorded ({submissionResult.referenceCode || "WNX-ARCH"})
+                  {submissionResult.isDemo
+                    ? `Demo Mode Simulation (${submissionResult.referenceCode || "WNX-DEMO"})`
+                    : `Architectural Inquiry Registered (${submissionResult.referenceCode || "WNX-ARCH"})`}
                 </h4>
                 <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
                   {submissionResult.isDemo
-                    ? "Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no automated specification package dispatch occurs. You can review the published CAD specifications above or discuss engineering integration directly with the designer via WhatsApp."
-                    : "Thank you for registering your practice. Our engineering team will review your project parameters and share custom technical details."}
+                    ? "Demo Mode Simulation: This request was generated in preview mode and was not saved to live customer storage. To request CAD specifications or schedule a live architectural liaison, connect with WAVENOX directly on WhatsApp."
+                    : "Thank you for registering your studio. Our solar engineering team will review your project parameters and coordinate structural and CAD specifications with your practice."}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                   <a
@@ -460,9 +463,11 @@ function ArchitectsPage() {
                     htmlFor="consent_architects"
                     className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                   >
-                    I consent to WAVENOX collecting my professional contact details to share CAD/BIM
-                    specifications and discuss project feasibility. You may withdraw consent at any
-                    time. See our{" "}
+                    I consent to WAVENOX processing my professional contact details to share CAD/BIM
+                    specifications, coordinate project feasibility, and contact me in accordance
+                    with the <strong>DPDP Act 2023</strong>. Project details may be shared only as
+                    necessary with authorized WAVENOX delivery partners and are never sold to
+                    third-party aggregators. See our{" "}
                     <Link to="/legal/privacy" className="underline hover:text-[#171A20]">
                       Privacy Policy
                     </Link>

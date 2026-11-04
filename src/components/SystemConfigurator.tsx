@@ -249,7 +249,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           net_price_inr: netPayableInr,
           source: "studio",
           consent_given: true,
-          consent_version: "2026-09-v1",
+          consent_version: "2026-11-v2",
+          consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -261,12 +262,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         return;
       }
 
+      const isDemoResult = Boolean(res.isDemo);
+
       if (typeof window !== "undefined") {
         try {
           sessionStorage.setItem(
             "wavenox_active_dossier",
             JSON.stringify({
               refCode: res.referenceCode || "WNX-PROPOSAL",
+              isDemo: isDemoResult,
               clientName: userName,
               phone: userPhone,
               address: address,
@@ -292,7 +296,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             JSON.stringify({
               ref: res.referenceCode || "WNX-PROPOSAL",
               name: userName,
-              isDemo: res.isDemo ?? true,
+              isDemo: isDemoResult,
               timestamp: new Date().toISOString(),
             }),
           );
@@ -908,9 +912,11 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   htmlFor="studio-consent"
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
-                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
-                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
+                  I consent to WAVENOX processing my details to prepare my solar proposal,
+                  coordinate feasibility and installation assessment, and contact me in accordance
+                  with the <strong>DPDP Act 2023</strong>. Project details may be shared only as
+                  necessary with authorized WAVENOX installation partners and utility/subsidy
+                  authorities, and are never sold to third-party lead aggregators. See our{" "}
                   <a href="/legal/privacy" className="underline hover:text-[#171A20]">
                     Privacy Policy
                   </a>

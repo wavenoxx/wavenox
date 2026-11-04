@@ -175,7 +175,8 @@ export function ConsultationDrawer({
           battery_units: 0,
           source: "drawer",
           consent_given: true,
-          consent_version: "2026-09-v1",
+          consent_version: "2026-11-v2",
+          consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -193,7 +194,7 @@ export function ConsultationDrawer({
           JSON.stringify({
             ref: res.referenceCode || "WNX-PROPOSAL",
             name,
-            isDemo: res.isDemo ?? true,
+            isDemo: Boolean(res.isDemo),
             timestamp: new Date().toISOString(),
           }),
         );
@@ -509,9 +510,11 @@ export function ConsultationDrawer({
                   htmlFor="drawer-consent"
                   className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                 >
-                  I consent to receive my solar proposal and be contacted by WAVENOX engineers in
-                  accordance with the <strong>DPDP Act 2023</strong>. Data is processed solely for
-                  proposal generation and never shared. You may withdraw consent anytime via our{" "}
+                  I consent to WAVENOX processing my details to prepare an indicative solar
+                  proposal, coordinate engineering assessment, and contact me in accordance with the{" "}
+                  <strong>DPDP Act 2023</strong>. Project details may be shared only as required
+                  with authorized WAVENOX installation partners and utility/subsidy authorities for
+                  fulfillment, and are never sold to third-party lead aggregators. See our{" "}
                   <a href="/legal/privacy" className="underline hover:text-[#171A20]">
                     Privacy Policy
                   </a>

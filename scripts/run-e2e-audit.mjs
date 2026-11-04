@@ -55,7 +55,12 @@ async function runAudit() {
     console.log(`Starting Vite dev server on port ${PORT}...`);
     serverProcess = spawn("npx", ["vite", "dev", "--port", String(PORT)], {
       stdio: "pipe",
-      env: { ...process.env, PORT: String(PORT) },
+      env: {
+        ...process.env,
+        PORT: String(PORT),
+        LEAD_MODE: "demo",
+        VITE_LEAD_MODE: "demo",
+      },
     });
     await waitForServer(BASE_URL);
     console.log("Vite dev server is ready.");

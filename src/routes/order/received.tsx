@@ -57,27 +57,34 @@ function OrderReceivedPage() {
   const [dossierModalOpen, setDossierModalOpen] = React.useState(false);
   const [dossierData, setDossierData] = React.useState<DossierData | null>(null);
   const [verifiedRef, setVerifiedRef] = React.useState<string | null>(null);
-  const [isDemoSubmission, setIsDemoSubmission] = React.useState(true);
+  const [isDemoSubmission, setIsDemoSubmission] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const storedDossier = sessionStorage.getItem("wavenox_active_dossier");
-        if (storedDossier) {
-          const parsed = JSON.parse(storedDossier);
-          if (parsed?.refCode && parsed.refCode === ref) {
-            setVerifiedRef(parsed.refCode);
-            setDossierData(parsed);
-            return;
+        let resolvedDemoFlag = false;
+        const storedSub = sessionStorage.getItem("wavenox_last_submission");
+        if (storedSub) {
+          const parsedSub = JSON.parse(storedSub);
+          if (parsedSub?.ref && parsedSub.ref === ref) {
+            resolvedDemoFlag =
+              Boolean(parsedSub.isDemo) || String(parsedSub.ref).startsWith("WNX-DEMO-");
+            setVerifiedRef(parsedSub.ref);
+            setIsDemoSubmission(resolvedDemoFlag);
           }
         }
 
-        const storedSub = sessionStorage.getItem("wavenox_last_submission");
-        if (storedSub) {
-          const parsed = JSON.parse(storedSub);
-          if (parsed?.ref && parsed.ref === ref) {
-            setVerifiedRef(parsed.ref);
-            setIsDemoSubmission(parsed.isDemo ?? true);
+        const storedDossier = sessionStorage.getItem("wavenox_active_dossier");
+        if (storedDossier) {
+          const parsedDossier = JSON.parse(storedDossier);
+          if (parsedDossier?.refCode && parsedDossier.refCode === ref) {
+            const isDossierDemo =
+              typeof parsedDossier.isDemo === "boolean"
+                ? parsedDossier.isDemo
+                : resolvedDemoFlag || String(parsedDossier.refCode).startsWith("WNX-DEMO-");
+            setVerifiedRef(parsedDossier.refCode);
+            setDossierData(parsedDossier);
+            setIsDemoSubmission(isDossierDemo);
             return;
           }
         }
@@ -100,36 +107,40 @@ function OrderReceivedPage() {
           <div className="max-w-2xl mx-auto text-center space-y-10">
             <div className="space-y-3">
               <span className="text-[12px] font-medium uppercase tracking-widest text-[#5C5E62]">
-                Proposal Registered
+                {isDemoSubmission ? "Preview Simulation" : "Proposal Registered"}
               </span>
               <h1 className="text-[32px] sm:text-[40px] font-medium tracking-tight text-[#171A20]">
-                Request Confirmed
+                {isDemoSubmission ? "Demo Configuration Ready" : "Request Confirmed"}
               </h1>
               <p className="text-[15px] text-[#5C5E62] leading-relaxed max-w-lg mx-auto">
-                Thank you for inquiring with WAVENOX. Your technical configuration has been logged
-                in this session.
+                {isDemoSubmission
+                  ? "Your indicative solar sizing configuration has been generated in preview/demo mode."
+                  : "Thank you for inquiring with WAVENOX. Your solar consultation request and technical parameters have been registered."}
               </p>
             </div>
 
             {/* Reference Code */}
             <div className="py-6 px-8 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] space-y-1">
               <div className="text-[12px] uppercase tracking-wider text-[#5C5E62]">
-                Official Reference Code
+                {isDemoSubmission ? "Demo Simulation Reference" : "Official Reference Code"}
               </div>
               <div className="text-[28px] sm:text-[32px] font-semibold tracking-wider tabular-nums text-[#171A20]">
                 {verifiedRef}
               </div>
               <p className="text-[12px] text-[#5C5E62] pt-1">
-                Quote this reference for priority scheduling and WhatsApp support.
+                {isDemoSubmission
+                  ? "Simulated preview code — no live database record was created."
+                  : "Quote this reference for priority scheduling and WhatsApp support."}
               </p>
             </div>
 
             {isDemoSubmission && (
               <div className="p-4 rounded-[6px] bg-[#F8F9FA] border border-[#E9ECEF] text-left text-[12px] text-[#5C5E62] leading-relaxed">
-                <strong className="text-[#171A20]">Concept Portfolio Notice:</strong> WAVENOX is a
-                design &amp; engineering portfolio concept. In demo mode, your submission is
-                simulated locally. To discuss custom architectural solar integration, contact the
-                designer directly via WhatsApp.
+                <strong className="text-[#171A20]">Demo Mode Simulation Notice:</strong> This
+                submission was processed in explicit preview/demo mode. No live consultation request
+                was saved to customer storage, and a solar advisor will not automatically follow up.
+                To request a live consultation or proposal, contact WAVENOX directly via WhatsApp or
+                call {BRAND_CONFIG.contact.phone.display}.
               </div>
             )}
 

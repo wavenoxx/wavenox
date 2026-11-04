@@ -59,13 +59,15 @@ function TermsPage() {
               <FileText className="h-5 w-5 text-[#171A20] shrink-0 mt-0.5" />
               <div>
                 <h2 className="text-xs font-bold uppercase tracking-wider text-[#171A20]">
-                  Master Engineering Agreement
+                  Scope of Platform &amp; Project Execution Agreements
                 </h2>
                 <p className="text-xs text-[#5C5E62] mt-1 leading-relaxed">
-                  These Terms govern all digital proposals, feasibility evaluations, engineering
-                  surveys, equipment procurement, and turnkey engineering, procurement, and
-                  construction (EPC) solar contracts executed by {BRAND_CONFIG.legalName}{" "}
-                  (&quot;WAVENOX&quot;).
+                  These Terms govern digital proposals, indicative feasibility evaluations, and
+                  consultation coordination provided through {BRAND_CONFIG.name}. Physical site
+                  surveys, engineering procurement, structural mounting, and electrical
+                  commissioning may be fulfilled by authorized installation partners operating
+                  within the {BRAND_CONFIG.name} delivery network under your formal project-specific
+                  installation agreement. {BRAND_CONFIG.legalEntityNotice}
                 </p>
               </div>
             </div>
@@ -153,53 +155,58 @@ function TermsPage() {
           {/* Section 4: Equipment Warranties & Workmanship */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              4. Warranties: Manufacturer & Workmanship Guarantees
+              4. Warranties: OEM Hardware, Partner Workmanship &amp; Coordination
             </h2>
-            <p>Every WAVENOX installation includes tiered multi-party warranty protection:</p>
+            <p>
+              Solar installations delivered through the WAVENOX network separate warranty
+              responsibilities across three clearly defined tiers:
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>Solar Modules (25 Years)</span>
+                  <span>Solar Modules (25 Years OEM)</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
                   {PRODUCTS_CONFIG.module.performanceWarrantyYears}-year linear performance warranty
-                  backed directly by Tier-1 OEM manufacturers, guaranteeing ≥89.4% output at Year
-                  25.
+                  backed directly by Tier-1 OEM module manufacturers, warranting ≥89.4% rated output
+                  at Year 25 under the OEM warranty certificate.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>Inverter & Battery (10 Years)</span>
+                  <span>Inverter &amp; Battery (10 Years OEM)</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
                   {PRODUCTS_CONFIG.inverter.warrantyYears}-year hybrid inverter and{" "}
-                  {PRODUCTS_CONFIG.battery.warrantyYears}-year LFP battery storage warranty covering
-                  manufacturing defects and throughput degradation.
+                  {PRODUCTS_CONFIG.battery.warrantyYears}-year LFP battery storage warranty backed
+                  directly by the respective Tier-1 OEM hardware manufacturers.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>Structural Mounting (5 Years)</span>
+                  <span>Authorized Partner Workmanship</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
-                  Engineering coverage for structural pergola integrity, anodized aluminum clamps,
-                  and weather-tight terrace pedestals.
+                  Structural mounting stability, anodized aluminum hardware, and roof
+                  weatherproofing workmanship coverage (typically 5 years) are provided by the
+                  authorized installation partner executing your signed installation contract.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1.5">
                 <div className="flex items-center gap-2 font-semibold text-xs text-[#171A20]">
                   <CheckCircle2 size={16} className="text-emerald-600" />
-                  <span>Annual Health Audits</span>
+                  <span>WAVENOX Support Coordination</span>
                 </div>
                 <p className="text-xs text-[#5C5E62]">
-                  Proactive thermographic string scans, torque checks, and digital generation
-                  telemetry audits during the warranty period.
+                  WAVENOX assists with inverter telemetry diagnostics, warranty documentation, and
+                  claim coordination with the applicable OEM manufacturer or authorized installation
+                  partner as documented in your project agreement.
                 </p>
               </div>
             </div>

@@ -271,7 +271,8 @@ function NetMeteringPage() {
           source: "net_metering",
           notes: `Feasibility check for USC: ${serviceNum} under ${selectedCode}. Sanctioned load: ${sanctionedLoadKw} kW. Permissible solar: ${permissibleSolarKw} kW.`,
           consent_given: true,
-          consent_version: "2026-09-v1",
+          consent_version: "2026-11-v2",
+          consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
         },
       });
@@ -284,7 +285,7 @@ function NetMeteringPage() {
 
       setSubmissionResult({
         referenceCode: res.referenceCode,
-        isDemo: res.isDemo ?? true,
+        isDemo: Boolean(res.isDemo),
       });
     } catch (err: unknown) {
       console.error("[NetMetering] Feasibility error:", err);
@@ -469,12 +470,14 @@ function NetMeteringPage() {
               <div className="p-6 rounded-[6px] bg-[#F0FDF4] border border-[#DCFCE7] text-center space-y-4">
                 <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
                 <h3 className="text-[17px] font-semibold text-[#166534]">
-                  Feasibility Request Logged ({submissionResult.referenceCode || "WNX-FEASIBILITY"})
+                  {submissionResult.isDemo
+                    ? `Demo Mode Simulation (${submissionResult.referenceCode || "WNX-DEMO"})`
+                    : `Feasibility Request Registered (${submissionResult.referenceCode || "WNX-FEASIBILITY"})`}
                 </h3>
                 <p className="text-[13px] text-[#15803D] max-w-md mx-auto leading-relaxed">
                   {submissionResult.isDemo
-                    ? `Portfolio Concept Demo: As WAVENOX is a design portfolio concept, no live automated query is dispatched to ${reg.code} servers. You can check your actual feeder load directly on the official ${reg.portalName} or discuss with our engineers on WhatsApp.`
-                    : `Your feasibility assessment request has been recorded for ${reg.code}. You can also view official feeder capacity guidelines directly on ${reg.portalName}.`}
+                    ? `Demo Mode Simulation: This feasibility check was generated in preview mode and was not saved to live customer storage or submitted to ${reg.code}. You can check official guidelines on ${reg.portalName} or contact WAVENOX directly on WhatsApp.`
+                    : `Your feasibility assessment request has been registered with WAVENOX for ${reg.code}. Our regulatory coordination team will review your connection parameters, and you can also view official utility guidelines on ${reg.portalName}.`}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                   <a
@@ -594,10 +597,11 @@ function NetMeteringPage() {
                     htmlFor="net-consent"
                     className="text-[12px] text-[#5C5E62] leading-relaxed cursor-pointer"
                   >
-                    I authorize WAVENOX to review my service connection details and contact me
-                    regarding net-metering feasibility in accordance with the{" "}
-                    <strong>DPDP Act 2023</strong>. Data is processed solely for feasibility
-                    estimation and never shared. You may withdraw consent anytime via our{" "}
+                    I authorize WAVENOX to review my service connection details, coordinate
+                    net-metering feasibility, and contact me in accordance with the{" "}
+                    <strong>DPDP Act 2023</strong>. Project details may be shared only as required
+                    with authorized WAVENOX delivery partners and utility authorities, and are never
+                    sold to third-party lead aggregators. See our{" "}
                     <a href="/legal/privacy" className="underline hover:text-[#171A20]">
                       Privacy Policy
                     </a>
