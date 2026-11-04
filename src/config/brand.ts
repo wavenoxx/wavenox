@@ -159,12 +159,12 @@ export function resolveBrandLeadMode(env: PublicEnvironment = {}): BrandLeadMode
  */
 export function resolveSiteStatus(env: PublicEnvironment = {}): BrandSiteStatus {
   const leadMode = resolveBrandLeadMode(env);
-  const explicitStatus = clean(env.VITE_SITE_STATUS).toLowerCase();
+  const explicitStatus = clean(env.VITE_SITE_STATUS || env.VITE_APP_STATUS).toLowerCase();
 
-  if (leadMode === "demo" || explicitStatus === "preview") {
+  if (leadMode === "demo" || explicitStatus === "preview" || explicitStatus === "demo") {
     return "preview";
   }
-  if (explicitStatus === "active") {
+  if (explicitStatus === "active" || explicitStatus === "live") {
     return "active";
   }
   if (explicitStatus === "pending") {

@@ -116,7 +116,7 @@ const AUDIT_BEFORE_AFTER = [
 const TECH_STACK_ITEMS = [
   {
     category: "Frontend Framework",
-    name: "React 18 & TypeScript",
+    name: "React 19 & TypeScript",
     detail: "Type-safe modular UI with strict linting",
   },
   {
@@ -141,8 +141,8 @@ const TECH_STACK_ITEMS = [
   },
   {
     category: "Unit & Logic Testing",
-    name: "Vitest (29 Tests)",
-    detail: "Tariff decoders, subsidy brackets, and degradation curves",
+    name: "Vitest Automated Suite",
+    detail: "Tariff decoders, subsidy brackets, and lead pipeline invariants",
   },
   {
     category: "Visual & A11y QA",
@@ -286,7 +286,7 @@ function AboutThisProjectPage() {
                 <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
               </div>
               <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                Accurate Central Financial Assistance (CFA) math: ₹33,000 for 1 kW, ₹66,000 for 2
+                Accurate Central Financial Assistance (CFA) math: ₹30,000 for 1 kW, ₹60,000 for 2
                 kW, and ₹78,000 cap for ≥3 kW. Features the complete 5-step national workflow and
                 statutory document checklist.
               </p>

@@ -256,21 +256,25 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
         },
       });
 
-      if (!res.success) {
-        setSubmitError(res.message);
+      if (!res.success || !res.referenceCode) {
+        setSubmitError(
+          res.message || "Failed to submit proposal request. Please reach us via WhatsApp.",
+        );
         setIsSubmitting(false);
         return;
       }
 
       const isDemoResult = Boolean(res.isDemo);
+      const nowIso = new Date().toISOString();
 
       if (typeof window !== "undefined") {
         try {
           sessionStorage.setItem(
             "wavenox_active_dossier",
             JSON.stringify({
-              refCode: res.referenceCode || "WNX-PROPOSAL",
+              refCode: res.referenceCode,
               isDemo: isDemoResult,
+              timestamp: nowIso,
               clientName: userName,
               phone: userPhone,
               address: address,
@@ -294,10 +298,12 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           sessionStorage.setItem(
             "wavenox_last_submission",
             JSON.stringify({
-              ref: res.referenceCode || "WNX-PROPOSAL",
-              name: userName,
+              ref: res.referenceCode,
+              referenceCode: res.referenceCode,
               isDemo: isDemoResult,
-              timestamp: new Date().toISOString(),
+              mode: res.mode || (isDemoResult ? "demo" : "live"),
+              source: "studio",
+              timestamp: nowIso,
             }),
           );
         } catch {
@@ -307,7 +313,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
       navigate({
         to: "/order/received",
-        search: { ref: res.referenceCode || "WNX-PROPOSAL" },
+        search: { ref: res.referenceCode },
       });
     } catch (err: unknown) {
       console.error("[SystemConfigurator] Submit error:", err);

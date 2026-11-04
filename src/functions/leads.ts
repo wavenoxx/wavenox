@@ -41,6 +41,25 @@ export function hasValidSupabaseServerConfig(
 }
 
 const UNAMBIGUOUS_CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+const VALID_LIVE_REF_REGEX = /^WNX-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/;
+const VALID_DEMO_REF_REGEX = /^WNX-DEMO-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/;
+
+/**
+ * Validates whether a reference code matches an official server-issued WAVENOX format.
+ */
+export function isValidReferenceCode(ref: string | null | undefined): boolean {
+  if (!ref) return false;
+  const trimmed = ref.trim();
+  return VALID_LIVE_REF_REGEX.test(trimmed) || VALID_DEMO_REF_REGEX.test(trimmed);
+}
+
+/**
+ * Checks whether a reference code is an explicit demo simulation reference code.
+ */
+export function isDemoReferenceCode(ref: string | null | undefined): boolean {
+  if (!ref) return false;
+  return VALID_DEMO_REF_REGEX.test(ref.trim());
+}
 
 /**
  * Generates an unambiguous reference code in the format WNX-XXXXXX (live)
@@ -330,21 +349,40 @@ function createSupabaseDatabaseClient(
   };
 }
 
-function isLegacySchemaCompatibilityError(error: {
-  code?: string;
-  message?: string;
-  details?: string;
-}): boolean {
+function isLegacySchemaCompatibilityError(
+  error: {
+    code?: string;
+    message?: string;
+    details?: string;
+  },
+  source: LeadSource,
+): boolean {
   const code = (error.code || "").toUpperCase();
   const msg = `${error.message || ""} ${error.details || ""}`.toLowerCase();
+
+  // Check constraint violation: only treat as v2 schema incompatibility if it is the source check constraint
+  if (code === "23514") {
+    return (
+      msg.includes("consultations_source_check") ||
+      msg.includes("source") ||
+      (!msg.trim() && !V2_LEGACY_SOURCES.has(source))
+    );
+  }
+
+  // Missing v3 column in PostgREST schema cache (PGRST204) or PostgreSQL undefined_column (42703)
+  if (code === "PGRST204" || code === "42703") {
+    return (
+      msg.includes("company_name") ||
+      msg.includes("company_url") ||
+      msg.includes("schema cache") ||
+      !msg.trim()
+    );
+  }
+
   return (
-    code === "PGRST204" ||
-    code === "42703" ||
-    code === "23514" ||
     msg.includes("consultations_source_check") ||
     msg.includes("company_name") ||
-    msg.includes("company_url") ||
-    msg.includes("schema cache")
+    msg.includes("company_url")
   );
 }
 
@@ -484,7 +522,17 @@ export async function processLeadSubmission(
 
     const cleanCompanyName = validData.company_name?.trim() || null;
     const cleanCompanyUrl = validData.company_url?.trim() || null;
+    const cleanEmail = validData.email?.trim() || null;
     const cleanNotes = validData.notes?.trim() || null;
+
+    const v3NotesParts: string[] = [];
+    if (cleanEmail && (!cleanNotes || !cleanNotes.includes(cleanEmail))) {
+      v3NotesParts.push(`Email: ${cleanEmail}`);
+    }
+    if (cleanNotes) {
+      v3NotesParts.push(cleanNotes);
+    }
+    const v3Notes = v3NotesParts.length > 0 ? v3NotesParts.join(" | ") : null;
 
     // Build v3 payload: preserves exact `source` ('drawer' | 'studio' | 'enterprise' | 'net_metering' | 'architects')
     // and dedicated `company_name` / `company_url` columns from migration v3.
@@ -501,10 +549,10 @@ export async function processLeadSubmission(
       battery_units: validData.battery_units ?? 0,
       net_price_inr: validData.net_price_inr ?? null,
       roof_area_sqft: validData.roof_area_sqft ?? null,
-      company_name: cleanCompanyName,
-      company_url: cleanCompanyUrl,
+      ...(cleanCompanyName ? { company_name: cleanCompanyName } : {}),
+      ...(cleanCompanyUrl ? { company_url: cleanCompanyUrl } : {}),
       source: validData.source,
-      notes: cleanNotes,
+      notes: v3Notes,
       consent_given: validData.consent_given,
       consent_version: validData.consent_version,
       consent_at: consentTimestampIso,
@@ -518,7 +566,7 @@ export async function processLeadSubmission(
     });
 
     // Documented Compatibility Fallback for v2 databases that have not yet run migration v3:
-    // Embeds original source and company metadata into `notes` so zero attribution is lost.
+    // Embeds original source, company metadata, and email into `notes` so zero attribution is lost.
     const buildV2FallbackPayload = (refCode: string): Record<string, unknown> => {
       const noteParts: string[] = [];
       if (!V2_LEGACY_SOURCES.has(validData.source)) {
@@ -530,6 +578,9 @@ export async function processLeadSubmission(
         );
       } else if (cleanCompanyUrl) {
         noteParts.push(`Website: ${cleanCompanyUrl}`);
+      }
+      if (cleanEmail && (!cleanNotes || !cleanNotes.includes(cleanEmail))) {
+        noteParts.push(`Email: ${cleanEmail}`);
       }
       if (cleanNotes) {
         noteParts.push(cleanNotes);
@@ -575,12 +626,12 @@ export async function processLeadSubmission(
 
     // If database has not yet applied v3 migration (missing company_name/company_url or v2 source check constraint),
     // fall back to the v2-compatible payload while preserving original source and company metadata in `notes`.
-    if (error && isLegacySchemaCompatibilityError(error)) {
+    if (error && isLegacySchemaCompatibilityError(error, validData.source)) {
       console.warn(
         `[submitLead] Database schema compatibility fallback triggered (${error.code || "constraint"}). Retrying with v2-compatible payload while preserving source="${validData.source}" in notes.`,
       );
       activeBuilder = buildV2FallbackPayload;
-      sourceFallbackUsed = !V2_LEGACY_SOURCES.has(validData.source);
+      sourceFallbackUsed = true;
       const v2Retry = await dbClient.insertConsultation(activeBuilder(activeRefCode));
       insertedRows = v2Retry.data;
       error = v2Retry.error;
@@ -610,7 +661,12 @@ export async function processLeadSubmission(
             "A consultation request with this phone number was submitted less than a minute ago. Our solar coordination team will reach out shortly.",
         };
       }
-      console.error("[submitLead] Database error:", error);
+      // Log only sanitized error metadata (never `error.details` which can include row PII)
+      console.error("[submitLead] Database error:", {
+        code: error?.code ?? "unknown",
+        message: error?.message ?? "No rows returned",
+        source: validData.source,
+      });
       return {
         success: false,
         isDemo: false,

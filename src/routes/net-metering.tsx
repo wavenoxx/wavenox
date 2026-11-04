@@ -19,6 +19,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { DISCOMS } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
+import { getStoredTelemetry } from "@/lib/telemetry";
 import { PmSuryaGharJourney } from "@/components/PmSuryaGharJourney";
 
 export const Route = createFileRoute("/net-metering")({
@@ -259,6 +260,7 @@ function NetMeteringPage() {
     setSubmitError(null);
 
     try {
+      const telemetry = getStoredTelemetry();
       const res = await submitLead({
         data: {
           name: `Consumer USC-${serviceNum.trim()}`,
@@ -274,13 +276,29 @@ function NetMeteringPage() {
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
+          ...telemetry,
         },
       });
 
-      if (!res.success) {
-        setSubmitError(res.message);
+      if (!res.success || !res.referenceCode) {
+        setSubmitError(
+          res.message || "Failed to record feasibility check. Please reach us via WhatsApp.",
+        );
         setIsSubmitting(false);
         return;
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            referenceCode: res.referenceCode,
+            isDemo: Boolean(res.isDemo),
+            mode: res.mode || (res.isDemo ? "demo" : "live"),
+            source: "net_metering",
+            timestamp: new Date().toISOString(),
+          }),
+        );
       }
 
       setSubmissionResult({

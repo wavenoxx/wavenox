@@ -18,6 +18,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { submitLead } from "@/functions/leads";
+import { getStoredTelemetry } from "@/lib/telemetry";
 
 export const Route = createFileRoute("/architects")({
   head: () => ({
@@ -145,6 +146,7 @@ function ArchitectsPage() {
     setSubmitError(null);
 
     try {
+      const telemetry = getStoredTelemetry();
       const res = await submitLead({
         data: {
           name: contactName.trim(),
@@ -158,13 +160,29 @@ function ArchitectsPage() {
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
           hp_extra: hpExtra.trim() || undefined,
+          ...telemetry,
         },
       });
 
-      if (!res.success) {
-        setSubmitError(res.message);
+      if (!res.success || !res.referenceCode) {
+        setSubmitError(
+          res.message || "Failed to record architectural inquiry. Please reach us via WhatsApp.",
+        );
         setIsSubmitting(false);
         return;
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            referenceCode: res.referenceCode,
+            isDemo: Boolean(res.isDemo),
+            mode: res.mode || (res.isDemo ? "demo" : "live"),
+            source: "architects",
+            timestamp: new Date().toISOString(),
+          }),
+        );
       }
 
       setSubmissionResult({
@@ -477,7 +495,7 @@ function ArchitectsPage() {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !consentGiven}
                   className="w-full h-12 rounded-[6px] bg-[#171A20] text-[#FFFFFF] text-[14px] font-medium tracking-wide hover:bg-[#2C3038] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FileCode2 className="w-4 h-4 text-[#F57C00]" />

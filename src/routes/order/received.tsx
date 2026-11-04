@@ -10,6 +10,20 @@ import {
   type DossierData,
 } from "@/components/ArchitecturalDossierModal";
 import { PRODUCTS_CONFIG } from "@/config/products";
+import { isDemoReferenceCode, isValidReferenceCode } from "@/functions/leads";
+
+const MAX_SESSION_CONFIRMATION_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function isFreshSessionRecord(timestamp: unknown): boolean {
+  if (typeof timestamp !== "string" || !timestamp.trim()) {
+    return true;
+  }
+  const parsedMs = Date.parse(timestamp);
+  if (Number.isNaN(parsedMs)) {
+    return false;
+  }
+  return Date.now() - parsedMs <= MAX_SESSION_CONFIRMATION_AGE_MS;
+}
 
 interface OrderReceivedSearch {
   ref: string;
@@ -60,16 +74,29 @@ function OrderReceivedPage() {
   const [isDemoSubmission, setIsDemoSubmission] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
+    setVerifiedRef(null);
+    setDossierData(null);
+    setIsDemoSubmission(false);
+
+    if (typeof window !== "undefined" && isValidReferenceCode(ref)) {
       try {
-        let resolvedDemoFlag = false;
+        let resolvedDemoFlag = BRAND_CONFIG.isDemoMode || isDemoReferenceCode(ref);
         const storedSub = sessionStorage.getItem("wavenox_last_submission");
         if (storedSub) {
           const parsedSub = JSON.parse(storedSub);
-          if (parsedSub?.ref && parsedSub.ref === ref) {
+          const storedRef = parsedSub?.ref || parsedSub?.referenceCode;
+          if (
+            storedRef &&
+            storedRef === ref &&
+            isValidReferenceCode(storedRef) &&
+            isFreshSessionRecord(parsedSub?.timestamp)
+          ) {
             resolvedDemoFlag =
-              Boolean(parsedSub.isDemo) || String(parsedSub.ref).startsWith("WNX-DEMO-");
-            setVerifiedRef(parsedSub.ref);
+              resolvedDemoFlag ||
+              Boolean(parsedSub.isDemo) ||
+              parsedSub.mode === "demo" ||
+              isDemoReferenceCode(storedRef);
+            setVerifiedRef(storedRef);
             setIsDemoSubmission(resolvedDemoFlag);
           }
         }
@@ -77,11 +104,16 @@ function OrderReceivedPage() {
         const storedDossier = sessionStorage.getItem("wavenox_active_dossier");
         if (storedDossier) {
           const parsedDossier = JSON.parse(storedDossier);
-          if (parsedDossier?.refCode && parsedDossier.refCode === ref) {
+          if (
+            parsedDossier?.refCode &&
+            parsedDossier.refCode === ref &&
+            isValidReferenceCode(parsedDossier.refCode) &&
+            isFreshSessionRecord(parsedDossier?.timestamp)
+          ) {
             const isDossierDemo =
-              typeof parsedDossier.isDemo === "boolean"
-                ? parsedDossier.isDemo
-                : resolvedDemoFlag || String(parsedDossier.refCode).startsWith("WNX-DEMO-");
+              resolvedDemoFlag ||
+              Boolean(parsedDossier.isDemo) ||
+              isDemoReferenceCode(parsedDossier.refCode);
             setVerifiedRef(parsedDossier.refCode);
             setDossierData(parsedDossier);
             setIsDemoSubmission(isDossierDemo);

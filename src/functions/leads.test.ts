@@ -6,6 +6,8 @@ import {
   normalizeIndianPhone,
   isValidCompanyUrl,
   generateReferenceCode,
+  isValidReferenceCode,
+  isDemoReferenceCode,
   SUPPORTED_LEAD_SOURCES,
   type LeadDatabaseClient,
   type LeadSubmissionInput,
@@ -151,15 +153,45 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
       expect(saved.company_name).toBe("Apex Tech Park Pvt Ltd");
       expect(saved.company_url).toBe("https://apextech.in");
       expect(saved.source).toBe("enterprise");
+      expect(saved.notes).toContain("Email: vikram@example.com");
       expect(saved.consent_given).toBe(true);
       expect(saved.consent_version).toBe("2026-11-v2");
       expect(saved.consent_at).toBe("2026-11-04T18:00:00.000Z");
     });
+
+    it("omits null company_name and company_url keys from v3 payload when not provided", async () => {
+      const capturedPayloads: Array<Record<string, unknown>> = [];
+      const dbClient: LeadDatabaseClient = {
+        async insertConsultation(payload) {
+          capturedPayloads.push(payload);
+          return { data: [{ id: "uuid-drawer-123" }], error: null };
+        },
+      };
+
+      const res = await processLeadSubmission(
+        {
+          ...BASE_VALID_INPUT,
+          company_name: undefined,
+          company_url: undefined,
+          source: "drawer",
+        },
+        {
+          env: { LEAD_MODE: "live" },
+          dbClient,
+        },
+      );
+
+      expect(res.success).toBe(true);
+      expect(capturedPayloads).toHaveLength(1);
+      expect("company_name" in capturedPayloads[0]).toBe(false);
+      expect("company_url" in capturedPayloads[0]).toBe(false);
+      expect(capturedPayloads[0].notes).toContain("Email: vikram@example.com");
+    });
   });
 
-  describe("4. Database Insertion Failure Handling", () => {
-    it("returns success: false and no reference code when database insertion fails", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => {});
+  describe("4. Database Insertion Failure Handling & Sanitized Non-PII Logging", () => {
+    it("returns success: false, no reference code, and never logs error.details containing customer PII", async () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const dbClient: LeadDatabaseClient = {
         async insertConsultation() {
@@ -168,6 +200,7 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
             error: {
               code: "50000",
               message: "Connection terminated unexpectedly",
+              details: "Failing row contains (Vikram Aditya, +919876543210, vikram@example.com)",
             },
           };
         },
@@ -183,6 +216,36 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
       expect(res.mode).toBe("live");
       expect(res.referenceCode).toBeUndefined();
       expect(res.message).toContain("Unable to process your request");
+
+      const loggedString = JSON.stringify(errorSpy.mock.calls);
+      expect(loggedString).not.toContain("+919876543210");
+      expect(loggedString).not.toContain("Vikram Aditya");
+      expect(loggedString).not.toContain("vikram@example.com");
+    });
+
+    it("surfaces a clear user-friendly message when PostgreSQL trg_check_recent_submission rejects duplicate phone within 60s", async () => {
+      const dbClient: LeadDatabaseClient = {
+        async insertConsultation() {
+          return {
+            data: null,
+            error: {
+              code: "P0001",
+              message:
+                "A consultation with this phone number was submitted less than 60 seconds ago.",
+            },
+          };
+        },
+      };
+
+      const res = await processLeadSubmission(BASE_VALID_INPUT, {
+        env: { LEAD_MODE: "live" },
+        dbClient,
+      });
+
+      expect(res.success).toBe(false);
+      expect(res.isDemo).toBe(false);
+      expect(res.referenceCode).toBeUndefined();
+      expect(res.message).toContain("submitted less than a minute ago");
     });
 
     it("retries once with a fresh reference code if a 23505 unique reference_code collision occurs", async () => {
@@ -283,7 +346,39 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
       expect(payloads[1].source).toBe("drawer");
       expect(payloads[1].notes).toContain("[Origin Source: architects]");
       expect(payloads[1].notes).toContain("Company: Studio Deccan (studiodeccan.in)");
+      expect(payloads[1].notes).toContain("Email: vikram@example.com");
       expect(payloads[1].notes).toContain("Villa project in Jubilee Hills");
+    });
+
+    it("does NOT trigger v2 fallback retry for unrelated 23514 check constraint violations", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      let attempts = 0;
+
+      const dbClient: LeadDatabaseClient = {
+        async insertConsultation() {
+          attempts += 1;
+          return {
+            data: null,
+            error: {
+              code: "23514",
+              message:
+                'new row for relation "consultations" violates check constraint "consultations_property_tier_check"',
+            },
+          };
+        },
+      };
+
+      const res = await processLeadSubmission(
+        {
+          ...BASE_VALID_INPUT,
+          source: "architects",
+        },
+        { env: { LEAD_MODE: "live" }, dbClient },
+      );
+
+      expect(attempts).toBe(1);
+      expect(res.success).toBe(false);
+      expect(res.referenceCode).toBeUndefined();
     });
   });
 
@@ -363,11 +458,24 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
       expect(sixthRes.message).toContain("Too many requests");
     });
 
-    it("generates distinct live vs demo reference code formats", () => {
-      expect(generateReferenceCode("live")).toMatch(/^WNX-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/);
-      expect(generateReferenceCode("demo")).toMatch(
-        /^WNX-DEMO-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/,
-      );
+    it("generates and validates distinct live vs demo reference code formats", () => {
+      const liveCode = generateReferenceCode("live");
+      const demoCode = generateReferenceCode("demo");
+
+      expect(liveCode).toMatch(/^WNX-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/);
+      expect(demoCode).toMatch(/^WNX-DEMO-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/);
+
+      expect(isValidReferenceCode(liveCode)).toBe(true);
+      expect(isValidReferenceCode(demoCode)).toBe(true);
+      expect(isDemoReferenceCode(liveCode)).toBe(false);
+      expect(isDemoReferenceCode(demoCode)).toBe(true);
+
+      // Rejects placeholder or spoofed strings
+      expect(isValidReferenceCode("WNX-PROPOSAL")).toBe(false);
+      expect(isValidReferenceCode("WNX-ENTERPRISE")).toBe(false);
+      expect(isValidReferenceCode("WNX-101")).toBe(false);
+      expect(isValidReferenceCode("WNX-DEMO-101")).toBe(false);
+      expect(isValidReferenceCode("")).toBe(false);
     });
   });
 });

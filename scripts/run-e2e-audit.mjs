@@ -240,8 +240,43 @@ async function runAudit() {
       await deployPage.close();
     }
 
-    // 10. Honest Demo End-State Verification
-    console.log("Verifying honest demo end-state on /deploy proposal submission...");
+    // 10. /order/received Stale & Missing Session-State Protection
+    console.log("Verifying /order/received missing and stale session-storage protection...");
+    {
+      const page = await context.newPage();
+      await page.goto(`${BASE_URL}/order/received?ref=WNX-DEMO-ABCDEF`, {
+        waitUntil: "networkidle",
+      });
+      const missingSessionBody = await page.textContent("body");
+      if (!missingSessionBody.includes("No active submission was found")) {
+        failures.push(
+          "/order/received did not show fallback overview when session storage was missing",
+        );
+      }
+
+      // Now inject a stale (>24h old) session record and verify it still refuses to confirm
+      await page.evaluate(() => {
+        sessionStorage.setItem(
+          "wavenox_last_submission",
+          JSON.stringify({
+            ref: "WNX-DEMO-ABCDEF",
+            isDemo: true,
+            timestamp: "2020-01-01T00:00:00.000Z",
+          }),
+        );
+      });
+      await page.reload({ waitUntil: "networkidle" });
+      const staleSessionBody = await page.textContent("body");
+      if (!staleSessionBody.includes("No active submission was found")) {
+        failures.push(
+          "/order/received accepted a stale (>24h) sessionStorage record instead of showing fallback overview",
+        );
+      }
+      await page.close();
+    }
+
+    // 11. Explicit Demo End-State Verification on /deploy
+    console.log("Verifying explicit demo end-state on /deploy proposal submission...");
     {
       const page = await context.newPage();
       await page.goto(`${BASE_URL}/deploy`, { waitUntil: "networkidle" });
@@ -255,18 +290,47 @@ async function runAudit() {
 
       // Submit
       await page.click('button[type="submit"]');
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(1200);
 
-      // Verify honest concept banner
+      // Verify explicit Demo Mode confirmation state
       const confirmationText = await page.textContent("body");
-      const hasHonestDemo =
-        confirmationText.includes("Portfolio Concept") ||
-        confirmationText.includes("Feasibility Request") ||
-        confirmationText.includes("WNX-PREVIEW") ||
-        confirmationText.includes("demo");
+      const hasExplicitDemoBanner =
+        confirmationText.includes("Demo Configuration Ready") &&
+        confirmationText.includes("Demo Mode Simulation Notice:") &&
+        confirmationText.includes("WNX-DEMO-");
 
-      if (!hasHonestDemo) {
-        failures.push("Proposal form did not display honest portfolio demo confirmation state");
+      if (!hasExplicitDemoBanner) {
+        failures.push(
+          "Proposal form in DEMO mode did not display 'Demo Configuration Ready' and 'WNX-DEMO-' reference code",
+        );
+      }
+      if (confirmationText.includes("Portfolio Concept")) {
+        failures.push("Customer-facing confirmation page still contains 'Portfolio Concept' text");
+      }
+      await page.close();
+    }
+
+    // 12. Multi-Viewport Responsive Overflow Check (Mobile 390x844, Tablet 768x1024, Desktop 1440x900)
+    console.log(
+      "Verifying zero horizontal overflow across Mobile (390x844) and Tablet (768x1024)...",
+    );
+    const VIEWPORTS = [
+      { label: "mobile-390x844", width: 390, height: 844 },
+      { label: "tablet-768x1024", width: 768, height: 1024 },
+    ];
+    for (const vp of VIEWPORTS) {
+      const page = await context.newPage();
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      for (const route of ALL_ROUTES) {
+        await page.goto(`${BASE_URL}${route.path}`, { waitUntil: "networkidle", timeout: 30000 });
+        const overflowPx = await page.evaluate(
+          () => document.documentElement.scrollWidth - window.innerWidth,
+        );
+        if (overflowPx > 2) {
+          failures.push(
+            `${route.path} (${vp.label}): Horizontal overflow detected (${overflowPx}px > 0)`,
+          );
+        }
       }
       await page.close();
     }

@@ -193,8 +193,9 @@ function TermsPage() {
                 </div>
                 <p className="text-xs text-[#5C5E62]">
                   Structural mounting stability, anodized aluminum hardware, and roof
-                  weatherproofing workmanship coverage (typically 5 years) are provided by the
-                  authorized installation partner executing your signed installation contract.
+                  weatherproofing workmanship coverage are provided directly by the authorized
+                  installation partner executing your project, for the duration and scope defined in
+                  your signed installation contract.
                 </p>
               </div>
 

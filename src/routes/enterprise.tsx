@@ -152,8 +152,10 @@ function EnterprisePage() {
         },
       });
 
-      if (!res.success) {
-        setSubmitError(res.message);
+      if (!res.success || !res.referenceCode) {
+        setSubmitError(
+          res.message || "Failed to submit proposal request. Please reach us via WhatsApp.",
+        );
         setIsSubmitting(false);
         return;
       }
@@ -162,9 +164,11 @@ function EnterprisePage() {
         sessionStorage.setItem(
           "wavenox_last_submission",
           JSON.stringify({
-            ref: res.referenceCode || "WNX-ENTERPRISE",
-            name: clientName,
+            ref: res.referenceCode,
+            referenceCode: res.referenceCode,
             isDemo: Boolean(res.isDemo),
+            mode: res.mode || (res.isDemo ? "demo" : "live"),
+            source: "enterprise",
             timestamp: new Date().toISOString(),
           }),
         );
@@ -172,7 +176,7 @@ function EnterprisePage() {
 
       navigate({
         to: "/order/received",
-        search: { ref: res.referenceCode || "WNX-ENTERPRISE" },
+        search: { ref: res.referenceCode },
       });
     } catch (err: unknown) {
       console.error("[EnterprisePage] RFP error:", err);

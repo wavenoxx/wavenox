@@ -100,6 +100,10 @@ describe("Brand & Business Configuration Integrity (Step 1)", () => {
     expect(activeBrand.leadMode).toBe("live");
     expect(activeBrand.isDemoMode).toBe(false);
     expect(activeBrand.status).toBe("active");
+
+    // Supports VITE_APP_STATUS alias cleanly
+    expect(resolveSiteStatus({ LEAD_MODE: "live", VITE_APP_STATUS: "live" })).toBe("active");
+    expect(resolveSiteStatus({ LEAD_MODE: "live", VITE_APP_STATUS: "demo" })).toBe("preview");
   });
 
   it("accurately describes WAVENOX's customer-facing coordinated delivery model", () => {
