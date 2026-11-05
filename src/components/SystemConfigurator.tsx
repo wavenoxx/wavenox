@@ -611,6 +611,13 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <span>{calculation.roofFeasibility.warning}</span>
               </div>
             )}
+            {calculation.sanctionedLoadFeasibility.requiresLoadEnhancement &&
+              calculation.sanctionedLoadFeasibility.warning && (
+                <div className="p-3 rounded-[4px] bg-[#FFF8E1] border border-[#F59E0B]/40 text-[12px] text-[#92400E] flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#D97706]" />
+                  <span>{calculation.sanctionedLoadFeasibility.warning}</span>
+                </div>
+              )}
           </div>
 
           {/* Section 3: Omnigrid Battery Storage */}
@@ -811,38 +818,51 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div className="pt-2 mt-2 border-t border-[#E3E4E6] space-y-1.5 text-[12px] text-[#5C5E62]">
                   <div className="flex justify-between">
                     <span>
-                      Year 0 Customer Margin (
-                      {Math.round(calculation.financing.customerMarginPct * 100)}% Down Payment)
+                      Year 0 Customer Down Payment (
+                      {Math.round(calculation.financing.customerMarginPct * 100)}% Solar Margin
+                      {selectedBatteryUnits > 0 ? " + Battery Outlay" : ""})
                     </span>
                     <span className="font-medium tabular-nums text-[#171A20]">
                       ₹{formatInr(calculation.financing.customerDownPaymentInr)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Financed Loan Principal (90% of Gross Cost)</span>
+                    <span>Initial Solar Loan Principal (90% of Solar Cost)</span>
                     <span className="font-medium tabular-nums text-[#171A20]">
-                      ₹{formatInr(calculation.financing.loanPrincipalInr)}
+                      ₹{formatInr(calculation.financing.initialLoanPrincipalInr)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>
-                      Interest Rate ({calculation.financing.annualInterestRatePct}% p.a. floating ·{" "}
-                      {calculation.financing.tenureMonths} mos)
+                      Initial EMI (Months 1–{calculation.financing.subsidyCreditMonth} ·{" "}
+                      {calculation.financing.annualInterestRatePct}% p.a. floating)
                     </span>
                     <span className="font-medium tabular-nums text-[#171A20]">
-                      ~₹{formatInr(monthlyEmiInr)} / mo
+                      ~₹{formatInr(calculation.financing.initialMonthlyEmiInr)} / mo
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      Month-{calculation.financing.subsidyCreditMonth} Loan Principal Prepayment via
+                      DBT Subsidy*
+                    </span>
+                    <span className="font-medium tabular-nums text-[#1B5E20]">
+                      -₹{formatInr(calculation.financing.subsidyCreditedToLoanInr)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      Post-Subsidy Recast EMI (Months {calculation.financing.subsidyCreditMonth + 1}
+                      –{calculation.financing.tenureMonths} · Indicative)
+                    </span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ~₹{formatInr(calculation.financing.postSubsidyMonthlyEmiInr)} / mo
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Total 5-Year Loan Interest Outflow</span>
                     <span className="font-medium tabular-nums text-[#171A20]">
                       ₹{formatInr(calculation.financing.totalInterestInr)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Year 1 Post-Commissioning DBT Credit (Conditional)*</span>
-                    <span className="font-medium tabular-nums text-[#1B5E20]">
-                      +₹{formatInr(calculation.cashFlowLedger.year1SubsidyCreditInr)}
                     </span>
                   </div>
                   {!calculation.financing.isSchemeEligible && (
@@ -856,9 +876,11 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               <p className="text-[12px] text-[#5C5E62] leading-tight pt-0.5">
                 *Potential DBT subsidy is not an upfront invoice discount; it is conditional on
                 DCR-compliant solar modules, DISCOM bi-directional meter commissioning, and no prior
-                central rooftop solar subsidy, and is credited post-commissioning to your
-                Aadhaar-linked bank account. Standalone battery storage is excluded from central
-                subsidy.
+                central rooftop solar subsidy. Under SBI PM Surya Ghar loan rules,
+                post-commissioning subsidy is credited directly into the linked SBI loan account to
+                prepay loan principal with zero prepayment penalty (or to your Aadhaar-linked bank
+                account for direct cash purchases). Standalone battery storage is excluded from
+                central subsidy and scheme financing.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between text-[12px] text-[#5C5E62]">
                 <span>

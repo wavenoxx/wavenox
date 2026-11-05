@@ -29,33 +29,35 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     sourceUrl: "https://pmsuryaghar.gov.in",
     verifiedDate: "Nov 2026",
     notes:
-      "Direct Benefit Transfer credited directly to Aadhaar-linked consumer bank account after DISCOM net-meter commissioning. Standalone battery storage and commercial installations are ineligible.",
+      "Direct Benefit Transfer credited post-commissioning after DISCOM net-meter activation. When financed via an SBI PM Surya Ghar loan linked on the National Portal, the subsidy is credited directly into the borrower's SBI loan account to prepay loan principal with zero prepayment penalty. Standalone battery storage and commercial installations are ineligible.",
   },
   tgercTariffs: {
     id: "tgercTariffs",
-    metric: "Telangana Residential Electricity Tariffs (LT-I A/B/C)",
-    value: "₹1.95 to ₹10.00 / kWh",
+    metric: "Telangana Residential Tariffs & Rooftop Net-Metering (LT-I A/B/C)",
+    value: "₹1.95 to ₹10.00 / kWh (Retail) · ₹2.65 / kWh (Indicative Surplus)",
     formulaOrBasis:
       "LT-I(A) ≤100 u: 0–50 @ ₹1.95, 51–100 @ ₹3.10; LT-I(B) 101–200 u: 0–100 @ ₹3.40, 101–200 @ ₹4.80; LT-I(C) >200 u: 0–200 @ ₹5.10, 201–300 @ ₹7.70, 301–400 @ ₹9.00, 401–800 @ ₹9.50, >800 @ ₹10.00 + Customer/Fixed Charges & ₹0.06/kWh duty",
     authority: "Telangana Electricity Regulatory Commission (TGERC)",
-    sourceDoc: "Retail Supply Tariff Orders for FY 2025-26 & FY 2026-27",
+    sourceDoc:
+      "Retail Supply Tariff Orders (FY 2025-26 & FY 2026-27) & TGERC Regulation No. 1 of 2025 (15 Nov 2025)",
     sourceUrl: "https://www.tgerc.telangana.gov.in",
     verifiedDate: "Nov 2026",
     notes:
-      "Gruha Jyothi scheme waives billing up to 200 units/month for eligible residential households; net-metered surplus settled at ₹3.55/kWh APPC.",
+      "Under TGERC Regulation No. 1 of 2025 (Clauses 8.1.1–8.1.5), import/export netting occurs per monthly billing period. Excess exported units in a billing period are valued at the lowest Section 63 competitive solar tariff discovered by Telangana DISCOMs in the preceding FY (₹2.65/kWh indicative benchmark). Permissible capacity: 100% of sanctioned load (Residential/Govt) and 80% of sanctioned load (C&I).",
   },
   apercTariffs: {
     id: "apercTariffs",
-    metric: "Andhra Pradesh Residential Electricity Tariffs (LT-I A)",
-    value: "₹1.90 to ₹9.75 / kWh",
+    metric: "Andhra Pradesh Residential Tariffs & Rooftop Net-Metering (LT-I A)",
+    value: "₹1.90 to ₹9.75 / kWh (Retail) · ₹2.09 / kWh (Indicative Surplus)",
     formulaOrBasis:
       "Telescopic slabs across all domestic connections: 0–30 @ ₹1.90; 31–75 @ ₹3.00; 76–125 @ ₹4.50; 126–225 @ ₹6.00; 226–400 @ ₹8.75; >400 @ ₹9.75 + Customer/Fixed Charges & ₹0.06/kWh duty",
     authority: "Andhra Pradesh Electricity Regulatory Commission (APERC)",
-    sourceDoc: "Retail Supply Tariff Orders for FY 2025-26 & FY 2026-27 (APEPDCL & APSPDCL)",
+    sourceDoc:
+      "Retail Supply Tariff Orders (FY 2025-26 & FY 2026-27) & APERC Regulation No. 4 of 2023",
     sourceUrl: "https://aperc.gov.in",
     verifiedDate: "Nov 2026",
     notes:
-      "Unified 6-tier telescopic domestic tariff schedule applicable across APEPDCL and APSPDCL.",
+      "Unified 6-tier telescopic domestic tariff schedule across APEPDCL & APSPDCL. Under APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5), energy settlement is performed per monthly billing period (₹2.09/kWh indicative surplus export benchmark), with permissible capacity up to 100% of sanctioned load / contracted demand (80% DT hosting cap).",
   },
   hyderabadSolarYield: {
     id: "hyderabadSolarYield",
@@ -85,9 +87,10 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
   sbiSolarLoan: {
     id: "sbiSolarLoan",
     metric: "PM Surya Ghar Concessional Solar Loan",
-    value: "6.00% p.a. (≤ ₹2L) / 8.15% p.a. (₹2L–₹6L) floating (eff. 15 Oct 2026)",
+    value:
+      "6.00% p.a. (≤ ₹2L, ≤ 3 kW) / 8.15% p.a. (₹2L–₹6L, > 3–10 kW) floating (eff. 15 Oct 2026)",
     formulaOrBasis:
-      "Equal Monthly Installment (EMI) calculated across 5-year (60 month) repayment tenure with 10% borrower margin (90% financing) and nil collateral up to ₹2,00,000. Above ₹6,00,000 scheme ceiling, an unverified 9.15% p.a. indicative rate is modeled.",
+      "90% financing of eligible rooftop solar turnkey cost (10% borrower margin) over 60 months. Post-commissioning MNRE central subsidy is credited directly into the borrower's linked SBI loan account (modeled in Month 3) to prepay loan principal with zero prepayment penalty, reducing remaining monthly EMI or shortening tenure.",
     authority: "State Bank of India (SBI)",
     sourceDoc:
       "SBI Green Loans — PM Surya Ghar Loan for Solar Roof Top (Effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
@@ -95,7 +98,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
       "https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top",
     verifiedDate: "Nov 2026",
     notes:
-      "Rates are floating (linked to SBI EBLR) and conditional on borrower CIBIL appraisal and bank sanction. Concessional PM Surya Ghar loan ceiling is ₹6,00,000.",
+      "Rates are floating (linked to SBI EBLR) and conditional on borrower CIBIL appraisal and bank sanction. Concessional PM Surya Ghar loan ceiling is ₹6,00,000 for systems up to 10 kW; standalone battery storage capex is excluded from scheme financing.",
   },
   section33TaxDepreciation: {
     id: "section33TaxDepreciation",

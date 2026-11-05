@@ -132,6 +132,73 @@ describe("Solar Engine — estimate() Core & Regional Calculations", () => {
     expect(hybrid.avoidedBillSavingsInr).toBe(solarOnly.avoidedBillSavingsInr);
   });
 
+  it("proves 12-month billing-period settlement prevents cross-period retail offset vs annual aggregate netting and models seasonal import/export profiles (Task A1–A8)", () => {
+    // 1. Uniform monthly consumption where annual generation (~10.38 MWh) is near annual consumption (~10.03 MWh):
+    // Spring peak solar months (Mar/Apr/May) generate excess exports while monsoon months (Jul/Aug) have net grid imports.
+    // Annual aggregate netting falsely offsets monsoon imports with spring exports at retail slab rates!
+    const boundaryCase = estimate({
+      monthlyBillInr: 7200,
+      discomCode: "TGSPDCL",
+      panels: 12, // 6.96 kW -> ~10,370 kWh/yr
+    });
+    expect(boundaryCase.energyBalance.settlementCycle).toBe("MONTHLY_BILLING_PERIOD");
+    expect(boundaryCase.energyBalance.consumptionProfileBasis).toBe("UNIFORM_MONTHLY_ASSUMPTION");
+    expect(boundaryCase.energyBalance.monthlyLedger).toHaveLength(12);
+    expect(
+      boundaryCase.energyBalance.annualAggregateComparison.crossPeriodOffsetPreventedKwh,
+    ).toBeGreaterThan(0);
+    expect(
+      boundaryCase.energyBalance.annualAggregateComparison.savingsDifferenceVsAnnualAggregateInr,
+    ).toBeGreaterThan(0);
+    expect(boundaryCase.avoidedBillSavingsInr).toBeLessThan(
+      boundaryCase.energyBalance.annualAggregateComparison.annualAggregateAvoidedBillSavingsInr,
+    );
+
+    // 2. Explicit 12-month seasonal consumption profile (Summer AC heavy, Monsoon moderate, Winter light)
+    // Jan..Dec units: low in winter (250 u), high in summer (950 u), moderate in monsoon (650 u)
+    const seasonalConsumption = [250, 300, 550, 850, 950, 800, 650, 650, 550, 450, 300, 250];
+    const seasonalCase = estimate({
+      monthlyBillInr: 5000,
+      discomCode: "TGSPDCL",
+      panels: 9, // 5.22 kW -> ~7,778 kWh/yr vs 6,550 kWh/yr consumption
+      monthlyConsumptionByMonth: seasonalConsumption,
+    });
+
+    expect(seasonalCase.energyBalance.consumptionProfileBasis).toBe("ACTUAL_OR_SEASONAL_12_MONTH");
+    expect(seasonalCase.annualConsumptionKwh).toBe(6550);
+
+    // Winter month (Jan, index 0: 250 units consumption vs ~648 kWh generation): excess export > 0, residual import = 0, residual bill = unavoidable fixed/customer charges only
+    const jan = seasonalCase.energyBalance.monthlyLedger[0];
+    expect(jan.consumptionKwh).toBe(250);
+    expect(jan.residualGridImportKwh).toBe(0);
+    expect(jan.billingPeriodSurplusKwh).toBeGreaterThan(0);
+    expect(jan.postSolarBillInr).toBe(jan.unavoidableFixedCustomerChargesInr);
+
+    // Peak summer/monsoon months (May index 4: 950 u; Aug index 7: 650 u): net grid import > 0, excess export = 0
+    const may = seasonalCase.energyBalance.monthlyLedger[4];
+    const aug = seasonalCase.energyBalance.monthlyLedger[7];
+    expect(may.residualGridImportKwh).toBeGreaterThan(0);
+    expect(may.billingPeriodSurplusKwh).toBe(0);
+    expect(aug.residualGridImportKwh).toBeGreaterThan(0);
+    expect(aug.billingPeriodSurplusKwh).toBe(0);
+
+    // Annual aggregate comparison proves winter exports were prevented from offsetting summer/monsoon imports at retail slab rates
+    expect(
+      seasonalCase.energyBalance.annualAggregateComparison.crossPeriodOffsetPreventedKwh,
+    ).toBeGreaterThan(500);
+    expect(
+      seasonalCase.energyBalance.annualAggregateComparison.savingsDifferenceVsAnnualAggregateInr,
+    ).toBeGreaterThan(1000);
+
+    // Surplus export rate is ₹2.65/kWh (INDICATIVE under TGERC Reg. No. 1 of 2025 Clause 8.1.3)
+    expect(seasonalCase.assumptions.discom.exportRateInr).toBe(2.65);
+    expect(seasonalCase.assumptions.discom.exportRateStatus).toBe("INDICATIVE");
+    expect(seasonalCase.verificationBreakdown.surplusExportRate).toBe("INDICATIVE");
+    expect(seasonalCase.surplusExportCreditInr).toBe(
+      Math.round(seasonalCase.netAnnualSurplusKwh * 2.65),
+    );
+  });
+
   it("assigns VERIFIED status to Telangana & AP DISCOMs, INDICATIVE to regional benchmarks, and withholds financial figures for UNAVAILABLE unknown codes (P1-E)", () => {
     const tg = estimate({ monthlyBillInr: 8000, discomCode: "TGSPDCL" });
     expect(tg.status).toBe("VERIFIED");
@@ -224,7 +291,7 @@ describe("Solar Engine — estimate() Core & Regional Calculations", () => {
     }
   });
 
-  it("strictly reconciles 25-year cash and financed projections with summary metrics even when subsidy > 10% down payment (P0-B & P1-D)", () => {
+  it("strictly reconciles 25-year cash and financed projections with summary metrics and Month-3 direct-to-loan-account DBT prepayment even when subsidy > 10% down payment (Task B & P0-B)", () => {
     // 6 panels (3.48 kW): grossInr = ₹2,15,760, 10% down payment = ₹21,576, subsidy = ₹78,000 (> down payment!)
     const smallLoanCase = estimate({
       monthlyBillInr: 4500,
@@ -239,7 +306,19 @@ describe("Solar Engine — estimate() Core & Regional Calculations", () => {
       smallLoanCase.financing.customerDownPaymentInr,
     );
 
-    // Cash-Flow Ledger Reconciliation (P0-B)
+    // Task B: Subsidy credited directly into SBI loan account in Month 3 to prepay loan principal
+    expect(smallLoanCase.financing.initialLoanPrincipalInr).toBe(194184);
+    expect(smallLoanCase.financing.subsidyCreditMonth).toBe(3);
+    expect(smallLoanCase.financing.subsidyCreditedToLoanInr).toBe(78000);
+    expect(smallLoanCase.financing.excessSubsidyToBorrowerInr).toBe(0);
+    expect(smallLoanCase.financing.postSubsidyPrincipalInr).toBe(
+      smallLoanCase.financing.balanceBeforeSubsidyCreditInr - 78000,
+    );
+    expect(smallLoanCase.financing.postSubsidyMonthlyEmiInr).toBeLessThan(
+      smallLoanCase.financing.initialMonthlyEmiInr,
+    );
+
+    // Cash-Flow Ledger Reconciliation (Task B6 & P0-B): zero double counting
     expect(smallLoanCase.projection[24].netCumulativeCashflow).toBe(
       smallLoanCase.netGain25YearsInr,
     );
@@ -248,15 +327,19 @@ describe("Solar Engine — estimate() Core & Regional Calculations", () => {
     );
     expect(smallLoanCase.cashFlowLedger.reconcilesWithSummary).toBe(true);
     expect(smallLoanCase.cashFlowLedger.year0CustomerOutflowInr).toBe(21576);
+    expect(smallLoanCase.cashFlowLedger.year1LoanPrincipalPrepaymentInr).toBe(78000);
+    expect(smallLoanCase.cashFlowLedger.year1UnrestrictedCashSubsidyInr).toBe(0);
     expect(smallLoanCase.cashFlowLedger.year1SubsidyCreditInr).toBe(78000);
 
-    // Subsidy credited once in Year 1, 0 in Years 2..25
-    expect(smallLoanCase.financedProjection[0].subsidyCreditInr).toBe(78000);
-    for (let i = 1; i < 25; i++) {
+    // In Loan mode, subsidy prepays loan principal in Year 1 (reducing annualLoanOutflow), so unrestricted cash subsidyCreditInr is 0 across all 25 years
+    expect(smallLoanCase.financedProjection[0].loanPrincipalPrepaymentInr).toBe(78000);
+    for (let i = 0; i < 25; i++) {
       expect(smallLoanCase.financedProjection[i].subsidyCreditInr).toBe(0);
     }
+    // In Cash mode, subsidy is credited as a Year-1 DBT cash inflow
+    expect(smallLoanCase.projection[0].subsidyCreditInr).toBe(78000);
 
-    // Sum of annual loan outflows equals totalRepaymentInr
+    // Sum of annual customer loan EMI outflows equals totalRepaymentInr
     const totalScheduledEmi = smallLoanCase.financedProjection.reduce(
       (acc, pt) => acc + pt.annualLoanOutflow,
       0,
@@ -301,8 +384,12 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
   });
 
   it("calculates numerically stable EMI across Tier 1 (6.00%), Tier 2 (8.15%), Above-Cap (9.15%), zero-interest, and zero-principal cases (P0-C)", () => {
-    // Tier 1: ₹2,00,000 gross -> ₹1,80,000 principal (<= ₹2L) -> 6.00% p.a. (SBI Green Loans eff. 2026-10-15)
-    const tier1 = calculateSolarFinancing({ grossCapexInr: 200000, tenureMonths: 60 });
+    // Tier 1: ₹2,00,000 gross, 2.9 kW (<= 3 kW) -> ₹1,80,000 principal (<= ₹2L) -> 6.00% p.a. (SBI Green Loans eff. 2026-10-15)
+    const tier1 = calculateSolarFinancing({
+      grossCapexInr: 200000,
+      systemKw: 2.9,
+      tenureMonths: 60,
+    });
     expect(tier1.loanPrincipalInr).toBe(180000);
     expect(tier1.annualInterestRate).toBe(0.06);
     expect(tier1.annualInterestRatePct).toBe(6);
@@ -312,8 +399,12 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
     expect(tier1.status).toBe("INDICATIVE");
     expect(tier1.effectiveAsOf).toBe("2026-10-15");
 
-    // Tier 2: ₹5,00,000 gross -> ₹4,50,000 principal (₹2L–₹6L) -> 8.15% p.a.
-    const tier2 = calculateSolarFinancing({ grossCapexInr: 500000, tenureMonths: 60 });
+    // Tier 2: ₹5,00,000 gross, 5.8 kW (> 3 kW up to 10 kW) -> ₹4,50,000 principal (₹2L–₹6L) -> 8.15% p.a.
+    const tier2 = calculateSolarFinancing({
+      grossCapexInr: 500000,
+      systemKw: 5.8,
+      tenureMonths: 60,
+    });
     expect(tier2.loanPrincipalInr).toBe(450000);
     expect(tier2.annualInterestRate).toBe(0.0815);
     expect(tier2.annualInterestRatePct).toBe(8.15);
@@ -329,7 +420,7 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
     expect(aboveCap.exceedsConcessionalCap).toBe(true);
     expect(aboveCap.isSchemeEligible).toBe(false);
     expect(aboveCap.status).toBe("INDICATIVE");
-    expect(aboveCap.note).toContain("exceeds the ₹6,00,000 PM Surya Ghar concessional cap");
+    expect(aboveCap.note).toContain("exceeds the PM Surya Ghar concessional cap");
 
     // Zero interest rate edge case
     const zeroRate = calculateSolarFinancing({
@@ -345,6 +436,80 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
     const zeroPrincipal = calculateSolarFinancing({ grossCapexInr: 0 });
     expect(zeroPrincipal.monthlyEmiInr).toBe(0);
     expect(zeroPrincipal.totalRepaymentInr).toBe(0);
+  });
+
+  it("models all 3 SBI PM Surya Ghar loan amortization scenarios (Recast EMI, Reduce Tenure, Unadjusted), excludes battery capex from scheme loan, and validates >10 kW capacity cap (Task B1–B6)", () => {
+    // 1. 3.48 kW solar (₹2,15,760) + 1 battery unit (₹2,65,000) = ₹4,80,760 gross, ₹78,000 subsidy
+    const hybridLoan = calculateSolarFinancing({
+      grossCapexInr: 480760,
+      batteryCapexInr: 265000,
+      systemKw: 3.48,
+      subsidyInr: 78000,
+      tenureMonths: 60,
+    });
+
+    // Battery capex is excluded from PM Surya Ghar scheme loan principal
+    expect(hybridLoan.eligibleSolarCapexInr).toBe(215760);
+    expect(hybridLoan.excludedBatteryCapexInr).toBe(265000);
+    expect(hybridLoan.initialLoanPrincipalInr).toBe(Math.round(215760 * 0.9)); // 194,184
+    expect(hybridLoan.solarDownPaymentInr).toBe(21576);
+    expect(hybridLoan.unfinancedBatteryOutlayInr).toBe(265000);
+    expect(hybridLoan.customerDownPaymentInr).toBe(21576 + 265000); // 286,576
+
+    // Because systemKw = 3.48 > 3.0 kW, Tier 2 rate (8.15%) applies even though solar loan principal (₹1,94,184) <= ₹2L
+    expect(hybridLoan.annualInterestRate).toBe(0.0815);
+    expect(hybridLoan.isSchemeEligible).toBe(true);
+
+    // Month-3 direct-to-loan-account DBT prepayment reduces principal and both interest & EMI
+    const { recastEmi, reduceTenure, unadjustedNoPrepayment } = hybridLoan.amortizationScenarios;
+    expect(recastEmi.status).toBe("INDICATIVE");
+    expect(reduceTenure.status).toBe("INDICATIVE");
+    expect(unadjustedNoPrepayment.status).toBe("INDICATIVE");
+
+    expect(recastEmi.subsidyCreditedToLoanInr).toBe(78000);
+    expect(recastEmi.postSubsidyPrincipalInr).toBe(recastEmi.balanceBeforeSubsidyCreditInr - 78000);
+    expect(recastEmi.postSubsidyMonthlyEmiInr).toBeLessThan(recastEmi.initialMonthlyEmiInr);
+    expect(recastEmi.totalInterestInr).toBeLessThan(unadjustedNoPrepayment.totalInterestInr);
+
+    // Reduce-tenure scenario keeps initialMonthlyEmiInr constant and shortens effectiveTenureMonths < 60
+    expect(reduceTenure.postSubsidyMonthlyEmiInr).toBe(reduceTenure.initialMonthlyEmiInr);
+    expect(reduceTenure.effectiveTenureMonths).toBeLessThan(60);
+    expect(reduceTenure.totalInterestInr).toBeLessThan(recastEmi.totalInterestInr);
+
+    // 2. System > 10 kW (e.g. 11.6 kW) exceeds PM Surya Ghar 10 kW scheme capacity cap -> 9.15% indicative non-scheme rate
+    const over10KwLoan = calculateSolarFinancing({
+      grossCapexInr: 620000,
+      systemKw: 11.6,
+      subsidyInr: 78000,
+    });
+    expect(over10KwLoan.exceedsCapacityCap).toBe(true);
+    expect(over10KwLoan.isSchemeEligible).toBe(false);
+    expect(over10KwLoan.annualInterestRate).toBe(0.0915);
+    expect(over10KwLoan.note).toContain("exceeds the PM Surya Ghar concessional cap");
+  });
+
+  it("integrates sanctionedLoadFeasibility into estimate() and warns when systemKw exceeds permissible sanctioned load cap (Task C)", () => {
+    // 1. Unconfirmed sanctioned load with large bill (₹18,000 -> > 5 kW recommended) triggers load enhancement warning
+    const highLoadUnconfirmed = estimate({
+      monthlyBillInr: 18000,
+      discomCode: "TGSPDCL",
+    });
+    expect(highLoadUnconfirmed.sanctionedLoadFeasibility.sanctionedLoadConfirmed).toBe(false);
+    expect(highLoadUnconfirmed.sanctionedLoadFeasibility.requiresLoadEnhancement).toBe(true);
+    expect(highLoadUnconfirmed.warnings.some((w) => w.includes("sanctioned load"))).toBe(true);
+
+    // 2. Confirmed 10 kW sanctioned load with 8.12 kW residential system in TGSPDCL (100% cap) -> VERIFIED & feasible
+    const confirmedRes = estimate({
+      monthlyBillInr: 12000,
+      discomCode: "TGSPDCL",
+      panels: 14, // 8.12 kW
+      sanctionedLoadKw: 10,
+      sanctionedLoadConfirmed: true,
+    });
+    expect(confirmedRes.sanctionedLoadFeasibility.sanctionedLoadConfirmed).toBe(true);
+    expect(confirmedRes.sanctionedLoadFeasibility.status).toBe("VERIFIED");
+    expect(confirmedRes.sanctionedLoadFeasibility.isFeasibleWithoutEnhancement).toBe(true);
+    expect(confirmedRes.sanctionedLoadFeasibility.requiresLoadEnhancement).toBe(false);
   });
 
   it("models Section 33 commercial depreciation deduction vs conditional tax shield including 0% tax scenario", () => {

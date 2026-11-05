@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calculateGovtSubsidyInr,
   evaluateSubsidyEligibility,
+  evaluateSanctionedLoadFeasibility,
   energyCharge,
   calculateElectricityBill,
   calculateMonthlyElectricityBill,
@@ -14,6 +15,8 @@ import {
   WIND_SPEED_STANDARDS,
   VERIFIED_DISCOMS,
   DISCOM_TARIFF_PROFILES,
+  TGERC_RTS_REGULATION_2025_SOURCE,
+  APERC_RTS_REGULATION_2023_SOURCE,
   HYDERABAD_ANNUAL_YIELD_KWH_PER_KW,
   CITY_SOLAR_METEOROLOGY,
   getSolarYieldProfileForDiscom,
@@ -199,13 +202,114 @@ describe("Category A — State-Specific Tariff & Bill Engine (Phase A)", () => {
     expect(unknownConsumption.estimatedUnits).toBe(0);
   });
 
-  it("restricts VERIFIED_DISCOMS to Telangana (TGERC) and Andhra Pradesh (APERC)", () => {
+  it("restricts VERIFIED_DISCOMS to Telangana (TGERC) and Andhra Pradesh (APERC) and enforces MONTHLY_BILLING_PERIOD settlement with INDICATIVE surplus rates", () => {
     expect(Object.keys(VERIFIED_DISCOMS)).toEqual(["TGSPDCL", "TGNPDCL", "APEPDCL", "APSPDCL"]);
     expect(VERIFIED_DISCOMS.TGSPDCL.portalUrl).toBe("https://tgsouthernpower.org");
     expect(VERIFIED_DISCOMS.TGNPDCL.portalUrl).toBe("https://tgnpdcl.com");
     expect(VERIFIED_DISCOMS.APEPDCL.portalUrl).toBe("https://www.apeasternpower.com");
     expect(VERIFIED_DISCOMS.APSPDCL.portalUrl).toBe("https://apspdcl.in");
     expect(Object.keys(DISCOM_TARIFF_PROFILES)).toHaveLength(11);
+
+    // Task A: TGERC Regulation No. 1 of 2025 & APERC Regulation No. 4 of 2023 surplus settlement verification
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateInr).toBe(2.65);
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateStatus).toBe("INDICATIVE");
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.settlementCycle).toBe("MONTHLY_BILLING_PERIOD");
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.netMeteringRegulationSource.documentRef).toBe(
+      TGERC_RTS_REGULATION_2025_SOURCE.documentRef,
+    );
+
+    expect(DISCOM_TARIFF_PROFILES.APEPDCL.exportSettlementRateInr).toBe(2.09);
+    expect(DISCOM_TARIFF_PROFILES.APEPDCL.exportSettlementRateStatus).toBe("INDICATIVE");
+    expect(DISCOM_TARIFF_PROFILES.APEPDCL.settlementCycle).toBe("MONTHLY_BILLING_PERIOD");
+    expect(DISCOM_TARIFF_PROFILES.APEPDCL.netMeteringRegulationSource.documentRef).toBe(
+      APERC_RTS_REGULATION_2023_SOURCE.documentRef,
+    );
+  });
+
+  it("retains unavoidable fixed and customer charges when net billed consumption is 0 units under net metering (Task A4)", () => {
+    const zeroUnitNetMeteredTg = calculateElectricityBill("TGSPDCL", 0, {
+      sanctionedLoadKw: 5,
+      includeZeroUnitFixedCharges: true,
+    });
+    expect(zeroUnitNetMeteredTg.energyChargeInr).toBe(0);
+    expect(zeroUnitNetMeteredTg.electricityDutyInr).toBe(0);
+    expect(zeroUnitNetMeteredTg.unavoidableChargesInr).toBeGreaterThan(0);
+    expect(zeroUnitNetMeteredTg.totalBillInr).toBe(zeroUnitNetMeteredTg.unavoidableChargesInr);
+
+    const zeroUnitNetMeteredAp = calculateElectricityBill("APEPDCL", 0, {
+      sanctionedLoadKw: 5,
+      includeZeroUnitFixedCharges: true,
+    });
+    expect(zeroUnitNetMeteredAp.energyChargeInr).toBe(0);
+    expect(zeroUnitNetMeteredAp.unavoidableChargesInr).toBeGreaterThan(0);
+    expect(zeroUnitNetMeteredAp.totalBillInr).toBe(zeroUnitNetMeteredAp.unavoidableChargesInr);
+  });
+
+  it("evaluates sanctioned load feasibility under TGERC Regulation No. 1 of 2025 (100% Res / 80% C&I) and APERC Regulation No. 4 of 2023 (100%) without assuming unverified 5 kW load is confirmed (Task C)", () => {
+    // 1. Unconfirmed sanctioned load: 3.48 kW residential vs unconfirmed 5 kW default -> REQUIRES_VERIFICATION
+    const unconfirmed3kw = evaluateSanctionedLoadFeasibility({
+      discomCode: "TGSPDCL",
+      systemKw: 3.48,
+      segment: "residential",
+    });
+    expect(unconfirmed3kw.sanctionedLoadConfirmed).toBe(false);
+    expect(unconfirmed3kw.knownSanctionedLoadKw).toBeNull();
+    expect(unconfirmed3kw.assumedSanctionedLoadKw).toBe(5);
+    expect(unconfirmed3kw.status).toBe("REQUIRES_VERIFICATION");
+    expect(unconfirmed3kw.requiresLoadEnhancement).toBe(false);
+
+    // 2. Unconfirmed sanctioned load: 6.96 kW residential exceeds unconfirmed 5 kW default -> flags load enhancement
+    const unconfirmed7kw = evaluateSanctionedLoadFeasibility({
+      discomCode: "TGSPDCL",
+      systemKw: 6.96,
+      segment: "residential",
+    });
+    expect(unconfirmed7kw.sanctionedLoadConfirmed).toBe(false);
+    expect(unconfirmed7kw.requiresLoadEnhancement).toBe(true);
+    expect(unconfirmed7kw.requiredSanctionedLoadKwForSystem).toBe(7);
+    expect(unconfirmed7kw.warning).toContain("unverified 5 kW baseline assumption");
+
+    // 3. Confirmed 5 kW residential load with 4.64 kW solar in TGSPDCL (100% cap) -> VERIFIED & feasible
+    const confirmedFeasible = evaluateSanctionedLoadFeasibility({
+      discomCode: "TGSPDCL",
+      systemKw: 4.64,
+      segment: "residential",
+      sanctionedLoadKw: 5,
+      sanctionedLoadConfirmed: true,
+    });
+    expect(confirmedFeasible.sanctionedLoadConfirmed).toBe(true);
+    expect(confirmedFeasible.status).toBe("VERIFIED");
+    expect(confirmedFeasible.isFeasibleWithoutEnhancement).toBe(true);
+    expect(confirmedFeasible.maxPermissibleSolarKwWithoutLoadEnhancement).toBe(5);
+    expect(confirmedFeasible.requiresLoadEnhancement).toBe(false);
+    expect(confirmedFeasible.warning).toBeNull();
+
+    // 4. Confirmed 10 kW commercial load in TGSPDCL (80% cap = 8.0 kW max): 9.0 kW requires enhancement to 11.3 kW
+    const tgCommercial = evaluateSanctionedLoadFeasibility({
+      discomCode: "TGSPDCL",
+      systemKw: 9,
+      segment: "commercial",
+      sanctionedLoadKw: 10,
+      sanctionedLoadConfirmed: true,
+    });
+    expect(tgCommercial.maxAllowedPctOfSanctionedLoad).toBe(80);
+    expect(tgCommercial.maxPermissibleSolarKwWithoutLoadEnhancement).toBe(8);
+    expect(tgCommercial.isFeasibleWithoutEnhancement).toBe(false);
+    expect(tgCommercial.requiresLoadEnhancement).toBe(true);
+    expect(tgCommercial.requiredSanctionedLoadKwForSystem).toBe(11.3);
+
+    // 5. Confirmed 10 kW commercial load in APEPDCL (100% cap = 10.0 kW max): 9.0 kW is feasible
+    const apCommercial = evaluateSanctionedLoadFeasibility({
+      discomCode: "APEPDCL",
+      systemKw: 9,
+      segment: "commercial",
+      sanctionedLoadKw: 10,
+      sanctionedLoadConfirmed: true,
+    });
+    expect(apCommercial.maxAllowedPctOfSanctionedLoad).toBe(100);
+    expect(apCommercial.maxPermissibleSolarKwWithoutLoadEnhancement).toBe(10);
+    expect(apCommercial.isFeasibleWithoutEnhancement).toBe(true);
+    expect(apCommercial.requiresLoadEnhancement).toBe(false);
   });
 });
 
@@ -246,15 +350,20 @@ describe("Category C — Regional Solar Meteorology & Yield Profiles (Phase B / 
 });
 
 describe("Regulatory Engine — Financing, Wind, Depreciation & Physics Invariants", () => {
-  it("implements dated SBI Green Loans PM Surya Ghar tiered interest rates effective 2026-10-15: 6.00% up to ₹2L, 8.15% up to ₹6L, 9.15% above-cap", () => {
+  it("implements dated SBI Green Loans PM Surya Ghar tiered interest rates and direct-to-loan-account subsidy prepayment rules effective 2026-10-15 (Task B)", () => {
     expect(SOLAR_LOAN_TERMS.asOfDate).toBe("2026-10-15");
     expect(SOLAR_LOAN_TERMS.status).toBe("INDICATIVE");
     expect(SOLAR_LOAN_TERMS.tier1.annualInterestRate).toBe(0.06);
     expect(SOLAR_LOAN_TERMS.tier1.maxAmountInr).toBe(200000);
+    expect(SOLAR_LOAN_TERMS.tier1.maxCapacityKw).toBe(3);
     expect(SOLAR_LOAN_TERMS.tier2.annualInterestRate).toBe(0.0815);
     expect(SOLAR_LOAN_TERMS.tier2.maxAmountInr).toBe(600000);
+    expect(SOLAR_LOAN_TERMS.tier2.maxCapacityKw).toBe(10);
     expect(SOLAR_LOAN_TERMS.aboveCapIndicativeRate).toBe(0.0915);
     expect(SOLAR_LOAN_TERMS.maxFinancingPct).toBe(0.9);
+    expect(SOLAR_LOAN_TERMS.subsidyCreditedDirectlyToLoanAccount).toBe(true);
+    expect(SOLAR_LOAN_TERMS.prepaymentPenaltyPct).toBe(0);
+    expect(SOLAR_LOAN_TERMS.standaloneBatteryEligibleForSchemeLoan).toBe(false);
   });
 
   it("maintains IS 875 (Part 3) basic wind speeds and Section 33 tax configuration citing Notified Income-tax Rules, 2026", () => {

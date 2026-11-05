@@ -14,7 +14,7 @@ export interface BillDecoderProps {
 export function BillDecoder({
   monthlyBill,
   discomCode = "TGSPDCL",
-  sanctionedLoadKw = 5,
+  sanctionedLoadKw,
   className = "",
   defaultExpanded = false,
 }: BillDecoderProps) {
@@ -52,9 +52,11 @@ export function BillDecoder({
             </span>
           </div>
           <div className="text-[12px] text-[#5C5E62] mt-0.5">
-            Average effective tariff: ₹{analysis.averageRatePerKwh.toFixed(2)} / kWh · Connected
-            load: {sanctionedLoadKw} kW · Avoidable energy/duty: ₹
-            {analysis.avoidableChargesTotal.toLocaleString("en-IN")}/mo
+            Average effective tariff: ₹{analysis.averageRatePerKwh.toFixed(2)} / kWh ·{" "}
+            {analysis.sanctionedLoadConfirmed
+              ? `Connected load: ${analysis.sanctionedLoadKw} kW`
+              : `Assumed load: ${analysis.sanctionedLoadKw} kW (Unverified)`}{" "}
+            · Avoidable energy/duty: ₹{analysis.avoidableChargesTotal.toLocaleString("en-IN")}/mo
           </div>
         </div>
 
@@ -133,7 +135,8 @@ export function BillDecoder({
                 {analysis.fixedCharge > 0 && (
                   <tr className="tabular-nums">
                     <td colSpan={3} className="py-1 text-[#5C5E62]">
-                      Contracted Demand Fixed Charges ({sanctionedLoadKw} kW · Unavoidable)
+                      Contracted Demand Fixed Charges ({analysis.sanctionedLoadKw} kW
+                      {analysis.sanctionedLoadConfirmed ? "" : " assumed"} · Unavoidable)
                     </td>
                     <td className="py-1 text-right text-[#5C5E62]">
                       ₹{analysis.fixedCharge.toFixed(2)}

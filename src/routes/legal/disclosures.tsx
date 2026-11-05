@@ -8,7 +8,9 @@ import { PRODUCTS_CONFIG } from "@/config/products";
 import {
   PM_SURYA_GHAR_SOURCE,
   TGERC_TARIFF_SOURCE,
+  TGERC_RTS_REGULATION_2025_SOURCE,
   APERC_TARIFF_SOURCE,
+  APERC_RTS_REGULATION_2023_SOURCE,
   HYDERABAD_YIELD_SOURCE,
   IS_875_WIND_SOURCE,
   INCOME_TAX_SECTION_33_SOURCE,
@@ -131,41 +133,87 @@ function DisclosuresPage() {
           {/* Section 2: Self-Consumption & Net-Metering Math */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              2. Self-Consumption & Net-Metering Economics
+              2. Self-Consumption &amp; Monthly Billing-Period Net-Metering Economics
             </h2>
             <p>
-              Power savings depend on utility net-metering regulations and monthly energy netting:
+              Power savings depend on utility net-metering regulations and monthly billing-period
+              energy netting:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-[#5C5E62]">
               <li>
                 <strong className="text-[#171A20]">
-                  Separate Self-Consumption, 1:1 Net-Metered Offset, and True Surplus:
+                  12-Month Billing-Period Settlement (TGERC Regulation No. 1 of 2025 &amp; APERC
+                  Regulation No. 4 of 2023):
                 </strong>{" "}
-                For every billing cycle, total solar generation (<code>annualGenKwh</code>) is
-                partitioned without double-counting into: (1) direct behind-the-meter
-                self-consumption (<code>selfConsumedKwh</code>, modeled at 70% for solar-only and
-                90% with hybrid storage, capped at total consumption), (2) qualifying 1:1
-                net-metered export offsets (
-                <code>netMeteredOffsetKwh = min(exportedKwh, importedKwh)</code>), and (3) true net
-                annual surplus (<code>netAnnualSurplusKwh = exportedKwh - netMeteredOffsetKwh</code>
-                ).
+                For verified utilities (<code>TGSPDCL</code>, <code>TGNPDCL</code>,{" "}
+                <code>APEPDCL</code>, <code>APSPDCL</code>), energy settlement is simulated month by
+                month across all 12 calendar months using the regional monthly solar yield curve (
+                <code>CITY_SOLAR_METEOROLOGY[cityKey].monthlyYield</code>). Within each monthly
+                billing period, solar generation is partitioned without double-counting into: (1)
+                direct behind-the-meter self-consumption (<code>selfConsumedKwh</code>, modeled at
+                70% for solar-only and 90% with hybrid storage, capped at that month&apos;s
+                consumption), (2) within-period 1:1 net-metered export offset (
+                <code>netMeteredOffsetKwh = min(exportedKwh_m, importedKwh_m)</code>), and (3)
+                billing-period excess exported energy (
+                <code>excessExportKwh_m = exportedKwh_m - netMeteredOffsetKwh_m</code>). Surplus
+                exported in month <em>m</em> cannot offset grid imports in a different month{" "}
+                <em>m&prime; &ne; m</em> at 1:1 retail slab rates.
               </li>
               <li>
                 <strong className="text-[#171A20]">
-                  Regulator-Grounded Slab Settlement (TGERC &amp; APERC):
+                  Uniform Monthly Consumption Assumption Disclosure:
                 </strong>{" "}
-                Self-consumed and 1:1 net-metered offset units reduce billed grid consumption from
-                gross monthly units to residual net imported units (
-                <code>residualGridImportKwh</code>). Bill savings equal the avoided retail slab and
-                electricity duty charges while retaining unavoidable monthly fixed and customer
-                charges.
+                When 12-month historical utility bills are not uploaded by the customer, the
+                calculator models uniform monthly consumption (
+                <code>monthlyConsumptionAssumedUniform = true</code>) derived from the entered
+                monthly bill. Actual seasonal air-conditioning peaks (April–June) and monsoon solar
+                dips (July–September) can create monthly import/export asymmetries; our engine
+                explicitly supports 12-month consumption arrays (
+                <code>monthlyConsumptionByMonth</code>) to prevent cross-period retail offset.
               </li>
               <li>
-                <strong className="text-[#171A20]">Year-End True Surplus Settlement (APPC):</strong>{" "}
-                Only net surplus exported units exceeding annual grid imports (
-                <code>netAnnualSurplusKwh</code>) are valued at the DISCOM&apos;s Average Pooled
-                Purchase Cost (APPC) export rate notified by the state commission (currently
-                ₹3.55/kWh for TGERC and ₹3.52/kWh for APERC).
+                <strong className="text-[#171A20]">
+                  Regulator-Grounded Slab Settlement &amp; Unavoidable Fixed Charges:
+                </strong>{" "}
+                Self-consumed and within-period 1:1 net-metered offset units reduce billed grid
+                consumption in each month to residual net imported units (
+                <code>residualGridImportKwh</code>). Bill savings equal the avoided retail slab and
+                electricity duty charges while retaining unavoidable monthly fixed and customer
+                charges even in zero-net-import months.
+              </li>
+              <li>
+                <strong className="text-[#171A20]">
+                  Surplus Export Credit Valuation (Indicative):
+                </strong>{" "}
+                Under <strong>TGERC Regulation No. 1 of 2025 (Sections 2 &amp; 8.1.1–8.1.5)</strong>
+                , net billing-period excess exported energy is valued at the{" "}
+                <strong>
+                  lowest tariff rate discovered through competitive bidding under Section 63 of the
+                  Electricity Act, 2003
+                </strong>{" "}
+                from solar PPAs/PSAs/PUAs entered into by Telangana DISCOMs in the preceding
+                financial year (modeled at an <strong>indicative ₹2.65/kWh</strong> benchmark;
+                monetary credits carry forward across billing periods within the April–March
+                financial year settlement cycle). Under{" "}
+                <strong>APERC Regulation No. 4 of 2023 (Clauses 16.1 &amp; 16.5)</strong>, excess
+                exported units are valued at an <strong>indicative ₹2.09/kWh</strong> feed-in
+                benchmark. Because annual Section 63 discovery and APPC/feed-in notifications vary
+                by financial year, all surplus export rates are classified as{" "}
+                <code>INDICATIVE</code> and separated from <code>avoidedBillSavingsInr</code>.
+              </li>
+              <li>
+                <strong className="text-[#171A20]">
+                  Sanctioned Load &amp; Transformer Hosting Limits:
+                </strong>{" "}
+                Under <strong>TGERC Regulation No. 1 of 2025</strong>, permissible grid-interactive
+                rooftop solar capacity is capped at <strong>100% of sanctioned load</strong> for
+                Residential and Government consumers and <strong>80% of sanctioned load</strong> for
+                Commercial and Industrial consumers (up to 500 kWp net metering). Under{" "}
+                <strong>APERC Regulation No. 4 of 2023</strong>, permissible capacity is capped at{" "}
+                <strong>100% of sanctioned load / contracted demand</strong> (up to 500 kW, subject
+                to an 80% distribution transformer capacity limit). Unless the customer explicitly
+                confirms their sanctioned load, WAVENOX treats the 5 kW default as an unverified
+                assumption and flags when load enhancement may be required.
               </li>
               <li>
                 <strong className="text-[#171A20]">Battery Value Proposition:</strong> For
@@ -173,11 +221,6 @@ function DisclosuresPage() {
                 (ToD) tariffs, an energy storage battery (15.0 kWh nominal / 14.3 kWh usable
                 LiFePO4) shifts daytime export into evening self-consumption and provides sub-20ms
                 backup resilience during power outages.
-              </li>
-              <li>
-                <strong className="text-[#171A20]">Savings Cap:</strong> Avoided bill savings never
-                exceed the avoidable energy portion of the customer&apos;s baseline electricity
-                bill; only true net surplus exports can generate additional APPC settlement credit.
               </li>
             </ul>
           </section>
@@ -210,7 +253,7 @@ function DisclosuresPage() {
                     <th className="py-2.5 px-4 font-semibold">Verification Status</th>
                     <th className="py-2.5 px-4 font-semibold">Residential Base</th>
                     <th className="py-2.5 px-4 font-semibold">Commercial HT Base</th>
-                    <th className="py-2.5 px-4 font-semibold">Annual Surplus Settlement</th>
+                    <th className="py-2.5 px-4 font-semibold">Surplus Export Rate (Indicative)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0]">
@@ -238,7 +281,7 @@ function DisclosuresPage() {
                         ₹{d.commercialTariffInr.toFixed(2)} / kWh
                       </td>
                       <td className="py-2.5 px-4 tabular-nums text-[#5C5E62]">
-                        ₹{d.exportRateInr.toFixed(2)} / kWh (APPC)
+                        ₹{d.exportRateInr.toFixed(2)} / kWh (Indicative)
                       </td>
                     </tr>
                   ))}
@@ -383,7 +426,7 @@ function DisclosuresPage() {
           {/* Section 6: Financing & EMI Terms */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              6. Indicative Solar Loan & EMI Computations
+              6. Indicative Solar Loan, Direct-to-Loan Subsidy Credit &amp; Amortization
             </h2>
             <p>
               Where estimated monthly installments (EMI) are displayed, they are computed as{" "}
@@ -393,33 +436,61 @@ function DisclosuresPage() {
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-[#5C5E62]">
               <li>
-                <strong className="text-[#171A20]">Financing Coverage:</strong> Up to 90% of gross
-                turnkey project cost (10% Year-0 customer margin down payment). The EMI principal is
-                computed on this 90% gross capex; any post-commissioning DBT subsidy is credited in
-                Year 1 and never double-counted against Year-0 down payment.
+                <strong className="text-[#171A20]">
+                  Financing Coverage &amp; Standalone Battery Exclusion:
+                </strong>{" "}
+                Up to 90% of <strong>eligible rooftop solar turnkey cost</strong> (10% Year-0
+                customer margin down payment). Standalone battery storage capex is outside the PM
+                Surya Ghar scheme loan scope and is modeled as an upfront customer outlay (
+                <code>unfinancedCapexInr</code>).
               </li>
               <li>
                 <strong className="text-[#171A20]">
-                  Interest Rates (Effective 15 Oct 2026 Schedule):
+                  Direct-to-Loan-Account DBT Subsidy Prepayment (Month 3):
                 </strong>{" "}
-                Floating EBLR-linked rates: up to ₹2,00,000 (systems ≤ 3 kW) at{" "}
-                <strong className="text-[#171A20]">6.00% p.a.</strong>; above ₹2,00,000 up to
-                ₹6,00,000 (systems &gt; 3 kW up to 10 kW) at{" "}
+                Under official SBI PM Surya Ghar loan terms, the borrower&apos;s SBI loan account is
+                linked on the National Portal and post-commissioning MNRE central subsidy (up to
+                ₹78,000 in general category states) is{" "}
+                <strong>credited directly into the borrower&apos;s SBI loan account</strong> to
+                prepay loan principal with zero prepayment penalty (not paid out as unrestricted
+                cash while leaving the 90% loan unreduced).
+              </li>
+              <li>
+                <strong className="text-[#171A20]">
+                  Three Indicative Amortization Scenarios Modeled:
+                </strong>{" "}
+                Because individual bank branches may either recast the monthly EMI or shorten the
+                remaining tenure upon subsidy credit, our engine computes three explicitly labeled{" "}
+                <code>INDICATIVE</code> schedules: (1){" "}
+                <code>LOAN_PRINCIPAL_PREPAYMENT_RECAST_EMI</code> (default when subsidy &gt; 0:
+                Months 1–3 at initial EMI on 90% solar principal, Month-3 principal prepayment via
+                DBT subsidy, and Months 4–60 re-amortized at a lower{" "}
+                <code>postSubsidyMonthlyEmiInr</code>), (2){" "}
+                <code>LOAN_PRINCIPAL_PREPAYMENT_REDUCE_TENURE</code> (Month-3 principal prepayment
+                while keeping the monthly EMI constant to shorten tenure), and (3){" "}
+                <code>UNRESTRICTED_SUBSIDY_NO_PREPAYMENT</code> (unadjusted 60-month schedule).
+              </li>
+              <li>
+                <strong className="text-[#171A20]">
+                  Interest Rates &amp; Capacity Tiers (Effective 15 Oct 2026 Schedule):
+                </strong>{" "}
+                Floating EBLR-linked rates: Tier 1 (loan ≤ ₹2,00,000 and system ≤ 3 kW) at{" "}
+                <strong className="text-[#171A20]">6.00% p.a.</strong>; Tier 2 (loan up to ₹6,00,000
+                and system &gt; 3 kW up to 10 kW) at{" "}
                 <strong className="text-[#171A20]">8.15% p.a.</strong> (Note: an older SBI personal
                 banking page dated 15 Dec 2025 listed 5.75% / 7.90% p.a.; we model the newer 15 Oct
                 2026 SBI Green Loans schedule and classify all loan outputs as{" "}
                 <code>INDICATIVE</code>).
               </li>
               <li>
-                <strong className="text-[#171A20]">Loans Above ₹6,00,000 Cap:</strong> Concessional
-                PM Surya Ghar scheme loans are capped at ₹6,00,000. For financed principals above
+                <strong className="text-[#171A20]">
+                  Systems &gt; 10 kW or Loans Above ₹6,00,000 Cap:
+                </strong>{" "}
+                Concessional PM Surya Ghar scheme loans apply to residential systems up to 10 kW and
+                loan principals up to ₹6,00,000. For systems &gt; 10 kW or financed principals above
                 ₹6,00,000, the calculator applies a{" "}
                 <strong className="text-[#171A20]">9.15% p.a.</strong> indicative non-scheme retail
                 solar loan assumption and flags <code>isSchemeEligible = false</code>.
-              </li>
-              <li>
-                <strong className="text-[#171A20]">Tenure:</strong> Up to 120 months (10 years); our
-                standard financial models use a conservative 60-month (5-year) tenure.
               </li>
             </ul>
             <p className="text-xs text-[#5C5E62]">
@@ -505,6 +576,29 @@ function DisclosuresPage() {
                   </tr>
                   <tr>
                     <td className="py-2.5 px-4 font-medium text-[#171A20]">
+                      Telangana Net-Metering (2025)
+                    </td>
+                    <td className="py-2.5 px-4 text-[#5C5E62]">
+                      {TGERC_RTS_REGULATION_2025_SOURCE.title} (
+                      {TGERC_RTS_REGULATION_2025_SOURCE.documentRef})
+                    </td>
+                    <td className="py-2.5 px-4 font-mono text-[#5C5E62]">
+                      {TGERC_RTS_REGULATION_2025_SOURCE.verifiedOn}
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <a
+                        href={TGERC_RTS_REGULATION_2025_SOURCE.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#171A20] hover:underline"
+                      >
+                        <span>Regulation PDF</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-4 font-medium text-[#171A20]">
                       Andhra Pradesh Tariffs
                     </td>
                     <td className="py-2.5 px-4 text-[#5C5E62]">
@@ -521,6 +615,29 @@ function DisclosuresPage() {
                         className="inline-flex items-center gap-1 text-[#171A20] hover:underline"
                       >
                         <span>APERC Order</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-4 font-medium text-[#171A20]">
+                      Andhra Pradesh Net-Metering
+                    </td>
+                    <td className="py-2.5 px-4 text-[#5C5E62]">
+                      {APERC_RTS_REGULATION_2023_SOURCE.title} (
+                      {APERC_RTS_REGULATION_2023_SOURCE.documentRef})
+                    </td>
+                    <td className="py-2.5 px-4 font-mono text-[#5C5E62]">
+                      {APERC_RTS_REGULATION_2023_SOURCE.verifiedOn}
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <a
+                        href={APERC_RTS_REGULATION_2023_SOURCE.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#171A20] hover:underline"
+                      >
+                        <span>APERC Reg</span>
                         <ExternalLink size={11} />
                       </a>
                     </td>

@@ -331,6 +331,15 @@ export function WealthCurveVisualizer({
                 </span>
               </>
             )}
+            {(dataPoints[0]?.loanPrincipalPrepaymentInr ?? 0) > 0 && (
+              <>
+                {" "}
+                · Yr 1 Loan Principal Prepayment*:{" "}
+                <span className="text-[#E5E7EB] font-medium">
+                  -{formatInr(dataPoints[0].loanPrincipalPrepaymentInr ?? 0)}
+                </span>
+              </>
+            )}
           </div>
         </div>
 

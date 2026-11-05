@@ -393,6 +393,47 @@ export const APERC_TARIFF_SOURCE: DataSource = {
     "Models APERC 6-tier telescopic energy slabs, customer charges, ₹10/kW fixed charges, and ₹0.06/kWh baseline duty. Excludes variable FPPCA / fuel surcharge adjustments billed separately on utility invoices.",
 };
 
+export const TGERC_RTS_REGULATION_2025_SOURCE: DataSource = {
+  title:
+    "TGERC (Rooftop Solar PV Grid Interactive Systems) Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5)",
+  url: "https://www.tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Final%20Solar%20Roof%20top%20Regulation%201%20of%202025%2015112025.pdf",
+  verifiedOn: "2026-11-05",
+  section:
+    "Section 2 (Definitions), Section 6 (Capacity Limits) & Section 8.1.1–8.1.5 (Energy Accounting and Settlement)",
+  documentRef:
+    "TGERC Regulation No. 1 of 2025, dated 15.11.2025 (Telangana Gazette No. 634-A, superseding Regulation No. 6 of 2016)",
+  authority: "Telangana Electricity Regulatory Commission (TGERC)",
+  state: "Telangana",
+  discom: "TGSPDCL / TGNPDCL",
+  consumerCategory:
+    "Prosumers under Net Metering (LT/HT Residential, Government, Commercial & Industrial)",
+  financialYear: "FY 2026-27",
+  effectiveFrom: "2025-11-15",
+  status: "VERIFIED",
+  category: "OFFICIAL_REGULATORY_FACT",
+  restrictions:
+    "Section 8.1.1–8.1.3 mandates monthly billing-period import/export accounting. Net excess exported units in a billing period are compensated at the lowest solar tariff discovered through Section 63 competitive bidding by TGDiscoms in the preceding financial year (monetary credit carried forward across billing cycles within the April–March financial year settlement period under Clauses 8.1.4–8.1.5). Because the annual Section 63 lowest bid tariff varies by financial year, the numeric surplus settlement rate (₹2.65/kWh benchmark) is classified as INDICATIVE, not a static ₹3.55/kWh APPC constant. Permissible net-metering capacity is capped at 100% of sanctioned load for Residential/Government and 80% of sanctioned load for Commercial/Industrial (up to 500 kWp).",
+};
+
+export const APERC_RTS_REGULATION_2023_SOURCE: DataSource = {
+  title:
+    "APERC (Grid-Interactive Solar Rooftop Photovoltaic Systems under Gross/Net Metering) Regulation No. 4 of 2023",
+  url: "https://aperc.gov.in",
+  verifiedOn: "2026-11-05",
+  section: "Clauses 16.1 & 16.5 (Monthly Billing-Period Energy Accounting and Settlement)",
+  documentRef: "APERC Regulation No. 4 of 2023 & Subsequent Implementation Directives",
+  authority: "Andhra Pradesh Electricity Regulatory Commission (APERC)",
+  state: "Andhra Pradesh",
+  discom: "APEPDCL / APSPDCL",
+  consumerCategory: "LT/HT Net-Metered Rooftop Solar Prosumers",
+  financialYear: "FY 2026-27",
+  effectiveFrom: "2023-11-01",
+  status: "VERIFIED",
+  category: "OFFICIAL_REGULATORY_FACT",
+  restrictions:
+    "Clauses 16.1 & 16.5 mandate monthly billing-period import/export energy accounting. Permissible net-metering capacity is up to 100% of sanctioned load / contracted demand (up to 500 kW; distribution transformer hosting limit 80% of rated capacity). Numeric surplus export compensation rate (₹2.09/kWh feed-in benchmark) is classified as INDICATIVE pending annual tariff verification.",
+};
+
 export const INDICATIVE_REGIONAL_TARIFF_SOURCE: DataSource = {
   title: "Regional SERC Retail Tariff Benchmarks (Preliminary Sizing Reference)",
   url: "https://pmsuryaghar.gov.in",
@@ -409,6 +450,7 @@ export const INDICATIVE_REGIONAL_TARIFF_SOURCE: DataSource = {
 };
 
 export type NetMeteringMechanism = "NET_METERING_1_TO_1" | "INDICATIVE_NET_METERING" | "UNVERIFIED";
+export type BillingSettlementCycle = "MONTHLY_BILLING_PERIOD" | "INDICATIVE_MONTHLY" | "UNVERIFIED";
 
 export interface DiscomTariffProfile {
   code: string;
@@ -420,13 +462,19 @@ export interface DiscomTariffProfile {
   financialYear: string;
   residentialBlendedTariffInr: number;
   commercialBlendedTariffInr: number;
-  exportSettlementRateInr: number; // APPC surplus settlement rate at end of settlement period
+  exportSettlementRateInr: number;
+  exportSettlementRateStatus: VerificationStatus;
+  exportSettlementBasis: string;
   netMeteringMechanism: NetMeteringMechanism;
+  settlementCycle: BillingSettlementCycle;
+  maxResidentialSolarPctOfSanctionedLoad: number;
+  maxCommercialSolarPctOfSanctionedLoad: number;
   fixedChargePerKwMonthInr: number;
   electricityDutyPerUnitInr: number;
   gruhaJyothiApplicable: boolean;
   regulatoryNote: string;
   source: DataSource;
+  netMeteringRegulationSource: DataSource;
 }
 
 export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
@@ -440,14 +488,21 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 9.2,
     commercialBlendedTariffInr: 10.5,
-    exportSettlementRateInr: 3.55,
+    exportSettlementRateInr: 2.65,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis:
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar PPA/PSA tariff discovered by TGDiscoms in the preceding financial year (Indicative benchmark ₹2.65/kWh; replaces legacy ₹3.55/kWh APPC assumption).",
     netMeteringMechanism: "NET_METERING_1_TO_1",
+    settlementCycle: "MONTHLY_BILLING_PERIOD",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 80,
     fixedChargePerKwMonthInr: 10,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: true,
     regulatoryNote:
-      "Verified against TGERC LT-I(A/B/C) telescopic slabs (FY 2025-26 & FY 2026-27 unchanged domestic schedule). Telangana Gruha Jyothi waives bills up to 200 units/month for eligible households.",
+      "Verified against TGERC LT-I(A/B/C) telescopic slabs and TGERC Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5) monthly billing-period settlement. Monthly net surplus exports are valued at an indicative Section 63 competitive solar bid benchmark (₹2.65/kWh). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
     source: TGERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
   TGNPDCL: {
     code: "TGNPDCL",
@@ -459,14 +514,21 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 8.8,
     commercialBlendedTariffInr: 10.2,
-    exportSettlementRateInr: 3.55,
+    exportSettlementRateInr: 2.65,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis:
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar PPA/PSA tariff discovered by TGDiscoms in the preceding financial year (Indicative benchmark ₹2.65/kWh; replaces legacy ₹3.55/kWh APPC assumption).",
     netMeteringMechanism: "NET_METERING_1_TO_1",
+    settlementCycle: "MONTHLY_BILLING_PERIOD",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 80,
     fixedChargePerKwMonthInr: 10,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: true,
     regulatoryNote:
-      "Verified against TGERC LT-I(A/B/C) telescopic slabs (FY 2025-26 & FY 2026-27 unchanged domestic schedule). Telangana Gruha Jyothi waives bills up to 200 units/month for eligible households.",
+      "Verified against TGERC LT-I(A/B/C) telescopic slabs and TGERC Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5) monthly billing-period settlement. Monthly net surplus exports are valued at an indicative Section 63 competitive solar bid benchmark (₹2.65/kWh). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
     source: TGERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
   APEPDCL: {
     code: "APEPDCL",
@@ -478,14 +540,21 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 8.9,
     commercialBlendedTariffInr: 10.4,
-    exportSettlementRateInr: 3.6,
+    exportSettlementRateInr: 2.09,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis:
+      "APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5): Monthly billing-period surplus export feed-in benchmark (Indicative ₹2.09/kWh).",
     netMeteringMechanism: "NET_METERING_1_TO_1",
+    settlementCycle: "MONTHLY_BILLING_PERIOD",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 10,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: false,
     regulatoryNote:
-      "Verified against APERC LT-I(A) 6-tier telescopic domestic tariff schedule (FY 2025-26 & FY 2026-27 Orders). Variable monthly FPPCA/fuel surcharges are excluded from baseline estimates.",
+      "Verified against APERC LT-I(A) 6-tier telescopic domestic tariff schedule and APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5) monthly billing-period settlement. Surplus export compensation (₹2.09/kWh) is modeled as an indicative benchmark; variable monthly FPPCA surcharges are excluded.",
     source: APERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: APERC_RTS_REGULATION_2023_SOURCE,
   },
   APSPDCL: {
     code: "APSPDCL",
@@ -497,14 +566,21 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 8.9,
     commercialBlendedTariffInr: 10.4,
-    exportSettlementRateInr: 3.6,
+    exportSettlementRateInr: 2.09,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis:
+      "APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5): Monthly billing-period surplus export feed-in benchmark (Indicative ₹2.09/kWh).",
     netMeteringMechanism: "NET_METERING_1_TO_1",
+    settlementCycle: "MONTHLY_BILLING_PERIOD",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 10,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: false,
     regulatoryNote:
-      "Verified against APERC LT-I(A) 6-tier telescopic domestic tariff schedule (FY 2025-26 & FY 2026-27 Orders). Variable monthly FPPCA/fuel surcharges are excluded from baseline estimates.",
+      "Verified against APERC LT-I(A) 6-tier telescopic domestic tariff schedule and APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5) monthly billing-period settlement. Surplus export compensation (₹2.09/kWh) is modeled as an indicative benchmark; variable monthly FPPCA surcharges are excluded.",
     source: APERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: APERC_RTS_REGULATION_2023_SOURCE,
   },
   BESCOM: {
     code: "BESCOM",
@@ -517,13 +593,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 8.8,
     commercialBlendedTariffInr: 10.2,
     exportSettlementRateInr: 3.82,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 120,
     electricityDutyPerUnitInr: 0.09,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative KERC/BESCOM blended tariff benchmarks; exact fixed charges and Gruha Jyothi eligibility are confirmed during site consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   MSEDCL: {
     code: "MSEDCL",
@@ -536,13 +618,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 9.5,
     commercialBlendedTariffInr: 11.2,
     exportSettlementRateInr: 3.75,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 90,
     electricityDutyPerUnitInr: 0.16,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative MERC/MSEDCL tariff benchmarks; wheeling, FAC, and slab charges are verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   TATA_MUMBAI: {
     code: "TATA_MUMBAI",
@@ -555,13 +643,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 9.8,
     commercialBlendedTariffInr: 11.5,
     exportSettlementRateInr: 3.9,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 100,
     electricityDutyPerUnitInr: 0.16,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative Mumbai MMR blended tariff benchmarks; exact slab and wheeling charges are verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   BRPL: {
     code: "BRPL",
@@ -574,13 +668,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 8.5,
     commercialBlendedTariffInr: 10.8,
     exportSettlementRateInr: 3.7,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 80,
     electricityDutyPerUnitInr: 0.05,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative DERC/BRPL tariff benchmarks; PPAC surcharges and sanctioned load charges are verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   DHBVN: {
     code: "DHBVN",
@@ -593,13 +693,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 8.6,
     commercialBlendedTariffInr: 10.6,
     exportSettlementRateInr: 3.65,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 75,
     electricityDutyPerUnitInr: 0.1,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative HERC/DHBVN tariff benchmarks; exact slab and FSA charges are verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   GED: {
     code: "GED",
@@ -612,13 +718,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 7.8,
     commercialBlendedTariffInr: 9.8,
     exportSettlementRateInr: 3.5,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 60,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Preliminary sizing uses indicative JERC Goa tariff benchmarks; exact slab and FPPCA charges are verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
   TANGEDCO: {
     code: "TANGEDCO",
@@ -631,13 +743,19 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     residentialBlendedTariffInr: 8.7,
     commercialBlendedTariffInr: 10.5,
     exportSettlementRateInr: 3.6,
+    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementBasis: "Indicative regional SERC surplus export benchmark (unverified).",
     netMeteringMechanism: "INDICATIVE_NET_METERING",
+    settlementCycle: "INDICATIVE_MONTHLY",
+    maxResidentialSolarPctOfSanctionedLoad: 100,
+    maxCommercialSolarPctOfSanctionedLoad: 100,
     fixedChargePerKwMonthInr: 75,
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: false,
     regulatoryNote:
       "Detailed tariff calculation for this electricity board requires confirmation. Tamil Nadu domestic billing follows bi-monthly TNERC slabs and solar net-feed/net-metering mechanisms verified during consultation.",
     source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    netMeteringRegulationSource: INDICATIVE_REGIONAL_TARIFF_SOURCE,
   },
 };
 
@@ -835,6 +953,8 @@ export function energyCharge(discomCode: string, units: number): number {
 
 export interface BillCalculationContext {
   sanctionedLoadKw?: number;
+  sanctionedLoadConfirmed?: boolean;
+  includeZeroUnitFixedCharges?: boolean;
   segment?: "residential" | "commercial";
 }
 
@@ -844,6 +964,7 @@ export interface ElectricityBillResult {
   authority: string;
   units: number;
   sanctionedLoadKw: number;
+  sanctionedLoadConfirmed: boolean;
   energyChargeInr: number;
   customerChargeInr: number;
   fixedChargeInr: number;
@@ -868,12 +989,15 @@ export function calculateElectricityBill(
 ): ElectricityBillResult {
   const profile =
     typeof profileOrCode === "string" ? getDiscomTariffProfile(profileOrCode) : profileOrCode;
-  const sanctionedLoadKw =
+  const hasExplicitSanctionedLoad =
     typeof context.sanctionedLoadKw === "number" &&
     Number.isFinite(context.sanctionedLoadKw) &&
-    context.sanctionedLoadKw > 0
-      ? context.sanctionedLoadKw
-      : 5;
+    context.sanctionedLoadKw > 0;
+  const sanctionedLoadKw = hasExplicitSanctionedLoad ? context.sanctionedLoadKw! : 5;
+  const sanctionedLoadConfirmed =
+    typeof context.sanctionedLoadConfirmed === "boolean"
+      ? context.sanctionedLoadConfirmed
+      : hasExplicitSanctionedLoad;
 
   if (!profile) {
     return {
@@ -882,6 +1006,7 @@ export function calculateElectricityBill(
       authority: "Unsupported Utility",
       units: 0,
       sanctionedLoadKw,
+      sanctionedLoadConfirmed: false,
       energyChargeInr: 0,
       customerChargeInr: 0,
       fixedChargeInr: 0,
@@ -897,13 +1022,18 @@ export function calculateElectricityBill(
     };
   }
 
-  if (!Number.isFinite(units) || units <= 0) {
+  if (
+    !Number.isFinite(units) ||
+    units < 0 ||
+    (units === 0 && !context.includeZeroUnitFixedCharges)
+  ) {
     return {
       status: profile.status,
       discomCode: profile.code,
       authority: profile.authority,
       units: 0,
       sanctionedLoadKw,
+      sanctionedLoadConfirmed,
       energyChargeInr: 0,
       customerChargeInr: 0,
       fixedChargeInr: 0,
@@ -919,12 +1049,18 @@ export function calculateElectricityBill(
     };
   }
 
-  const u = Math.round(units);
+  const u = Math.max(0, Math.round(units));
+  const loadWarnings = !sanctionedLoadConfirmed
+    ? [
+        `Fixed-charge estimate assumes a ${sanctionedLoadKw} kW connected load; verify actual Sanctioned Load on your ${profile.code} utility bill.`,
+      ]
+    : [];
 
   // 1. Telangana (TGSPDCL / TGNPDCL) — Verified TGERC LT-I(A/B/C)
   if (profile.code === "TGSPDCL" || profile.code === "TGNPDCL") {
     const tg = calculateTelanganaDomesticEnergyCharge(u);
-    const fixedChargeInr = u > 200 ? Math.max(1, sanctionedLoadKw) * 10 : 0;
+    const fixedChargeInr =
+      u > 200 || context.includeZeroUnitFixedCharges ? Math.max(1, sanctionedLoadKw) * 10 : 0;
     const electricityDutyInr = Math.round(u * 0.06 * 100) / 100;
     const energyChargeRounded = Math.round(tg.energyCharge);
     const totalBillInr = Math.round(
@@ -939,6 +1075,7 @@ export function calculateElectricityBill(
       authority: "TGERC",
       units: u,
       sanctionedLoadKw,
+      sanctionedLoadConfirmed,
       energyChargeInr: energyChargeRounded,
       customerChargeInr: tg.customerCharge,
       fixedChargeInr,
@@ -946,10 +1083,10 @@ export function calculateElectricityBill(
       unavoidableChargesInr,
       avoidableChargesInr,
       totalBillInr,
-      averageRatePerKwh: Number((totalBillInr / u).toFixed(2)),
+      averageRatePerKwh: u > 0 ? Number((totalBillInr / u).toFixed(2)) : 0,
       slabs: tg.slabs,
       categoryLabel: tg.category,
-      warnings: [],
+      warnings: loadWarnings,
       source: profile.source,
     };
   }
@@ -972,6 +1109,7 @@ export function calculateElectricityBill(
       authority: "APERC",
       units: u,
       sanctionedLoadKw,
+      sanctionedLoadConfirmed,
       energyChargeInr: energyChargeRounded,
       customerChargeInr: ap.customerCharge,
       fixedChargeInr,
@@ -979,11 +1117,12 @@ export function calculateElectricityBill(
       unavoidableChargesInr,
       avoidableChargesInr,
       totalBillInr,
-      averageRatePerKwh: Number((totalBillInr / u).toFixed(2)),
+      averageRatePerKwh: u > 0 ? Number((totalBillInr / u).toFixed(2)) : 0,
       slabs: ap.slabs,
       categoryLabel: ap.category,
       warnings: [
         "Excludes variable monthly Fuel and Power Purchase Cost Adjustment (FPPCA) charges.",
+        ...loadWarnings,
       ],
       source: profile.source,
     };
@@ -1009,6 +1148,7 @@ export function calculateElectricityBill(
     authority: profile.authority,
     units: u,
     sanctionedLoadKw,
+    sanctionedLoadConfirmed,
     energyChargeInr: Math.round(energyAmt),
     customerChargeInr,
     fixedChargeInr,
@@ -1016,17 +1156,20 @@ export function calculateElectricityBill(
     unavoidableChargesInr,
     avoidableChargesInr,
     totalBillInr,
-    averageRatePerKwh: Number((totalBillInr / u).toFixed(2)),
-    slabs: [
-      {
-        slab: `Indicative Regional Rate (${profile.state})`,
-        units: u,
-        ratePerUnit: netEnergyRate,
-        amount: energyAmt,
-      },
-    ],
+    averageRatePerKwh: u > 0 ? Number((totalBillInr / u).toFixed(2)) : 0,
+    slabs:
+      u > 0
+        ? [
+            {
+              slab: `Indicative Regional Rate (${profile.state})`,
+              units: u,
+              ratePerUnit: netEnergyRate,
+              amount: energyAmt,
+            },
+          ]
+        : [],
     categoryLabel: "INDICATIVE-LT",
-    warnings: [profile.regulatoryNote],
+    warnings: [profile.regulatoryNote, ...loadWarnings],
     source: profile.source,
   };
 }
@@ -1142,6 +1285,7 @@ export interface DetailedBillAnalysis {
   estimatedUnits: number;
   discomCode: string;
   sanctionedLoadKw: number;
+  sanctionedLoadConfirmed: boolean;
   category: "LT-I(A)" | "LT-I(B)" | "LT-I(C)" | "INDICATIVE-LT" | "UNAVAILABLE";
   slabs: BillSlabBreakdown[];
   energyChargesTotal: number;
@@ -1165,9 +1309,15 @@ export interface DetailedBillAnalysis {
 export function decodeBill(
   discomCode: string,
   billInr: number,
-  sanctionedLoadKw: number = 5,
+  sanctionedLoadKw?: number,
 ): DetailedBillAnalysis {
   const profile = getDiscomTariffProfile(discomCode);
+  const sanctionedLoadConfirmed =
+    typeof sanctionedLoadKw === "number" &&
+    Number.isFinite(sanctionedLoadKw) &&
+    sanctionedLoadKw > 0;
+  const effectiveLoadKw = sanctionedLoadConfirmed ? sanctionedLoadKw! : 5;
+
   if (!profile || !Number.isFinite(billInr) || billInr <= 0) {
     return {
       status: profile ? profile.status : "UNAVAILABLE",
@@ -1176,7 +1326,8 @@ export function decodeBill(
       monthlyBillInr: Number.isFinite(billInr) && billInr > 0 ? billInr : 0,
       estimatedUnits: 0,
       discomCode,
-      sanctionedLoadKw,
+      sanctionedLoadKw: effectiveLoadKw,
+      sanctionedLoadConfirmed,
       category: "UNAVAILABLE",
       slabs: [],
       energyChargesTotal: 0,
@@ -1193,8 +1344,11 @@ export function decodeBill(
     };
   }
 
-  const units = Math.max(1, unitsForBill(profile.code, billInr, sanctionedLoadKw));
-  const billRes = calculateElectricityBill(profile, units, { sanctionedLoadKw });
+  const units = Math.max(1, unitsForBill(profile.code, billInr, effectiveLoadKw));
+  const billRes = calculateElectricityBill(profile, units, {
+    sanctionedLoadKw: effectiveLoadKw,
+    sanctionedLoadConfirmed,
+  });
 
   return {
     status: billRes.status,
@@ -1203,7 +1357,8 @@ export function decodeBill(
     monthlyBillInr: billInr,
     estimatedUnits: units,
     discomCode: profile.code,
-    sanctionedLoadKw,
+    sanctionedLoadKw: effectiveLoadKw,
+    sanctionedLoadConfirmed,
     category: billRes.categoryLabel,
     slabs: billRes.slabs,
     energyChargesTotal: billRes.energyChargeInr,
@@ -1220,7 +1375,7 @@ export function decodeBill(
 }
 
 // ----------------------------------------------------------------------------
-// 3. VERIFIED DISCOMS DIRECTORY (TELANGANA & ANDHRA PRADESH)
+// 3. VERIFIED DISCOMS DIRECTORY & SANCTIONED LOAD FEASIBILITY (TASK C)
 // ----------------------------------------------------------------------------
 export interface DiscomRegulatoryInfo {
   code: string;
@@ -1228,9 +1383,14 @@ export interface DiscomRegulatoryInfo {
   state: string;
   portalUrl: string;
   portalName: string;
-  surplusRateInr: number; // APPC net-metering settlement rate
+  surplusRateInr: number;
+  surplusRateStatus: VerificationStatus;
+  surplusRateBasis: string;
+  maxResidentialSolarPctOfLoad: number;
+  maxCommercialSolarPctOfLoad: number;
   commercialTariffAvgInr: number;
   source: DataSource;
+  netMeteringRegulationSource: DataSource;
 }
 
 export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
@@ -1240,9 +1400,15 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Telangana",
     portalUrl: "https://tgsouthernpower.org",
     portalName: "TGSPDCL Official Consumer Portal",
-    surplusRateInr: 3.55,
+    surplusRateInr: 2.65,
+    surplusRateStatus: "INDICATIVE",
+    surplusRateBasis:
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar tariff of preceding FY (Indicative ₹2.65/kWh)",
+    maxResidentialSolarPctOfLoad: 100,
+    maxCommercialSolarPctOfLoad: 80,
     commercialTariffAvgInr: 10.5,
     source: TGERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
   TGNPDCL: {
     code: "TGNPDCL",
@@ -1250,9 +1416,15 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Telangana",
     portalUrl: "https://tgnpdcl.com",
     portalName: "TGNPDCL Official Portal",
-    surplusRateInr: 3.55,
+    surplusRateInr: 2.65,
+    surplusRateStatus: "INDICATIVE",
+    surplusRateBasis:
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar tariff of preceding FY (Indicative ₹2.65/kWh)",
+    maxResidentialSolarPctOfLoad: 100,
+    maxCommercialSolarPctOfLoad: 80,
     commercialTariffAvgInr: 10.2,
     source: TGERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
   APEPDCL: {
     code: "APEPDCL",
@@ -1260,9 +1432,15 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Andhra Pradesh",
     portalUrl: "https://www.apeasternpower.com",
     portalName: "APEPDCL Official Portal",
-    surplusRateInr: 3.6,
+    surplusRateInr: 2.09,
+    surplusRateStatus: "INDICATIVE",
+    surplusRateBasis:
+      "APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5): Monthly billing-period surplus export feed-in benchmark (Indicative ₹2.09/kWh)",
+    maxResidentialSolarPctOfLoad: 100,
+    maxCommercialSolarPctOfLoad: 100,
     commercialTariffAvgInr: 10.4,
     source: APERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: APERC_RTS_REGULATION_2023_SOURCE,
   },
   APSPDCL: {
     code: "APSPDCL",
@@ -1270,11 +1448,184 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Andhra Pradesh",
     portalUrl: "https://apspdcl.in",
     portalName: "APSPDCL Official Portal",
-    surplusRateInr: 3.6,
+    surplusRateInr: 2.09,
+    surplusRateStatus: "INDICATIVE",
+    surplusRateBasis:
+      "APERC Regulation No. 4 of 2023 (Clauses 16.1 & 16.5): Monthly billing-period surplus export feed-in benchmark (Indicative ₹2.09/kWh)",
+    maxResidentialSolarPctOfLoad: 100,
+    maxCommercialSolarPctOfLoad: 100,
     commercialTariffAvgInr: 10.4,
     source: APERC_TARIFF_SOURCE,
+    netMeteringRegulationSource: APERC_RTS_REGULATION_2023_SOURCE,
   },
 };
+
+export interface SanctionedLoadFeasibilityAssessment {
+  status: VerificationStatus | "REQUIRES_VERIFICATION";
+  discomCode: string;
+  authority: string;
+  segment: "residential" | "commercial";
+  systemKw: number;
+  sanctionedLoadConfirmed: boolean;
+  knownSanctionedLoadKw: number | null;
+  assumedSanctionedLoadKw: number;
+  effectiveSanctionedLoadKw: number;
+  maxAllowedPctOfSanctionedLoad: number;
+  maxPermissibleSolarKwWithoutLoadEnhancement: number | null;
+  assumedMaxPermissibleSolarKw: number;
+  requiredSanctionedLoadKwForSystem: number;
+  exceedsKnownSanctionedLoad: boolean;
+  exceedsAssumedSanctionedLoad: boolean;
+  requiresLoadEnhancement: boolean;
+  deemedLoadEnhancementEligibleUpTo10Kw: boolean;
+  requiresDistributionTransformerCheck: boolean;
+  isFeasibleWithoutEnhancement: boolean | null;
+  warning: string | null;
+  disclosures: string[];
+  source: DataSource;
+}
+
+/**
+ * Evaluates rooftop solar capacity against state regulatory sanctioned-load caps (Task C):
+ * - Telangana (TGERC Regulation No. 1 of 2025): 100% of sanctioned load for Residential/Government;
+ *   80% of sanctioned load / contracted demand for Commercial/Industrial (up to 500 kWp net metering).
+ * - Andhra Pradesh (APERC Regulation No. 4 of 2023): 100% of sanctioned load / contracted demand
+ *   (up to 500 kW; distribution transformer hosting limit 80%).
+ * - Never assumes the customer has a verified 5 kW sanctioned load unless explicitly provided.
+ */
+export function evaluateSanctionedLoadFeasibility(params: {
+  systemKw: number;
+  discomCode?: string;
+  segment?: "residential" | "commercial";
+  sanctionedLoadKw?: number;
+  sanctionedLoadConfirmed?: boolean;
+}): SanctionedLoadFeasibilityAssessment {
+  const segment = params.segment === "commercial" ? "commercial" : "residential";
+  const systemKw =
+    typeof params.systemKw === "number" && Number.isFinite(params.systemKw) && params.systemKw > 0
+      ? Number(params.systemKw.toFixed(2))
+      : 0;
+  const profile = getDiscomTariffProfile(params.discomCode);
+
+  const hasExplicitLoad =
+    typeof params.sanctionedLoadKw === "number" &&
+    Number.isFinite(params.sanctionedLoadKw) &&
+    params.sanctionedLoadKw > 0;
+  const sanctionedLoadConfirmed =
+    typeof params.sanctionedLoadConfirmed === "boolean"
+      ? params.sanctionedLoadConfirmed && hasExplicitLoad
+      : hasExplicitLoad;
+  const assumedSanctionedLoadKw = 5;
+  const knownSanctionedLoadKw = sanctionedLoadConfirmed
+    ? Number(params.sanctionedLoadKw!.toFixed(2))
+    : null;
+  const effectiveSanctionedLoadKw = knownSanctionedLoadKw ?? assumedSanctionedLoadKw;
+
+  if (!profile) {
+    return {
+      status: "UNAVAILABLE",
+      discomCode: params.discomCode ?? "UNKNOWN",
+      authority: "Unsupported Utility",
+      segment,
+      systemKw,
+      sanctionedLoadConfirmed: false,
+      knownSanctionedLoadKw: null,
+      assumedSanctionedLoadKw,
+      effectiveSanctionedLoadKw,
+      maxAllowedPctOfSanctionedLoad: 100,
+      maxPermissibleSolarKwWithoutLoadEnhancement: null,
+      assumedMaxPermissibleSolarKw: 0,
+      requiredSanctionedLoadKwForSystem: systemKw,
+      exceedsKnownSanctionedLoad: false,
+      exceedsAssumedSanctionedLoad: false,
+      requiresLoadEnhancement: true,
+      deemedLoadEnhancementEligibleUpTo10Kw: false,
+      requiresDistributionTransformerCheck: true,
+      isFeasibleWithoutEnhancement: null,
+      warning:
+        "Sanctioned load and net-metering capacity rules for this utility are unverified; engineering consultation required.",
+      disclosures: [
+        "Grid connection approval and sanctioned load limits require utility-specific verification during site survey.",
+      ],
+      source: INDICATIVE_REGIONAL_TARIFF_SOURCE,
+    };
+  }
+
+  const maxAllowedPctOfSanctionedLoad =
+    segment === "commercial"
+      ? profile.maxCommercialSolarPctOfSanctionedLoad
+      : profile.maxResidentialSolarPctOfSanctionedLoad;
+  const ratio = maxAllowedPctOfSanctionedLoad / 100;
+
+  const assumedMaxPermissibleSolarKw = Number((effectiveSanctionedLoadKw * ratio).toFixed(2));
+  const maxPermissibleSolarKwWithoutLoadEnhancement =
+    knownSanctionedLoadKw !== null ? Number((knownSanctionedLoadKw * ratio).toFixed(2)) : null;
+  const requiredSanctionedLoadKwForSystem =
+    ratio > 0 ? Number(Math.ceil((systemKw / ratio) * 10) / 10) : systemKw;
+
+  const exceedsKnownSanctionedLoad =
+    maxPermissibleSolarKwWithoutLoadEnhancement !== null &&
+    systemKw > maxPermissibleSolarKwWithoutLoadEnhancement;
+  const exceedsAssumedSanctionedLoad =
+    !sanctionedLoadConfirmed && systemKw > assumedMaxPermissibleSolarKw;
+  const requiresLoadEnhancement = exceedsKnownSanctionedLoad || exceedsAssumedSanctionedLoad;
+  const deemedLoadEnhancementEligibleUpTo10Kw = segment === "residential" && systemKw <= 10;
+  const requiresDistributionTransformerCheck = true;
+
+  const isFeasibleWithoutEnhancement: boolean | null = sanctionedLoadConfirmed
+    ? !exceedsKnownSanctionedLoad
+    : null;
+
+  const regCitation =
+    profile.code === "TGSPDCL" || profile.code === "TGNPDCL"
+      ? `TGERC Regulation No. 1 of 2025 (${maxAllowedPctOfSanctionedLoad}% of sanctioned load cap for ${segment} prosumers)`
+      : profile.code === "APEPDCL" || profile.code === "APSPDCL"
+        ? `APERC Regulation No. 4 of 2023 (${maxAllowedPctOfSanctionedLoad}% of sanctioned load cap; 80% DT hosting limit)`
+        : `${profile.authority} net-metering guidelines (${maxAllowedPctOfSanctionedLoad}% of sanctioned load benchmark)`;
+
+  let warning: string | null = null;
+  if (exceedsKnownSanctionedLoad && knownSanctionedLoadKw !== null) {
+    warning = `Configured ${systemKw} kW solar array exceeds the ${maxPermissibleSolarKwWithoutLoadEnhancement} kW statutory limit (${maxAllowedPctOfSanctionedLoad}% of your ${knownSanctionedLoadKw} kW sanctioned load under ${regCitation}). Contracted load enhancement to at least ${requiredSanctionedLoadKwForSystem} kW${deemedLoadEnhancementEligibleUpTo10Kw ? " (eligible for fast-track deemed load enhancement up to 10 kW subject to security deposit and meter upgrade)" : ""} and DISCOM distribution transformer (DT) clearance are required before net-metering synchronization.`;
+  } else if (exceedsAssumedSanctionedLoad) {
+    warning = `Configured ${systemKw} kW solar array requires at least ${requiredSanctionedLoadKwForSystem} kW of sanctioned load under ${regCitation}, which exceeds the unverified ${assumedSanctionedLoadKw} kW baseline assumption. If your electricity bill shows a lower sanctioned load, a DISCOM load enhancement application and DT hosting check will be required.`;
+  }
+
+  const disclosures: string[] = [
+    sanctionedLoadConfirmed
+      ? `Sanctioned load basis: ${knownSanctionedLoadKw} kW (customer-provided) → maximum permissible rooftop solar without load enhancement is ${maxPermissibleSolarKwWithoutLoadEnhancement} kW (${maxAllowedPctOfSanctionedLoad}% under ${regCitation}).`
+      : `Customer sanctioned load is not yet verified from an electricity bill. Fixed-charge estimates use an unverified ${assumedSanctionedLoadKw} kW modeling assumption; a ${systemKw} kW system requires at least ${requiredSanctionedLoadKwForSystem} kW of sanctioned load under ${regCitation}.`,
+    "Final grid interconnection and net-metering synchronization remain subject to DISCOM distribution transformer (DT) hosting capacity and physical meter inspection.",
+  ];
+
+  return {
+    status: !sanctionedLoadConfirmed
+      ? "REQUIRES_VERIFICATION"
+      : profile.status === "VERIFIED"
+        ? "VERIFIED"
+        : "INDICATIVE",
+    discomCode: profile.code,
+    authority: profile.authority,
+    segment,
+    systemKw,
+    sanctionedLoadConfirmed,
+    knownSanctionedLoadKw,
+    assumedSanctionedLoadKw,
+    effectiveSanctionedLoadKw,
+    maxAllowedPctOfSanctionedLoad,
+    maxPermissibleSolarKwWithoutLoadEnhancement,
+    assumedMaxPermissibleSolarKw,
+    requiredSanctionedLoadKwForSystem,
+    exceedsKnownSanctionedLoad,
+    exceedsAssumedSanctionedLoad,
+    requiresLoadEnhancement,
+    deemedLoadEnhancementEligibleUpTo10Kw,
+    requiresDistributionTransformerCheck,
+    isFeasibleWithoutEnhancement,
+    warning,
+    disclosures,
+    source: profile.netMeteringRegulationSource,
+  };
+}
 
 // ----------------------------------------------------------------------------
 // 4. SOLAR YIELD & IRRADIANCE (REGIONAL METEOROLOGY — PHASE B / P1-E)
@@ -1662,7 +2013,7 @@ export const TAX_DEPRECIATION_CONFIG = {
 };
 
 // ----------------------------------------------------------------------------
-// 7. FINANCING & SBI PM SURYA GHAR SOLAR LOAN (PHASE E / P0-C)
+// 7. FINANCING & SBI PM SURYA GHAR SOLAR LOAN (PHASE E / P0-C / TASK B)
 // ----------------------------------------------------------------------------
 export const SBI_SOLAR_LOAN_SOURCE: DataSource = {
   title:
@@ -1671,14 +2022,14 @@ export const SBI_SOLAR_LOAN_SOURCE: DataSource = {
   verifiedOn: "2026-11-05",
   effectiveFrom: "2026-10-15",
   documentRef:
-    "SBI Green Loans PM Surya Ghar Schedule (6.00% p.a. ≤ ₹2L; 8.15% p.a. > ₹2L–₹6L effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
+    "SBI Green Loans PM Surya Ghar Schedule (6.00% p.a. ≤ ₹2L for ≤ 3 kW; 8.15% p.a. > ₹2L–₹6L for > 3 kW to 10 kW effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
   authority: "State Bank of India (SBI) / JanSamarth National Portal",
-  consumerCategory: "Individual Residential Rooftop Solar Applicants",
+  consumerCategory: "Individual Residential Rooftop Solar Applicants (Up to 10 kW)",
   financialYear: "FY 2026-27",
   status: "INDICATIVE",
   category: "COMMERCIAL_PRICING_ASSUMPTION",
   restrictions:
-    "Floating EBLR-linked interest rates (6.00% p.a. up to ₹2,00,000 for ≤ 3 kW; 8.15% p.a. for > ₹2,00,000 up to ₹6,00,000 for > 3 kW to 10 kW, effective 15 Oct 2026). Because SBI's older personal-banking page (15 Dec 2025) still displays 5.75% / 7.90% and final sanction depends on borrower CIBIL appraisal and 10% minimum margin, financing estimates are classified as INDICATIVE. Concessional scheme ceiling is ₹6,00,000.",
+    "Floating EBLR-linked interest rates (6.00% p.a. up to ₹2,00,000 for ≤ 3 kW; 8.15% p.a. for > ₹2,00,000 up to ₹6,00,000 for > 3 kW to 10 kW, effective 15 Oct 2026; minimum 10% borrower margin). Under SBI PM Surya Ghar loan terms, the borrower's loan account is linked on the National Portal and post-commissioning MNRE central subsidy is credited directly into the SBI loan account to prepay loan principal with zero prepayment penalty (not released as unrestricted cash while leaving the 90% loan balance unreduced). Standalone battery storage capex and systems > 10 kW are outside the PM Surya Ghar concessional loan scheme. All amortization and EMI recast/tenure-reduction schedules are classified as INDICATIVE.",
 };
 
 export const SOLAR_LOAN_TERMS = {
@@ -1687,8 +2038,12 @@ export const SOLAR_LOAN_TERMS = {
   asOfDate: "2026-10-15",
   verifiedOn: "2026-11-05",
   rateType: "Floating (linked to External Benchmark Lending Rate / EBLR)",
-  maxFinancingPct: 0.9, // Up to 90% of project cost (10% minimum customer margin)
+  maxFinancingPct: 0.9, // Up to 90% of eligible solar project cost (10% minimum customer margin)
   minCustomerMarginPct: 0.1,
+  defaultSubsidyCreditMonth: 3, // Indicative post-commissioning DBT credit timing (Month 3 of Year 1)
+  subsidyCreditedDirectlyToLoanAccount: true,
+  prepaymentPenaltyPct: 0,
+  standaloneBatteryEligibleForSchemeLoan: false,
   tier1: {
     maxAmountInr: 200000,
     maxCapacityKw: 3,
@@ -1703,7 +2058,7 @@ export const SOLAR_LOAN_TERMS = {
   },
   legacyScheduleNote:
     "Older SBI personal-banking publication dated 2025-12-15 lists 5.75% / 7.90%; WAVENOX uses the newer 2026-10-15 SBI Green Loans schedule (6.00% / 8.15%).",
-  aboveCapIndicativeRate: 0.0915, // 9.15% p.a. unverified indicative modeling rate above the ₹6,00,000 PM Surya Ghar scheme ceiling (not an SBI scheme offer)
+  aboveCapIndicativeRate: 0.0915, // 9.15% p.a. unverified indicative modeling rate above the ₹6,00,000 / 10 kW PM Surya Ghar scheme ceiling (not an SBI scheme offer)
   maxTenureMonths: 120, // Up to 10 years
   defaultTenureMonths: 60, // 5 years default model
   portalLenderDirectoryUrl:

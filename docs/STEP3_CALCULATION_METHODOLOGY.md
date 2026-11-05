@@ -1,6 +1,6 @@
 # WAVENOX — Step 3 Solar Engineering & Financial Calculation Methodology
 
-**Version:** Step 3 Final Hardening (`feat/wavenox-step3-solar-engine`)
+**Version:** Step 3 Final Regulatory Settlement & Bank Finance Correction (`feat/wavenox-step3-solar-engine`)
 **Verification Date:** `2026-11-05`
 **Core Engine Modules:** [`src/config/regulatory.ts`](../src/config/regulatory.ts), [`src/config/solar.ts`](../src/config/solar.ts)
 
@@ -18,7 +18,7 @@ where:
 
 - **Unavoidable Monthly Charges (never offset by solar kWh generation):**
   $$\text{Unavoidable Charges} = \text{Customer Charge}(U) + \text{Fixed Charge}(L)$$
-- **Avoidable Monthly Charges (offsettable by solar self-consumption & 1:1 net-metering):**
+- **Avoidable Monthly Charges (offsettable by solar self-consumption & 1:1 net-metering within the billing period):**
   $$\text{Avoidable Charges} = \text{Energy Charge}(U) + \text{Electricity Duty}(U)$$
 
 #### State-Specific Domestic Schedules:
@@ -52,25 +52,25 @@ Given a target monthly bill $B \ge 0$ (₹/month), binary search over $U \in [0,
 
 ---
 
-## 2. Solar Generation & Roof-Area Feasibility
+## 2. Solar Generation, Roof-Area Feasibility & Sanctioned Load Caps (`Task C`)
 
-### 2.1 Regional Specific Yield (`getSolarYieldProfileForDiscom` — `P1-E`)
+### 2.1 Regional Specific Yield & 12-Month Seasonality (`getSolarYieldProfileForDiscom`)
 
-Each supported DISCOM maps to one of 7 city meteorological profiles in `CITY_SOLAR_METEOROLOGY` derived from NASA POWER SSE Release 8 climatology and NREL PVWatts v8:
+Each supported DISCOM maps to one of 7 city meteorological profiles in `CITY_SOLAR_METEOROLOGY` derived from NASA POWER SSE Release 8 climatology and NREL PVWatts v8, including a 12-month yield distribution $(y_1, \dots, y_{12})$ summing to $Y_{\text{spec}}$:
 
-- **Hyderabad (`TGSPDCL`, `TGNPDCL`):** $Y_{\text{spec}} = 1,490\text{ kWh/kWp/year}$
-- **Visakhapatnam / AP (`APEPDCL`, `APSPDCL`):** $Y_{\text{spec}} = 1,460\text{ kWh/kWp/year}$
+- **Hyderabad (`TGSPDCL`, `TGNPDCL`):** $Y_{\text{spec}} = 1,490\text{ kWh/kWp/year}$ (`monthlyYield = [124, 128, 148, 146, 144, 114, 102, 104, 112, 124, 122, 122]`)
+- **Visakhapatnam / AP (`APEPDCL`, `APSPDCL`):** $Y_{\text{spec}} = 1,460\text{ kWh/kWp/year}$ (`monthlyYield = [122, 126, 145, 143, 140, 110, 100, 102, 110, 120, 121, 121]`)
 - **Bengaluru (`BESCOM`):** $Y_{\text{spec}} = 1,440\text{ kWh/kWp/year}$
 - **Mumbai (`MSEDCL`, `TATA_MUMBAI`):** $Y_{\text{spec}} = 1,450\text{ kWh/kWp/year}$
 - **Delhi-NCR (`BRPL`, `DHBVN`):** $Y_{\text{spec}} = 1,420\text{ kWh/kWp/year}$
 - **Goa (`GED`):** $Y_{\text{spec}} = 1,430\text{ kWh/kWp/year}$
 - **Chennai (`TANGEDCO`):** $Y_{\text{spec}} = 1,470\text{ kWh/kWp/year}$
 
-All 7 profiles use a consistent **14.08% composite system loss derate** (`systemLossDeratePct = 14.08`, NREL PVWatts v8 standard loss model: 2% soiling, 3% shading, 2% mismatch, 2% wiring, 0.5% connections, 1.5% light-induced degradation, 1% nameplate rating, 3% availability) and are classified as `status: "INDICATIVE"`, `category: "ENGINEERING_MODEL_ASSUMPTION"`. Unknown DISCOMs receive `UNAVAILABLE_SOLAR_YIELD_PROFILE` (`annualKwhPerKw = 0`, `status: "UNAVAILABLE"`).
+All 7 profiles use a consistent **14.08% composite system loss derate** (`systemLossDeratePct = 14.08`, NREL PVWatts v8 standard loss model) and are classified as `status: "INDICATIVE"`, `category: "ENGINEERING_MODEL_ASSUMPTION"`. Unknown DISCOMs receive `UNAVAILABLE_SOLAR_YIELD_PROFILE` (`annualKwhPerKw = 0`, `status: "UNAVAILABLE"`).
 
 ### 2.2 System Sizing, Module Count & Roof Area (`validateRoofFeasibility`)
 
-Given estimated annual consumption $U_{\text{annual}} = 12 \times U_{\text{mo}}$ (kWh/year):
+Given estimated annual consumption $U_{\text{annual}} = \sum_{m=1}^{12} U_m$ (kWh/year):
 
 $$\text{Needed kW} = \text{clamp}\left(\frac{U_{\text{annual}}}{Y_{\text{spec}}},\; 3\text{ kW},\; 25\text{ kW}\right)$$
 
@@ -79,60 +79,78 @@ $$\text{Needed kW} = \text{clamp}\left(\frac{U_{\text{annual}}}{Y_{\text{spec}}}
 - **Physical Module Footprint (`panelFootprintSqft = 27.8`):**
   $$A_{\text{module}} = \text{round}(N_{\text{panels}} \times 27.8\text{ sq.ft}) \quad (2278\text{ mm} \times 1134\text{ mm} = 2.583\text{ m}^2 = 27.8\text{ sq.ft})$$
 - **Recommended Shadow-Free Clear Roof Area (`clearRoofSqftPerKw = 100`):**
-  $$A_{\text{clear}} = \text{round}(\text{System kW} \times 100\text{ sq.ft/kW}) \quad (\text{includes row pitch spacing, tilt clearance & walkways})$$
-- **Feasibility Validation:** Given available roof area $A_{\text{avail}}$, `isFeasible = (A_avail >= A_clear)` and $\text{Max Feasible Panels} = \lfloor ((A_{\text{avail}} / 100) \times 1000) / 580 \rfloor$.
+  $$A_{\text{clear}} = \text{round}(\text{System kW} \times 100\text{ sq.ft/kW})$$
+
+### 2.3 Sanctioned Load & Regulatory Hosting Feasibility (`evaluateSanctionedLoadFeasibility` — `Task C`)
+
+The engine never silently assumes the customer has a verified `5 kW` sanctioned load unless `sanctionedLoadConfirmed === true` (`knownSanctionedLoadKw` vs `assumedSanctionedLoadKw = 5`):
+
+1. **Telangana (`TGERC Regulation No. 1 of 2025`):**
+   - **Residential & Government:** Capped at **100% of sanctioned load / contracted demand** ($\text{Max Solar kW} = 1.00 \times L_{\text{sanctioned}}$, up to $500\text{ kWp}$ net metering).
+   - **Commercial & Industrial:** Capped at **80% of sanctioned load / contracted demand** ($\text{Max Solar kW} = 0.80 \times L_{\text{sanctioned}}$, up to $500\text{ kWp}$ net metering; $> 500\text{ kWp}$ up to $2\text{ MW}$ under gross metering).
+   - **Distribution Transformer (DT) Hosting Limit:** $80\%$ of DT rated capacity (`dtHostingCapacityLimitPct = 80`).
+2. **Andhra Pradesh (`APERC Regulation No. 4 of 2023`):**
+   - **Residential & Commercial:** Capped at **100% of sanctioned load / contracted demand** ($\text{Max Solar kW} = 1.00 \times L_{\text{sanctioned}}$, up to $500\text{ kW}$; $80\%$ DT hosting limit).
+3. **Other Regional Benchmarks:**
+   - Default $100\%$ of sanctioned load (`status: "INDICATIVE"`).
+4. **Load Enhancement Detection:**
+   - Whenever $\text{System kW} > \text{Max Permissible Solar kW}$ (either against confirmed sanctioned load or the unconfirmed `5 kW` planning assumption), `requiresLoadEnhancement = true`, `requiredSanctionedLoadKw = ceil((systemKw / capRatio) * 100) / 100`, and an explicit warning is surfaced in `estimate().warnings` and `SystemConfigurator.tsx`.
 
 ---
 
-## 3. Regulator-Grounded Net-Metering & Bill Savings (`P0-A`)
+## 3. 12-Month Billing-Period Net-Metering Settlement (`Task A` & `P0-A`)
 
-Given annual solar generation $G_{\text{annual}} = \text{round}(\text{System kW} \times Y_{\text{spec}})$ and annual consumption $U_{\text{annual}} = 12 \times U_{\text{mo}}$:
+### 3.1 Legal & Regulatory Basis (`TGERC Regulation No. 1 of 2025` & `APERC Regulation No. 4 of 2023`)
 
-### 3.1 Partition of Energy Flows (Zero Double-Counting)
+Under **TGERC Rooftop Solar PV Grid Interactive Systems Regulation No. 1 of 2025 (Sections 2 & Clauses 8.1.1–8.1.5, notified 15 Nov 2025)** and **APERC Grid Interactive Solar Rooftop Photovoltaic System Regulation No. 4 of 2023 (Clauses 16.1 & 16.5)**:
 
-- **Self-Consumption Ratio ($f_{\text{self}}$):**
-  - Solar-only (`batteryUnits === 0`): $f_{\text{self}} = 0.70$ (`70%` direct daytime behind-the-meter self-consumption)
-  - Hybrid with Omnigrid LFP (`batteryUnits > 0`): $f_{\text{self}} = 0.90$ (`90%` self-consumption via evening load shifting)
-- **Direct Self-Consumed Energy:**
-  $$E_{\text{self}} = \min\left(U_{\text{annual}},\; \text{round}(G_{\text{annual}} \times f_{\text{self}})\right)$$
-- **Exported Solar Energy to Grid:**
-  $$E_{\text{exp}} = \max(0,\; G_{\text{annual}} - E_{\text{self}}) \quad \implies \quad E_{\text{self}} + E_{\text{exp}} = G_{\text{annual}}$$
-- **Gross Imported Grid Energy:**
-  $$E_{\text{imp}} = \max(0,\; U_{\text{annual}} - E_{\text{self}})$$
-- **Qualifying 1:1 Net-Metered Offset Energy:**
-  $$E_{\text{offset}} = \min(E_{\text{exp}},\; E_{\text{imp}})$$
-- **True Net Annual Surplus Energy (Settled at APPC):**
-  $$E_{\text{surplus}} = \max(0,\; E_{\text{exp}} - E_{\text{offset}}) \quad \implies \quad E_{\text{offset}} + E_{\text{surplus}} = E_{\text{exp}}$$
-- **Residual Net Billed Grid Import:**
-  $$E_{\text{residual}} = \max(0,\; E_{\text{imp}} - E_{\text{offset}}) = \max(0,\; U_{\text{annual}} - G_{\text{annual}})$$
+- Import/export netting occurs **per monthly billing period** ($m \in \{1, \dots, 12\}$), **never across the entire year at retail slab rates**.
+- If exported solar energy in billing period $m$ exceeds imported grid energy in billing period $m$, the net surplus exported energy for that billing period is settled at the statutory surplus export rate (`exportRateInr`, classified as `status: "INDICATIVE"`), and the consumer still pays the unavoidable monthly fixed and customer charges for month $m$.
+- Excess export in month $m$ (e.g., March/April peak solar or low-load winter months) **cannot** be carried forward as a 1:1 kWh credit to offset net grid imports in month $m' \ne m$ (e.g., May peak AC load or July/August monsoon months) at retail telescopic slab rates ($₹5.10\text{–}₹10.00/\text{kWh}$).
 
-### 3.2 Monetary Settlement Valuation
+### 3.2 Monthly Energy Partition & Settlement Equations ($m = 1, \dots, 12$)
 
-1. **Verified Telangana (`TGSPDCL`, `TGNPDCL`) & Andhra Pradesh (`APEPDCL`, `APSPDCL`) Domestic Schedule:**
-   - Residual monthly billed units: $U_{\text{res,mo}} = \text{round}(E_{\text{residual}} / 12)$.
-   - Unavoidable annual fixed & customer charges: $C_{\text{unavoidable,yr}} = 12 \times \text{UnavoidableCharges}(U_{\text{mo}})$.
-   - Residual avoidable annual energy & duty charges: $C_{\text{avoidable,res,yr}} = 12 \times \text{AvoidableCharges}(U_{\text{res,mo}})$.
-   - Post-solar annual bill:
-     $$\text{PostSolarBill}_{\text{yr}} = \min\left(\text{AnnualBill}_{\text{yr}},\; C_{\text{unavoidable,yr}} + C_{\text{avoidable,res,yr}}\right)$$
-   - Avoided retail bill savings:
-     $$\text{AvoidedBillSavings}_{\text{yr}} = \max(0,\; \text{AnnualBill}_{\text{yr}} - \text{PostSolarBill}_{\text{yr}})$$
-   - True annual surplus APPC settlement credit:
-     $$\text{SurplusExportCredit}_{\text{yr}} = \text{round}(E_{\text{surplus}} \times R_{\text{APPC}})$$
-   - Total annual monetary benefit:
-     $$\text{AnnualSavings}_{\text{yr}} = \text{AvoidedBillSavings}_{\text{yr}} + \text{SurplusExportCredit}_{\text{yr}}$$
+Given system capacity $\text{System kW}$, monthly specific yield distribution $y_m$ ($\sum_{m=1}^{12} y_m = Y_{\text{spec}}$), and monthly consumption $U_m$ (either from actual 12-month bill history `monthlyConsumptionByMonth` or uniform $U_m = U_{\text{mo}}$ disclosed as `consumptionProfileBasis: "UNIFORM_MONTHLY_ASSUMPTION"`):
 
-2. **Indicative Regional Benchmarks (`BESCOM`, `MSEDCL`, etc.):**
-   - $\text{MaxAvoidable}_{\text{yr}} = \max(0,\; \text{AnnualBill}_{\text{yr}} - C_{\text{unavoidable,yr}})$
-   - $\text{AvoidedBillSavings}_{\text{yr}} = \min(\text{MaxAvoidable}_{\text{yr}},\; \text{round}((E_{\text{self}} + E_{\text{offset}}) \times R_{\text{blend}}))$
-   - $\text{SurplusExportCredit}_{\text{yr}} = \text{round}(E_{\text{surplus}} \times R_{\text{APPC}})$
+- **Monthly Solar Generation ($G_m$):**
+  $$G_m = \text{round}\left(G_{\text{annual}} \times \frac{y_m}{Y_{\text{spec}}}\right), \qquad \text{with Month 12 adjusted so } \sum_{m=1}^{12} G_m = G_{\text{annual}}$$
+- **Monthly Direct Self-Consumed Energy ($E_{\text{self},m}$):**
+  $$E_{\text{self},m} = \min\left(U_m,\; \text{round}(G_m \times f_{\text{self}})\right), \qquad f_{\text{self}} \in \{0.70, 0.90\}$$
+- **Monthly Exported Solar Energy ($E_{\text{exp},m}$):**
+  $$E_{\text{exp},m} = \max(0,\; G_m - E_{\text{self},m})$$
+- **Monthly Gross Imported Grid Energy ($E_{\text{imp},m}$):**
+  $$E_{\text{imp},m} = \max(0,\; U_m - E_{\text{self},m})$$
+- **Monthly 1:1 Net-Metered Offset Energy ($E_{\text{offset},m}$):**
+  $$E_{\text{offset},m} = \min(E_{\text{exp},m},\; E_{\text{imp},m})$$
+- **Monthly Billing-Period Net Surplus Export ($E_{\text{surplus},m}$):**
+  $$E_{\text{surplus},m} = \max(0,\; E_{\text{exp},m} - E_{\text{offset},m})$$
+- **Monthly Residual Net Billed Grid Import ($E_{\text{res},m}$):**
+  $$E_{\text{res},m} = \max(0,\; E_{\text{imp},m} - E_{\text{offset},m}) = \max(0,\; U_m - G_m)$$
 
-### 3.3 Independent Numeric Verification Examples (`P0-A`)
+### 3.3 Monthly Monetary Valuation & Annual Aggregation
 
-| Scenario | DISCOM | Monthly Bill | System Size | Annual Consumption ($U_{\text{annual}}$) | Annual Gen ($G_{\text{annual}}$) | Self-Consumed ($E_{\text{self}}$) | 1:1 Net-Metered Offset ($E_{\text{offset}}$) | True Surplus ($E_{\text{surplus}}$) | Residual Import ($E_{\text{residual}}$) | Avoided Bill Savings | Surplus APPC Credit | Total Annual Savings |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1. Consumption > Generation** | `TGSPDCL` | ₹15,000/mo (₹1,80,000/yr) | `3.48 kW` (6 panels, 0 bat) | `21,792 kWh` (`1,816 u/mo`) | `5,185 kWh` | `3,630 kWh` | `1,555 kWh` | `0 kWh` | `16,607 kWh` (`1,384 u/mo`) | `₹52,152/yr` | `₹0/yr` | **`₹52,152/yr`** (vs old buggy ₹44,988) |
-| **2. Generation > Consumption** | `TGSPDCL` | ₹3,000/mo (₹36,000/yr) | `8.12 kW` (14 panels, 0 bat) | `4,992 kWh` (`416 u/mo`) | `12,099 kWh` | `4,992 kWh` | `0 kWh` | `7,107 kWh` | `0 kWh` (`0 u/mo`) | `₹34,440/yr` (retains ₹1,560/yr fixed) | `₹25,230/yr` (`7,107 × ₹3.55`) | **`₹59,670/yr`** |
-| **3. Solar-Only vs Hybrid (1:1 Netting)** | `APEPDCL` | ₹12,000/mo (₹1,44,000/yr) | `5.80 kW` (10 panels, 0 vs 1 bat) | `17,856 kWh` (`1,488 u/mo`) | `8,468 kWh` | `5,928 kWh` (0 bat) / `7,621 kWh` (1 bat) | `2,540 kWh` (0 bat) / `847 kWh` (1 bat) | `0 kWh` | `9,388 kWh` (`782 u/mo`) | `₹82,980/yr` | `₹0/yr` | **`₹82,980/yr`** |
+For each month $m \in \{1, \dots, 12\}$:
+- **Baseline Monthly Bill:** $B_{\text{base},m} = \text{TotalBill}(U_m)$
+- **Unavoidable Monthly Fixed & Customer Charges:** $C_{\text{unavoid},m} = \text{UnavoidableCharges}(U_m)$
+- **Post-Solar Monthly Bill:**
+  $$B_{\text{post},m} = \min\left(B_{\text{base},m},\; C_{\text{unavoid},m} + \text{AvoidableCharges}(E_{\text{res},m})\right)$$
+- **Monthly Avoided Retail Bill Savings:**
+  $$\text{AvoidedSavings}_m = \max(0,\; B_{\text{base},m} - B_{\text{post},m})$$
+
+Summing over $m = 1, \dots, 12$:
+- $\text{AvoidedBillSavings}_{\text{yr}} = \sum_{m=1}^{12} \text{AvoidedSavings}_m$
+- $E_{\text{surplus,yr}} = \sum_{m=1}^{12} E_{\text{surplus},m}$
+- $\text{SurplusExportCredit}_{\text{yr}} = \text{round}\left(E_{\text{surplus,yr}} \times R_{\text{surplus}}\right)$
+  - **Telangana (`TGERC Regulation No. 1 of 2025`, Clauses 8.1.3–8.1.5):** $R_{\text{surplus}} = ₹2.65/\text{kWh}$ (`status: "INDICATIVE"` — benchmark based on lowest solar tariff discovered through Section 63 competitive bidding by Telangana DISCOMs in the preceding financial year; replaces the repealed 2016 Regulation APPC formula).
+  - **Andhra Pradesh (`APERC Regulation No. 4 of 2023`, Clauses 16.1 & 16.5):** $R_{\text{surplus}} = ₹2.09/\text{kWh}$ (`status: "INDICATIVE"` — regulatory surplus feed-in benchmark).
+- $\text{AnnualSavings}_{\text{yr}} = \text{AvoidedBillSavings}_{\text{yr}} + \text{SurplusExportCredit}_{\text{yr}}$
+
+### 3.4 Proof That 12-Month Billing-Period Settlement Prevents Cross-Period Retail Offset (`Task A8`)
+
+| Scenario | DISCOM | Consumption Profile | System Size | Annual Consumption | Annual Gen | 12-Month Billing-Period Offset ($E_{\text{offset,yr}}$) | 12-Month Billing-Period Surplus ($E_{\text{surplus,yr}}$) | Cross-Period Offset Prevented | 12-Month Avoided Bill Savings | Annual Aggregate Avoided Bill Savings (Invalid) | Overstatement Prevented |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **A. Uniform Boundary Case** | `TGSPDCL` | Uniform `836 u/mo` (₹7,200/mo bill) | `6.96 kW` (12 panels) | `10,032 kWh` | `10,370 kWh` | `2,240 kWh` | `870 kWh` (Mar–May peak solar surplus) | `532 kWh` | `₹81,024/yr` | `₹84,840/yr` | **`₹3,816/yr` retail overstatement prevented** |
+| **B. Seasonal 12-Month Profile** | `TGSPDCL` | Seasonal `[250..950 u/mo]` (Winter low, Summer AC peak, Monsoon moderate) | `5.22 kW` (9 panels) | `6,550 kWh` | `7,778 kWh` | `935 kWh` | `2,068 kWh` (Winter & spring surplus) | `840 kWh` | `₹39,353/yr` | `₹46,836/yr` | **`₹7,483/yr` retail overstatement prevented** |
 
 ---
 
@@ -150,64 +168,81 @@ The engine never hardcodes unconfirmed customer eligibility flags (`isGridConnec
 
 Per [`src/config/products.ts`](../src/config/products.ts) and [`src/config/solar.ts`](../src/config/solar.ts):
 - **Solar Module:** `580W` N-Type TOPCon Dual-Glass Bifacial (`22.8%` efficiency, `-0.30%/°C` temperature coefficient, `27.8 sq.ft` physical footprint, `1.0%` Year-1 max degradation, `0.40%/yr` linear degradation Years 2–25).
-- **Omnigrid Battery Storage:** **`15.0 kWh` nominal / `14.3 kWh` usable `LiFePO4`** per unit (`6.0 kW` continuous / `10.0 kW` surge output, `< 20 ms` transfer time), priced at **`₹2,80,000` per unit** (`SOLAR_ASSUMPTIONS.battery.unitPriceInr = 280000`). Standalone battery storage is excluded from PM Surya Ghar subsidy calculation.
+- **Omnigrid Battery Storage:** **`15.0 kWh` nominal / `14.3 kWh` usable `LiFePO4`** per unit (`6.0 kW` continuous / `10.0 kW` surge output, `< 20 ms` transfer time), priced at **`₹2,80,000` per unit** (`SOLAR_ASSUMPTIONS.battery.unitPriceInr = 280000`). Standalone battery storage is excluded from both PM Surya Ghar subsidy calculation and PM Surya Ghar concessional loan principal.
 
 ---
 
-## 5. Residential Solar Financing & EMI (`calculateSolarFinancing` — `P0-C`)
+## 5. SBI PM Surya Ghar Loan Amortization & Direct-to-Loan-Account DBT Prepayment (`Task B` & `P0-C`)
+
+### 5.1 Official SBI PM Surya Ghar Scheme Rules (`2026-10-15` Schedule)
 
 Based on the official **SBI Green Loans — PM Surya Ghar Loan for Solar Roof Top** schedule effective **`2026-10-15`** (`https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top`), while documenting the older `2025-12-15` SBI personal-banking page (`5.75% / 7.90%`):
 
-- **Minimum Customer Margin (Year-0 Down Payment):** $10\%$ of gross project cost ($\text{Financed Principal } P = 90\%\text{ of Gross Capex}$).
-- **Interest Rate Tiers (`status: "INDICATIVE"`):**
-  - **Tier 1 ($P \le ₹2,00,000$, systems $\le 3\text{ kW}$):** **`6.00% p.a.` floating** (`SOLAR_LOAN_TERMS.tier1.annualInterestRate = 0.06`, `isSchemeEligible = true`)
-  - **Tier 2 ($₹2,00,000 < P \le ₹6,00,000$, systems $> 3\text{–}10\text{ kW}$):** **`8.15% p.a.` floating** (`SOLAR_LOAN_TERMS.tier2.annualInterestRate = 0.0815`, `isSchemeEligible = true`)
-  - **Above-Cap Branch ($P > ₹6,00,000$):** **`9.15% p.a.` indicative non-scheme modeling assumption** (`SOLAR_LOAN_TERMS.aboveCapIndicativeRate = 0.0915`, `isSchemeEligible = false`, `exceedsConcessionalCap = true`).
-- **Standard Reducing-Balance Monthly EMI:**
-  Given principal $P$, monthly rate $r = \frac{\text{APR}}{12}$, and tenure $n = 60\text{ months}$:
-  $$\text{EMI} = \begin{cases} \text{round}(P / n) & \text{if } r = 0 \\ \text{round}\left(P \cdot \frac{r(1+r)^n}{(1+r)^n - 1}\right) & \text{if } r > 0 \end{cases}$$
-  $$\text{Total Repayment} = \text{EMI} \times n, \qquad \text{Total Interest} = \text{Total Repayment} - P$$
+- **Solar-Only Eligible Capex (`Task B5`):** Standalone battery storage capex (`excludedBatteryCapexInr`) is excluded from PM Surya Ghar scheme financing (`eligibleSolarCapexInr = grossCapexInr - excludedBatteryCapexInr`). Unfinanced battery capex (`unfinancedBatteryOutlayInr`) is added to the customer's Year-0 outlay (`customerDownPaymentInr = solarDownPaymentInr + unfinancedBatteryOutlayInr`).
+- **Minimum Customer Solar Margin:** $10\%$ of eligible solar capex ($\text{Initial Loan Principal } P_0 = 90\%\text{ of Eligible Solar Capex}$, disbursed directly to the vendor/EPC upon commissioning).
+- **Eligibility & Interest Rate Tiers (`status: "INDICATIVE"`, `Task B5`):**
+  - **Tier 1 ($P_0 \le ₹2,00,000$ AND $\text{System kW} \le 3.0\text{ kW}$):** **`6.00% p.a.` floating** (`EBLR - 2.15%`, zero processing fee, collateral-free, `isSchemeEligible = true`).
+  - **Tier 2 (($₹2,00,000 < P_0 \le ₹6,00,000$ OR $3.0 < \text{System kW} \le 10.0\text{ kW}$) AND $P_0 \le ₹6,00,000$):** **`8.15% p.a.` floating** (`EBLR`, zero processing fee, collateral-free, `isSchemeEligible = true`).
+  - **Above-Cap Branch ($P_0 > ₹6,00,000$ OR $\text{System kW} > 10.0\text{ kW}$):** **`9.15% p.a.` indicative non-scheme modeling assumption** (`exceedsConcessionalCap = P_0 > 600000`, `exceedsCapacityCap = systemKw > 10`, `isSchemeEligible = false`).
+
+### 5.2 Direct-to-Loan-Account DBT Prepayment Mechanics (`Task B1–B3`)
+
+Under official SBI PM Surya Ghar loan rules, the borrower links their SBI loan account on the National Portal (`pmsuryaghar.gov.in`). Upon post-commissioning DBT release (modeled at `subsidyCreditMonth` $m_s = 3$, i.e., after 3 monthly EMI payments), **MNRE central subsidy is credited directly into the borrower's SBI loan account** to prepay/reduce the outstanding loan principal with **Nil prepayment penalty**:
+
+1. **Months $1 \dots m_s$ (Pre-Subsidy Phase):**
+   - Initial monthly EMI on $P_0$ over $n = 60$ months at monthly rate $r = \text{APR} / 12$:
+     $$\text{EMI}_{\text{init}} = \text{round}\left(P_0 \cdot \frac{r(1+r)^n}{(1+r)^n - 1}\right)$$
+   - Reducing-balance simulation for months $t = 1, \dots, m_s$ yields outstanding principal $B_{m_s}$ (`balanceBeforeSubsidyCreditInr`), pre-subsidy interest paid $I_{\text{pre}}$, and pre-subsidy customer EMI cash outflow $C_{\text{pre}} = m_s \times \text{EMI}_{\text{init}}$.
+2. **At Month $m_s$ (Direct-to-Loan-Account DBT Credit):**
+   - **Subsidy Credited to Loan Principal:** $S_{\text{loan}} = \min(B_{m_s},\; \text{Subsidy}_{\text{DBT}})$ (`subsidyCreditedToLoanInr`)
+   - **Excess Subsidy to Borrower (if $\text{Subsidy}_{\text{DBT}} > B_{m_s}$):** $S_{\text{excess}} = \max(0,\; \text{Subsidy}_{\text{DBT}} - B_{m_s})$ (`excessSubsidyToBorrowerInr`)
+   - **Post-Subsidy Remaining Principal:** $P_{\text{post}} = B_{m_s} - S_{\text{loan}}$ (`postSubsidyPrincipalInr`)
+3. **Three Explicitly Labeled `INDICATIVE` Amortization Scenarios (`amortizationScenarios`):**
+   - **Scenario 1 — `recastEmi` (`LOAN_PRINCIPAL_PREPAYMENT_RECAST_EMI`, Default when $\text{Subsidy}_{\text{DBT}} > 0$):**
+     Re-amortizes $P_{\text{post}}$ over the remaining $n - m_s = 57$ months at a **reduced monthly EMI** ($\text{EMI}_{\text{post}} < \text{EMI}_{\text{init}}$).
+   - **Scenario 2 — `reduceTenure` (`LOAN_PRINCIPAL_PREPAYMENT_REDUCE_TENURE`):**
+     Maintains the initial EMI ($\text{EMI}_{\text{post}} = \text{EMI}_{\text{init}}$) after Month $m_s$ and **shortens the remaining loan tenure** ($n_{\text{eff}} < 60$ months), yielding maximum interest savings.
+   - **Scenario 3 — `unadjustedNoPrepayment` (`UNRESTRICTED_SUBSIDY_NO_PREPAYMENT`):**
+     Sensitivity baseline where $P_0$ is amortized over all 60 months at $\text{EMI}_{\text{init}}$ without principal prepayment.
 
 ---
 
-## 6. Reconciled 25-Year Cash-Flow Ledger (`project25Years` — `P0-B`)
+## 6. Reconciled 25-Year Cash-Flow Ledger (`project25Years` — `Task B6` & `P0-B`)
 
 For each year $y \in \{1, \dots, 25\}$:
 - **Degraded Generation:** $G_y = \text{round}\left(G_1 \times (1 - 0.004)^{y-1}\right)$
 - **Escalated Tariff Factor:** $E_y = (1 + 0.03)^{y-1}$
 - **Annual Savings:** $S_y = \text{round}\left(S_1 \times (1 - 0.004)^{y-1} \times (1 + 0.03)^{y-1}\right)$
 
-### Explicit Cash-Flow Ledger (Zero Subsidy Clamping or Double-Counting)
-
-Previously, `project25Years()` used `Math.max(0, customerDownPaymentInr - subsidyInr)` at Year 0, which silently dropped `₹56,424` of a `₹78,000` subsidy whenever `customerDownPaymentInr < subsidyInr` (e.g., `₹21,576` 10% down payment on a `3.48 kW` system). The hardened ledger models exact cash-flow timing:
+### Explicit Cash-Flow Ledger (Zero Subsidy Clamping & Zero Double-Counting)
 
 1. **Cash Purchase Mode (`projection`):**
    - **Year 0 Outlay:** $\text{GrossCapex}$
-   - **Year 1 Post-Commissioning DBT Credit:** $+\text{Subsidy}_{\text{DBT}}$ (0 in Years 2–25)
+   - **Year 1 Post-Commissioning DBT Credit:** $+\text{Subsidy}_{\text{DBT}}$ (`subsidyCreditInr = subsidyInr` in Year 1; `0` in Years 2–25)
    - **Cumulative Customer Outflow at Year $y$:** $\text{CumOutflow}_y = \text{GrossCapex} - \text{Subsidy}_{\text{DBT}} = \text{ConditionalNetCapex}$
    - **Net Cumulative Cash Flow at Year $y$:**
      $$\text{NetCumCF}_y = \sum_{t=1}^{y} S_t - \text{CumOutflow}_y \quad \implies \quad \text{projection}[24].\text{netCumulativeCashflow} \equiv \text{netGain25YearsInr}$$
 
-2. **Financed / Loan Mode (`financedProjection`):**
-   - **Year 0 Outlay:** $\text{DownPayment}_{10\%}$
-   - **Year 1 Post-Commissioning DBT Credit:** $+\text{Subsidy}_{\text{DBT}}$ (credited once in Year 1; 0 in Years 2–25)
-   - **Annual Loan Outflow ($\text{LoanOutflow}_y$):** $12 \times \text{EMI}$ for $y \in \{1, \dots, 5\}$ (0 for $y \in \{6, \dots, 25\}$), with $\sum_{y=1}^{25} \text{LoanOutflow}_y = \text{TotalRepayment}$.
-   - **Cumulative Customer Outflow at Year $y$:**
-     $$\text{CumOutflow}_y = \text{DownPayment}_{10\%} + \sum_{t=1}^{y} \text{LoanOutflow}_t - \text{Subsidy}_{\text{DBT}}$$
+2. **Financed / Loan Mode (`financedProjection` — Direct-to-Loan-Account Prepayment):**
+   - **Year 0 Outlay:** $\text{CustomerDownPayment}$ ($10\%$ solar margin $+$ any unfinanced battery capex)
+   - **Year 1 Direct-to-Loan-Account DBT Prepayment:** `loanPrincipalPrepaymentInr` $= S_{\text{loan}}$ is credited directly into the SBI loan account at Month 3, reducing the borrower's remaining loan principal and annual EMI outflows (`annualLoanOutflowByYear[0..4]`). Any excess subsidy above loan balance ($S_{\text{excess}}$) is recorded in `subsidyCreditInr` (`0` whenever $S_{\text{loan}} = \text{Subsidy}_{\text{DBT}}$). **Subsidy is NEVER both deducted from loan principal AND added as unrestricted customer cash inflow.**
+   - **Annual Customer EMI Outflow ($\text{LoanOutflow}_y$):** Exact sum of the 12 monthly customer EMI payments in Year $y$ from the active amortization schedule (`annualLoanOutflowByYear[y-1]`), satisfying $\sum_{y=1}^{25} \text{LoanOutflow}_y = \text{TotalCustomerEmiOutflow}$ (`financing.totalRepaymentInr`).
    - **At Year 25:**
-     $$\text{CumOutflow}_{25} = \text{DownPayment}_{10\%} + (\text{LoanPrincipal}_{90\%} + \text{TotalInterest}) - \text{Subsidy}_{\text{DBT}} = \text{ConditionalNetCapex} + \text{TotalInterest}$$
+     $$\text{CumOutflow}_{25} = \text{CustomerDownPayment} + \text{TotalCustomerEmiOutflow} - S_{\text{excess}} = \text{ConditionalNetCapex} + \text{TotalInterest}_{\text{recast}}$$
      $$\implies \quad \text{financedProjection}[24].\text{netCumulativeCashflow} \equiv \text{financedNetGain25YearsInr}$$
 
 ### Independent Numeric Reconciliation Example (`3.48 kW`, 6 Panels, `TGSPDCL`, ₹4,500/mo Bill)
-- **Gross Installed System Cost:** `₹2,15,760`
+- **Gross Installed System Cost:** `₹2,15,760` (`systemKw = 3.48 kW > 3.0 kW` $\to$ Tier 2 @ `8.15% p.a.`)
 - **Year 0 Customer Down Payment (10%):** `₹21,576`
-- **Financed Loan Principal (90%):** `₹1,94,184` (`≤ ₹2,00,000` $\to$ Tier 1 @ `6.00% p.a.` for 60 months)
-- **Monthly EMI:** `₹3,754/mo` $\to$ **Total 60-Month EMI Repayment:** `₹2,25,240` (**Total Interest:** `₹31,056`)
-- **Year 1 Conditional Post-Commissioning DBT Credit:** `+₹78,000`
-- **Net Financed Total Customer Outflow (`DownPayment + TotalRepayment - Subsidy`):** `₹21,576 + ₹2,25,240 - ₹78,000 = ₹1,68,816` (`= ConditionalNetCapex ₹1,37,760 + TotalInterest ₹31,056`)
-- **25-Year Cumulative Bill Savings (`savings25YearsInr`):** `₹15,43,891`
-- **Year 25 Cash Net Gain (`projection[24].netCumulativeCashflow === netGain25YearsInr`):** `₹15,43,891 - ₹1,37,760 = ₹14,06,131`
-- **Year 25 Financed Net Gain (`financedProjection[24].netCumulativeCashflow === financedNetGain25YearsInr`):** `₹15,43,891 - ₹1,68,816 = ₹13,75,075` (**Exact ₹0 discrepancy**).
+- **Initial Loan Principal (90%):** `₹1,94,184`
+- **Initial Monthly EMI (Months 1–3):** `₹3,952/mo`
+- **Month-3 Balance Before Subsidy Credit:** `₹1,86,248`
+- **Month-3 Direct-to-Loan-Account DBT Prepayment:** `-₹78,000` (`excessSubsidyToBorrowerInr = ₹0`)
+- **Post-Subsidy Remaining Principal (Month 4):** `₹1,08,248`
+- **Recast Monthly EMI (Months 4–60, Default Scenario 1):** `₹2,301/mo` (or **Scenario 2 Reduce Tenure:** keep `₹3,952/mo` for `36 months total`, saving `₹13,949` additional interest)
+- **Total Customer EMI Outflow (`totalRepaymentInr` under Recast EMI):** `₹1,43,013` (**Total Interest:** `₹26,829`)
+- **Total Financed Customer Outflow (`DownPayment ₹21,576 + TotalEmiOutflow ₹1,43,013`):** `₹1,64,589` (`= ConditionalNetCapex ₹1,37,760 + TotalInterest ₹26,829`)
+- **Exact Reconciliation:** `projection[24].netCumulativeCashflow === netGain25YearsInr` and `financedProjection[24].netCumulativeCashflow === financedNetGain25YearsInr` (**Exact ₹0 discrepancy**).
 
 ---
 
