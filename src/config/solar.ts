@@ -474,14 +474,18 @@ export function calculateSolarFinancing(params: {
     typeof params.systemKw === "number" && Number.isFinite(params.systemKw) && params.systemKw > 0;
   const systemKw = hasSystemKw ? params.systemKw! : undefined;
 
+  const isResidentialSegment = (params.segment ?? "residential") === "residential";
+  const isStandaloneBatteryOnly =
+    grossCapexInr > 0 && rawBatteryCapex > 0 && eligibleSolarCapexInr === 0;
+  const isSchemeEquipmentEligible = !batteryIncludedInSchemeLoan && !isStandaloneBatteryOnly;
   const exceedsConcessionalCap = initialLoanPrincipalInr > SOLAR_LOAN_TERMS.tier2.maxAmountInr;
   const exceedsCapacityCap =
     systemKw !== undefined && systemKw > SOLAR_LOAN_TERMS.tier2.maxCapacityKw;
   const isSchemeEligible =
+    isResidentialSegment &&
+    isSchemeEquipmentEligible &&
     !exceedsConcessionalCap &&
-    !exceedsCapacityCap &&
-    !batteryIncludedInSchemeLoan &&
-    (params.segment ?? "residential") === "residential";
+    !exceedsCapacityCap;
 
   let annualInterestRate: number;
   let tierLabel: string;
@@ -489,12 +493,13 @@ export function calculateSolarFinancing(params: {
   const status: VerificationStatus = "INDICATIVE";
 
   const qualifiesForTier1 =
+    isSchemeEligible &&
     initialLoanPrincipalInr <= SOLAR_LOAN_TERMS.tier1.maxAmountInr &&
     (systemKw === undefined || systemKw <= SOLAR_LOAN_TERMS.tier1.maxCapacityKw);
 
   const qualifiesForTier2 =
-    !exceedsConcessionalCap &&
-    !exceedsCapacityCap &&
+    isSchemeEligible &&
+    !qualifiesForTier1 &&
     initialLoanPrincipalInr <= SOLAR_LOAN_TERMS.tier2.maxAmountInr &&
     (systemKw === undefined || systemKw <= SOLAR_LOAN_TERMS.tier2.maxCapacityKw);
 
@@ -514,9 +519,17 @@ export function calculateSolarFinancing(params: {
     tierLabel =
       "SBI PM Surya Ghar Tier 2 (> 3–10 kW or ₹2,00,001–₹6,00,000 · 8.15% p.a. floating, eff. 2026-10-15)";
   } else {
-    annualInterestRate = SOLAR_LOAN_TERMS.aboveCapIndicativeRate; // 9.15% p.a. indicative above-cap modeling assumption
-    tierLabel =
-      "Unverified Above-Cap Modeling Assumption (> 10 kW or > ₹6,00,000 PM Surya Ghar Ceiling · 9.15% p.a. Indicative)";
+    annualInterestRate = SOLAR_LOAN_TERMS.aboveCapIndicativeRate; // 9.15% p.a. indicative non-scheme modeling assumption
+    if (!isResidentialSegment) {
+      tierLabel =
+        "Non-Scheme Illustrative Financing Scenario (Commercial Segment Outside PM Surya Ghar · 9.15% p.a. Indicative)";
+    } else if (!isSchemeEquipmentEligible) {
+      tierLabel =
+        "Non-Scheme Illustrative Financing Scenario (Battery-Inclusive / Non-Scheme Equipment · 9.15% p.a. Indicative)";
+    } else {
+      tierLabel =
+        "Unverified Above-Cap Modeling Assumption (> 10 kW or > ₹6,00,000 PM Surya Ghar Ceiling · 9.15% p.a. Indicative)";
+    }
   }
 
   const r = annualInterestRate > 0 ? annualInterestRate / 12 : 0;
@@ -528,6 +541,8 @@ export function calculateSolarFinancing(params: {
   );
 
   const rawSubsidy =
+    isResidentialSegment &&
+    !isStandaloneBatteryOnly &&
     typeof params.subsidyInr === "number" &&
     Number.isFinite(params.subsidyInr) &&
     params.subsidyInr > 0
@@ -739,10 +754,16 @@ export function calculateSolarFinancing(params: {
     );
   }
 
-  const note =
-    exceedsConcessionalCap || exceedsCapacityCap
-      ? `Financed loan principal (₹${initialLoanPrincipalInr.toLocaleString("en-IN")})${exceedsCapacityCap ? ` or system size (${systemKw} kW)` : ""} exceeds the PM Surya Ghar concessional cap (10 kW / ₹6,00,000); modeled at an indicative ${(annualInterestRate * 100).toFixed(2)}% p.a. non-scheme rate.`
-      : `Modeled on SBI PM Surya Ghar Green Loan terms (${(annualInterestRate * 100).toFixed(2)}% p.a. floating effective ${SOLAR_LOAN_TERMS.asOfDate}) with post-commissioning subsidy credited directly to loan principal.`;
+  let note: string;
+  if (!isResidentialSegment) {
+    note = `Commercial installations are outside the residential PM Surya Ghar scheme; modeled as a non-scheme illustrative financing scenario at ${(annualInterestRate * 100).toFixed(2)}% p.a. (Indicative).`;
+  } else if (!isSchemeEquipmentEligible) {
+    note = `Battery-inclusive or standalone storage financing is outside the SBI PM Surya Ghar concessional solar loan scheme; modeled as a non-scheme illustrative financing scenario at ${(annualInterestRate * 100).toFixed(2)}% p.a. (Indicative).`;
+  } else if (exceedsConcessionalCap || exceedsCapacityCap) {
+    note = `Financed loan principal (₹${initialLoanPrincipalInr.toLocaleString("en-IN")})${exceedsCapacityCap ? ` or system size (${systemKw} kW)` : ""} exceeds the PM Surya Ghar concessional cap (10 kW / ₹6,00,000); modeled at an indicative ${(annualInterestRate * 100).toFixed(2)}% p.a. non-scheme rate.`;
+  } else {
+    note = `Modeled on SBI PM Surya Ghar Green Loan terms (${(annualInterestRate * 100).toFixed(2)}% p.a. floating effective ${SOLAR_LOAN_TERMS.asOfDate}) with post-commissioning subsidy credited directly to loan principal.`;
+  }
 
   return {
     status,
@@ -1827,10 +1848,7 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   if (sanctionedLoadFeasibility.warning) {
     warnings.push(sanctionedLoadFeasibility.warning);
   }
-  if (
-    (financing.exceedsConcessionalCap || financing.exceedsCapacityCap) &&
-    params.paymentMode === "loan"
-  ) {
+  if (!financing.isSchemeEligible && params.paymentMode === "loan") {
     warnings.push(financing.note);
   }
 

@@ -183,23 +183,22 @@ function DisclosuresPage() {
               </li>
               <li>
                 <strong className="text-[#171A20]">
-                  Surplus Export Credit Valuation (Indicative):
+                  Surplus Export Credit Valuation (TGERC Verified ₹2.57/kWh &amp; APERC Indicative
+                  ₹2.09/kWh):
                 </strong>{" "}
-                Under <strong>TGERC Regulation No. 1 of 2025 (Sections 2 &amp; 8.1.1–8.1.5)</strong>
-                , net billing-period excess exported energy is valued at the{" "}
-                <strong>
-                  lowest tariff rate discovered through competitive bidding under Section 63 of the
-                  Electricity Act, 2003
-                </strong>{" "}
-                from solar PPAs/PSAs/PUAs entered into by Telangana DISCOMs in the preceding
-                financial year (modeled at an <strong>indicative ₹2.65/kWh</strong> benchmark;
-                monetary credits carry forward across billing periods within the April–March
-                financial year settlement cycle). Under{" "}
+                Under <strong>TGERC Regulation No. 1 of 2025 (Clause 8.1.3)</strong> and{" "}
+                <strong>Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 (Page 3)</strong>, net
+                billing-period excess exported energy for TGSPDCL and TGNPDCL is settled at the
+                Commission-approved rate of <strong>₹2.57/kWh</strong> (derived from the FY 2024-25
+                200 MW NLC India Limited Section 63 PUA dated 27-08-2024 and approved on
+                17-05-2025), effective from 15.11.2025 until superseded by further Commission
+                proceedings. Per Clause 8.1.3, the settlement credit is either adjusted in the next
+                month&apos;s electricity bill or deposited in the eligible prosumer&apos;s bank
+                account, while the consumer remains subject to a monthly minimum bill. Under{" "}
                 <strong>APERC Regulation No. 4 of 2023 (Clauses 16.1 &amp; 16.5)</strong>, excess
                 exported units are valued at an <strong>indicative ₹2.09/kWh</strong> feed-in
-                benchmark. Because annual Section 63 discovery and APPC/feed-in notifications vary
-                by financial year, all surplus export rates are classified as{" "}
-                <code>INDICATIVE</code> and separated from <code>avoidedBillSavingsInr</code>.
+                benchmark. Surplus export credits are strictly separated from{" "}
+                <code>avoidedBillSavingsInr</code>.
               </li>
               <li>
                 <strong className="text-[#171A20]">

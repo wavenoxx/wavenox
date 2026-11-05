@@ -395,13 +395,13 @@ export const APERC_TARIFF_SOURCE: DataSource = {
 
 export const TGERC_RTS_REGULATION_2025_SOURCE: DataSource = {
   title:
-    "TGERC (Rooftop Solar PV Grid Interactive Systems) Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5)",
-  url: "https://www.tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Final%20Solar%20Roof%20top%20Regulation%201%20of%202025%2015112025.pdf",
+    "TGERC (Rooftop Solar PV Grid Interactive Systems) Regulation No. 1 of 2025 & Proceedings No. TGERC/Secy/77/2025",
+  url: "https://tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Proceeding%20Solar.pdf",
   verifiedOn: "2026-11-05",
   section:
-    "Section 2 (Definitions), Section 6 (Capacity Limits) & Section 8.1.1–8.1.5 (Energy Accounting and Settlement)",
+    "Section 2 (Definitions), Section 6 (Capacity Limits), Section 8.1.1–8.1.5 (Energy Accounting and Settlement) & Proceedings No. TGERC/Secy/77/2025 (Page 3, Clause 4 Settlement Rate)",
   documentRef:
-    "TGERC Regulation No. 1 of 2025, dated 15.11.2025 (Telangana Gazette No. 634-A, superseding Regulation No. 6 of 2016)",
+    "TGERC Regulation No. 1 of 2025 (dated 15.11.2025, Gazette No. 634-A) & TGERC Proceedings No. TGERC/Secy/77/2025 (dated 29.12.2025)",
   authority: "Telangana Electricity Regulatory Commission (TGERC)",
   state: "Telangana",
   discom: "TGSPDCL / TGNPDCL",
@@ -412,7 +412,28 @@ export const TGERC_RTS_REGULATION_2025_SOURCE: DataSource = {
   status: "VERIFIED",
   category: "OFFICIAL_REGULATORY_FACT",
   restrictions:
-    "Section 8.1.1–8.1.3 mandates monthly billing-period import/export accounting. Net excess exported units in a billing period are compensated at the lowest solar tariff discovered through Section 63 competitive bidding by TGDiscoms in the preceding financial year (monetary credit carried forward across billing cycles within the April–March financial year settlement period under Clauses 8.1.4–8.1.5). Because the annual Section 63 lowest bid tariff varies by financial year, the numeric surplus settlement rate (₹2.65/kWh benchmark) is classified as INDICATIVE, not a static ₹3.55/kWh APPC constant. Permissible net-metering capacity is capped at 100% of sanctioned load for Residential/Government and 80% of sanctioned load for Commercial/Industrial (up to 500 kWp).",
+    "Clause 8.1.3 of TGERC Regulation No. 1 of 2025 mandates monthly billing-period import/export accounting, where excess exported units are settled at the lowest Section 63 solar tariff entered by TGDISCOMs in the preceding financial year, either adjusted in the next month electricity bill or deposited in the prosumer's bank account, while the consumer receives a monthly minimum bill. By Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 (Page 3), TGERC expressly approved ₹2.57/kWh (based on the FY 2024-25 200 MW NLC India Limited PUA dated 27-08-2024, approved 17-05-2025), effective from 15.11.2025 until further Commission proceedings. Permissible net-metering capacity is capped at 100% of sanctioned load for Residential/Government and 80% of sanctioned load for Commercial/Industrial (up to 500 kWp).",
+};
+
+export const TGERC_EXPORT_SETTLEMENT_PROCEEDING_2025_SOURCE: DataSource = {
+  title:
+    "TGERC Proceedings No. TGERC/Secy/77/2025 — Approval of ₹2.57/kWh Settlement Rate for Exported Rooftop Solar Energy under Regulation No. 01 of 2025",
+  url: "https://tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Proceeding%20Solar.pdf",
+  verifiedOn: "2026-11-05",
+  section: "Section 4 (Settlement Rate, Page 3) & Clause 8.1.3 (Net Metering Settlement)",
+  documentRef:
+    "Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 (200 MW NLC India Limited PUA dated 27-08-2024, approved by TGERC on 17-05-2025 at ₹2.57/unit)",
+  authority: "Telangana Electricity Regulatory Commission (TGERC)",
+  state: "Telangana",
+  discom: "TGSPDCL / TGNPDCL / CESS Sircilla",
+  consumerCategory:
+    "Prosumers/Consumers under Net Metering, Group Net Metering, Gross Metering & Virtual Net Metering",
+  financialYear: "FY 2026-27",
+  effectiveFrom: "2025-11-15",
+  status: "VERIFIED",
+  category: "OFFICIAL_REGULATORY_FACT",
+  restrictions:
+    "Approves ₹2.57/kWh as the settlement rate for excess solar energy exported to the grid during a Billing Period, applicable with effect from the date of notification of Regulation No. 01 of 2025 (15.11.2025) until the date of issuance of further proceedings by the Commission. Per Clause 8.1.3, the settlement amount is either adjusted in the next month electricity bill or deposited in the eligible consumer/prosumer's bank account, and the consumer remains subject to a monthly minimum bill.",
 };
 
 export const APERC_RTS_REGULATION_2023_SOURCE: DataSource = {
@@ -488,10 +509,10 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 9.2,
     commercialBlendedTariffInr: 10.5,
-    exportSettlementRateInr: 2.65,
-    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementRateInr: 2.57,
+    exportSettlementRateStatus: "VERIFIED",
     exportSettlementBasis:
-      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar PPA/PSA tariff discovered by TGDiscoms in the preceding financial year (Indicative benchmark ₹2.65/kWh; replaces legacy ₹3.55/kWh APPC assumption).",
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3) & Proceedings No. TGERC/Secy/77/2025 (dated 29.12.2025, Page 3): Approved ₹2.57/kWh settlement rate (FY 2024-25 200 MW NLC India Ltd Section 63 PUA approved 17.05.2025), effective from 15.11.2025 until superseded by further Commission proceedings; adjusted in next month's bill or deposited to bank account while preserving monthly minimum charges.",
     netMeteringMechanism: "NET_METERING_1_TO_1",
     settlementCycle: "MONTHLY_BILLING_PERIOD",
     maxResidentialSolarPctOfSanctionedLoad: 100,
@@ -500,7 +521,7 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: true,
     regulatoryNote:
-      "Verified against TGERC LT-I(A/B/C) telescopic slabs and TGERC Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5) monthly billing-period settlement. Monthly net surplus exports are valued at an indicative Section 63 competitive solar bid benchmark (₹2.65/kWh). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
+      "Verified against TGERC LT-I(A/B/C) telescopic slabs, TGERC Regulation No. 1 of 2025 (Clause 8.1.3) monthly billing-period settlement, and Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 approving ₹2.57/kWh export settlement (adjusted in next month's bill or deposited to bank account, subject to monthly minimum bill). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
     source: TGERC_TARIFF_SOURCE,
     netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
@@ -514,10 +535,10 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     financialYear: "FY 2026-27",
     residentialBlendedTariffInr: 8.8,
     commercialBlendedTariffInr: 10.2,
-    exportSettlementRateInr: 2.65,
-    exportSettlementRateStatus: "INDICATIVE",
+    exportSettlementRateInr: 2.57,
+    exportSettlementRateStatus: "VERIFIED",
     exportSettlementBasis:
-      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar PPA/PSA tariff discovered by TGDiscoms in the preceding financial year (Indicative benchmark ₹2.65/kWh; replaces legacy ₹3.55/kWh APPC assumption).",
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3) & Proceedings No. TGERC/Secy/77/2025 (dated 29.12.2025, Page 3): Approved ₹2.57/kWh settlement rate (FY 2024-25 200 MW NLC India Ltd Section 63 PUA approved 17.05.2025), effective from 15.11.2025 until superseded by further Commission proceedings; adjusted in next month's bill or deposited to bank account while preserving monthly minimum charges.",
     netMeteringMechanism: "NET_METERING_1_TO_1",
     settlementCycle: "MONTHLY_BILLING_PERIOD",
     maxResidentialSolarPctOfSanctionedLoad: 100,
@@ -526,7 +547,7 @@ export const DISCOM_TARIFF_PROFILES: Record<string, DiscomTariffProfile> = {
     electricityDutyPerUnitInr: 0.06,
     gruhaJyothiApplicable: true,
     regulatoryNote:
-      "Verified against TGERC LT-I(A/B/C) telescopic slabs and TGERC Regulation No. 1 of 2025 (Sections 2 & 8.1.1–8.1.5) monthly billing-period settlement. Monthly net surplus exports are valued at an indicative Section 63 competitive solar bid benchmark (₹2.65/kWh). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
+      "Verified against TGERC LT-I(A/B/C) telescopic slabs, TGERC Regulation No. 1 of 2025 (Clause 8.1.3) monthly billing-period settlement, and Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 approving ₹2.57/kWh export settlement (adjusted in next month's bill or deposited to bank account, subject to monthly minimum bill). Capacity capped at 100% of sanctioned load (Residential) and 80% (Commercial).",
     source: TGERC_TARIFF_SOURCE,
     netMeteringRegulationSource: TGERC_RTS_REGULATION_2025_SOURCE,
   },
@@ -1400,10 +1421,10 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Telangana",
     portalUrl: "https://tgsouthernpower.org",
     portalName: "TGSPDCL Official Consumer Portal",
-    surplusRateInr: 2.65,
-    surplusRateStatus: "INDICATIVE",
+    surplusRateInr: 2.57,
+    surplusRateStatus: "VERIFIED",
     surplusRateBasis:
-      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar tariff of preceding FY (Indicative ₹2.65/kWh)",
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3) & Proceedings No. TGERC/Secy/77/2025 (dated 29.12.2025, Page 3): Approved ₹2.57/kWh export settlement rate (effective from 15.11.2025 until further Commission proceedings)",
     maxResidentialSolarPctOfLoad: 100,
     maxCommercialSolarPctOfLoad: 80,
     commercialTariffAvgInr: 10.5,
@@ -1416,10 +1437,10 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
     state: "Telangana",
     portalUrl: "https://tgnpdcl.com",
     portalName: "TGNPDCL Official Portal",
-    surplusRateInr: 2.65,
-    surplusRateStatus: "INDICATIVE",
+    surplusRateInr: 2.57,
+    surplusRateStatus: "VERIFIED",
     surplusRateBasis:
-      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3): Lowest Section 63 competitive solar tariff of preceding FY (Indicative ₹2.65/kWh)",
+      "TGERC Regulation No. 1 of 2025 (Clause 8.1.3) & Proceedings No. TGERC/Secy/77/2025 (dated 29.12.2025, Page 3): Approved ₹2.57/kWh export settlement rate (effective from 15.11.2025 until further Commission proceedings)",
     maxResidentialSolarPctOfLoad: 100,
     maxCommercialSolarPctOfLoad: 80,
     commercialTariffAvgInr: 10.2,

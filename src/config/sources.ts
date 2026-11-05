@@ -34,16 +34,17 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
   tgercTariffs: {
     id: "tgercTariffs",
     metric: "Telangana Residential Tariffs & Rooftop Net-Metering (LT-I A/B/C)",
-    value: "₹1.95 to ₹10.00 / kWh (Retail) · ₹2.65 / kWh (Indicative Surplus)",
+    value: "₹1.95 to ₹10.00 / kWh (Retail) · ₹2.57 / kWh (Verified Surplus Settlement)",
     formulaOrBasis:
       "LT-I(A) ≤100 u: 0–50 @ ₹1.95, 51–100 @ ₹3.10; LT-I(B) 101–200 u: 0–100 @ ₹3.40, 101–200 @ ₹4.80; LT-I(C) >200 u: 0–200 @ ₹5.10, 201–300 @ ₹7.70, 301–400 @ ₹9.00, 401–800 @ ₹9.50, >800 @ ₹10.00 + Customer/Fixed Charges & ₹0.06/kWh duty",
     authority: "Telangana Electricity Regulatory Commission (TGERC)",
     sourceDoc:
-      "Retail Supply Tariff Orders (FY 2025-26 & FY 2026-27) & TGERC Regulation No. 1 of 2025 (15 Nov 2025)",
-    sourceUrl: "https://www.tgerc.telangana.gov.in",
+      "Retail Supply Tariff Orders (FY 2025-26 & FY 2026-27), TGERC Regulation No. 1 of 2025 (15 Nov 2025) & Proceedings No. TGERC/Secy/77/2025 (29 Dec 2025)",
+    sourceUrl:
+      "https://tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Proceeding%20Solar.pdf",
     verifiedDate: "Nov 2026",
     notes:
-      "Under TGERC Regulation No. 1 of 2025 (Clauses 8.1.1–8.1.5), import/export netting occurs per monthly billing period. Excess exported units in a billing period are valued at the lowest Section 63 competitive solar tariff discovered by Telangana DISCOMs in the preceding FY (₹2.65/kWh indicative benchmark). Permissible capacity: 100% of sanctioned load (Residential/Govt) and 80% of sanctioned load (C&I).",
+      "Under TGERC Regulation No. 1 of 2025 (Clause 8.1.3) and Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025 (Page 3), import/export netting occurs per monthly billing period and excess exported units are settled at ₹2.57/kWh (effective from 15.11.2025 until further Commission proceedings), either adjusted in the next month's bill or deposited to the prosumer's bank account while preserving monthly minimum charges. Permissible capacity: 100% of sanctioned load (Residential/Govt) and 80% of sanctioned load (C&I).",
   },
   apercTariffs: {
     id: "apercTariffs",

@@ -16,6 +16,7 @@ import {
   VERIFIED_DISCOMS,
   DISCOM_TARIFF_PROFILES,
   TGERC_RTS_REGULATION_2025_SOURCE,
+  TGERC_EXPORT_SETTLEMENT_PROCEEDING_2025_SOURCE,
   APERC_RTS_REGULATION_2023_SOURCE,
   HYDERABAD_ANNUAL_YIELD_KWH_PER_KW,
   CITY_SOLAR_METEOROLOGY,
@@ -202,7 +203,7 @@ describe("Category A — State-Specific Tariff & Bill Engine (Phase A)", () => {
     expect(unknownConsumption.estimatedUnits).toBe(0);
   });
 
-  it("restricts VERIFIED_DISCOMS to Telangana (TGERC) and Andhra Pradesh (APERC) and enforces MONTHLY_BILLING_PERIOD settlement with INDICATIVE surplus rates", () => {
+  it("restricts VERIFIED_DISCOMS to Telangana (TGERC) and Andhra Pradesh (APERC) and enforces MONTHLY_BILLING_PERIOD settlement with verified ₹2.57/kWh TGERC proceeding rate and indicative ₹2.09/kWh APERC rate", () => {
     expect(Object.keys(VERIFIED_DISCOMS)).toEqual(["TGSPDCL", "TGNPDCL", "APEPDCL", "APSPDCL"]);
     expect(VERIFIED_DISCOMS.TGSPDCL.portalUrl).toBe("https://tgsouthernpower.org");
     expect(VERIFIED_DISCOMS.TGNPDCL.portalUrl).toBe("https://tgnpdcl.com");
@@ -210,13 +211,21 @@ describe("Category A — State-Specific Tariff & Bill Engine (Phase A)", () => {
     expect(VERIFIED_DISCOMS.APSPDCL.portalUrl).toBe("https://apspdcl.in");
     expect(Object.keys(DISCOM_TARIFF_PROFILES)).toHaveLength(11);
 
-    // Task A: TGERC Regulation No. 1 of 2025 & APERC Regulation No. 4 of 2023 surplus settlement verification
-    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateInr).toBe(2.65);
-    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateStatus).toBe("INDICATIVE");
+    // Task A & Final Source Patch: TGERC Proceedings No. TGERC/Secy/77/2025 (29.12.2025) ₹2.57/kWh & APERC Reg. No. 4 of 2023 ₹2.09/kWh
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateInr).toBe(2.57);
+    expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateStatus).toBe("VERIFIED");
+    expect(DISCOM_TARIFF_PROFILES.TGNPDCL.exportSettlementRateInr).toBe(2.57);
+    expect(DISCOM_TARIFF_PROFILES.TGNPDCL.exportSettlementRateStatus).toBe("VERIFIED");
+    expect(VERIFIED_DISCOMS.TGSPDCL.surplusRateInr).toBe(2.57);
+    expect(VERIFIED_DISCOMS.TGSPDCL.surplusRateStatus).toBe("VERIFIED");
+    expect(VERIFIED_DISCOMS.TGNPDCL.surplusRateInr).toBe(2.57);
+    expect(VERIFIED_DISCOMS.TGNPDCL.surplusRateStatus).toBe("VERIFIED");
     expect(DISCOM_TARIFF_PROFILES.TGSPDCL.settlementCycle).toBe("MONTHLY_BILLING_PERIOD");
     expect(DISCOM_TARIFF_PROFILES.TGSPDCL.netMeteringRegulationSource.documentRef).toBe(
       TGERC_RTS_REGULATION_2025_SOURCE.documentRef,
     );
+    expect(TGERC_EXPORT_SETTLEMENT_PROCEEDING_2025_SOURCE.status).toBe("VERIFIED");
+    expect(TGERC_EXPORT_SETTLEMENT_PROCEEDING_2025_SOURCE.url).toContain("Proceeding%20Solar.pdf");
 
     expect(DISCOM_TARIFF_PROFILES.APEPDCL.exportSettlementRateInr).toBe(2.09);
     expect(DISCOM_TARIFF_PROFILES.APEPDCL.exportSettlementRateStatus).toBe("INDICATIVE");

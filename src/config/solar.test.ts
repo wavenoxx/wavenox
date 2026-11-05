@@ -190,12 +190,12 @@ describe("Solar Engine — estimate() Core & Regional Calculations", () => {
       seasonalCase.energyBalance.annualAggregateComparison.savingsDifferenceVsAnnualAggregateInr,
     ).toBeGreaterThan(1000);
 
-    // Surplus export rate is ₹2.65/kWh (INDICATIVE under TGERC Reg. No. 1 of 2025 Clause 8.1.3)
-    expect(seasonalCase.assumptions.discom.exportRateInr).toBe(2.65);
-    expect(seasonalCase.assumptions.discom.exportRateStatus).toBe("INDICATIVE");
-    expect(seasonalCase.verificationBreakdown.surplusExportRate).toBe("INDICATIVE");
+    // Surplus export rate is ₹2.57/kWh (VERIFIED under TGERC Reg. No. 1 of 2025 Clause 8.1.3 & Proceedings No. TGERC/Secy/77/2025 dated 29.12.2025)
+    expect(seasonalCase.assumptions.discom.exportRateInr).toBe(2.57);
+    expect(seasonalCase.assumptions.discom.exportRateStatus).toBe("VERIFIED");
+    expect(seasonalCase.verificationBreakdown.surplusExportRate).toBe("VERIFIED");
     expect(seasonalCase.surplusExportCreditInr).toBe(
-      Math.round(seasonalCase.netAnnualSurplusKwh * 2.65),
+      Math.round(seasonalCase.netAnnualSurplusKwh * 2.57),
     );
   });
 
@@ -486,6 +486,79 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
     expect(over10KwLoan.isSchemeEligible).toBe(false);
     expect(over10KwLoan.annualInterestRate).toBe(0.0915);
     expect(over10KwLoan.note).toContain("exceeds the PM Surya Ghar concessional cap");
+
+    // 3. Ineligible battery-inclusive loan (includeBatteryInSchemeLoan: true) MUST NOT silently receive 6.00% or 8.15% PM Surya Ghar concessional rates
+    const batteryInclusiveLoan = calculateSolarFinancing({
+      grossCapexInr: 480760,
+      batteryCapexInr: 265000,
+      includeBatteryInSchemeLoan: true,
+      systemKw: 3.48,
+      subsidyInr: 78000,
+      tenureMonths: 60,
+    });
+    expect(batteryInclusiveLoan.batteryIncludedInSchemeLoan).toBe(true);
+    expect(batteryInclusiveLoan.isSchemeEligible).toBe(false);
+    expect(batteryInclusiveLoan.initialLoanPrincipalInr).toBe(432684); // 90% of ₹4,80,760
+    expect(batteryInclusiveLoan.annualInterestRate).toBe(0.0915); // 9.15% non-scheme rate, NOT 8.15% Tier 2
+    expect(batteryInclusiveLoan.tierLabel).toContain("Non-Scheme Illustrative Financing Scenario");
+    expect(batteryInclusiveLoan.note).toContain("non-scheme illustrative financing scenario");
+    expect(batteryInclusiveLoan.initialMonthlyEmiInr).toBe(9013);
+    expect(batteryInclusiveLoan.postSubsidyMonthlyEmiInr).toBe(7321);
+    expect(batteryInclusiveLoan.totalInterestInr).toBe(89652);
+
+    // Verify 25-year chart reconciliation for battery-inclusive non-scheme loan via estimate()
+    const batteryInclusiveEstimate = estimate({
+      monthlyBillInr: 8000,
+      discomCode: "TGSPDCL",
+      panels: 6,
+      batteryUnits: 1,
+      includeBatteryInSchemeLoan: true,
+      paymentMode: "loan",
+    });
+    expect(batteryInclusiveEstimate.financing.isSchemeEligible).toBe(false);
+    expect(batteryInclusiveEstimate.financing.annualInterestRate).toBe(0.0915);
+    expect(batteryInclusiveEstimate.financedProjection[24].netCumulativeCashflow).toBe(
+      batteryInclusiveEstimate.financedNetGain25YearsInr,
+    );
+    expect(batteryInclusiveEstimate.cashFlowLedger.reconcilesWithSummary).toBe(true);
+
+    // 4. Ineligible commercial segment MUST NOT silently receive 6.00% Tier 1 or 8.15% Tier 2 PM Surya Ghar concessional rates
+    const commercialSmallLoan = calculateSolarFinancing({
+      grossCapexInr: 180000,
+      systemKw: 2.5,
+      segment: "commercial",
+      subsidyInr: 78000, // Commercial is ineligible for subsidy even if passed
+      tenureMonths: 60,
+    });
+    expect(commercialSmallLoan.isSchemeEligible).toBe(false);
+    expect(commercialSmallLoan.annualInterestRate).toBe(0.0915); // 9.15% non-scheme rate, NOT 6.00% Tier 1
+    expect(commercialSmallLoan.subsidyCreditedToLoanInr).toBe(0);
+    expect(commercialSmallLoan.tierLabel).toContain("Commercial Segment Outside PM Surya Ghar");
+    expect(commercialSmallLoan.note).toContain(
+      "Commercial installations are outside the residential PM Surya Ghar scheme",
+    );
+
+    const commercialEstimate = estimate({
+      monthlyBillInr: 10000,
+      discomCode: "TGSPDCL",
+      segment: "commercial",
+      paymentMode: "loan",
+    });
+    expect(commercialEstimate.financing.isSchemeEligible).toBe(false);
+    expect(commercialEstimate.financing.annualInterestRate).toBe(0.0915);
+    expect(commercialEstimate.subsidyInr).toBe(0);
+    expect(commercialEstimate.financedProjection[24].netCumulativeCashflow).toBe(
+      commercialEstimate.financedNetGain25YearsInr,
+    );
+
+    // 5. Standalone battery storage with zero solar PV (eligibleSolarCapexInr === 0) is ineligible for scheme loan
+    const standaloneBatteryLoan = calculateSolarFinancing({
+      grossCapexInr: 280000,
+      batteryCapexInr: 280000,
+    });
+    expect(standaloneBatteryLoan.eligibleSolarCapexInr).toBe(0);
+    expect(standaloneBatteryLoan.isSchemeEligible).toBe(false);
+    expect(standaloneBatteryLoan.annualInterestRate).toBe(0.0915);
   });
 
   it("integrates sanctionedLoadFeasibility into estimate() and warns when systemKw exceeds permissible sanctioned load cap (Task C)", () => {
