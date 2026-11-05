@@ -405,6 +405,71 @@ async function runAudit() {
       }
       await page.close();
     }
+
+    // 14. Step 3 Solar Engineering & Regulatory Intelligence Checks
+    console.log(
+      "Verifying Step 3 Solar Engineering, Tariff Status Badges, and Section 33 Tax Intelligence...",
+    );
+    {
+      const page = await context.newPage();
+      await page.setViewportSize({ width: 1440, height: 900 });
+
+      // Check 14a: Homepage Quick Estimator tariff status badge & switching
+      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      const homeTextInitial = await page.textContent("#savings");
+      if (!homeTextInitial || !homeTextInitial.includes("Verified TGERC Schedule")) {
+        failures.push(
+          "Homepage #savings did not show 'Verified TGERC Schedule' for default TGSPDCL",
+        );
+      }
+      await page.selectOption("#discom-select", "BESCOM");
+      await page.waitForTimeout(200);
+      const homeTextBescom = await page.textContent("#savings");
+      if (!homeTextBescom || !homeTextBescom.includes("Indicative Regional Benchmark")) {
+        failures.push(
+          "Homepage #savings did not switch to 'Indicative Regional Benchmark' when selecting BESCOM",
+        );
+      }
+
+      // Check 14b: /deploy SystemConfigurator 580W TOPCon, BillDecoder & Loan/Cash disclosure
+      await page.goto(`${BASE_URL}/deploy?bill=8000&discom=APEPDCL`, {
+        waitUntil: "networkidle",
+      });
+      const deployBody = await page.textContent("body");
+      if (!deployBody.includes("580W TOPCon")) {
+        failures.push("/deploy did not render unified 580W TOPCon module label");
+      }
+      if (!deployBody.includes("APERC")) {
+        failures.push("/deploy?discom=APEPDCL did not display APERC verified regulatory source");
+      }
+
+      // Check 14c: /enterprise Section 33 WDV Depreciation & 0% Non-Taxable option
+      await page.goto(`${BASE_URL}/enterprise`, { waitUntil: "networkidle" });
+      const enterpriseBody = await page.textContent("body");
+      if (
+        !enterpriseBody.includes("Section 33") ||
+        !enterpriseBody.includes("Year 1 WDV Depreciation Allowance") ||
+        !enterpriseBody.includes("Illustrative Cash Tax Shield")
+      ) {
+        failures.push(
+          "/enterprise is missing Section 33 WDV Depreciation Allowance vs Cash Tax Shield separation",
+        );
+      }
+
+      // Check 14d: /legal/disclosures APERC 6-tier schedule & DISCOM matrix
+      await page.goto(`${BASE_URL}/legal/disclosures`, { waitUntil: "networkidle" });
+      const disclosuresBody = await page.textContent("body");
+      if (
+        !disclosuresBody.includes("State DISCOM Tariff Schedules & Verification Status") ||
+        !disclosuresBody.includes("Andhra Pradesh (APERC) LT-I(A) Domestic Telescopic Slabs")
+      ) {
+        failures.push(
+          "/legal/disclosures is missing DISCOM Verification Matrix or APERC 6-tier schedule",
+        );
+      }
+
+      await page.close();
+    }
   } finally {
     await browser.close();
     if (serverProcess) {

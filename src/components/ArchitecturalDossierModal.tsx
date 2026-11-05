@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Printer, Share2, ShieldCheck, Download, CheckCircle2 } from "lucide-react";
+import { X, Printer, Share2, CheckCircle2 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
+import { project25Years, type YearProjectionPoint } from "@/config/solar";
 
 export interface DossierData {
   refCode: string;
@@ -22,6 +23,9 @@ export interface DossierData {
   paybackYears: number;
   annualSavings: number;
   twentyFiveYearSavings: number;
+  annualGenKwh?: number;
+  tariffInrPerKwh?: number;
+  projection?: YearProjectionPoint[];
   dateStr?: string;
 }
 
@@ -55,21 +59,39 @@ export function ArchitecturalDossierModal({
   const whatsappText = `Hello WAVENOX Engineering Team, I am reviewing my Architectural Solar Feasibility Proposal (${data.refCode}) for a ${data.systemKw} kW system in ${data.address || "my city"} (PIN: ${data.pinCode || "verified"}). I would like to schedule the on-site physical laser survey.`;
   const whatsappUrl = `${BRAND_CONFIG.contact.whatsappLink}?text=${encodeURIComponent(whatsappText)}`;
 
-  // Financial 25-Year Matrix calculation
+  const annualGenKwh = data.annualGenKwh ?? Math.round(data.systemKw * 1490);
+  const tariffInrPerKwh = data.tariffInrPerKwh ?? 9.2;
+
+  // Unified 25-Year Financial Schedule from single engine (zero duplicate formula drift)
+  const fullProjection = React.useMemo(() => {
+    if (data.projection && data.projection.length === 25) {
+      return data.projection;
+    }
+    return project25Years({
+      annualBillInr: data.monthlyBill * 12,
+      annualSavingsInr: data.annualSavings,
+      annualGenKwh,
+      netInvestmentInr: data.netPayable,
+      tariffPerKwh: tariffInrPerKwh,
+    });
+  }, [
+    data.projection,
+    data.monthlyBill,
+    data.annualSavings,
+    annualGenKwh,
+    data.netPayable,
+    tariffInrPerKwh,
+  ]);
+
   const matrixYears = [1, 5, 10, 15, 20, 25];
   const compoundMatrix = matrixYears.map((yr) => {
-    // 3% tariff inflation, 0.4% degradation
-    let totalSaved = 0;
-    for (let y = 1; y <= yr; y++) {
-      const tariffMultiplier = Math.pow(1.03, y - 1);
-      const degradationMultiplier = 1 - (y - 1) * 0.004;
-      totalSaved += data.annualSavings * tariffMultiplier * degradationMultiplier;
-    }
-    const netCashflow = totalSaved - data.netPayable;
+    const point = fullProjection[yr - 1];
     return {
       year: yr,
-      cumulativeSavings: Math.round(totalSaved),
-      netRetainedWealth: Math.round(netCashflow),
+      tariffPerKwh:
+        point?.tariffPerKwh ?? Number((tariffInrPerKwh * Math.pow(1.03, yr - 1)).toFixed(2)),
+      cumulativeSavings: point?.cumSavings ?? 0,
+      netRetainedWealth: point?.netCumulativeCashflow ?? 0,
     };
   });
 
@@ -289,12 +311,12 @@ export function ArchitecturalDossierModal({
                       <span className="font-mono font-bold">-₹{formatInr(data.subsidyInr)}</span>
                     </div>
                     <div className="flex justify-between py-1 text-[14px] font-bold text-[#171A20] pt-1">
-                      <span>Net Capital Payable:</span>
+                      <span>Effective Cost After Post-Commissioning DBT:</span>
                       <span className="font-mono text-[16px]">₹{formatInr(data.netPayable)}</span>
                     </div>
                     <p className="text-[12px] text-[#5C5E62] pt-1">
-                      * Central subsidy is processed via national portal Direct Benefit Transfer
-                      directly into client bank account.
+                      * Central subsidy is not an upfront invoice discount; it is disbursed via
+                      Direct Benefit Transfer (DBT) after DISCOM net-meter commissioning.
                     </p>
                   </div>
 
@@ -308,7 +330,7 @@ export function ArchitecturalDossierModal({
                     <div className="flex justify-between py-1 border-b border-[#EAEAEA]">
                       <span className="text-[#5C5E62]">First Year Annual Solar Generation:</span>
                       <span className="font-mono font-semibold">
-                        ~{formatInr(Math.round(data.systemKw * 1450))} kWh
+                        ~{formatInr(annualGenKwh)} kWh
                       </span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-[#EAEAEA] text-[#2E7D32]">
@@ -334,7 +356,7 @@ export function ArchitecturalDossierModal({
                     III. 25-Year Compounding Wealth Schedule
                   </h3>
                   <span className="text-[12px] text-[#5C5E62] font-mono">
-                    Modeled at 3.0% Annual Tariff Inflation · 0.4% Module Degradation
+                    Modeled at 3.0% Annual Tariff Escalation · 0.40% Module Degradation
                   </span>
                 </div>
 
@@ -355,7 +377,7 @@ export function ArchitecturalDossierModal({
                             Year {row.year} {row.year === 25 ? "(Full Warranty Maturity)" : ""}
                           </td>
                           <td className="py-2 px-3 text-[#5C5E62] font-mono">
-                            ₹{(9.2 * Math.pow(1.03, row.year - 1)).toFixed(2)} / kWh
+                            ₹{row.tariffPerKwh.toFixed(2)} / kWh
                           </td>
                           <td className="py-2 px-3 font-mono font-medium">
                             ₹{formatInr(row.cumulativeSavings)}
@@ -437,7 +459,9 @@ export function ArchitecturalDossierModal({
                   </div>
                   <div className="flex items-center gap-1.5 text-[#171A20]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
-                    <span>Authorized Partner Structural &amp; Weather-Tight Mounting Warranty</span>
+                    <span>
+                      Authorized Partner Workmanship Coverage (per signed installation agreement)
+                    </span>
                   </div>
                 </div>
 

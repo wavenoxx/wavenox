@@ -8,15 +8,13 @@ import { PRODUCTS_CONFIG } from "@/config/products";
 import {
   PM_SURYA_GHAR_SOURCE,
   TGERC_TARIFF_SOURCE,
+  APERC_TARIFF_SOURCE,
   HYDERABAD_YIELD_SOURCE,
   IS_875_WIND_SOURCE,
-  INCOME_TAX_SECTION_34_SOURCE,
+  INCOME_TAX_SECTION_33_SOURCE,
   SBI_SOLAR_LOAN_SOURCE,
   MOP_ROOFTOP_RULES_SOURCE,
   MODULE_WARRANTY_SOURCE,
-  CFA_SUBSIDY_CONFIG,
-  SOLAR_LOAN_TERMS,
-  TAX_DEPRECIATION_CONFIG,
 } from "@/config/regulatory";
 
 export const Route = createFileRoute("/legal/disclosures")({
@@ -164,12 +162,17 @@ function DisclosuresPage() {
           {/* Section 3: DISCOM Tariffs & State ERC Schedules */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              3. State DISCOM Baseline Tariff Schedules (TGERC FY 2025-26)
+              3. State DISCOM Tariff Schedules &amp; Verification Status (FY 2025-26 / FY 2026-27)
             </h2>
             <p>
-              We maintain active regulatory tariff schedules verified against the official TGERC
-              Retail Supply Tariff Order for FY 2025-26. In multi-year financial forecasts, an
-              annual grid tariff inflation rate of{" "}
+              We classify every utility in our registry as either{" "}
+              <strong className="text-[#171A20]">Verified Schedule</strong> (full telescopic slab,
+              customer charge, fixed charge, and duty logic verified against official TGERC and
+              APERC Retail Supply Tariff Orders) or{" "}
+              <strong className="text-[#171A20]">Indicative Regional Benchmark</strong> (blended
+              regional tariff assumption used for preliminary sizing until site-specific SERC bill
+              verification). In multi-year financial forecasts, an annual grid tariff escalation
+              rate of{" "}
               <strong className="text-[#171A20]">
                 {SOLAR_ASSUMPTIONS.tariffEscalationPerYear * 100}%
               </strong>{" "}
@@ -181,6 +184,7 @@ function DisclosuresPage() {
                   <tr className="bg-[#F8F8FA] border-b border-[#E2E8F0] text-[#171A20]">
                     <th className="py-2.5 px-4 font-semibold">DISCOM Code</th>
                     <th className="py-2.5 px-4 font-semibold">State</th>
+                    <th className="py-2.5 px-4 font-semibold">Verification Status</th>
                     <th className="py-2.5 px-4 font-semibold">Residential Base</th>
                     <th className="py-2.5 px-4 font-semibold">Commercial HT Base</th>
                     <th className="py-2.5 px-4 font-semibold">Annual Surplus Settlement</th>
@@ -191,6 +195,19 @@ function DisclosuresPage() {
                     <tr key={d.code} className="hover:bg-[#FDFDFD]">
                       <td className="py-2.5 px-4 font-mono font-medium text-[#171A20]">{d.code}</td>
                       <td className="py-2.5 px-4 text-[#5C5E62]">{d.state}</td>
+                      <td className="py-2.5 px-4">
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium ${
+                            d.status === "VERIFIED"
+                              ? "bg-[#E8F5E9] text-[#1B5E20]"
+                              : "bg-[#FFF8E1] text-[#8D6E00]"
+                          }`}
+                        >
+                          {d.status === "VERIFIED"
+                            ? `Verified (${d.authority})`
+                            : "Indicative Benchmark"}
+                        </span>
+                      </td>
                       <td className="py-2.5 px-4 tabular-nums">
                         ₹{d.residentialTariffInr.toFixed(2)} / kWh
                       </td>
@@ -206,30 +223,61 @@ function DisclosuresPage() {
               </table>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#F8F8FA] border border-[#E2E8F0] space-y-2 text-xs">
-              <div className="font-semibold text-[#171A20]">
-                Telangana LT-I Domestic Telescopic Slabs
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-[#F8F8FA] border border-[#E2E8F0] space-y-2 text-xs">
+                <div className="font-semibold text-[#171A20]">
+                  Telangana (TGERC) LT-I Domestic Telescopic Slabs (TGSPDCL &amp; TGNPDCL)
+                </div>
+                <ul className="list-disc pl-4 space-y-1 text-[#5C5E62]">
+                  <li>
+                    <strong>LT-I(A) (≤ 100 units/mo):</strong> 0–50 @ ₹1.95, 51–100 @ ₹3.10
+                  </li>
+                  <li>
+                    <strong>LT-I(B) (101–200 units/mo):</strong> 0–100 @ ₹3.40, 101–200 @ ₹4.80
+                  </li>
+                  <li>
+                    <strong>LT-I(C) (&gt; 200 units/mo):</strong> 0–200 @ ₹5.10, 201–300 @ ₹7.70,
+                    301–400 @ ₹9.00, 401–800 @ ₹9.50, &gt;800 @ ₹10.00
+                  </li>
+                  <li>
+                    <strong>Fixed &amp; Customer Charges:</strong> LT-I(C) fixed charge
+                    ₹10/kW/month; customer charge ₹25–₹80/month; electricity duty ₹0.06/kWh.
+                  </li>
+                  <li>
+                    <strong>Gruha Jyothi Scheme:</strong> Eligible domestic households in Telangana
+                    receive zero electricity charges for consumption up to 200 units per month.
+                  </li>
+                </ul>
               </div>
-              <ul className="list-disc pl-4 space-y-1 text-[#5C5E62]">
-                <li>
-                  <strong>LT-I(A) (≤ 100 units/mo):</strong> 0–50 @ ₹1.95, 51–100 @ ₹3.10
-                </li>
-                <li>
-                  <strong>LT-I(B) (101–200 units/mo):</strong> 0–100 @ ₹3.40, 101–200 @ ₹4.80
-                </li>
-                <li>
-                  <strong>LT-I(C) (&gt; 200 units/mo):</strong> 0–200 @ ₹5.10, 201–300 @ ₹7.70,
-                  301–400 @ ₹9.00, 401–800 @ ₹9.50, &gt;800 @ ₹10.00
-                </li>
-                <li>
-                  <strong>Fixed & Customer Charges:</strong> LT-I(C) fixed charge ₹10/kW/month;
-                  customer charge ₹25–₹80/month; electricity duty ₹0.06/kWh.
-                </li>
-                <li>
-                  <strong>Gruha Jyothi Scheme:</strong> Eligible domestic households in Telangana
-                  receive zero electricity charges for consumption up to 200 units per month.
-                </li>
-              </ul>
+
+              <div className="p-4 rounded-xl bg-[#F8F8FA] border border-[#E2E8F0] space-y-2 text-xs">
+                <div className="font-semibold text-[#171A20]">
+                  Andhra Pradesh (APERC) LT-I(A) Domestic Telescopic Slabs (APEPDCL &amp; APSPDCL)
+                </div>
+                <ul className="list-disc pl-4 space-y-1 text-[#5C5E62]">
+                  <li>
+                    <strong>0 – 30 units/mo:</strong> ₹1.90 / kWh
+                  </li>
+                  <li>
+                    <strong>31 – 75 units/mo:</strong> ₹3.00 / kWh
+                  </li>
+                  <li>
+                    <strong>76 – 125 units/mo:</strong> ₹4.50 / kWh
+                  </li>
+                  <li>
+                    <strong>126 – 225 units/mo:</strong> ₹6.00 / kWh
+                  </li>
+                  <li>
+                    <strong>226 – 400 units/mo:</strong> ₹8.75 / kWh ·{" "}
+                    <strong>&gt; 400 units/mo:</strong> ₹9.75 / kWh
+                  </li>
+                  <li>
+                    <strong>Fixed &amp; Customer Charges:</strong> Fixed charge ₹10/kW/month;
+                    customer charge ₹25–₹55/month; electricity duty ₹0.06/kWh (excludes variable
+                    monthly FPPCA).
+                  </li>
+                </ul>
+              </div>
             </div>
           </section>
 
@@ -416,6 +464,28 @@ function DisclosuresPage() {
                   </tr>
                   <tr>
                     <td className="py-2.5 px-4 font-medium text-[#171A20]">
+                      Andhra Pradesh Tariffs
+                    </td>
+                    <td className="py-2.5 px-4 text-[#5C5E62]">
+                      {APERC_TARIFF_SOURCE.title} ({APERC_TARIFF_SOURCE.documentRef})
+                    </td>
+                    <td className="py-2.5 px-4 font-mono text-[#5C5E62]">
+                      {APERC_TARIFF_SOURCE.verifiedOn}
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <a
+                        href={APERC_TARIFF_SOURCE.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#171A20] hover:underline"
+                      >
+                        <span>APERC Order</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-4 font-medium text-[#171A20]">
                       Solar Yield &amp; Insolation
                     </td>
                     <td className="py-2.5 px-4 text-[#5C5E62]">{HYDERABAD_YIELD_SOURCE.title}</td>
@@ -461,14 +531,14 @@ function DisclosuresPage() {
                       Commercial Depreciation
                     </td>
                     <td className="py-2.5 px-4 text-[#5C5E62]">
-                      {INCOME_TAX_SECTION_34_SOURCE.title}
+                      {INCOME_TAX_SECTION_33_SOURCE.title}
                     </td>
                     <td className="py-2.5 px-4 font-mono text-[#5C5E62]">
-                      {INCOME_TAX_SECTION_34_SOURCE.verifiedOn}
+                      {INCOME_TAX_SECTION_33_SOURCE.verifiedOn}
                     </td>
                     <td className="py-2.5 px-4">
                       <a
-                        href={INCOME_TAX_SECTION_34_SOURCE.url}
+                        href={INCOME_TAX_SECTION_33_SOURCE.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[#171A20] hover:underline"

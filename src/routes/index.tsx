@@ -237,7 +237,7 @@ const TRUST_CARDS = [
   {
     title: "Transparent Tariff & Subsidy Basis",
     description:
-      "Indicative residential estimates reference published Telangana (TGERC FY 2025-26) tariff schedules, MNRE PM Surya Ghar subsidy slabs, and regional solar irradiance baselines; final project economics are verified for your specific state and DISCOM during site assessment.",
+      "Residential estimates use verified TGERC (Telangana) and APERC (Andhra Pradesh) FY 2025-26/2026-27 telescopic tariff schedules, labeled regional benchmarks for other states, and MNRE PM Surya Ghar subsidy slabs.",
     linkLabel: "Inspect Calculation Sources",
     to: "/legal/disclosures",
   },
@@ -472,9 +472,22 @@ function IndexPage() {
             {/* Controls: DISCOM select & Bill slider */}
             <div className="space-y-6 bg-[#FFFFFF] p-6 sm:p-8 rounded-[8px] border border-[#E3E4E6]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
-                  Electricity Board (DISCOM)
-                </label>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
+                    Electricity Board (DISCOM)
+                  </label>
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-[4px] text-[12px] font-medium ${
+                      solarEstimate.status === "VERIFIED"
+                        ? "bg-[#E8F5E9] text-[#1B5E20]"
+                        : "bg-[#FFF8E1] text-[#8D6E00]"
+                    }`}
+                  >
+                    {solarEstimate.status === "VERIFIED"
+                      ? `Verified ${solarEstimate.assumptions.discom.authority} Schedule`
+                      : "Indicative Regional Benchmark"}
+                  </span>
+                </div>
                 <select
                   id="discom-select"
                   value={selectedDiscom}
@@ -483,7 +496,7 @@ function IndexPage() {
                 >
                   {DISCOMS.map((d) => (
                     <option key={d.code} value={d.code}>
-                      {d.code} ({d.state})
+                      {d.code} ({d.state}) — {d.status === "VERIFIED" ? "Verified" : "Indicative"}
                     </option>
                   ))}
                 </select>
@@ -514,8 +527,7 @@ function IndexPage() {
                   <span>₹35,000+ / mo</span>
                 </div>
                 <p className="text-[12px] text-[#5C5E62] pt-1 text-center leading-normal">
-                  * Telangana Gruha Jyothi scheme gives eligible households up to 200 free
-                  units/month.
+                  * {solarEstimate.assumptions.discom.regulatoryNote}
                 </p>
               </div>
 
@@ -525,7 +537,9 @@ function IndexPage() {
                   <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
                     {solarEstimate.recommendedKw} kW
                   </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Recommended System</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">
+                    Recommended ({solarEstimate.recommendedPanels} Panels)
+                  </div>
                 </div>
                 <div className="p-3 rounded-[6px] bg-[#F4F4F4]">
                   <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
@@ -537,20 +551,45 @@ function IndexPage() {
                   <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
                     ₹{formatInr(solarEstimate.subsidyInr)}
                   </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Central Subsidy*</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Central DBT Subsidy*</div>
                 </div>
               </div>
 
+              <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 rounded-[6px] bg-[#F4F4F4]/70 text-[12px] text-[#5C5E62]">
+                <span>
+                  Est. Generation:{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    {formatInr(solarEstimate.annualGenKwh)} kWh/yr
+                  </strong>{" "}
+                  ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr)
+                </span>
+                <span>
+                  Est. Turnkey Capex:{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    ₹{formatInr(solarEstimate.grossInr)}
+                  </strong>{" "}
+                  gross ·{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    ₹{formatInr(solarEstimate.netInr)}
+                  </strong>{" "}
+                  post-DBT*
+                </span>
+              </div>
+
               <p className="text-[12px] text-[#5C5E62] text-center">
-                Indicative estimate modeled on verified Telangana (TGERC FY 2025-26) retail tariff
-                slabs and MNRE central subsidy benchmarks; final sizing and state-specific DISCOM
-                tariff schedules are confirmed during engineering assessment.{" "}
+                {solarEstimate.status === "VERIFIED"
+                  ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and MNRE PM Surya Ghar central subsidy guidelines.`
+                  : `Modeled on an indicative regional tariff benchmark (₹${solarEstimate.assumptions.tariffInrPerKwh.toFixed(2)}/kWh for ${solarEstimate.assumptions.discom.state}) and MNRE PM Surya Ghar subsidy guidelines.`}{" "}
+                Unavoidable monthly fixed charges (~₹
+                {formatInr(solarEstimate.billBreakdown.unavoidableChargesInr)}/mo) remain payable to
+                your DISCOM.{" "}
                 <Link
                   to="/legal/disclosures"
                   hash="sources"
                   className="underline hover:text-[#171A20]"
                 >
-                  Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)
+                  Source · verified Nov 2026 ({solarEstimate.assumptions.discom.authority} &amp;
+                  MNRE)
                 </Link>
               </p>
             </div>

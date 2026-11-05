@@ -3,20 +3,31 @@
  * UNIFIED SOLAR CALCULATION ENGINE & FINANCIAL ASSUMPTIONS
  * ============================================================================
  *
- * Single source of truth for solar geometry, generation yields, DISCOM tariffs,
- * PM Surya Ghar subsidies, and multi-year financial modeling.
- * Sourced from official TGERC tariff orders, MNRE guidelines, and IS codes.
+ * Single source of truth for solar geometry, regional generation yields,
+ * state-specific DISCOM tariffs, PM Surya Ghar subsidies, residential loan
+ * amortization, commercial Section 33 depreciation, and 25-year cash-flow modeling.
+ * Sourced from official TGERC & APERC tariff orders, MNRE guidelines, SBI
+ * lending circulars, Income-tax Act 2025 (Section 33), and BIS IS codes.
  */
 import { PRODUCTS_CONFIG } from "@/config/products";
 import {
   calculateGovtSubsidyInr as calculateGovtSubsidyInrRegulatory,
+  evaluateSubsidyEligibility,
+  calculateElectricityBill,
   unitsForBill,
+  DISCOM_TARIFF_PROFILES,
+  getSolarYieldProfileForDiscom,
   HYDERABAD_ANNUAL_YIELD_KWH_PER_KW,
   MODULE_WARRANTY_TERMS,
   SOLAR_LOAN_TERMS,
   TGERC_TARIFF_SOURCE,
   PM_SURYA_GHAR_SOURCE,
+  SBI_SOLAR_LOAN_SOURCE,
+  INCOME_TAX_SECTION_33_SOURCE,
   type DataSource,
+  type VerificationStatus,
+  type SubsidyAssessment,
+  type ElectricityBillResult,
 } from "@/config/regulatory";
 
 export interface DiscomInfo {
@@ -25,7 +36,13 @@ export interface DiscomInfo {
   state: string;
   residentialTariffInr: number;
   commercialTariffInr: number;
-  exportRateInr: number; // Net-metering surplus settlement rate (TGERC APPC)
+  exportRateInr: number; // Net-metering surplus settlement rate (APPC / FiT)
+  status: VerificationStatus;
+  authority: string;
+  cityKey: string;
+  regulatoryNote: string;
+  gruhaJyothiApplicable: boolean;
+  tariffSource: DataSource;
 }
 
 export interface SolarSystemTier {
@@ -41,8 +58,11 @@ export interface SolarSystemTier {
 }
 
 /**
- * Single fully-sourced market: Telangana (TGSPDCL and TGNPDCL)
- * Verified against TGERC Retail Supply Tariff Order FY 2025-26.
+ * State-aware DISCOM catalog with explicit VerificationStatus per utility:
+ * - VERIFIED: Telangana (TGSPDCL, TGNPDCL) via TGERC FY 2025-26/2026-27 orders
+ *             and Andhra Pradesh (APEPDCL, APSPDCL) via APERC FY 2025-26/2026-27 orders.
+ * - INDICATIVE: Regional tariff benchmarks for Karnataka, Maharashtra, Delhi-NCR,
+ *               Goa, and Tamil Nadu pending individual SERC slab ingestion.
  */
 export const DISCOMS: DiscomInfo[] = [
   {
@@ -52,6 +72,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 9.2,
     commercialTariffInr: 10.5,
     exportRateInr: 3.55,
+    status: DISCOM_TARIFF_PROFILES.TGSPDCL.status,
+    authority: DISCOM_TARIFF_PROFILES.TGSPDCL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.TGSPDCL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.TGSPDCL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.TGSPDCL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.TGSPDCL.source,
   },
   {
     code: "TGNPDCL",
@@ -60,6 +86,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.8,
     commercialTariffInr: 10.2,
     exportRateInr: 3.55,
+    status: DISCOM_TARIFF_PROFILES.TGNPDCL.status,
+    authority: DISCOM_TARIFF_PROFILES.TGNPDCL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.TGNPDCL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.TGNPDCL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.TGNPDCL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.TGNPDCL.source,
   },
   {
     code: "BESCOM",
@@ -68,6 +100,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.8,
     commercialTariffInr: 10.2,
     exportRateInr: 3.82,
+    status: DISCOM_TARIFF_PROFILES.BESCOM.status,
+    authority: DISCOM_TARIFF_PROFILES.BESCOM.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.BESCOM.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.BESCOM.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.BESCOM.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.BESCOM.source,
   },
   {
     code: "MSEDCL",
@@ -76,6 +114,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 9.5,
     commercialTariffInr: 11.2,
     exportRateInr: 3.75,
+    status: DISCOM_TARIFF_PROFILES.MSEDCL.status,
+    authority: DISCOM_TARIFF_PROFILES.MSEDCL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.MSEDCL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.MSEDCL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.MSEDCL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.MSEDCL.source,
   },
   {
     code: "TATA_MUMBAI",
@@ -84,6 +128,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 9.8,
     commercialTariffInr: 11.5,
     exportRateInr: 3.9,
+    status: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.status,
+    authority: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.TATA_MUMBAI.source,
   },
   {
     code: "APEPDCL",
@@ -92,6 +142,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.9,
     commercialTariffInr: 10.4,
     exportRateInr: 3.6,
+    status: DISCOM_TARIFF_PROFILES.APEPDCL.status,
+    authority: DISCOM_TARIFF_PROFILES.APEPDCL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.APEPDCL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.APEPDCL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.APEPDCL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.APEPDCL.source,
   },
   {
     code: "APSPDCL",
@@ -100,6 +156,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.9,
     commercialTariffInr: 10.4,
     exportRateInr: 3.6,
+    status: DISCOM_TARIFF_PROFILES.APSPDCL.status,
+    authority: DISCOM_TARIFF_PROFILES.APSPDCL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.APSPDCL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.APSPDCL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.APSPDCL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.APSPDCL.source,
   },
   {
     code: "BRPL",
@@ -108,6 +170,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.5,
     commercialTariffInr: 10.8,
     exportRateInr: 3.7,
+    status: DISCOM_TARIFF_PROFILES.BRPL.status,
+    authority: DISCOM_TARIFF_PROFILES.BRPL.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.BRPL.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.BRPL.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.BRPL.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.BRPL.source,
   },
   {
     code: "DHBVN",
@@ -116,6 +184,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.6,
     commercialTariffInr: 10.6,
     exportRateInr: 3.65,
+    status: DISCOM_TARIFF_PROFILES.DHBVN.status,
+    authority: DISCOM_TARIFF_PROFILES.DHBVN.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.DHBVN.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.DHBVN.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.DHBVN.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.DHBVN.source,
   },
   {
     code: "GED",
@@ -124,6 +198,12 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 7.8,
     commercialTariffInr: 9.8,
     exportRateInr: 3.5,
+    status: DISCOM_TARIFF_PROFILES.GED.status,
+    authority: DISCOM_TARIFF_PROFILES.GED.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.GED.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.GED.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.GED.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.GED.source,
   },
   {
     code: "TANGEDCO",
@@ -132,18 +212,27 @@ export const DISCOMS: DiscomInfo[] = [
     residentialTariffInr: 8.7,
     commercialTariffInr: 10.5,
     exportRateInr: 3.6,
+    status: DISCOM_TARIFF_PROFILES.TANGEDCO.status,
+    authority: DISCOM_TARIFF_PROFILES.TANGEDCO.authority,
+    cityKey: DISCOM_TARIFF_PROFILES.TANGEDCO.cityKey,
+    regulatoryNote: DISCOM_TARIFF_PROFILES.TANGEDCO.regulatoryNote,
+    gruhaJyothiApplicable: DISCOM_TARIFF_PROFILES.TANGEDCO.gruhaJyothiApplicable,
+    tariffSource: DISCOM_TARIFF_PROFILES.TANGEDCO.source,
   },
 ];
 
 export const SOLAR_ASSUMPTIONS = {
-  panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // 550W TOPCon
-  yieldKwhPerKwYear: HYDERABAD_ANNUAL_YIELD_KWH_PER_KW, // 1490 kWh/kWp/yr (NASA POWER / NREL PVWatts v8)
+  panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // 580W N-Type TOPCon
+  panelFootprintSqft: 27.8, // 2278mm × 1134mm = 2.583 m² = 27.8 sq.ft. physical module area
+  clearRoofSqftPerKw: 100, // Includes row spacing, tilt clearance, and maintenance walkways
+  yieldKwhPerKwYear: HYDERABAD_ANNUAL_YIELD_KWH_PER_KW, // 1490 kWh/kWp/yr baseline (Hyderabad NASA POWER)
+  year1Degradation: MODULE_WARRANTY_TERMS.year1MaxDegradationPct / 100, // 0.01 (1.0% Year 1)
+  degradationPerYear: MODULE_WARRANTY_TERMS.annualDegradationPct / 100, // 0.004 (0.40%/year)
   selfConsumptionNoBattery: 0.7, // 70% daytime self-consumption
   selfConsumptionWithBattery: 0.9, // 90% self-consumption with battery
-  degradationPerYear: MODULE_WARRANTY_TERMS.annualDegradationPct / 100, // 0.004 (0.40%/year)
-  tariffEscalationPerYear: 0.03, // 3.0% annual tariff escalation
-  pricePerKwInr: 62000, // Turnkey residential capex per kW
-  commercialPricePerKwInr: 42000, // Turnkey commercial capex per kW
+  tariffEscalationPerYear: 0.03, // 3.0% annual tariff escalation scenario
+  pricePerKwInr: 62000, // Indicative turnkey residential capex per kW
+  commercialPricePerKwInr: 42000, // Indicative turnkey commercial capex per kW
   battery: {
     unitCapacityKwh: PRODUCTS_CONFIG.battery.usableCapacityKwh,
     unitPriceInr: 280000,
@@ -157,7 +246,7 @@ export const SOLAR_ASSUMPTIONS = {
 };
 
 /**
- * Modular residential sizing tiers built from panelWatt
+ * Modular residential sizing tiers built from panelWatt (580W)
  */
 export const SYSTEM_TIERS: SolarSystemTier[] = [
   {
@@ -170,7 +259,7 @@ export const SYSTEM_TIERS: SolarSystemTier[] = [
         (Math.ceil((3 * 1000) / SOLAR_ASSUMPTIONS.panelWatt) * SOLAR_ASSUMPTIONS.panelWatt) /
         1000
       ).toFixed(2),
-    ), // 3.3 kW
+    ), // 3.48 kW
     monthlyKwh: Math.round(
       (Number(
         (
@@ -188,13 +277,13 @@ export const SYSTEM_TIERS: SolarSystemTier[] = [
     id: "medium",
     label: "Medium",
     targetKw: 5,
-    panels: Math.ceil((5 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 10 panels
+    panels: Math.ceil((5 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 9 panels
     systemKw: Number(
       (
         (Math.ceil((5 * 1000) / SOLAR_ASSUMPTIONS.panelWatt) * SOLAR_ASSUMPTIONS.panelWatt) /
         1000
       ).toFixed(2),
-    ), // 5.5 kW
+    ), // 5.22 kW
     monthlyKwh: Math.round(
       (Number(
         (
@@ -213,13 +302,13 @@ export const SYSTEM_TIERS: SolarSystemTier[] = [
     id: "large",
     label: "Large",
     targetKw: 8,
-    panels: Math.ceil((8 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 15 panels
+    panels: Math.ceil((8 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 14 panels
     systemKw: Number(
       (
         (Math.ceil((8 * 1000) / SOLAR_ASSUMPTIONS.panelWatt) * SOLAR_ASSUMPTIONS.panelWatt) /
         1000
       ).toFixed(2),
-    ), // 8.25 kW
+    ), // 8.12 kW
     monthlyKwh: Math.round(
       (Number(
         (
@@ -237,13 +326,13 @@ export const SYSTEM_TIERS: SolarSystemTier[] = [
     id: "xlarge",
     label: "Extra Large",
     targetKw: 12,
-    panels: Math.ceil((12 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 22 panels
+    panels: Math.ceil((12 * 1000) / SOLAR_ASSUMPTIONS.panelWatt), // 21 panels
     systemKw: Number(
       (
         (Math.ceil((12 * 1000) / SOLAR_ASSUMPTIONS.panelWatt) * SOLAR_ASSUMPTIONS.panelWatt) /
         1000
       ).toFixed(2),
-    ), // 12.1 kW
+    ), // 12.18 kW
     monthlyKwh: Math.round(
       (Number(
         (
@@ -269,10 +358,239 @@ export function calculateGovtSubsidyInr(
   return calculateGovtSubsidyInrRegulatory(kw, { segment });
 }
 
+/**
+ * ============================================================================
+ * ROOF AREA & STRUCTURAL FEASIBILITY VALIDATION (Phase B)
+ * ============================================================================
+ */
+export interface RoofFeasibilityAssessment {
+  panelCount: number;
+  panelWatt: number;
+  systemKw: number;
+  moduleFootprintSqft: number;
+  recommendedClearRoofSqft: number;
+  availableRoofSqft: number | null;
+  maxFeasiblePanels: number | null;
+  maxFeasibleKw: number | null;
+  isFeasible: boolean;
+  utilizationPct: number | null;
+  warning: string | null;
+  disclaimer: string;
+}
+
+export function validateRoofFeasibility(
+  panelCount: number,
+  panelWatt: number = SOLAR_ASSUMPTIONS.panelWatt,
+  availableRoofSqft?: number,
+): RoofFeasibilityAssessment {
+  const safePanels =
+    typeof panelCount === "number" && Number.isFinite(panelCount) && panelCount > 0
+      ? Math.round(panelCount)
+      : 0;
+  const safeWatt =
+    typeof panelWatt === "number" && Number.isFinite(panelWatt) && panelWatt > 0
+      ? panelWatt
+      : SOLAR_ASSUMPTIONS.panelWatt;
+
+  const systemKw = Number(((safePanels * safeWatt) / 1000).toFixed(2));
+  const moduleFootprintSqft = Math.round(safePanels * SOLAR_ASSUMPTIONS.panelFootprintSqft);
+  const recommendedClearRoofSqft = Math.round(systemKw * SOLAR_ASSUMPTIONS.clearRoofSqftPerKw);
+
+  const hasAvailableRoof =
+    typeof availableRoofSqft === "number" &&
+    Number.isFinite(availableRoofSqft) &&
+    availableRoofSqft > 0;
+
+  const cleanAvailableSqft = hasAvailableRoof ? Math.round(availableRoofSqft) : null;
+  const maxFeasiblePanels =
+    cleanAvailableSqft !== null
+      ? Math.max(
+          0,
+          Math.floor(
+            ((cleanAvailableSqft / SOLAR_ASSUMPTIONS.clearRoofSqftPerKw) * 1000) / safeWatt,
+          ),
+        )
+      : null;
+  const maxFeasibleKw =
+    maxFeasiblePanels !== null ? Number(((maxFeasiblePanels * safeWatt) / 1000).toFixed(2)) : null;
+
+  const isFeasible =
+    cleanAvailableSqft === null ? true : cleanAvailableSqft >= recommendedClearRoofSqft;
+  const utilizationPct =
+    cleanAvailableSqft !== null && cleanAvailableSqft > 0
+      ? Math.round((recommendedClearRoofSqft / cleanAvailableSqft) * 100)
+      : null;
+
+  const warning = !isFeasible
+    ? `Configured ${systemKw} kW array (${safePanels} panels) requires ~${recommendedClearRoofSqft} sq.ft. of shadow-free roof area including tilt spacing, which exceeds the ${cleanAvailableSqft} sq.ft. available (~${maxFeasiblePanels} panels / ${maxFeasibleKw} kW max on standard mounting, or requires an elevated pergola structure).`
+    : null;
+
+  return {
+    panelCount: safePanels,
+    panelWatt: safeWatt,
+    systemKw,
+    moduleFootprintSqft,
+    recommendedClearRoofSqft,
+    availableRoofSqft: cleanAvailableSqft,
+    maxFeasiblePanels,
+    maxFeasibleKw,
+    isFeasible,
+    utilizationPct,
+    warning,
+    disclaimer:
+      "Indicative roof sizing and satellite sketching do not replace physical structural inspection, 3D horizon shade modeling, parapet setback verification, or DISCOM sanction approval.",
+  };
+}
+
+/**
+ * ============================================================================
+ * RESIDENTIAL FINANCING & EMI ENGINE (Phase E)
+ * ============================================================================
+ */
+export interface SolarFinancingAssessment {
+  status: VerificationStatus;
+  grossCapexInr: number;
+  customerMarginPct: number;
+  customerDownPaymentInr: number;
+  loanPrincipalInr: number;
+  annualInterestRate: number;
+  annualInterestRatePct: number;
+  tenureMonths: number;
+  monthlyEmiInr: number;
+  totalRepaymentInr: number;
+  totalInterestInr: number;
+  tierLabel: string;
+  exceedsConcessionalCap: boolean;
+  effectiveAsOf: string;
+  caveats: string[];
+  source: DataSource;
+}
+
+export function calculateSolarFinancing(params: {
+  grossCapexInr: number;
+  batteryCapexInr?: number;
+  tenureMonths?: number;
+  annualInterestRate?: number;
+  customerMarginPct?: number;
+}): SolarFinancingAssessment {
+  const grossCapexInr =
+    typeof params.grossCapexInr === "number" &&
+    Number.isFinite(params.grossCapexInr) &&
+    params.grossCapexInr > 0
+      ? Math.round(params.grossCapexInr)
+      : 0;
+
+  const customerMarginPct =
+    typeof params.customerMarginPct === "number" &&
+    Number.isFinite(params.customerMarginPct) &&
+    params.customerMarginPct >= 0 &&
+    params.customerMarginPct < 1
+      ? params.customerMarginPct
+      : SOLAR_LOAN_TERMS.minCustomerMarginPct;
+
+  const customerDownPaymentInr = Math.round(grossCapexInr * customerMarginPct);
+  const loanPrincipalInr = Math.max(0, grossCapexInr - customerDownPaymentInr);
+
+  const tenureMonths =
+    typeof params.tenureMonths === "number" &&
+    Number.isFinite(params.tenureMonths) &&
+    params.tenureMonths > 0
+      ? Math.round(params.tenureMonths)
+      : SOLAR_LOAN_TERMS.defaultTenureMonths;
+
+  const exceedsConcessionalCap = loanPrincipalInr > SOLAR_LOAN_TERMS.tier2.maxAmountInr;
+
+  let annualInterestRate: number;
+  let tierLabel: string;
+  let status: VerificationStatus = "VERIFIED";
+
+  if (
+    typeof params.annualInterestRate === "number" &&
+    Number.isFinite(params.annualInterestRate) &&
+    params.annualInterestRate >= 0
+  ) {
+    annualInterestRate = params.annualInterestRate;
+    tierLabel = "Custom Financing Rate Assumption";
+    status = "INDICATIVE";
+  } else if (loanPrincipalInr <= SOLAR_LOAN_TERMS.tier1.maxAmountInr) {
+    annualInterestRate = SOLAR_LOAN_TERMS.tier1.annualInterestRate;
+    tierLabel = "SBI PM Surya Ghar Tier 1 (≤ ₹2,00,000 · Collateral-Free)";
+  } else if (loanPrincipalInr <= SOLAR_LOAN_TERMS.tier2.maxAmountInr) {
+    annualInterestRate = SOLAR_LOAN_TERMS.tier2.annualInterestRate;
+    tierLabel = "SBI PM Surya Ghar Tier 2 (₹2,00,001 – ₹6,00,000)";
+  } else {
+    annualInterestRate = SOLAR_LOAN_TERMS.tier2.annualInterestRate;
+    tierLabel = "Indicative Retail Solar / Home-Equity Financing (> ₹6,00,000 PM Surya Ghar Cap)";
+    status = "INDICATIVE";
+  }
+
+  let monthlyEmiInr = 0;
+  let totalRepaymentInr = 0;
+  let totalInterestInr = 0;
+
+  if (loanPrincipalInr > 0 && tenureMonths > 0) {
+    if (annualInterestRate <= 0) {
+      monthlyEmiInr = Math.round(loanPrincipalInr / tenureMonths);
+      totalRepaymentInr = loanPrincipalInr;
+      totalInterestInr = 0;
+    } else {
+      const r = annualInterestRate / 12;
+      const factor = Math.pow(1 + r, tenureMonths);
+      monthlyEmiInr = Math.round((loanPrincipalInr * r * factor) / (factor - 1));
+      totalRepaymentInr = monthlyEmiInr * tenureMonths;
+      totalInterestInr = Math.max(0, totalRepaymentInr - loanPrincipalInr);
+    }
+  }
+
+  const caveats: string[] = [
+    `Interest rates (${(annualInterestRate * 100).toFixed(2)}% p.a. floating, effective as of ${SOLAR_LOAN_TERMS.asOfDate}) are linked to bank EBLR and subject to borrower credit underwriting.`,
+    `Assumes ${(customerMarginPct * 100).toFixed(0)}% customer margin contribution (₹${customerDownPaymentInr.toLocaleString("en-IN")}) and ${(100 - customerMarginPct * 100).toFixed(0)}% financed principal (₹${loanPrincipalInr.toLocaleString("en-IN")}).`,
+  ];
+
+  if (exceedsConcessionalCap) {
+    caveats.push(
+      `Financed principal (₹${loanPrincipalInr.toLocaleString("en-IN")}) exceeds the ₹6,00,000 PM Surya Ghar concessional scheme ceiling; banks typically underwrite larger residential systems under retail solar or home-equity top-up terms.`,
+    );
+  }
+
+  if ((params.batteryCapexInr ?? 0) > 0) {
+    caveats.push(
+      "Standalone battery storage capex is not covered under MNRE PM Surya Ghar concessional loan subsidies unless bundled under approved bank retail solar terms.",
+    );
+  }
+
+  return {
+    status,
+    grossCapexInr,
+    customerMarginPct,
+    customerDownPaymentInr,
+    loanPrincipalInr,
+    annualInterestRate,
+    annualInterestRatePct: Number((annualInterestRate * 100).toFixed(2)),
+    tenureMonths,
+    monthlyEmiInr,
+    totalRepaymentInr,
+    totalInterestInr,
+    tierLabel,
+    exceedsConcessionalCap,
+    effectiveAsOf: SOLAR_LOAN_TERMS.asOfDate,
+    caveats,
+    source: SBI_SOLAR_LOAN_SOURCE,
+  };
+}
+
+/**
+ * ============================================================================
+ * 25-YEAR CASH FLOW & LIFETIME WEALTH ENGINE (Phase F)
+ * ============================================================================
+ */
 export interface YearProjectionPoint {
   year: number;
   tariffPerKwh: number;
   genKwh: number;
+  annualBillWithoutSolar?: number;
+  annualSavings?: number;
+  annualLoanOutflow?: number;
   cumSpendWithoutSolar: number;
   cumSavings: number;
   netCumulativeCashflow: number; // starts negative (savings - netInvestmentInr), crosses zero at payback
@@ -286,11 +604,18 @@ export interface ProjectionParams {
   tariffPerKwh: number;
   degradationPerYear?: number;
   tariffEscalationPerYear?: number;
+  financing?: {
+    customerDownPaymentInr: number;
+    subsidyInr: number;
+    monthlyEmiInr: number;
+    tenureMonths: number;
+  };
 }
 
 /**
- * Single, unified 25-Year Compound Simulation used by both estimate() and WealthCurveVisualizer.
- * Models 0.40% module degradation and 3.0% annual tariff escalation.
+ * Single, unified 25-Year Compound Simulation used across estimate(),
+ * WealthCurveVisualizer, and ArchitecturalDossierModal.
+ * Models 0.40% annual linear module degradation and 3.0% annual tariff escalation.
  */
 export function project25Years(params: ProjectionParams): YearProjectionPoint[] {
   const {
@@ -301,11 +626,15 @@ export function project25Years(params: ProjectionParams): YearProjectionPoint[] 
     tariffPerKwh,
     degradationPerYear = SOLAR_ASSUMPTIONS.degradationPerYear,
     tariffEscalationPerYear = SOLAR_ASSUMPTIONS.tariffEscalationPerYear,
+    financing,
   } = params;
 
   const points: YearProjectionPoint[] = [];
   let cumSpendWithoutSolar = 0;
   let cumSavings = 0;
+  let cumLoanOutflow = financing
+    ? Math.max(0, financing.customerDownPaymentInr - financing.subsidyInr)
+    : 0;
 
   for (let y = 1; y <= 25; y++) {
     const degFactor = Math.pow(1 - degradationPerYear, y - 1);
@@ -318,14 +647,30 @@ export function project25Years(params: ProjectionParams): YearProjectionPoint[] 
     // Annual savings in Year y, capped at that year's electricity bill
     const yearSavings = Math.min(yearBill, Math.round(annualSavingsInr * degFactor * escFactor));
 
+    let annualLoanOutflow = 0;
+    if (financing && financing.monthlyEmiInr > 0 && financing.tenureMonths > 0) {
+      const startMonth = (y - 1) * 12 + 1;
+      if (startMonth <= financing.tenureMonths) {
+        const activeMonths = Math.min(12, financing.tenureMonths - startMonth + 1);
+        annualLoanOutflow = financing.monthlyEmiInr * activeMonths;
+      }
+      cumLoanOutflow += annualLoanOutflow;
+    }
+
     cumSpendWithoutSolar += yearBill;
     cumSavings += yearSavings;
-    const netCumulativeCashflow = Math.round(cumSavings - netInvestmentInr);
+
+    const netCumulativeCashflow = financing
+      ? Math.round(cumSavings - cumLoanOutflow)
+      : Math.round(cumSavings - netInvestmentInr);
 
     points.push({
       year: y,
       tariffPerKwh: yearTariff,
       genKwh: yearGen,
+      annualBillWithoutSolar: yearBill,
+      annualSavings: yearSavings,
+      annualLoanOutflow,
       cumSpendWithoutSolar,
       cumSavings,
       netCumulativeCashflow,
@@ -335,6 +680,155 @@ export function project25Years(params: ProjectionParams): YearProjectionPoint[] 
   return points;
 }
 
+/**
+ * ============================================================================
+ * COMMERCIAL SOLAR TAX & DEPRECIATION ENGINE (Phase G)
+ * ============================================================================
+ */
+export interface CommercialAssessmentParams {
+  capacityKw: number;
+  discomCode?: string;
+  commissioningWindow?: "H1_FULL_RATE" | "H2_HALF_RATE";
+  corporateTaxRatePct?: number;
+  hasTaxableProfit?: boolean;
+}
+
+export interface CommercialAssessmentResult {
+  status: VerificationStatus;
+  capacityKw: number;
+  discom: DiscomInfo;
+  commercialTariffInrPerKwh: number;
+  specificYieldKwhPerKwYear: number;
+  annualGenKwh: number;
+  grossCapexInr: number;
+  subsidyInr: 0;
+  depreciationStatute: string;
+  commissioningWindow: "H1_FULL_RATE" | "H2_HALF_RATE";
+  year1DepreciationRatePct: number;
+  year1DepreciationDeductionInr: number;
+  remainingWdvAfterYear1Inr: number;
+  corporateTaxRatePct: number;
+  hasTaxableProfit: boolean;
+  year1IllustrativeTaxShieldInr: number;
+  effectiveNetCapexAfterTaxShieldInr: number;
+  annualOperationalSavingsInr: number;
+  operationalPaybackYears: number;
+  taxAdjustedIllustrativePaybackYears: number;
+  lifetime25YrOperationalSavingsInr: number;
+  disclosures: string[];
+  source: DataSource;
+}
+
+export function calculateCommercialSolarAssessment(
+  params: CommercialAssessmentParams,
+): CommercialAssessmentResult {
+  const safeKw =
+    typeof params.capacityKw === "number" &&
+    Number.isFinite(params.capacityKw) &&
+    params.capacityKw > 0
+      ? params.capacityKw
+      : 100;
+
+  const discom = DISCOMS.find((d) => d.code === params.discomCode) ?? DISCOMS[0];
+  const yieldProfile = getSolarYieldProfileForDiscom(discom.code);
+  const specificYieldKwhPerKwYear = yieldProfile.annualKwhPerKw;
+
+  const annualGenKwh = Math.round(safeKw * specificYieldKwhPerKwYear);
+  const grossCapexInr = Math.round(safeKw * SOLAR_ASSUMPTIONS.commercialPricePerKwInr);
+  const commercialTariffInrPerKwh = discom.commercialTariffInr;
+
+  const commissioningWindow =
+    params.commissioningWindow === "H2_HALF_RATE" ? "H2_HALF_RATE" : "H1_FULL_RATE";
+  const year1DepreciationRatePct = commissioningWindow === "H2_HALF_RATE" ? 20 : 40;
+
+  // Statutory depreciation deduction from taxable business income (NOT cash tax saved)
+  const year1DepreciationDeductionInr = Math.round(
+    grossCapexInr * (year1DepreciationRatePct / 100),
+  );
+  const remainingWdvAfterYear1Inr = Math.max(0, grossCapexInr - year1DepreciationDeductionInr);
+
+  const rawTaxRate =
+    typeof params.corporateTaxRatePct === "number" &&
+    Number.isFinite(params.corporateTaxRatePct) &&
+    params.corporateTaxRatePct >= 0
+      ? params.corporateTaxRatePct
+      : 25.17;
+
+  const hasTaxableProfit =
+    typeof params.hasTaxableProfit === "boolean" ? params.hasTaxableProfit : rawTaxRate > 0;
+  const corporateTaxRatePct = hasTaxableProfit ? rawTaxRate : 0;
+
+  // Illustrative tax shield = Depreciation Deduction × Effective Corporate Tax Rate
+  const year1IllustrativeTaxShieldInr =
+    hasTaxableProfit && corporateTaxRatePct > 0
+      ? Math.round(year1DepreciationDeductionInr * (corporateTaxRatePct / 100))
+      : 0;
+
+  const effectiveNetCapexAfterTaxShieldInr = Math.max(
+    0,
+    grossCapexInr - year1IllustrativeTaxShieldInr,
+  );
+
+  const annualOperationalSavingsInr = Math.round(annualGenKwh * commercialTariffInrPerKwh);
+
+  const operationalPaybackYears =
+    annualOperationalSavingsInr > 0
+      ? Number((grossCapexInr / annualOperationalSavingsInr).toFixed(1))
+      : 0;
+
+  const taxAdjustedIllustrativePaybackYears =
+    annualOperationalSavingsInr > 0
+      ? Number((effectiveNetCapexAfterTaxShieldInr / annualOperationalSavingsInr).toFixed(1))
+      : 0;
+
+  const projection = project25Years({
+    annualBillInr: annualOperationalSavingsInr * 2,
+    annualSavingsInr: annualOperationalSavingsInr,
+    annualGenKwh,
+    netInvestmentInr: grossCapexInr,
+    tariffPerKwh: commercialTariffInrPerKwh,
+  });
+  const lifetime25YrOperationalSavingsInr = projection[24].cumSavings;
+
+  return {
+    status: discom.status === "VERIFIED" ? "VERIFIED" : "INDICATIVE",
+    capacityKw: safeKw,
+    discom,
+    commercialTariffInrPerKwh,
+    specificYieldKwhPerKwYear,
+    annualGenKwh,
+    grossCapexInr,
+    subsidyInr: 0,
+    depreciationStatute: "Section 33, Income-tax Act, 2025 & Income-tax Rules, 2026",
+    commissioningWindow,
+    year1DepreciationRatePct,
+    year1DepreciationDeductionInr,
+    remainingWdvAfterYear1Inr,
+    corporateTaxRatePct,
+    hasTaxableProfit,
+    year1IllustrativeTaxShieldInr,
+    effectiveNetCapexAfterTaxShieldInr,
+    annualOperationalSavingsInr,
+    operationalPaybackYears,
+    taxAdjustedIllustrativePaybackYears,
+    lifetime25YrOperationalSavingsInr,
+    disclosures: [
+      `Under Section 33 of the Income-tax Act, 2025 (and Income-tax Rules, 2026), commercial solar power generating systems qualify for ${year1DepreciationRatePct}% Written Down Value (WDV) depreciation in Year 1 (${commissioningWindow === "H1_FULL_RATE" ? "commissioned ≥ 180 days" : "commissioned < 180 days at 50% of block rate"}).`,
+      `The ₹${year1DepreciationDeductionInr.toLocaleString("en-IN")} depreciation allowance is a deduction from taxable business income, not a direct cash grant or government subsidy.`,
+      hasTaxableProfit
+        ? `The illustrative Year-1 tax shield of ₹${year1IllustrativeTaxShieldInr.toLocaleString("en-IN")} assumes an effective corporate tax rate of ${corporateTaxRatePct}% and sufficient taxable business profit to absorb the deduction.`
+        : "With 0% effective tax rate or no current taxable business profit, the immediate Year-1 cash tax shield is ₹0 (unabsorbed depreciation may be carried forward subject to statutory assessment).",
+      "Consult your company's Chartered Accountant to verify depreciation block eligibility, MAT/AMT interactions, and corporate tax regime elections.",
+    ],
+    source: INCOME_TAX_SECTION_33_SOURCE,
+  };
+}
+
+/**
+ * ============================================================================
+ * UNIFIED RESIDENTIAL & STUDIO SOLAR ESTIMATE CONTRACT (Phases B, C, D, E, F, I)
+ * ============================================================================
+ */
 export interface EstimateParams {
   monthlyBillInr?: number;
   discomCode?: string;
@@ -342,9 +836,25 @@ export interface EstimateParams {
   panels?: number;
   batteryUnits?: number;
   paymentMode?: "cash" | "loan";
+  availableRoofSqft?: number;
+  specialCategoryState?: boolean;
+}
+
+export interface NetMeteringEnergyBalance {
+  annualConsumptionKwh: number;
+  annualGenKwh: number;
+  selfConsumedKwh: number;
+  exportedKwh: number;
+  importedKwh: number;
+  netMeteredOffsetKwh: number;
+  netAnnualSurplusKwh: number;
+  residualGridImportKwh: number;
+  selfConsumptionRatio: number;
+  batteryBackupRoleNote: string;
 }
 
 export interface EstimateResult {
+  status: VerificationStatus;
   monthlyUnits: number;
   recommendedKw: number;
   recommendedPanels: number;
@@ -354,6 +864,8 @@ export interface EstimateResult {
   annualBillInr: number;
   annualSavingsInr: number;
   billCoveragePct: number;
+  solarGrossInr: number;
+  batteryGrossInr: number;
   subsidyInr: number;
   grossInr: number;
   netInr: number;
@@ -363,6 +875,16 @@ export interface EstimateResult {
   savings25YearsInr: number;
   netGain25YearsInr: number;
   projection: YearProjectionPoint[];
+  financedProjection: YearProjectionPoint[];
+  financedNetGain25YearsInr: number;
+  financedPaybackYears: number;
+  energyBalance: NetMeteringEnergyBalance;
+  billBreakdown: ElectricityBillResult;
+  subsidyAssessment: SubsidyAssessment;
+  financing: SolarFinancingAssessment;
+  roofFeasibility: RoofFeasibilityAssessment;
+  warnings: string[];
+  disclosures: string[];
   assumptions: {
     discom: DiscomInfo;
     tariffInrPerKwh: number;
@@ -376,6 +898,7 @@ export interface EstimateResult {
   sources: {
     tariff: DataSource;
     subsidy: DataSource;
+    financing: DataSource;
   };
 }
 
@@ -387,14 +910,22 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const bill = typeof rawBill === "number" && Number.isFinite(rawBill) && rawBill > 0 ? rawBill : 0;
   const segment = params.segment === "commercial" ? "commercial" : "residential";
 
-  // Find DISCOM or fallback to TGSPDCL
-  const discom = DISCOMS.find((d) => d.code === params.discomCode) ?? DISCOMS[0]; // TGSPDCL
+  const requestedCode = params.discomCode?.trim();
+  const matchedDiscom = requestedCode ? DISCOMS.find((d) => d.code === requestedCode) : DISCOMS[0];
+  const isUnknownDiscom = Boolean(requestedCode && !matchedDiscom);
+  const discom = matchedDiscom ?? DISCOMS[0];
+
+  const status: VerificationStatus = isUnknownDiscom ? "UNAVAILABLE" : discom.status;
+
+  // Regional specific yield lookup (uses 1,490 kWh/kWp/yr for Telangana and regional profiles for other states)
+  const yieldProfile = getSolarYieldProfileForDiscom(discom.code);
+  const yieldKwhPerKwYear = yieldProfile.annualKwhPerKw;
 
   const tariff =
     segment === "commercial" ? discom.commercialTariffInr : discom.residentialTariffInr;
   const annualBillInr = Math.round(bill * 12);
 
-  // Use real telescopic tariff slabs for accurate residential consumption units
+  // Use state-aware telescopic tariff slabs for VERIFIED DISCOMs, or benchmark inverse for INDICATIVE
   const monthlyUnits =
     segment === "residential" && bill > 0
       ? unitsForBill(discom.code, bill, 5)
@@ -403,11 +934,15 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
         : 0;
   const annualUnits = monthlyUnits * 12;
 
-  // System recommendation based on consumption
+  const billBreakdown = calculateElectricityBill(
+    isUnknownDiscom ? requestedCode! : discom.code,
+    monthlyUnits,
+    { sanctionedLoadKw: 5 },
+  );
+
+  // System recommendation based on consumption and regional yield
   let neededKw =
-    annualUnits > 0
-      ? annualUnits / SOLAR_ASSUMPTIONS.yieldKwhPerKwYear
-      : SOLAR_ASSUMPTIONS.minResidentialKw;
+    annualUnits > 0 ? annualUnits / yieldKwhPerKwYear : SOLAR_ASSUMPTIONS.minResidentialKw;
   if (segment === "residential") {
     neededKw = Math.max(
       SOLAR_ASSUMPTIONS.minResidentialKw,
@@ -426,10 +961,9 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
       ? Math.round(rawPanels)
       : recommendedPanels;
   const systemKw = Number(((panels * SOLAR_ASSUMPTIONS.panelWatt) / 1000).toFixed(2));
-  const annualGenKwh = Math.round(systemKw * SOLAR_ASSUMPTIONS.yieldKwhPerKwYear);
+  const annualGenKwh = Math.round(systemKw * yieldKwhPerKwYear);
 
-  // Battery configuration: for residential net-metered homes in Telangana,
-  // net metering offsets imported units 1:1, so home battery serves as resilience/backup.
+  // Battery configuration
   const rawBatteryUnits = params.batteryUnits;
   const batteryUnits =
     typeof rawBatteryUnits === "number" && Number.isFinite(rawBatteryUnits) && rawBatteryUnits > 0
@@ -441,10 +975,17 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
       ? SOLAR_ASSUMPTIONS.selfConsumptionWithBattery
       : SOLAR_ASSUMPTIONS.selfConsumptionNoBattery;
 
-  const selfConsumedKwh = annualGenKwh * selfConsumptionRatio;
-  const exportedKwh = annualGenKwh * (1 - selfConsumptionRatio);
+  // 1:1 Net-Metering Energy Balance:
+  // Self-consumed solar avoids immediate grid import, while exported daytime solar
+  // offsets night/evening grid import 1:1 up to total annual consumption.
+  const selfConsumedKwh = Math.round(annualGenKwh * selfConsumptionRatio);
+  const exportedKwh = Math.max(0, annualGenKwh - selfConsumedKwh);
+  const importedKwh = Math.max(0, annualUnits - selfConsumedKwh);
+  const netMeteredOffsetKwh = Math.min(exportedKwh, importedKwh);
+  const netAnnualSurplusKwh = Math.max(0, exportedKwh - netMeteredOffsetKwh);
+  const residualGridImportKwh = Math.max(0, importedKwh - netMeteredOffsetKwh);
 
-  // Value generated: self-consumed avoids retail tariff, exported offsets at tariff / APPC rate
+  // Value generated: self-consumed avoids retail tariff, exported offsets at retail/APPC
   const annualGenValueInr = Math.round(
     selfConsumedKwh * tariff + exportedKwh * discom.exportRateInr,
   );
@@ -463,28 +1004,30 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
   const solarGrossInr = Math.round(systemKw * costPerKw);
   const batteryGrossInr = batteryUnits * SOLAR_ASSUMPTIONS.battery.unitPriceInr;
   const grossInr = solarGrossInr + batteryGrossInr;
-  const subsidyInr = calculateGovtSubsidyInr(systemKw, segment);
+
+  const subsidyAssessment = evaluateSubsidyEligibility(systemKw, {
+    segment,
+    specialCategory: params.specialCategoryState,
+    state: discom.state,
+    isGridConnected: true,
+    dcrCompliant: true,
+  });
+  const subsidyInr = subsidyAssessment.indicativeSubsidyInr;
   const netInr = Math.max(0, grossInr - subsidyInr);
 
-  // SBI PM Surya Ghar loan structure: up to 90% financing of gross cost
-  const loanPrincipal = Math.round(grossInr * SOLAR_LOAN_TERMS.maxFinancingPct);
-  const loanRate =
-    loanPrincipal <= SOLAR_LOAN_TERMS.tier1.maxAmountInr
-      ? SOLAR_LOAN_TERMS.tier1.annualInterestRate
-      : SOLAR_LOAN_TERMS.tier2.annualInterestRate;
-
-  const P = loanPrincipal;
-  const r = loanRate / 12;
-  const n = SOLAR_ASSUMPTIONS.loan.tenureMonths;
-  const monthlyEmiInr =
-    P > 0 && r > 0 ? Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)) : 0;
-
+  // Residential / Studio Financing Assessment
+  const financing = calculateSolarFinancing({
+    grossCapexInr: grossInr,
+    batteryCapexInr: batteryGrossInr,
+    tenureMonths: SOLAR_ASSUMPTIONS.loan.tenureMonths,
+  });
+  const monthlyEmiInr = financing.monthlyEmiInr;
   const emiBelowBill = bill > 0 && monthlyEmiInr > 0 && monthlyEmiInr < bill;
 
-  // Simple payback period
+  // Simple cash payback period
   const paybackYears = annualSavingsInr > 0 ? Number((netInr / annualSavingsInr).toFixed(1)) : 0;
 
-  // Unified 25-Year Compound Projection
+  // Unified 25-Year Cash Purchase Projection
   const projection = project25Years({
     annualBillInr,
     annualSavingsInr,
@@ -493,10 +1036,60 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
     tariffPerKwh: tariff,
   });
 
+  // Unified 25-Year Financed Purchase Projection (includes 10% down payment + EMI interest outflows)
+  const financedProjection = project25Years({
+    annualBillInr,
+    annualSavingsInr,
+    annualGenKwh,
+    netInvestmentInr: netInr + financing.totalInterestInr,
+    tariffPerKwh: tariff,
+    financing: {
+      customerDownPaymentInr: financing.customerDownPaymentInr,
+      subsidyInr,
+      monthlyEmiInr: financing.monthlyEmiInr,
+      tenureMonths: financing.tenureMonths,
+    },
+  });
+
   const savings25YearsInr = projection[24].cumSavings;
   const netGain25YearsInr = projection[24].netCumulativeCashflow;
+  const financedNetGain25YearsInr = savings25YearsInr - (netInr + financing.totalInterestInr);
+  const financedPaybackYears =
+    annualSavingsInr > 0
+      ? Number(((netInr + financing.totalInterestInr) / annualSavingsInr).toFixed(1))
+      : 0;
+
+  const roofFeasibility = validateRoofFeasibility(
+    panels,
+    SOLAR_ASSUMPTIONS.panelWatt,
+    params.availableRoofSqft,
+  );
+
+  const warnings: string[] = [];
+  if (isUnknownDiscom) {
+    warnings.push(
+      `DISCOM "${requestedCode}" does not have a verified tariff schedule in the WAVENOX registry. Showing fallback benchmark estimates; do not rely on these figures for contractual billing.`,
+    );
+  }
+  if (!roofFeasibility.isFeasible && roofFeasibility.warning) {
+    warnings.push(roofFeasibility.warning);
+  }
+  if (financing.exceedsConcessionalCap && params.paymentMode === "loan") {
+    warnings.push(
+      `Loan principal ₹${financing.loanPrincipalInr.toLocaleString("en-IN")} exceeds the ₹6,00,000 PM Surya Ghar concessional loan cap.`,
+    );
+  }
+
+  const disclosures: string[] = [
+    status === "VERIFIED"
+      ? `Electricity tariff modeled using verified ${discom.authority} slab schedule for ${discom.name} (${discom.state}).`
+      : `Electricity tariff for ${discom.name} (${discom.state}) uses an indicative regional benchmark (₹${tariff.toFixed(2)}/kWh); exact bill savings depend on your sanctioned load and SERC slab tier.`,
+    `Unavoidable monthly fixed/customer charges (~₹${billBreakdown.unavoidableChargesInr}/month) remain payable to ${discom.code} even when solar generation offsets 100% of energy consumption.`,
+    `PM Surya Ghar CFA subsidy (₹${subsidyInr.toLocaleString("en-IN")}) is not an upfront invoice discount; it is disbursed via Direct Benefit Transfer (DBT) after DISCOM net-meter commissioning.`,
+  ];
 
   return {
+    status,
     monthlyUnits,
     recommendedKw,
     recommendedPanels,
@@ -506,6 +1099,8 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
     annualBillInr,
     annualSavingsInr,
     billCoveragePct,
+    solarGrossInr,
+    batteryGrossInr,
     subsidyInr,
     grossInr,
     netInr,
@@ -515,19 +1110,44 @@ export function estimate(params: EstimateParams = {}): EstimateResult {
     savings25YearsInr,
     netGain25YearsInr,
     projection,
+    financedProjection,
+    financedNetGain25YearsInr,
+    financedPaybackYears,
+    energyBalance: {
+      annualConsumptionKwh: annualUnits,
+      annualGenKwh,
+      selfConsumedKwh,
+      exportedKwh,
+      importedKwh,
+      netMeteredOffsetKwh,
+      netAnnualSurplusKwh,
+      residualGridImportKwh,
+      selfConsumptionRatio,
+      batteryBackupRoleNote:
+        batteryUnits > 0
+          ? "Under 1:1 net-metering, battery storage primarily provides uninterrupted UPS backup during grid outages and shifts daytime solar to evening self-consumption."
+          : "Grid-tied 1:1 net-metered configuration without standalone battery storage.",
+    },
+    billBreakdown,
+    subsidyAssessment,
+    financing,
+    roofFeasibility,
+    warnings,
+    disclosures,
     assumptions: {
       discom,
       tariffInrPerKwh: tariff,
       exportRateInr: discom.exportRateInr,
       panelWatt: SOLAR_ASSUMPTIONS.panelWatt,
-      yieldKwhPerKwYear: SOLAR_ASSUMPTIONS.yieldKwhPerKwYear,
+      yieldKwhPerKwYear,
       selfConsumptionRatio,
       loanTenureMonths: SOLAR_ASSUMPTIONS.loan.tenureMonths,
-      loanAnnualRate: loanRate,
+      loanAnnualRate: financing.annualInterestRate,
     },
     sources: {
-      tariff: TGERC_TARIFF_SOURCE,
+      tariff: discom.tariffSource ?? TGERC_TARIFF_SOURCE,
       subsidy: PM_SURYA_GHAR_SOURCE,
+      financing: SBI_SOLAR_LOAN_SOURCE,
     },
   };
 }

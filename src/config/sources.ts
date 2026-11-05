@@ -13,7 +13,7 @@ export interface SourcedDatum {
   authority: string;
   sourceDoc: string;
   sourceUrl: string;
-  verifiedDate: string; // e.g. "Aug 2026"
+  verifiedDate: string; // e.g. "Nov 2026"
   notes?: string;
 }
 
@@ -21,28 +21,41 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
   pmSuryaGharSubsidy: {
     id: "pmSuryaGharSubsidy",
     metric: "Central Financial Assistance (CFA)",
-    value: "Up to ₹78,000",
+    value: "Up to ₹78,000 (General) / ₹85,800 (Special Category)",
     formulaOrBasis:
-      "₹33,000 for 1st kW + ₹33,000 for 2nd kW + ₹12,000 for 3rd kW (capped at ₹78,000 for ≥ 3 kW)",
+      "₹30,000 for 1st kW + ₹30,000 for 2nd kW + ₹18,000 for 3rd kW (capped at ₹78,000 for ≥ 3 kW; ₹33,000/kW up to 2 kW + ₹19,800 for 3rd kW in Special Category States)",
     authority: "Ministry of New and Renewable Energy (MNRE), Govt. of India",
-    sourceDoc: "PM Surya Ghar: Muft Bijli Yojana Operational Guidelines (Feb 2024)",
+    sourceDoc: "PM Surya Ghar: Muft Bijli Yojana Operational Guidelines (No. 318/61/2024-GCRT)",
     sourceUrl: "https://pmsuryaghar.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
-      "Direct Benefit Transfer credited directly to Aadhaar-linked consumer bank account after DISCOM meter commissioning.",
+      "Direct Benefit Transfer credited directly to Aadhaar-linked consumer bank account after DISCOM net-meter commissioning. Standalone battery storage and commercial installations are ineligible.",
   },
   tgercTariffs: {
     id: "tgercTariffs",
-    metric: "Telangana Residential Electricity Tariffs (LT-I C)",
-    value: "₹5.10 to ₹9.50 / kWh",
+    metric: "Telangana Residential Electricity Tariffs (LT-I A/B/C)",
+    value: "₹1.95 to ₹10.00 / kWh",
     formulaOrBasis:
-      "Telescopic slabs: 0–200 units @ ₹5.10; 201–300 @ ₹7.70; 301–400 @ ₹9.00; >400 @ ₹9.50 + Customer/Fixed Charges & 6 paise/unit duty",
+      "LT-I(A) ≤100 u: 0–50 @ ₹1.95, 51–100 @ ₹3.10; LT-I(B) 101–200 u: 0–100 @ ₹3.40, 101–200 @ ₹4.80; LT-I(C) >200 u: 0–200 @ ₹5.10, 201–300 @ ₹7.70, 301–400 @ ₹9.00, 401–800 @ ₹9.50, >800 @ ₹10.00 + Customer/Fixed Charges & ₹0.06/kWh duty",
     authority: "Telangana Electricity Regulatory Commission (TGERC)",
-    sourceDoc: "Retail Supply Tariff Order for FY 2025-26",
+    sourceDoc: "Retail Supply Tariff Orders for FY 2025-26 & FY 2026-27",
     sourceUrl: "https://www.tgerc.telangana.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
-      "Gruha Jyothi scheme waives billing up to 200 units/month for eligible residential households.",
+      "Gruha Jyothi scheme waives billing up to 200 units/month for eligible residential households; net-metered surplus settled at ₹3.55/kWh APPC.",
+  },
+  apercTariffs: {
+    id: "apercTariffs",
+    metric: "Andhra Pradesh Residential Electricity Tariffs (LT-I A)",
+    value: "₹1.90 to ₹9.75 / kWh",
+    formulaOrBasis:
+      "Telescopic slabs across all domestic connections: 0–30 @ ₹1.90; 31–75 @ ₹3.00; 76–125 @ ₹4.50; 126–225 @ ₹6.00; 226–400 @ ₹8.75; >400 @ ₹9.75 + Customer/Fixed Charges & ₹0.06/kWh duty",
+    authority: "Andhra Pradesh Electricity Regulatory Commission (APERC)",
+    sourceDoc: "Retail Supply Tariff Orders for FY 2025-26 & FY 2026-27 (APEPDCL & APSPDCL)",
+    sourceUrl: "https://aperc.gov.in",
+    verifiedDate: "Nov 2026",
+    notes:
+      "Unified 6-tier telescopic domestic tariff schedule applicable across APEPDCL and APSPDCL.",
   },
   hyderabadSolarYield: {
     id: "hyderabadSolarYield",
@@ -53,7 +66,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "NASA POWER Project / NREL PVWatts v8",
     sourceDoc: "NASA Langley Atmospheric Science Data Center Solar Meteorology Dataset",
     sourceUrl: "https://power.larc.nasa.gov",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes: "Assumes South-facing fixed tilt at 14° latitude with standard system losses (14.08%).",
   },
   windRating: {
@@ -65,22 +78,35 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "Bureau of Indian Standards (BIS)",
     sourceDoc: "IS 875 (Part 3): 2015 Design Loads for Buildings and Structures - Wind Loads",
     sourceUrl: "https://standardsbis.bsbedge.com",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
       "Structure engineered with 6005-T5 architectural aluminium and 4.0mm HDG steel footings for elevated pergola clearance.",
   },
   sbiSolarLoan: {
     id: "sbiSolarLoan",
     metric: "PM Surya Ghar Concessional Solar Loan",
-    value: "7.00% p.a. floating",
+    value: "5.75% p.a. (≤ ₹2L) / 7.90% p.a. (₹2L–₹6L) floating",
     formulaOrBasis:
-      "Equal Monthly Installment (EMI) calculated across 5-year (60 month) repayment tenure with nil collateral for systems up to 3 kW",
+      "Equal Monthly Installment (EMI) calculated across 5-year (60 month) repayment tenure with 10% borrower margin (90% financing) and nil collateral up to ₹2,00,000",
     authority: "State Bank of India (SBI)",
-    sourceDoc: "SBI PM Surya Ghar Scheme Lending Terms & Circular",
+    sourceDoc: "SBI PM Surya Ghar Scheme Lending Terms & Circular (EBLR-linked)",
     sourceUrl: "https://sbi.co.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
-      "Available to Indian residential applicants with sanctioned grid connection and PM Surya Ghar registration.",
+      "Rates are floating and subject to bank credit underwriting, applicant eligibility, and EBLR revisions.",
+  },
+  section33TaxDepreciation: {
+    id: "section33TaxDepreciation",
+    metric: "Commercial Solar Accelerated Tax Depreciation",
+    value: "40% Written Down Value (WDV) in Year 1",
+    formulaOrBasis:
+      "40% WDV deduction when commissioned and put to use ≥ 180 days in the financial year (20% if < 180 days); tax shield = Depreciation Deduction × Effective Corporate Tax Rate",
+    authority: "Central Board of Direct Taxes (CBDT), Ministry of Finance",
+    sourceDoc: "Income-tax Act, 2025 (Section 33) & Income-tax Rules, 2026",
+    sourceUrl: "https://www.incometaxindia.gov.in",
+    verifiedDate: "Nov 2026",
+    notes:
+      "Depreciation reduces taxable business income and is not a direct cash grant; actual realization depends on profitable tax capacity and tax regime election.",
   },
   moduleDegradation: {
     id: "moduleDegradation",
@@ -91,7 +117,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "IEC 61215 / IEC 61730 International Standards",
     sourceDoc: "Standard ALMM DCR N-Type TOPCon Cell Reliability Datasheet",
     sourceUrl: "https://mnre.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
       "Zero light-induced degradation (LID) compared to conventional Boron-doped p-type PERC cells.",
   },
@@ -104,7 +130,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "PV Module Engineering Physics (IEC 61215-2)",
     sourceDoc: "N-Type Passivated Contact Solar Cell Temperature Derating Characteristics",
     sourceUrl: "https://mnre.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
       "Superior hot-climate performance essential for Hyderabad summer ambient highs exceeding 42°C.",
   },
@@ -117,7 +143,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "Bureau of Energy Efficiency (BEE), Ministry of Power",
     sourceDoc: "BEE Standards and Labelling Program 2024 Schedule",
     sourceUrl: "https://beeindia.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
       "Used in Battery Honesty Advisor to provide realistic backup duration without misleading overstatements.",
   },
@@ -130,8 +156,8 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     authority: "Ministry of Electronics and Information Technology (MeitY)",
     sourceDoc: "Digital Personal Data Protection Act, 2023 & Notified Rules 2025",
     sourceUrl: "https://meity.gov.in",
-    verifiedDate: "Aug 2026",
+    verifiedDate: "Nov 2026",
     notes:
-      "WAVENOX operates in demonstration concept mode; contact submissions are treated as portfolio inquiries.",
+      "WAVENOX operates in demonstration concept mode unless live Supabase credentials are configured; contact submissions are treated with strict privacy controls.",
   },
 };

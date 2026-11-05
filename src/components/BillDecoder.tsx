@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronDown, ChevronUp, FileText, CheckCircle2 } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 import { decodeBill, type DetailedBillAnalysis } from "@/config/regulatory";
 
 export interface BillDecoderProps {
@@ -15,7 +15,6 @@ export function BillDecoder({
   monthlyBill,
   discomCode = "TGSPDCL",
   sanctionedLoadKw = 5,
-  onBillChange,
   className = "",
   defaultExpanded = false,
 }: BillDecoderProps) {
@@ -25,6 +24,8 @@ export function BillDecoder({
     return decodeBill(discomCode, monthlyBill, sanctionedLoadKw);
   }, [discomCode, monthlyBill, sanctionedLoadKw]);
 
+  const isVerified = analysis.status === "VERIFIED";
+
   return (
     <div
       className={`rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] overflow-hidden shadow-xs ${className}`}
@@ -32,9 +33,15 @@ export function BillDecoder({
       {/* Header Summary */}
       <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F4F4F4]/50">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
-              TGERC Sourced Tariff Breakdown
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <span
+              className={`text-[12px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-[3px] ${
+                isVerified ? "text-[#1B5E20] bg-[#E8F5E9]" : "text-[#92400E] bg-[#FEF3C7]"
+              }`}
+            >
+              {isVerified
+                ? `${analysis.authority} Verified Tariff Breakdown (${analysis.state})`
+                : `Indicative Regional Tariff Benchmark (${analysis.state})`}
             </span>
             <span className="text-[12px] text-[#5C5E62] font-mono">{analysis.category}</span>
           </div>
@@ -46,7 +53,8 @@ export function BillDecoder({
           </div>
           <div className="text-[12px] text-[#5C5E62] mt-0.5">
             Average effective tariff: ₹{analysis.averageRatePerKwh.toFixed(2)} / kWh · Connected
-            load: {sanctionedLoadKw} kW
+            load: {sanctionedLoadKw} kW · Avoidable energy/duty: ₹
+            {analysis.avoidableChargesTotal.toLocaleString("en-IN")}/mo
           </div>
         </div>
 
@@ -57,7 +65,13 @@ export function BillDecoder({
           className="self-start sm:self-auto shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border border-[#E3E4E6] bg-[#FFFFFF] text-[12px] font-medium text-[#171A20] hover:bg-[#F4F4F4] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
         >
           <FileText className="w-3.5 h-3.5 text-[#5C5E62]" />
-          <span>{isExpanded ? "Hide Slabs" : "View Slabs & Charges"}</span>
+          <span>
+            {isExpanded
+              ? "Hide Breakdown"
+              : isVerified
+                ? "View Slabs & Charges"
+                : "View Benchmark Basis"}
+          </span>
           {isExpanded ? (
             <ChevronUp className="w-3.5 h-3.5 text-[#5C5E62]" />
           ) : (
@@ -73,7 +87,9 @@ export function BillDecoder({
             <table className="w-full text-left text-[12px] sm:text-[13px]">
               <thead>
                 <tr className="border-b border-[#E3E4E6] text-[#5C5E62]">
-                  <th className="pb-2 font-medium">Telescopic Slab</th>
+                  <th className="pb-2 font-medium">
+                    {isVerified ? "Telescopic Slab" : "Tariff Component"}
+                  </th>
                   <th className="pb-2 font-medium text-right">Units</th>
                   <th className="pb-2 font-medium text-right">Rate / Unit</th>
                   <th className="pb-2 font-medium text-right">Subtotal</th>
@@ -100,7 +116,7 @@ export function BillDecoder({
               <tfoot className="border-t border-[#E3E4E6] text-[12px]">
                 <tr className="tabular-nums">
                   <td colSpan={3} className="pt-2 text-[#5C5E62]">
-                    Energy Charges Subtotal
+                    Energy Charges Subtotal (Solar-Avoidable)
                   </td>
                   <td className="pt-2 text-right font-semibold text-[#171A20]">
                     ₹{analysis.energyChargesTotal.toLocaleString("en-IN")}
@@ -108,7 +124,7 @@ export function BillDecoder({
                 </tr>
                 <tr className="tabular-nums">
                   <td colSpan={3} className="py-1 text-[#5C5E62]">
-                    Monthly Customer Charge (TGERC Schedule)
+                    Monthly Customer Charge ({analysis.authority} Schedule · Unavoidable)
                   </td>
                   <td className="py-1 text-right text-[#5C5E62]">
                     ₹{analysis.customerCharge.toFixed(2)}
@@ -117,7 +133,7 @@ export function BillDecoder({
                 {analysis.fixedCharge > 0 && (
                   <tr className="tabular-nums">
                     <td colSpan={3} className="py-1 text-[#5C5E62]">
-                      Contracted Demand Fixed Charges ({sanctionedLoadKw} kW @ ₹10/kW)
+                      Contracted Demand Fixed Charges ({sanctionedLoadKw} kW · Unavoidable)
                     </td>
                     <td className="py-1 text-right text-[#5C5E62]">
                       ₹{analysis.fixedCharge.toFixed(2)}
@@ -126,7 +142,7 @@ export function BillDecoder({
                 )}
                 <tr className="tabular-nums">
                   <td colSpan={3} className="py-1 text-[#5C5E62]">
-                    Telangana State Electricity Duty ({analysis.estimatedUnits} units @ ₹0.06/unit)
+                    {analysis.state} State Electricity Duty ({analysis.estimatedUnits} units)
                   </td>
                   <td className="py-1 text-right text-[#5C5E62]">
                     ₹{analysis.electricityDuty.toFixed(2)}
@@ -144,14 +160,22 @@ export function BillDecoder({
             </table>
           </div>
 
-          {/* Statutory Scheme Note */}
+          {/* State-Specific Regulatory Note */}
           <div className="p-3 bg-[#F4F4F4] rounded-[4px] text-[12px] text-[#5C5E62] leading-relaxed flex items-start gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[#F57C00] shrink-0 mt-0.5" />
+            {isVerified ? (
+              <CheckCircle2 className="w-4 h-4 text-[#1B5E20] shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-[#F57C00] shrink-0 mt-0.5" />
+            )}
             <div>
-              <strong className="text-[#171A20]">Telangana Gruha Jyothi Note:</strong> Domestic
-              households consuming ≤ 200 units with an active White Ration Card / Food Security Card
-              receive zero-electricity bills. When consumption exceeds 200 units, the consumer is
-              billed under standard telescopic LT-I(C) rates shown above.
+              <strong className="text-[#171A20]">
+                {isVerified
+                  ? `${analysis.state} (${analysis.authority}) Regulatory Note:`
+                  : `${analysis.state} Regional Benchmark Note:`}
+              </strong>{" "}
+              {analysis.regulatoryNote} Unavoidable monthly fixed &amp; customer charges (₹
+              {analysis.unavoidableChargesTotal.toFixed(0)}/month) remain payable to {discomCode}{" "}
+              even when solar generation offsets 100% of energy consumption.
             </div>
           </div>
         </div>

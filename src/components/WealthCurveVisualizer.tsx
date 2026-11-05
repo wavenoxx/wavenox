@@ -9,6 +9,9 @@ interface WealthCurveVisualizerProps {
   paybackYears: number;
   tariffPerKwh: number;
   annualGenKwh?: number;
+  paymentMode?: "cash" | "loan";
+  projectionOverride?: YearProjectionPoint[];
+  authorityLabel?: string;
 }
 
 function formatInr(val: number): string {
@@ -34,11 +37,17 @@ export function WealthCurveVisualizer({
   paybackYears,
   tariffPerKwh,
   annualGenKwh,
+  paymentMode = "cash",
+  projectionOverride,
+  authorityLabel = "Regional DISCOM",
 }: WealthCurveVisualizerProps) {
   const [hoveredYear, setHoveredYear] = React.useState<number>(25);
 
   // Compute 25-year series data using the single unified project25Years engine
   const dataPoints: YearProjectionPoint[] = React.useMemo(() => {
+    if (projectionOverride && projectionOverride.length === 25) {
+      return projectionOverride;
+    }
     return project25Years({
       annualBillInr,
       annualSavingsInr,
@@ -46,7 +55,14 @@ export function WealthCurveVisualizer({
       netInvestmentInr,
       tariffPerKwh,
     });
-  }, [annualBillInr, annualSavingsInr, annualGenKwh, netInvestmentInr, tariffPerKwh]);
+  }, [
+    annualBillInr,
+    annualSavingsInr,
+    annualGenKwh,
+    netInvestmentInr,
+    tariffPerKwh,
+    projectionOverride,
+  ]);
 
   const activePoint = dataPoints.find((p) => p.year === hoveredYear) || dataPoints[24];
 
@@ -105,11 +121,13 @@ export function WealthCurveVisualizer({
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-[#F57C00]" />
             <h4 className="text-[14px] font-medium tracking-wide uppercase text-[#E5E7EB]">
-              25-Year Cumulative Cash Flow
+              25-Year Cumulative Cash Flow (
+              {paymentMode === "loan" ? "Financed Loan Mode" : "Cash Purchase Mode"})
             </h4>
           </div>
           <p className="text-[12px] text-[#9CA3AF] mt-1">
-            Sourced TGERC tariff escalation (3.0% YoY) vs. Solar asset generation
+            {authorityLabel} tariff escalation assumption (3.0% YoY) · 0.40%/yr linear module
+            degradation
           </p>
         </div>
 
@@ -290,7 +308,10 @@ export function WealthCurveVisualizer({
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2 text-[#FFFFFF]">
             <span className="w-3 h-0.5 bg-[#FFFFFF]" />
-            <span>Net Cumulative Cash Flow</span>
+            <span>
+              Net Cumulative Cash Flow (
+              {paymentMode === "loan" ? "After Loan Interest" : "Cash Basis"})
+            </span>
           </div>
           <div className="flex items-center gap-2 text-[#9CA3AF]">
             <span className="w-3 h-0.5 bg-[#6B7280] border-t border-dashed" />
