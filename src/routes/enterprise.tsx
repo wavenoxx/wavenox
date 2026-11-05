@@ -246,7 +246,7 @@ function EnterprisePage() {
               </Button>
             </>
           }
-          disclaimer="*Depreciation deductions under Section 33 of the Income-tax Act, 2025 (formerly Section 32) depend on applicable 2026 block rules and corporate tax regime. Illustrative — consult your Chartered Accountant."
+          disclaimer="*Depreciation deductions under Section 33 of the Income-tax Act, 2025 and Notified Income-tax Rules, 2026 (formerly Section 32) depend on applicable 2026 block rules and corporate tax regime. Illustrative — consult your Chartered Accountant."
         />
 
         {/* 2. PANEL: commercial-industrial */}
@@ -458,10 +458,11 @@ function EnterprisePage() {
             {/* Statutory Disclaimer & Source Link */}
             <div className="text-center pt-1 border-t border-[#E3E4E6]/60">
               <p className="text-[12px] text-[#5C5E62]">
-                *Illustrative figures under Section 33 of the Income-tax Act, 2025 (succeeding
-                Section 32 of the 1961 Act). Applicable 2026 depreciation block rates, commissioning
-                windows, and corporate tax benefits depend on your entity&apos;s tax regime and
-                profit profile — consult your Chartered Accountant.
+                *Illustrative figures under Section 33 of the Income-tax Act, 2025 and Notified
+                Income-tax Rules, 2026 (succeeding Section 32 of the 1961 Act). Applicable 2026
+                depreciation block rates, commissioning windows, and corporate tax benefits depend
+                on your entity&apos;s tax regime and profit profile — consult your Chartered
+                Accountant.
               </p>
               <Link
                 to="/legal/disclosures"

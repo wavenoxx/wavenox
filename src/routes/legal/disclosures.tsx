@@ -103,10 +103,15 @@ function DisclosuresPage() {
             <ul className="list-disc pl-5 space-y-2 text-[#5C5E62]">
               <li>
                 <strong className="text-[#171A20]">
-                  Regional Specific Yield ({SOLAR_ASSUMPTIONS.yieldKwhPerKwYear} kWh/kWp/year):
+                  Regional Specific Yield ({SOLAR_ASSUMPTIONS.yieldKwhPerKwYear} kWh/kWp/year —
+                  Indicative Engineering Model Assumption):
                 </strong>{" "}
-                Calibrated for Central and Southern Indian solar insolation (approx. 4.0–4.5 peak
-                sun hours per day) using BIS and MNRE solar radiation atlases.
+                Derived from verified NASA POWER 22-year climatology (GHI &amp; ambient temperature)
+                combined with an NREL PVWatts v8 standard 14.08% system loss derate factor (soiling,
+                inverter, wiring, mismatch, and availability). While the underlying meteorological
+                dataset is verified, the modeled kWh/kWp/year yield is classified as{" "}
+                <code>INDICATIVE</code> because actual output depends on site shading, tilt, and
+                azimuth.
               </li>
               <li>
                 <strong className="text-[#171A20]">N-Type TOPCon Efficiency:</strong> Our models
@@ -133,28 +138,46 @@ function DisclosuresPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-[#5C5E62]">
               <li>
-                <strong className="text-[#171A20]">Monthly Unit-for-Unit Netting:</strong> In
-                Telangana (TGERC regulations), exported solar units offset imported electricity
-                units 1:1 within the monthly billing period at the consumer&apos;s full retail slab
-                tariff.
+                <strong className="text-[#171A20]">
+                  Separate Self-Consumption, 1:1 Net-Metered Offset, and True Surplus:
+                </strong>{" "}
+                For every billing cycle, total solar generation (<code>annualGenKwh</code>) is
+                partitioned without double-counting into: (1) direct behind-the-meter
+                self-consumption (<code>selfConsumedKwh</code>, modeled at 70% for solar-only and
+                90% with hybrid storage, capped at total consumption), (2) qualifying 1:1
+                net-metered export offsets (
+                <code>netMeteredOffsetKwh = min(exportedKwh, importedKwh)</code>), and (3) true net
+                annual surplus (<code>netAnnualSurplusKwh = exportedKwh - netMeteredOffsetKwh</code>
+                ).
               </li>
               <li>
-                <strong className="text-[#171A20]">Year-End Settlement:</strong> Unsettled net
-                surplus credits at the conclusion of the annual settlement cycle (typically March
-                31st) are compensated at the DISCOM&apos;s Average Pooled Purchase Cost (APPC) rate
-                notified by TGERC (currently ₹3.55/kWh for TGSPDCL/TGNPDCL).
+                <strong className="text-[#171A20]">
+                  Regulator-Grounded Slab Settlement (TGERC &amp; APERC):
+                </strong>{" "}
+                Self-consumed and 1:1 net-metered offset units reduce billed grid consumption from
+                gross monthly units to residual net imported units (
+                <code>residualGridImportKwh</code>). Bill savings equal the avoided retail slab and
+                electricity duty charges while retaining unavoidable monthly fixed and customer
+                charges.
+              </li>
+              <li>
+                <strong className="text-[#171A20]">Year-End True Surplus Settlement (APPC):</strong>{" "}
+                Only net surplus exported units exceeding annual grid imports (
+                <code>netAnnualSurplusKwh</code>) are valued at the DISCOM&apos;s Average Pooled
+                Purchase Cost (APPC) export rate notified by the state commission (currently
+                ₹3.55/kWh for TGERC and ₹3.52/kWh for APERC).
               </li>
               <li>
                 <strong className="text-[#171A20]">Battery Value Proposition:</strong> For
                 grid-connected residential consumers under domestic net-metering without Time-of-Day
-                (ToD) tariffs, an energy storage battery does not increase monetary utility savings;
-                its primary engineering purpose is uninterruptible backup resilience during power
-                outages.
+                (ToD) tariffs, an energy storage battery (15.0 kWh nominal / 14.3 kWh usable
+                LiFePO4) shifts daytime export into evening self-consumption and provides sub-20ms
+                backup resilience during power outages.
               </li>
               <li>
-                <strong className="text-[#171A20]">Savings Cap:</strong> In all our algorithmic
-                estimators, annual modeled solar savings are mathematically capped so they never
-                exceed 100% of the customer&apos;s baseline annual electricity bill.
+                <strong className="text-[#171A20]">Savings Cap:</strong> Avoided bill savings never
+                exceed the avoidable energy portion of the customer&apos;s baseline electricity
+                bill; only true net surplus exports can generate additional APPC settlement credit.
               </li>
             </ul>
           </section>
@@ -287,13 +310,13 @@ function DisclosuresPage() {
               4. Commercial &amp; Industrial Tax Depreciation (Section 33)
             </h2>
             <p>
-              Under Section 33 of the Income-tax Act, 2025 (in force 1 April 2026, succeeding
-              Section 32 of the 1961 Act), commercial and industrial enterprises investing in
-              rooftop solar capital assets can claim Written Down Value (WDV) depreciation
-              deductions (modeled at <strong className="text-[#171A20]">40% WDV in Year 1</strong>{" "}
-              when put to use for 180 days or more in the financial year, or 20% under the half-year
-              rule, subject to applicable 2026 depreciation block rules and corporate tax regime
-              eligibility).
+              Under Section 33 of the Income-tax Act, 2025 and the Notified Income-tax Rules, 2026
+              (in force 1 April 2026, succeeding Section 32 of the 1961 Act), commercial and
+              industrial enterprises investing in rooftop solar capital assets can claim Written
+              Down Value (WDV) depreciation deductions (modeled at{" "}
+              <strong className="text-[#171A20]">40% WDV in Year 1</strong> when put to use for 180
+              days or more in the financial year, or 20% under the half-year rule, subject to
+              applicable 2026 depreciation block rules and corporate tax regime eligibility).
             </p>
             <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-1 text-xs">
               <div className="font-semibold text-[#171A20]">Tax Shield Disclaimer</div>
@@ -301,8 +324,8 @@ function DisclosuresPage() {
                 Tax benefits shown in commercial proposals are illustrative models based on a
                 corporate tax rate of 25.17% (Section 115BAA) or 30% for partnership firms. The
                 actual tax shield realized depends on the company&apos;s taxable profit, tax regime,
-                applicable 2026 block schedule, and asset capitalization date. Clients must consult
-                their Chartered Accountant before financial commitment.
+                Notified Income-tax Rules, 2026 block schedule, and asset capitalization date.
+                Clients must consult their Chartered Accountant before financial commitment.
               </p>
             </div>
           </section>
@@ -344,12 +367,15 @@ function DisclosuresPage() {
                 consumers and RWAs.
               </li>
               <li>
-                <strong className="text-[#171A20]">DBT Disbursement Protocol:</strong> The subsidy
-                is not an upfront vendor discount; it is credited directly via Direct Benefit
-                Transfer (DBT) to the beneficiary&apos;s Aadhaar-linked bank account after DISCOM
-                meter synchronization and portal commissioning approval. MNRE dispatches DBT within
-                ~15 business days of utility approval (consumers should plan for 1–3 months
-                overall).
+                <strong className="text-[#171A20]">
+                  Conditional DBT Disbursement &amp; Cash-Flow Timing:
+                </strong>{" "}
+                Unless customer-specific facts (DCR-compliant solar modules, active grid-connected
+                DISCOM net-metering, and no prior central rooftop solar subsidy) are verified, CFA
+                is modeled as a <strong>conditional potential benefit</strong> (
+                <code>potentialSubsidyInr</code>). It is not an upfront vendor discount and is
+                credited post-commissioning (modeled in Year 1 of the 25-year cash-flow ledger) via
+                Direct Benefit Transfer (DBT) to the beneficiary&apos;s Aadhaar-linked bank account.
               </li>
             </ul>
           </section>
@@ -360,21 +386,36 @@ function DisclosuresPage() {
               6. Indicative Solar Loan & EMI Computations
             </h2>
             <p>
-              Where estimated monthly installments (EMI) are displayed, they are computed using
-              national portal empanelled solar loan terms (e.g. State Bank of India PM Surya Ghar
-              Retail Scheme):
+              Where estimated monthly installments (EMI) are displayed, they are computed as{" "}
+              <strong>Indicative Financing Estimates</strong> using the State Bank of India (SBI) PM
+              Surya Ghar Loan for Solar Roof Top schedule (SBI Green Loans page effective{" "}
+              <strong>15 October 2026</strong>):
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-[#5C5E62]">
               <li>
                 <strong className="text-[#171A20]">Financing Coverage:</strong> Up to 90% of gross
-                turnkey project cost. The EMI principal is computed on this 90% gross capex; the
-                government subsidy is credited separately post-commissioning and can be applied as a
-                principal prepayment.
+                turnkey project cost (10% Year-0 customer margin down payment). The EMI principal is
+                computed on this 90% gross capex; any post-commissioning DBT subsidy is credited in
+                Year 1 and never double-counted against Year-0 down payment.
               </li>
               <li>
-                <strong className="text-[#171A20]">Interest Rates:</strong> Floating EBLR-linked
-                rates: up to ₹2,00,000 at ~5.75% p.a. (collateral-free); ₹2,00,000 to ₹6,00,000 at
-                ~7.90% p.a.
+                <strong className="text-[#171A20]">
+                  Interest Rates (Effective 15 Oct 2026 Schedule):
+                </strong>{" "}
+                Floating EBLR-linked rates: up to ₹2,00,000 (systems ≤ 3 kW) at{" "}
+                <strong className="text-[#171A20]">6.00% p.a.</strong>; above ₹2,00,000 up to
+                ₹6,00,000 (systems &gt; 3 kW up to 10 kW) at{" "}
+                <strong className="text-[#171A20]">8.15% p.a.</strong> (Note: an older SBI personal
+                banking page dated 15 Dec 2025 listed 5.75% / 7.90% p.a.; we model the newer 15 Oct
+                2026 SBI Green Loans schedule and classify all loan outputs as{" "}
+                <code>INDICATIVE</code>).
+              </li>
+              <li>
+                <strong className="text-[#171A20]">Loans Above ₹6,00,000 Cap:</strong> Concessional
+                PM Surya Ghar scheme loans are capped at ₹6,00,000. For financed principals above
+                ₹6,00,000, the calculator applies a{" "}
+                <strong className="text-[#171A20]">9.15% p.a.</strong> indicative non-scheme retail
+                solar loan assumption and flags <code>isSchemeEligible = false</code>.
               </li>
               <li>
                 <strong className="text-[#171A20]">Tenure:</strong> Up to 120 months (10 years); our

@@ -85,15 +85,17 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
   sbiSolarLoan: {
     id: "sbiSolarLoan",
     metric: "PM Surya Ghar Concessional Solar Loan",
-    value: "5.75% p.a. (≤ ₹2L) / 7.90% p.a. (₹2L–₹6L) floating",
+    value: "6.00% p.a. (≤ ₹2L) / 8.15% p.a. (₹2L–₹6L) floating (eff. 15 Oct 2026)",
     formulaOrBasis:
-      "Equal Monthly Installment (EMI) calculated across 5-year (60 month) repayment tenure with 10% borrower margin (90% financing) and nil collateral up to ₹2,00,000",
+      "Equal Monthly Installment (EMI) calculated across 5-year (60 month) repayment tenure with 10% borrower margin (90% financing) and nil collateral up to ₹2,00,000. Above ₹6,00,000 scheme ceiling, an unverified 9.15% p.a. indicative rate is modeled.",
     authority: "State Bank of India (SBI)",
-    sourceDoc: "SBI PM Surya Ghar Scheme Lending Terms & Circular (EBLR-linked)",
-    sourceUrl: "https://sbi.co.in",
+    sourceDoc:
+      "SBI Green Loans — PM Surya Ghar Loan for Solar Roof Top (Effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
+    sourceUrl:
+      "https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top",
     verifiedDate: "Nov 2026",
     notes:
-      "Rates are floating and subject to bank credit underwriting, applicant eligibility, and EBLR revisions.",
+      "Rates are floating (linked to SBI EBLR) and conditional on borrower CIBIL appraisal and bank sanction. Concessional PM Surya Ghar loan ceiling is ₹6,00,000.",
   },
   section33TaxDepreciation: {
     id: "section33TaxDepreciation",
@@ -102,7 +104,7 @@ export const SOURCES_CATALOG: Record<string, SourcedDatum> = {
     formulaOrBasis:
       "40% WDV deduction when commissioned and put to use ≥ 180 days in the financial year (20% if < 180 days); tax shield = Depreciation Deduction × Effective Corporate Tax Rate",
     authority: "Central Board of Direct Taxes (CBDT), Ministry of Finance",
-    sourceDoc: "Income-tax Act, 2025 (Section 33) & Income-tax Rules, 2026",
+    sourceDoc: "Income-tax Act, 2025 (Section 33) & Notified Income-tax Rules, 2026",
     sourceUrl: "https://www.incometaxindia.gov.in",
     verifiedDate: "Nov 2026",
     notes:

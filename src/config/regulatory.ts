@@ -111,14 +111,23 @@ export interface SubsidyOptions {
   isGridConnected?: boolean;
   hasPriorSubsidy?: boolean;
   dcrCompliant?: boolean;
+  ownershipConfirmed?: boolean;
+  portalApproved?: boolean;
+  subsidyReceived?: boolean;
+  subsidyDisbursed?: boolean;
 }
 
 export type SubsidyEligibilityStatus =
-  "POTENTIALLY_ELIGIBLE" | "INELIGIBLE" | "REQUIRES_VERIFICATION";
+  "POTENTIALLY_ELIGIBLE" | "CONFIRMED_ELIGIBLE" | "INELIGIBLE" | "REQUIRES_VERIFICATION";
 
 export interface SubsidyAssessment {
   eligibilityStatus: SubsidyEligibilityStatus;
+  potentialSubsidyInr: number;
+  confirmedEligibleSubsidyInr: number;
+  receivedSubsidyInr: number;
   indicativeSubsidyInr: number;
+  isConditional: boolean;
+  unverifiedCustomerFacts: string[];
   eligibleSolarKw: number;
   isSpecialCategoryState: boolean;
   schemeName: string;
@@ -145,7 +154,7 @@ export function calculateGovtSubsidyInr(kw: number, options: SubsidyOptions = {}
   const segment = options.segment ?? "residential";
   if (segment === "commercial") return 0;
   if (options.isGridConnected === false || options.hasPriorSubsidy === true) return 0;
-  if (options.dcrCompliant === false) return 0;
+  if (options.dcrCompliant === false || options.ownershipConfirmed === false) return 0;
   if (!Number.isFinite(kw) || kw <= 0) return 0;
 
   if (segment === "rwa") {
@@ -173,8 +182,11 @@ export function calculateGovtSubsidyInr(kw: number, options: SubsidyOptions = {}
 }
 
 /**
- * Structured subsidy eligibility evaluator (Phase D).
- * Explicitly separates eligibility status, statutory conditions, and DBT timing.
+ * Structured subsidy eligibility evaluator (Phase D / P1-D).
+ * Explicitly separates:
+ * - Potential subsidy (statutory formula if all scheme requirements are satisfied)
+ * - Confirmed eligibility (requires explicit confirmation of grid connection, DCR modules, ownership, and no prior subsidy)
+ * - Actual received subsidy (0 until post-commissioning DBT disbursement is confirmed)
  */
 export function evaluateSubsidyEligibility(
   solarKw: number,
@@ -186,91 +198,109 @@ export function evaluateSubsidyEligibility(
 
   const baseConditions = [
     "Requires ALMM List-I & DCR-compliant solar modules with domestically manufactured solar cells.",
+    "Consumer must hold an active residential DISCOM electricity connection and roof ownership/NOC rights.",
     "Consumer must register on pmsuryaghar.gov.in and link an Aadhaar-seeded bank account.",
     "Subsidy is disbursed via Direct Benefit Transfer (DBT) post-DISCOM net-meter commissioning, never deducted upfront from the installer invoice.",
     "Standalone LiFePO4 battery storage capex is excluded from central subsidy calculation.",
   ];
 
+  const makeIneligible = (reason: string): SubsidyAssessment => ({
+    eligibilityStatus: "INELIGIBLE",
+    potentialSubsidyInr: 0,
+    confirmedEligibleSubsidyInr: 0,
+    receivedSubsidyInr: 0,
+    indicativeSubsidyInr: 0,
+    isConditional: false,
+    unverifiedCustomerFacts: [],
+    eligibleSolarKw: 0,
+    isSpecialCategoryState: isSpecial,
+    schemeName: "PM Surya Ghar: Muft Bijli Yojana",
+    disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
+    conditions: baseConditions,
+    ineligibilityReason: reason,
+    source: PM_SURYA_GHAR_SOURCE,
+  });
+
   if (segment === "commercial") {
-    return {
-      eligibilityStatus: "INELIGIBLE",
-      indicativeSubsidyInr: 0,
-      eligibleSolarKw: 0,
-      isSpecialCategoryState: isSpecial,
-      schemeName: "PM Surya Ghar: Muft Bijli Yojana",
-      disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
-      conditions: baseConditions,
-      ineligibilityReason:
-        "Commercial and industrial connections are ineligible for residential PM Surya Ghar Central Financial Assistance.",
-      source: PM_SURYA_GHAR_SOURCE,
-    };
+    return makeIneligible(
+      "Commercial and industrial connections are ineligible for residential PM Surya Ghar Central Financial Assistance.",
+    );
   }
 
   if (options.isGridConnected === false) {
-    return {
-      eligibilityStatus: "INELIGIBLE",
-      indicativeSubsidyInr: 0,
-      eligibleSolarKw: 0,
-      isSpecialCategoryState: isSpecial,
-      schemeName: "PM Surya Ghar: Muft Bijli Yojana",
-      disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
-      conditions: baseConditions,
-      ineligibilityReason:
-        "Off-grid solar installations without DISCOM net metering are ineligible.",
-      source: PM_SURYA_GHAR_SOURCE,
-    };
+    return makeIneligible(
+      "Off-grid solar installations without DISCOM net metering are ineligible.",
+    );
   }
 
   if (options.hasPriorSubsidy === true) {
-    return {
-      eligibilityStatus: "INELIGIBLE",
-      indicativeSubsidyInr: 0,
-      eligibleSolarKw: 0,
-      isSpecialCategoryState: isSpecial,
-      schemeName: "PM Surya Ghar: Muft Bijli Yojana",
-      disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
-      conditions: baseConditions,
-      ineligibilityReason:
-        "Residential connections that have already availed central rooftop solar subsidy are ineligible for a repeat claim.",
-      source: PM_SURYA_GHAR_SOURCE,
-    };
+    return makeIneligible(
+      "Residential connections that have already availed central rooftop solar subsidy are ineligible for a repeat claim.",
+    );
   }
 
   if (options.dcrCompliant === false) {
-    return {
-      eligibilityStatus: "INELIGIBLE",
-      indicativeSubsidyInr: 0,
-      eligibleSolarKw: 0,
-      isSpecialCategoryState: isSpecial,
-      schemeName: "PM Surya Ghar: Muft Bijli Yojana",
-      disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
-      conditions: baseConditions,
-      ineligibilityReason:
-        "Non-DCR (imported cell) solar modules are ineligible for PM Surya Ghar central subsidy.",
-      source: PM_SURYA_GHAR_SOURCE,
-    };
+    return makeIneligible(
+      "Non-DCR (imported cell) solar modules are ineligible for PM Surya Ghar central subsidy.",
+    );
+  }
+
+  if (options.ownershipConfirmed === false) {
+    return makeIneligible(
+      "Installations without verified roof ownership or legal right-to-install authorization are ineligible.",
+    );
   }
 
   if (!Number.isFinite(solarKw) || solarKw <= 0) {
-    return {
-      eligibilityStatus: "INELIGIBLE",
-      indicativeSubsidyInr: 0,
-      eligibleSolarKw: 0,
-      isSpecialCategoryState: isSpecial,
-      schemeName: "PM Surya Ghar: Muft Bijli Yojana",
-      disbursementMode: CFA_SUBSIDY_CONFIG.disbursementMethod,
-      conditions: baseConditions,
-      ineligibilityReason: "Valid positive solar DC capacity (kWp) is required.",
-      source: PM_SURYA_GHAR_SOURCE,
-    };
+    return makeIneligible("Valid positive solar DC capacity (kWp) is required.");
   }
 
-  const indicativeSubsidyInr = calculateGovtSubsidyInr(solarKw, options);
+  const potentialSubsidyInr = calculateGovtSubsidyInr(solarKw, options);
+
+  const unverifiedCustomerFacts: string[] = [];
+  if (options.isGridConnected !== true) {
+    unverifiedCustomerFacts.push("Active residential DISCOM grid connection in applicant's name");
+  }
+  if (options.ownershipConfirmed !== true) {
+    unverifiedCustomerFacts.push("Roof ownership rights or registered landlord NOC");
+  }
+  if (options.hasPriorSubsidy !== false) {
+    unverifiedCustomerFacts.push("No prior PM Surya Ghar central rooftop solar subsidy claimed");
+  }
+  if (options.dcrCompliant !== true) {
+    unverifiedCustomerFacts.push(
+      "ALMM List-I & DCR domestic solar cell module serial verification",
+    );
+  }
+  if (options.portalApproved !== true) {
+    unverifiedCustomerFacts.push(
+      "National Portal feasibility sanction & DISCOM net-meter commissioning inspection",
+    );
+  }
+
+  const allEligibilityConfirmed =
+    options.isGridConnected === true &&
+    options.hasPriorSubsidy === false &&
+    options.dcrCompliant === true;
+
+  const confirmedEligibleSubsidyInr = allEligibilityConfirmed ? potentialSubsidyInr : 0;
+  const receivedSubsidyInr =
+    allEligibilityConfirmed &&
+    options.portalApproved !== false &&
+    (options.subsidyReceived === true || options.subsidyDisbursed === true)
+      ? confirmedEligibleSubsidyInr
+      : 0;
+  const isConditional = !allEligibilityConfirmed;
 
   if (solarKw < 1) {
     return {
       eligibilityStatus: "REQUIRES_VERIFICATION",
-      indicativeSubsidyInr,
+      potentialSubsidyInr,
+      confirmedEligibleSubsidyInr: 0,
+      receivedSubsidyInr: 0,
+      indicativeSubsidyInr: potentialSubsidyInr,
+      isConditional: true,
+      unverifiedCustomerFacts,
       eligibleSolarKw: solarKw,
       isSpecialCategoryState: isSpecial,
       schemeName: "PM Surya Ghar: Muft Bijli Yojana",
@@ -286,7 +316,12 @@ export function evaluateSubsidyEligibility(
   if (segment === "residential" && solarKw > 10) {
     return {
       eligibilityStatus: "REQUIRES_VERIFICATION",
-      indicativeSubsidyInr,
+      potentialSubsidyInr,
+      confirmedEligibleSubsidyInr: 0,
+      receivedSubsidyInr: 0,
+      indicativeSubsidyInr: potentialSubsidyInr,
+      isConditional: true,
+      unverifiedCustomerFacts,
       eligibleSolarKw: 3,
       isSpecialCategoryState: isSpecial,
       schemeName: "PM Surya Ghar: Muft Bijli Yojana",
@@ -300,8 +335,13 @@ export function evaluateSubsidyEligibility(
   }
 
   return {
-    eligibilityStatus: "POTENTIALLY_ELIGIBLE",
-    indicativeSubsidyInr,
+    eligibilityStatus: allEligibilityConfirmed ? "CONFIRMED_ELIGIBLE" : "POTENTIALLY_ELIGIBLE",
+    potentialSubsidyInr,
+    confirmedEligibleSubsidyInr,
+    receivedSubsidyInr,
+    indicativeSubsidyInr: potentialSubsidyInr,
+    isConditional,
+    unverifiedCustomerFacts,
     eligibleSolarKw: segment === "rwa" ? Math.min(solarKw, 500) : Math.min(solarKw, 3),
     isSpecialCategoryState: isSpecial,
     schemeName: "PM Surya Ghar: Muft Bijli Yojana",
@@ -1237,18 +1277,21 @@ export const VERIFIED_DISCOMS: Record<string, DiscomRegulatoryInfo> = {
 };
 
 // ----------------------------------------------------------------------------
-// 4. SOLAR YIELD & IRRADIANCE (REGIONAL METEOROLOGY — PHASE B)
+// 4. SOLAR YIELD & IRRADIANCE (REGIONAL METEOROLOGY — PHASE B / P1-E)
 // ----------------------------------------------------------------------------
 export const HYDERABAD_YIELD_SOURCE: DataSource = {
   title:
-    "NASA POWER & NREL PVWatts v8 Meteorological Surface Solar Irradiance (Hyderabad 17.3850° N, 78.4867° E)",
+    "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Yield Model (Hyderabad 17.3850° N, 78.4867° E)",
   url: "https://power.larc.nasa.gov",
   verifiedOn: "2026-11-05",
-  documentRef: "NASA POWER SSE Release 8 / NREL NSRDB PSM v3 (14.08% system loss derate)",
-  authority: "NASA Langley Atmospheric Science Data Center / NREL",
+  documentRef:
+    "NASA POWER SSE Release 8 / NREL PVWatts v8 Standard Loss Model (14.08% composite system loss derate)",
+  authority: "NASA Langley Atmospheric Science Data Center / NREL PVWatts v8 Methodology",
   state: "Telangana",
-  status: "VERIFIED",
+  status: "INDICATIVE",
   category: "ENGINEERING_MODEL_ASSUMPTION",
+  restrictions:
+    "Modeled specific yield for an unshaded south-facing fixed-tilt array using NREL PVWatts v8 default 14.08% system loss derate (2% soiling, 3% shading, 2% mismatch, 2% wiring, 0.5% connections, 1.5% LID, 1% nameplate, 3% availability). Actual output varies with micro-climate and roof orientation.",
 };
 
 /**
@@ -1297,7 +1340,7 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     optimalTiltDeg: 18,
     systemLossDeratePct: 14.08,
     annualKwhPerKw: 1490,
-    status: "VERIFIED",
+    status: "INDICATIVE",
     source: HYDERABAD_YIELD_SOURCE,
     monthlyYield: [...HYDERABAD_MONTHLY_YIELD_KWH_PER_KW],
   },
@@ -1309,15 +1352,16 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     optimalTiltDeg: 18,
     systemLossDeratePct: 14.08,
     annualKwhPerKw: 1460,
-    status: "VERIFIED",
+    status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (Visakhapatnam 17.6868° N, 83.2185° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (Visakhapatnam 17.6868° N, 83.2185° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8 (14.08% system loss derate)",
-      authority: "NASA POWER / NREL PVWatts v8",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Andhra Pradesh",
-      status: "VERIFIED",
+      status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
     },
     monthlyYield: [
@@ -1343,15 +1387,16 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     optimalTiltDeg: 13,
     systemLossDeratePct: 14.08,
     annualKwhPerKw: 1440,
-    status: "VERIFIED",
+    status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (Bengaluru 12.9716° N, 77.5946° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (Bengaluru 12.9716° N, 77.5946° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8 (14.08% system loss derate)",
-      authority: "NASA POWER / NREL PVWatts v8",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Karnataka",
-      status: "VERIFIED",
+      status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
     },
     monthlyYield: [
@@ -1375,15 +1420,16 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     latitude: 19.076,
     longitude: 72.8777,
     optimalTiltDeg: 19,
-    systemLossDeratePct: 14.5,
+    systemLossDeratePct: 14.08,
     annualKwhPerKw: 1450,
     status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (Mumbai 19.0760° N, 72.8777° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (Mumbai 19.0760° N, 72.8777° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8 (Coastal monsoon cloud adjustment)",
-      authority: "NASA POWER",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Maharashtra",
       status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
@@ -1409,15 +1455,16 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     latitude: 28.6139,
     longitude: 77.209,
     optimalTiltDeg: 28,
-    systemLossDeratePct: 15.0,
+    systemLossDeratePct: 14.08,
     annualKwhPerKw: 1420,
     status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (New Delhi 28.6139° N, 77.2090° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (New Delhi 28.6139° N, 77.2090° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8 (Winter fog & aerosol derating)",
-      authority: "NASA POWER",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Delhi-NCR",
       status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
@@ -1443,15 +1490,16 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     latitude: 15.4909,
     longitude: 73.8278,
     optimalTiltDeg: 15,
-    systemLossDeratePct: 14.5,
+    systemLossDeratePct: 14.08,
     annualKwhPerKw: 1430,
     status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (Panaji, Goa 15.4909° N, 73.8278° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (Panaji, Goa 15.4909° N, 73.8278° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8",
-      authority: "NASA POWER",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Goa",
       status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
@@ -1481,11 +1529,12 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
     annualKwhPerKw: 1470,
     status: "INDICATIVE",
     source: {
-      title: "NASA POWER Surface Solar Irradiance (Chennai 13.0827° N, 80.2707° E)",
+      title:
+        "Climatological Solar Irradiance & NREL PVWatts v8 Engineering Model (Chennai 13.0827° N, 80.2707° E)",
       url: "https://power.larc.nasa.gov",
       verifiedOn: "2026-11-05",
-      documentRef: "NASA POWER SSE Release 8 (NE monsoon Oct-Dec profile)",
-      authority: "NASA POWER",
+      documentRef: "NASA POWER SSE Release 8 / NREL PVWatts v8 (14.08% system loss derate)",
+      authority: "NASA POWER / NREL PVWatts v8 Methodology",
       state: "Tamil Nadu",
       status: "INDICATIVE",
       category: "ENGINEERING_MODEL_ASSUMPTION",
@@ -1507,12 +1556,34 @@ export const CITY_SOLAR_METEOROLOGY: Record<string, CitySolarYieldProfile> = {
   },
 };
 
+export const UNAVAILABLE_SOLAR_YIELD_PROFILE: CitySolarYieldProfile = {
+  city: "Unsupported Region",
+  state: "Unverified Jurisdiction",
+  latitude: 0,
+  longitude: 0,
+  optimalTiltDeg: 0,
+  systemLossDeratePct: 14.08,
+  annualKwhPerKw: 0,
+  status: "UNAVAILABLE",
+  source: {
+    title: "Unsupported Utility / Unverified Solar Meteorology",
+    url: "https://wavenox.in/service-areas",
+    verifiedOn: "2026-11-05",
+    status: "UNAVAILABLE",
+    category: "ENGINEERING_MODEL_ASSUMPTION",
+  },
+  monthlyYield: HYDERABAD_MONTHLY_YIELD_KWH_PER_KW.map((m) => ({ month: m.month, yieldKwh: 0 })),
+};
+
 export function getSolarYieldProfileForDiscom(discomCode?: string): CitySolarYieldProfile {
+  if (!discomCode || !discomCode.trim()) {
+    return CITY_SOLAR_METEOROLOGY.hyderabad;
+  }
   const profile = getDiscomTariffProfile(discomCode);
   if (profile && CITY_SOLAR_METEOROLOGY[profile.cityKey]) {
     return CITY_SOLAR_METEOROLOGY[profile.cityKey];
   }
-  return CITY_SOLAR_METEOROLOGY.hyderabad;
+  return UNAVAILABLE_SOLAR_YIELD_PROFILE;
 }
 
 // ----------------------------------------------------------------------------
@@ -1555,11 +1626,11 @@ export const WIND_SPEED_STANDARDS = {
 // ----------------------------------------------------------------------------
 export const INCOME_TAX_SECTION_33_SOURCE: DataSource = {
   title:
-    "Income-tax Act, 2025 (in force 1 April 2026) — Section 33 Depreciation & Income-tax Rules, 2026",
+    "Income-tax Act, 2025 (in force 1 April 2026) — Section 33 Depreciation & Notified Income-tax Rules, 2026",
   url: "https://incometaxindia.gov.in",
   verifiedOn: "2026-11-05",
   documentRef:
-    "Income-tax Act, 2025 Section 33 (succeeding Section 32 of 1961 Act) & Appendix I Renewable Energy Devices Block",
+    "Income-tax Act, 2025 Section 33 & Notified Income-tax Rules, 2026 (Appendix I — Renewable Energy Devices: Solar Power Generating Systems)",
   authority: "Central Board of Direct Taxes (CBDT), Ministry of Finance",
   consumerCategory: "Commercial & Industrial Assessees",
   financialYear: "FY 2026-27 (Tax Year 2026-27)",
@@ -1567,7 +1638,7 @@ export const INCOME_TAX_SECTION_33_SOURCE: DataSource = {
   status: "VERIFIED",
   category: "OFFICIAL_REGULATORY_FACT",
   restrictions:
-    "Requires asset ownership and active business use. Put-to-use < 180 days restricts Year 1 allowance to 50% of block rate (20% WDV). Actual tax savings require sufficient taxable business income.",
+    "Requires direct capital ownership and active business use. Put-to-use < 180 days restricts Year 1 allowance to 50% of block rate (20% WDV). Actual cash tax savings require sufficient taxable business income and compatible corporate tax regime election.",
 };
 
 /**
@@ -1580,53 +1651,63 @@ export const TAX_DEPRECIATION_CONFIG = {
   sectionName: "Section 33",
   actName: "Income-tax Act, 2025",
   rulesName:
-    "Income-tax Rules, 2026 (Appendix I — Renewable Energy Devices: Solar Power Generating Systems)",
+    "Notified Income-tax Rules, 2026 (Appendix I — Renewable Energy Devices: Solar Power Generating Systems)",
   solarAssetRatePct: 40, // 40% Written Down Value (WDV) for >= 180 days usage
   halfYearRatePct: 20, // 50% of 40% = 20% WDV when put to use < 180 days in financial year
   minDaysForFullRate: 180,
   applicableEntity: "Commercial and Industrial business tax filers with taxable profit",
   disclaimer:
-    "Depreciation under Section 33 is a deduction from taxable business income, not a direct cash rebate. Actual tax savings depend on corporate entity status, applicable 2026 block schedules, taxable profit capacity, and tax regime. Consult your Chartered Accountant.",
+    "Depreciation under Section 33 of the Income-tax Act, 2025 and Notified Income-tax Rules, 2026 is a deduction from taxable business income, not a direct cash rebate. Actual tax savings depend on corporate entity status, applicable 2026 block schedules, taxable profit capacity, and tax regime. Consult your Chartered Accountant.",
   source: INCOME_TAX_SECTION_33_SOURCE,
 };
 
 // ----------------------------------------------------------------------------
-// 7. FINANCING & SBI PM SURYA GHAR SOLAR LOAN (PHASE E)
+// 7. FINANCING & SBI PM SURYA GHAR SOLAR LOAN (PHASE E / P0-C)
 // ----------------------------------------------------------------------------
 export const SBI_SOLAR_LOAN_SOURCE: DataSource = {
-  title: "State Bank of India (SBI) Surya Ghar — Loan for Solar Rooftop Scheme",
-  url: "https://sbi.bank.in",
+  title:
+    "State Bank of India (SBI) Green Loans — PM Surya Ghar Loan for Solar Roof Top (Effective 15 Oct 2026)",
+  url: "https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top",
   verifiedOn: "2026-11-05",
-  documentRef: "SBI PM Surya Ghar Retail Solar Loan Schedule (EBLR-linked floating tiers)",
+  effectiveFrom: "2026-10-15",
+  documentRef:
+    "SBI Green Loans PM Surya Ghar Schedule (6.00% p.a. ≤ ₹2L; 8.15% p.a. > ₹2L–₹6L effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
   authority: "State Bank of India (SBI) / JanSamarth National Portal",
   consumerCategory: "Individual Residential Rooftop Solar Applicants",
   financialYear: "FY 2026-27",
-  status: "VERIFIED",
+  status: "INDICATIVE",
   category: "COMMERCIAL_PRICING_ASSUMPTION",
   restrictions:
-    "Floating interest rates linked to SBI EBLR/Repo rate as of Nov 2026; subject to credit underwriting, CIBIL >= 650 for Tier 2, and 10% minimum borrower margin. Concessional scheme cap is ₹6,00,000.",
+    "Floating EBLR-linked interest rates (6.00% p.a. up to ₹2,00,000 for ≤ 3 kW; 8.15% p.a. for > ₹2,00,000 up to ₹6,00,000 for > 3 kW to 10 kW, effective 15 Oct 2026). Because SBI's older personal-banking page (15 Dec 2025) still displays 5.75% / 7.90% and final sanction depends on borrower CIBIL appraisal and 10% minimum margin, financing estimates are classified as INDICATIVE. Concessional scheme ceiling is ₹6,00,000.",
 };
 
 export const SOLAR_LOAN_TERMS = {
-  provider: "National Portal Empanelled Lenders (e.g. State Bank of India)",
-  asOfDate: "2026-11-05",
+  provider: "State Bank of India (SBI PM Surya Ghar Green Loan Benchmark)",
+  status: "INDICATIVE" as VerificationStatus,
+  asOfDate: "2026-10-15",
+  verifiedOn: "2026-11-05",
   rateType: "Floating (linked to External Benchmark Lending Rate / EBLR)",
   maxFinancingPct: 0.9, // Up to 90% of project cost (10% minimum customer margin)
   minCustomerMarginPct: 0.1,
   tier1: {
     maxAmountInr: 200000,
-    annualInterestRate: 0.0575, // 5.75% p.a. floating up to ₹2,00,000 (up to 3 kW)
+    maxCapacityKw: 3,
+    annualInterestRate: 0.06, // 6.00% p.a. floating up to ₹2,00,000 (≤ 3 kW), effective 2026-10-15
     collateralFree: true,
   },
   tier2: {
     minAmountInr: 200000,
     maxAmountInr: 600000,
-    annualInterestRate: 0.079, // 7.90% p.a. floating for >₹2,00,000 up to ₹6,00,000 (3 kW to 10 kW)
+    maxCapacityKw: 10,
+    annualInterestRate: 0.0815, // 8.15% p.a. floating for >₹2,00,000 up to ₹6,00,000 (>3 kW to 10 kW), effective 2026-10-15
   },
-  aboveCapIndicativeRate: 0.0915, // 9.15% p.a. indicative non-concessional retail solar/home-improvement rate above ₹6,00,000
+  legacyScheduleNote:
+    "Older SBI personal-banking publication dated 2025-12-15 lists 5.75% / 7.90%; WAVENOX uses the newer 2026-10-15 SBI Green Loans schedule (6.00% / 8.15%).",
+  aboveCapIndicativeRate: 0.0915, // 9.15% p.a. unverified indicative modeling rate above the ₹6,00,000 PM Surya Ghar scheme ceiling (not an SBI scheme offer)
   maxTenureMonths: 120, // Up to 10 years
   defaultTenureMonths: 60, // 5 years default model
-  portalLenderDirectoryUrl: "https://pmsuryaghar.gov.in",
+  portalLenderDirectoryUrl:
+    "https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top",
   source: SBI_SOLAR_LOAN_SOURCE,
 };
 

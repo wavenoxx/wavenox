@@ -414,8 +414,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 },
                 {
                   value: `₹${formatInr(subsidyInr)}`,
-                  label: "Surya Ghar Subsidy",
-                  sublabel: "Direct Benefit Transfer",
+                  label: "Potential DBT Subsidy*",
+                  sublabel: "Conditional Post-Commissioning",
                 },
                 {
                   value: `₹${formatInr(calculation.annualSavingsInr)}`,
@@ -425,7 +425,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               ]}
             />
             <p className="text-[12px] text-[#FFFFFF]/60 max-w-xl">
-              *Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning.
+              *Potential subsidy under PM Surya Ghar Muft Bijli Yojana is conditional on residential
+              eligibility, DCR-compliant modules, DISCOM net-meter commissioning, and national
+              portal sanctioning.
             </p>
           </div>
         </div>
@@ -772,17 +774,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
             {/* Financial Breakdown */}
             <div className="p-4 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] space-y-2 text-[13px]">
-              <div className="flex justify-between">
-                <span className="text-[#5C5E62]">
+              <div className="flex justify-between items-baseline">
+                <span className="font-medium text-[#171A20]">
                   Gross Installed System Cost (Solar
                   {selectedBatteryUnits > 0 ? " + Omnigrid LFP" : ""})
                 </span>
-                <span className="font-medium tabular-nums">₹{formatInr(totalGrossInr)}</span>
+                <span className="text-[16px] font-semibold tabular-nums text-[#171A20]">
+                  ₹{formatInr(totalGrossInr)}
+                </span>
               </div>
               <div className="flex justify-between items-center text-[#171A20]">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#5C5E62]">
-                    Post-Commissioning PM Surya Ghar DBT Subsidy*
+                    Potential Post-Commissioning DBT Subsidy (Conditional)*
                   </span>
                   <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
                 </div>
@@ -792,7 +796,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-medium">Effective cost after DBT subsidy</span>
+                  <span className="font-medium">Conditional cost after potential DBT*</span>
                   <SourcePopover
                     sourceId={discom.authority === "APERC" ? "apercTariffs" : "tgercTariffs"}
                     showIconOnly
@@ -807,15 +811,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 <div className="pt-2 mt-2 border-t border-[#E3E4E6] space-y-1.5 text-[12px] text-[#5C5E62]">
                   <div className="flex justify-between">
                     <span>
-                      Customer Margin ({Math.round(calculation.financing.customerMarginPct * 100)}%
-                      Down Payment)
+                      Year 0 Customer Margin (
+                      {Math.round(calculation.financing.customerMarginPct * 100)}% Down Payment)
                     </span>
                     <span className="font-medium tabular-nums text-[#171A20]">
                       ₹{formatInr(calculation.financing.customerDownPaymentInr)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Financed Loan Principal (90%)</span>
+                    <span>Financed Loan Principal (90% of Gross Cost)</span>
                     <span className="font-medium tabular-nums text-[#171A20]">
                       ₹{formatInr(calculation.financing.loanPrincipalInr)}
                     </span>
@@ -835,13 +839,26 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                       ₹{formatInr(calculation.financing.totalInterestInr)}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span>Year 1 Post-Commissioning DBT Credit (Conditional)*</span>
+                    <span className="font-medium tabular-nums text-[#1B5E20]">
+                      +₹{formatInr(calculation.cashFlowLedger.year1SubsidyCreditInr)}
+                    </span>
+                  </div>
+                  {!calculation.financing.isSchemeEligible && (
+                    <div className="text-[12px] text-[#92400E] bg-[#FFF8E1] p-2 rounded border border-[#F59E0B]/30 mt-1">
+                      {calculation.financing.note}
+                    </div>
+                  )}
                 </div>
               )}
 
               <p className="text-[12px] text-[#5C5E62] leading-tight pt-0.5">
-                *Subsidy is not an upfront invoice discount; it is credited via Direct Benefit
-                Transfer (DBT) to your Aadhaar-linked bank account after DISCOM net-meter
-                commissioning. Standalone battery storage is excluded from central subsidy.
+                *Potential DBT subsidy is not an upfront invoice discount; it is conditional on
+                DCR-compliant solar modules, DISCOM bi-directional meter commissioning, and no prior
+                central rooftop solar subsidy, and is credited post-commissioning to your
+                Aadhaar-linked bank account. Standalone battery storage is excluded from central
+                subsidy.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between text-[12px] text-[#5C5E62]">
                 <span>
@@ -1095,7 +1112,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* Sticky Mobile Bottom Bar */}
       <div className="fixed bottom-0 inset-x-0 z-30 bg-[#FFFFFF] border-t border-[#E3E4E6] px-6 py-3 flex sm:hidden items-center justify-between shadow-lg">
         <div>
-          <div className="text-[12px] text-[#5C5E62]">Effective Cost</div>
+          <div className="text-[12px] text-[#5C5E62]">
+            Gross: ₹{formatInr(totalGrossInr)} · Post-DBT*
+          </div>
           <div className="text-[16px] font-semibold tabular-nums text-[#171A20]">
             ₹{formatInr(netPayableInr)}
           </div>

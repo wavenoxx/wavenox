@@ -305,7 +305,7 @@ export function WealthCurveVisualizer({
 
       {/* Legend & Milestone Insight */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-[#23272F] text-[12px]">
-        <div className="flex items-center gap-5">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 text-[#FFFFFF]">
             <span className="w-3 h-0.5 bg-[#FFFFFF]" />
             <span>
@@ -316,6 +316,21 @@ export function WealthCurveVisualizer({
           <div className="flex items-center gap-2 text-[#9CA3AF]">
             <span className="w-3 h-0.5 bg-[#6B7280] border-t border-dashed" />
             <span>Spent on electricity without solar</span>
+          </div>
+          <div className="text-[#9CA3AF]">
+            Yr 0 Outlay:{" "}
+            <span className="text-[#E5E7EB] font-medium">
+              -{formatInr(dataPoints[0]?.initialYear0OutflowInr ?? netInvestmentInr)}
+            </span>
+            {(dataPoints[0]?.subsidyCreditInr ?? 0) > 0 && (
+              <>
+                {" "}
+                · Yr 1 DBT Credit*:{" "}
+                <span className="text-[#E5E7EB] font-medium">
+                  +{formatInr(dataPoints[0].subsidyCreditInr)}
+                </span>
+              </>
+            )}
           </div>
         </div>
 

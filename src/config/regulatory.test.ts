@@ -63,10 +63,35 @@ describe("Category B — PM Surya Ghar CFA Subsidies & Eligibility (Phase D)", (
     expect(calculateGovtSubsidyInr(600, { segment: "rwa" })).toBe(500 * 18000);
   });
 
-  it("evaluates structured subsidy eligibility statuses accurately", () => {
-    const res3kw = evaluateSubsidyEligibility(3, { segment: "residential" });
-    expect(res3kw.eligibilityStatus).toBe("POTENTIALLY_ELIGIBLE");
-    expect(res3kw.indicativeSubsidyInr).toBe(78000);
+  it("evaluates structured subsidy eligibility statuses accurately (potential vs confirmed vs received)", () => {
+    const res3kwUnconfirmed = evaluateSubsidyEligibility(3, { segment: "residential" });
+    expect(res3kwUnconfirmed.eligibilityStatus).toBe("POTENTIALLY_ELIGIBLE");
+    expect(res3kwUnconfirmed.potentialSubsidyInr).toBe(78000);
+    expect(res3kwUnconfirmed.confirmedEligibleSubsidyInr).toBe(0);
+    expect(res3kwUnconfirmed.receivedSubsidyInr).toBe(0);
+    expect(res3kwUnconfirmed.isConditional).toBe(true);
+    expect(res3kwUnconfirmed.unverifiedCustomerFacts.length).toBeGreaterThan(0);
+
+    const res3kwConfirmed = evaluateSubsidyEligibility(3, {
+      segment: "residential",
+      isGridConnected: true,
+      dcrCompliant: true,
+      hasPriorSubsidy: false,
+    });
+    expect(res3kwConfirmed.eligibilityStatus).toBe("CONFIRMED_ELIGIBLE");
+    expect(res3kwConfirmed.potentialSubsidyInr).toBe(78000);
+    expect(res3kwConfirmed.confirmedEligibleSubsidyInr).toBe(78000);
+    expect(res3kwConfirmed.receivedSubsidyInr).toBe(0);
+    expect(res3kwConfirmed.isConditional).toBe(false);
+
+    const res3kwReceived = evaluateSubsidyEligibility(3, {
+      segment: "residential",
+      isGridConnected: true,
+      dcrCompliant: true,
+      hasPriorSubsidy: false,
+      subsidyDisbursed: true,
+    });
+    expect(res3kwReceived.receivedSubsidyInr).toBe(78000);
 
     const resSub1kw = evaluateSubsidyEligibility(0.8, { segment: "residential" });
     expect(resSub1kw.eligibilityStatus).toBe("REQUIRES_VERIFICATION");
@@ -79,6 +104,7 @@ describe("Category B — PM Surya Ghar CFA Subsidies & Eligibility (Phase D)", (
     const comm = evaluateSubsidyEligibility(50, { segment: "commercial" });
     expect(comm.eligibilityStatus).toBe("INELIGIBLE");
     expect(comm.indicativeSubsidyInr).toBe(0);
+    expect(comm.potentialSubsidyInr).toBe(0);
   });
 
   it("handles 0, negative, and NaN inputs safely", () => {
@@ -183,8 +209,8 @@ describe("Category A — State-Specific Tariff & Bill Engine (Phase A)", () => {
   });
 });
 
-describe("Category C — Regional Solar Meteorology & Yield Profiles (Phase B)", () => {
-  it("provides verified/indicative monthly generation curves for all 7 service regions", () => {
+describe("Category C — Regional Solar Meteorology & Yield Profiles (Phase B / P1-E)", () => {
+  it("provides indicative monthly generation curves with consistent 14.08% NREL PVWatts derate across all 7 service regions and UNAVAILABLE for unknown DISCOMs", () => {
     expect(HYDERABAD_ANNUAL_YIELD_KWH_PER_KW).toBe(1490);
     const expectedCities: Record<string, number> = {
       hyderabad: 1490,
@@ -201,6 +227,9 @@ describe("Category C — Regional Solar Meteorology & Yield Profiles (Phase B)",
       expect(profile).toBeDefined();
       expect(profile.monthlyYield).toHaveLength(12);
       expect(profile.annualKwhPerKw).toBe(expectedAnnual);
+      expect(profile.status).toBe("INDICATIVE");
+      expect(profile.source.category).toBe("ENGINEERING_MODEL_ASSUMPTION");
+      expect(profile.systemLossDeratePct).toBe(14.08);
       const sumMonthly = profile.monthlyYield.reduce((a, b) => a + b.yieldKwh, 0);
       expect(sumMonthly).toBe(expectedAnnual);
     }
@@ -208,25 +237,34 @@ describe("Category C — Regional Solar Meteorology & Yield Profiles (Phase B)",
     expect(getSolarYieldProfileForDiscom("TGSPDCL").annualKwhPerKw).toBe(1490);
     expect(getSolarYieldProfileForDiscom("APEPDCL").annualKwhPerKw).toBe(1460);
     expect(getSolarYieldProfileForDiscom("BESCOM").annualKwhPerKw).toBe(1440);
+
+    const unknownYield = getSolarYieldProfileForDiscom("UNKNOWN_BOARD");
+    expect(unknownYield.status).toBe("UNAVAILABLE");
+    expect(unknownYield.annualKwhPerKw).toBe(0);
+    expect(unknownYield.monthlyYield.every((m) => m.yieldKwh === 0)).toBe(true);
   });
 });
 
 describe("Regulatory Engine — Financing, Wind, Depreciation & Physics Invariants", () => {
-  it("implements dated SBI PM Surya Ghar tiered interest rates: 5.75% up to ₹2L, 7.90% up to ₹6L", () => {
-    expect(SOLAR_LOAN_TERMS.asOfDate).toBe("2026-11-05");
-    expect(SOLAR_LOAN_TERMS.tier1.annualInterestRate).toBe(0.0575);
+  it("implements dated SBI Green Loans PM Surya Ghar tiered interest rates effective 2026-10-15: 6.00% up to ₹2L, 8.15% up to ₹6L, 9.15% above-cap", () => {
+    expect(SOLAR_LOAN_TERMS.asOfDate).toBe("2026-10-15");
+    expect(SOLAR_LOAN_TERMS.status).toBe("INDICATIVE");
+    expect(SOLAR_LOAN_TERMS.tier1.annualInterestRate).toBe(0.06);
     expect(SOLAR_LOAN_TERMS.tier1.maxAmountInr).toBe(200000);
-    expect(SOLAR_LOAN_TERMS.tier2.annualInterestRate).toBe(0.079);
+    expect(SOLAR_LOAN_TERMS.tier2.annualInterestRate).toBe(0.0815);
     expect(SOLAR_LOAN_TERMS.tier2.maxAmountInr).toBe(600000);
+    expect(SOLAR_LOAN_TERMS.aboveCapIndicativeRate).toBe(0.0915);
     expect(SOLAR_LOAN_TERMS.maxFinancingPct).toBe(0.9);
   });
 
-  it("maintains IS 875 (Part 3) basic wind speeds and Section 33 tax configuration", () => {
+  it("maintains IS 875 (Part 3) basic wind speeds and Section 33 tax configuration citing Notified Income-tax Rules, 2026", () => {
+    expect(WIND_SPEED_STANDARDS.hyderabad.basicWindSpeedKmh).toBe(158.4);
     expect(WIND_SPEED_STANDARDS.hyderabad.basicWindSpeedMs).toBe(44);
     expect(WIND_SPEED_STANDARDS.visakhapatnam.basicWindSpeedMs).toBe(50);
     expect(TAX_DEPRECIATION_CONFIG.sectionName).toBe("Section 33");
     expect(TAX_DEPRECIATION_CONFIG.actName).toBe("Income-tax Act, 2025");
-    expect(INCOME_TAX_SECTION_33_SOURCE.documentRef).toContain("Section 33");
+    expect(TAX_DEPRECIATION_CONFIG.rulesName).toContain("Notified Income-tax Rules, 2026");
+    expect(INCOME_TAX_SECTION_33_SOURCE.documentRef).toContain("Notified Income-tax Rules, 2026");
   });
 
   it("models negative cumulative cashflow dip before payback year", () => {

@@ -551,7 +551,9 @@ function IndexPage() {
                   <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
                     ₹{formatInr(solarEstimate.subsidyInr)}
                   </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Central DBT Subsidy*</div>
+                  <div className="text-[12px] text-[#5C5E62] mt-0.5">
+                    Potential DBT Subsidy (Conditional)*
+                  </div>
                 </div>
               </div>
 
@@ -561,25 +563,24 @@ function IndexPage() {
                   <strong className="font-medium text-[#171A20]">
                     {formatInr(solarEstimate.annualGenKwh)} kWh/yr
                   </strong>{" "}
-                  ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr)
+                  ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr indicative)
                 </span>
                 <span>
-                  Est. Turnkey Capex:{" "}
+                  Gross Turnkey Capex:{" "}
                   <strong className="font-medium text-[#171A20]">
                     ₹{formatInr(solarEstimate.grossInr)}
                   </strong>{" "}
-                  gross ·{" "}
+                  · Conditional Post-DBT*:{" "}
                   <strong className="font-medium text-[#171A20]">
                     ₹{formatInr(solarEstimate.netInr)}
-                  </strong>{" "}
-                  post-DBT*
+                  </strong>
                 </span>
               </div>
 
               <p className="text-[12px] text-[#5C5E62] text-center">
                 {solarEstimate.status === "VERIFIED"
-                  ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and MNRE PM Surya Ghar central subsidy guidelines.`
-                  : `Modeled on an indicative regional tariff benchmark (₹${solarEstimate.assumptions.tariffInrPerKwh.toFixed(2)}/kWh for ${solarEstimate.assumptions.discom.state}) and MNRE PM Surya Ghar subsidy guidelines.`}{" "}
+                  ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and conditional MNRE PM Surya Ghar central subsidy guidelines.`
+                  : `Modeled on an indicative regional tariff benchmark (₹${solarEstimate.assumptions.tariffInrPerKwh.toFixed(2)}/kWh for ${solarEstimate.assumptions.discom.state}) and conditional MNRE PM Surya Ghar subsidy guidelines.`}{" "}
                 Unavoidable monthly fixed charges (~₹
                 {formatInr(solarEstimate.billBreakdown.unavoidableChargesInr)}/mo) remain payable to
                 your DISCOM.{" "}
