@@ -292,7 +292,7 @@ export function validateRoofFeasibility(
   const hasAvailableRoof =
     typeof availableRoofSqft === "number" &&
     Number.isFinite(availableRoofSqft) &&
-    availableRoofSqft > 0;
+    availableRoofSqft >= 0;
 
   const cleanAvailableSqft = hasAvailableRoof ? Math.round(availableRoofSqft) : null;
   const maxFeasiblePanels =
@@ -310,8 +310,12 @@ export function validateRoofFeasibility(
   const isFeasible =
     cleanAvailableSqft === null ? true : cleanAvailableSqft >= recommendedClearRoofSqft;
   const utilizationPct =
-    cleanAvailableSqft !== null && cleanAvailableSqft > 0
-      ? Math.round((recommendedClearRoofSqft / cleanAvailableSqft) * 100)
+    cleanAvailableSqft !== null
+      ? cleanAvailableSqft > 0
+        ? Math.round((recommendedClearRoofSqft / cleanAvailableSqft) * 100)
+        : safePanels > 0
+          ? 100
+          : 0
       : null;
 
   const warning = !isFeasible
