@@ -35,7 +35,26 @@ try {
   await page
     .locator("#ops-login-password")
     .fill(await readFile(process.env.STEP5_BROWSER_CREDENTIAL_FILE, "utf8"));
+  const signedIn = page.waitForResponse(
+    (response) =>
+      response.request().method() === "POST" &&
+      response.request().postData()?.includes("fixture1@example.invalid"),
+  );
   await page.locator("#ops-login-submit").click();
+  const loginResponse = await signedIn;
+  assert.equal(loginResponse.status(), 200, "Password sign-in transport");
+  assert.ok(
+    (await loginResponse.headersArray()).some(
+      (header) =>
+        header.name.toLowerCase() === "set-cookie" &&
+        header.value.startsWith("wavenox_crm_session="),
+    ),
+    "Successful password sign-in must issue the staff session cookie: " +
+      (
+        await page.locator("#ops-login-error, #ops-permission-denied-banner").allTextContents()
+      ).join(" "),
+  );
+  await page.locator("#ops-tab-leads").waitFor();
   await page.locator("#ops-view-overview").waitFor();
   const session = (await page.context().cookies()).find((c) => c.name === "wavenox_crm_session");
   assert.ok(

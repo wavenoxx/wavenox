@@ -22,6 +22,10 @@ A disposable PostgreSQL 18.6 WASM engine (PGlite) applied the complete migration
 
 The local role fixture signs synthetic JWTs. The native PostgreSQL/Supabase Auth and browser jobs are separate checks. The local WASM server serializes connections, so it verifies stale replay but cannot establish native concurrent transaction locking. The [CI workflow](../.github/workflows/step5-hardening.yml) starts a disposable Supabase stack, applies migrations locally, provisions synthetic identities, checks concurrent writes and runs the DEMO route audit and LIVE browser login. See the [PR checks](https://github.com/wavenoxx/wavenox/pull/9/checks) for results for each pushed revision.
 
+## Hosted evidence
+
+On [98d589c](https://github.com/wavenoxx/wavenox/commit/98d589c78103ac2e39a1f0e410e810dc06838bb4), the [Chromium audit](https://github.com/wavenoxx/wavenox/actions/runs/42258556639/job/128032144145) passed all 17 public routes and the private CRM workflow. The [native Supabase job](https://github.com/wavenoxx/wavenox/actions/runs/42258556639/job/128032144482) applied every migration and passed all eleven integration cases with real Auth, native concurrent PostgreSQL sessions and PostgREST. Its separate LIVE browser check timed out waiting for the post-login dashboard. The follow-up makes the SSR credentials form interactive after React hydration and checks the password response and cookie independently. The [Vercel preview](https://vercel.com/wavenoxxs-projects/wavenox/G4kDssopCZrqeBxZp6hWYxDmZQg1) succeeded for that revision.
+
 ## Release boundary
 
 The historical [preview at f1e7645](https://vercel.com/wavenoxxs-projects/wavenox/GztZgpgz4x86Ku39aooFJap4Wucd) failed. Verify the exact new SHA's GitHub/Vercel status before sign-off. Production requires separately approved database migration, staff provisioning, environment review and release QA. This task authorizes feature-branch preview only.

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useHydrated } from "@tanstack/react-router";
 import {
   ShieldCheck,
   Lock,
@@ -145,6 +145,7 @@ function formatInr(val: number | null | undefined): string {
 type CrmSessionData = Awaited<ReturnType<typeof getCrmSession>>;
 
 function OpsWorkspacePage() {
+  const hydrated = useHydrated();
   const initialSession = Route.useLoaderData() as CrmSessionData;
 
   const [sessionState, setSessionState] = React.useState<CrmSessionData>(initialSession);
@@ -802,6 +803,7 @@ function OpsWorkspacePage() {
               </label>
               <input
                 id="ops-login-email"
+                disabled={!hydrated || isLoggingIn}
                 type="email"
                 required
                 value={loginEmail}
@@ -820,6 +822,7 @@ function OpsWorkspacePage() {
               </label>
               <input
                 id="ops-login-password"
+                disabled={!hydrated || isLoggingIn}
                 type="password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
@@ -831,7 +834,7 @@ function OpsWorkspacePage() {
             <button
               id="ops-login-submit"
               type="submit"
-              disabled={isLoggingIn}
+              disabled={!hydrated || isLoggingIn}
               className="w-full py-2.5 px-4 bg-[#171A20] text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition disabled:opacity-50"
             >
               {isLoggingIn ? "Verifying Staff Session..." : "Sign In to Operations CRM"}
