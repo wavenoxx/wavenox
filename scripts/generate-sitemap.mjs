@@ -41,6 +41,7 @@ ${ROUTES.map(
 const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /order/received
+Disallow: /ops
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;

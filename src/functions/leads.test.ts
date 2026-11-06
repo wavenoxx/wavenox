@@ -478,4 +478,63 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
       expect(isValidReferenceCode("")).toBe(false);
     });
   });
+
+  describe("7. Step 5 Multi-Touch Attribution Persistence & v4->v3 Schema Fallback", () => {
+    it("sanitizes PII from attribution URLs and falls back cleanly from v4 to v3 when Step 5 columns are absent on remote DB", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const payloads: Array<Record<string, unknown>> = [];
+
+      const dbClient: LeadDatabaseClient = {
+        async insertConsultation(payload) {
+          payloads.push(payload);
+          if (payloads.length === 1) {
+            return {
+              data: null,
+              error: {
+                code: "PGRST204",
+                message:
+                  "Could not find the 'first_touch_source' column of 'consultations' in the schema cache",
+              },
+            };
+          }
+          return { data: [{ id: "v3-fallback-ok" }], error: null };
+        },
+      };
+
+      const res = await processLeadSubmission(
+        {
+          ...BASE_VALID_INPUT,
+          utm_source: "google",
+          utm_medium: "cpc",
+          utm_campaign: "hyd_rooftop_q4",
+          landing_url:
+            "https://wavenox.in/deploy?utm_source=google&utm_medium=cpc&phone=9876543210&gclid=EAIaIQobChMI_test",
+          first_touch_source: "instagram",
+          first_touch_medium: "paid_social",
+          first_touch_campaign: "villa_reels",
+          first_touch_landing_path: "/architects?email=secret@example.com",
+          last_touch_source: "google",
+          last_touch_medium: "cpc",
+          last_touch_campaign: "hyd_rooftop_q4",
+          conversion_path: "/deploy?phone=9876543210",
+          attribution_channel: "paid_search",
+          click_id_type: "gclid",
+          click_id_value: "EAIaIQobChMI_test",
+        },
+        { env: { LEAD_MODE: "live" }, dbClient },
+      );
+
+      expect(res.success).toBe(true);
+      expect(payloads).toHaveLength(2);
+      // Attempt 1 (v4) includes sanitized Step 5 columns with PII stripped
+      expect(payloads[0].first_touch_source).toBe("instagram");
+      expect(payloads[0].attribution_channel).toBe("paid_search");
+      expect(payloads[0].landing_url).not.toContain("9876543210");
+      expect(payloads[0].conversion_path).toBe("/deploy");
+      // Attempt 2 (v3 fallback) strips Step 5 columns so insertion succeeds on pre-v4 databases
+      expect("first_touch_source" in payloads[1]).toBe(false);
+      expect(payloads[1].utm_source).toBe("google");
+      expect(payloads[1].landing_url).not.toContain("9876543210");
+    });
+  });
 });

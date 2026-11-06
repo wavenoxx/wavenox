@@ -203,10 +203,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
 
   useEffect(() => {
     initTelemetry();
-  }, []);
+    const unsub = router.subscribe("onResolved", () => {
+      initTelemetry();
+    });
+    return () => {
+      unsub();
+    };
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /order/received
+Disallow: /ops
 
 Sitemap: https://wavenox.in/sitemap.xml
