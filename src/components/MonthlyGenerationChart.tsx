@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Info, BarChart3, Sun, CloudRain } from "lucide-react";
+import { Info, Sun, CloudRain } from "lucide-react";
 import { CITY_SOLAR_METEOROLOGY, type CitySolarYieldProfile } from "@/config/regulatory";
 
 export interface MonthlyGenerationChartProps {
@@ -15,6 +15,12 @@ export function MonthlyGenerationChart({
 }: MonthlyGenerationChartProps) {
   const [selectedCityKey, setSelectedCityKey] = React.useState(initialCity);
   const [activeMonthIdx, setActiveMonthIdx] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (initialCity && CITY_SOLAR_METEOROLOGY[initialCity]) {
+      setSelectedCityKey(initialCity);
+    }
+  }, [initialCity]);
 
   const cityProfile: CitySolarYieldProfile =
     CITY_SOLAR_METEOROLOGY[selectedCityKey] || CITY_SOLAR_METEOROLOGY.hyderabad;
@@ -48,20 +54,21 @@ export function MonthlyGenerationChart({
       {/* Header and City Selector */}
       <div className="p-5 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F4F4F4]/50">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
               NASA POWER &amp; NREL PVWatts v8
             </span>
             <span className="text-[12px] text-[#5C5E62]">
-              {cityProfile.optimalTiltDeg}° Latitude Tilt
+              {cityProfile.optimalTiltDeg}° Latitude Tilt · {cityProfile.systemLossDeratePct}%
+              System Loss Derate
             </span>
           </div>
           <h3 className="text-[16px] sm:text-[18px] font-medium text-[#171A20] leading-snug">
-            Monthly Solar Generation Profile ({systemKw} kW System)
+            Monthly Solar Generation Profile ({systemKw} kW System · {cityProfile.city})
           </h3>
           <p className="text-[12px] text-[#5C5E62] mt-0.5">
-            Sourced meteorological irradiance accounting for local seasonal cloud cover &amp;
-            monsoon cycles.
+            Modeled AC output ({cityProfile.annualKwhPerKw} kWh/kWp/yr) derived from NASA POWER
+            satellite irradiance after inverter, thermal, and soiling derating.
           </p>
         </div>
 
@@ -69,7 +76,7 @@ export function MonthlyGenerationChart({
         <div
           role="radiogroup"
           aria-label="City solar yield profile"
-          className="flex items-center gap-1.5 self-start sm:self-auto bg-[#FFFFFF] border border-[#E3E4E6] p-1 rounded-[6px]"
+          className="flex flex-wrap items-center gap-1 self-start sm:self-auto bg-[#FFFFFF] border border-[#E3E4E6] p-1 rounded-[6px]"
         >
           {Object.entries(CITY_SOLAR_METEOROLOGY).map(([key, prof]) => {
             const isSelected = key === selectedCityKey;

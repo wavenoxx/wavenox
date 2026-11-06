@@ -107,6 +107,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [paymentMode, setPaymentMode] = React.useState<"cash" | "loan">("loan");
   const [estateView, setEstateView] = React.useState<"villa" | "estate">("villa");
   const [showRoofSketcher, setShowRoofSketcher] = React.useState(false);
+  const [sketchedRoofSqft, setSketchedRoofSqft] = React.useState<number | undefined>(undefined);
 
   // Lead Form State
   const [userName, setUserName] = React.useState("");
@@ -132,8 +133,16 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       panels: panelCount,
       batteryUnits: selectedBatteryUnits,
       paymentMode,
+      availableRoofSqft: sketchedRoofSqft,
     });
-  }, [monthlyBill, selectedDiscomCode, panelCount, selectedBatteryUnits, paymentMode]);
+  }, [
+    monthlyBill,
+    selectedDiscomCode,
+    panelCount,
+    selectedBatteryUnits,
+    paymentMode,
+    sketchedRoofSqft,
+  ]);
 
   const systemKw = calculation.systemKw;
   const annualKwh = calculation.annualGenKwh;
@@ -141,8 +150,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const netPayableInr = calculation.netInr;
   const totalGrossInr = calculation.grossInr;
   const monthlyEmiInr = calculation.monthlyEmiInr;
+  const activeTwentyFiveYearWealthInr =
+    paymentMode === "loan" ? calculation.financedNetGain25YearsInr : calculation.netGain25YearsInr;
   const twentyFiveYearWealthInr = calculation.netGain25YearsInr;
-  const twentyFiveYearLakhs = (twentyFiveYearWealthInr / 100000).toFixed(1);
+  const twentyFiveYearLakhs = (activeTwentyFiveYearWealthInr / 100000).toFixed(1);
 
   // Selected battery option
   const battery = React.useMemo(() => {
@@ -194,6 +205,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       paybackYears: calculation.paybackYears,
       annualSavings: calculation.annualSavingsInr,
       twentyFiveYearSavings: twentyFiveYearWealthInr,
+      annualGenKwh: annualKwh,
+      tariffInrPerKwh: calculation.assumptions.tariffInrPerKwh,
+      projection: calculation.projection,
     }),
     [
       userName,
@@ -212,6 +226,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       calculation.paybackYears,
       calculation.annualSavingsInr,
       twentyFiveYearWealthInr,
+      annualKwh,
+      calculation.assumptions.tariffInrPerKwh,
+      calculation.projection,
     ],
   );
 
@@ -292,6 +309,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               paybackYears: calculation.paybackYears,
               annualSavings: calculation.annualSavingsInr,
               twentyFiveYearSavings: twentyFiveYearWealthInr,
+              annualGenKwh: annualKwh,
+              tariffInrPerKwh: calculation.assumptions.tariffInrPerKwh,
+              projection: calculation.projection,
             }),
           );
 
@@ -394,8 +414,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 },
                 {
                   value: `₹${formatInr(subsidyInr)}`,
-                  label: "Surya Ghar Subsidy",
-                  sublabel: "Direct Benefit Transfer",
+                  label: "Potential DBT Subsidy*",
+                  sublabel: "Conditional Post-Commissioning",
                 },
                 {
                   value: `₹${formatInr(calculation.annualSavingsInr)}`,
@@ -405,7 +425,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               ]}
             />
             <p className="text-[12px] text-[#FFFFFF]/60 max-w-xl">
-              *Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning.
+              *Potential subsidy under PM Surya Ghar Muft Bijli Yojana is conditional on residential
+              eligibility, DCR-compliant modules, DISCOM net-meter commissioning, and national
+              portal sanctioning.
             </p>
           </div>
         </div>
@@ -419,9 +441,22 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             </h2>
 
             <div className="space-y-2">
-              <label htmlFor="studio-discom" className="text-[12px] font-medium text-[#5C5E62]">
-                State Electricity Distribution Company (DISCOM)
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="studio-discom" className="text-[12px] font-medium text-[#5C5E62]">
+                  State Electricity Distribution Company (DISCOM)
+                </label>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-[4px] text-[12px] font-medium ${
+                    calculation.status === "VERIFIED"
+                      ? "bg-[#E8F5E9] text-[#1B5E20]"
+                      : "bg-[#FFF8E1] text-[#8D6E00]"
+                  }`}
+                >
+                  {calculation.status === "VERIFIED"
+                    ? `Verified ${discom.authority} Schedule`
+                    : "Indicative Regional Benchmark"}
+                </span>
+              </div>
               <select
                 id="studio-discom"
                 value={selectedDiscomCode}
@@ -430,7 +465,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               >
                 {DISCOMS.map((d) => (
                   <option key={d.code} value={d.code}>
-                    {d.code} — {d.name} ({d.state})
+                    {d.code} — {d.name} ({d.state}) [
+                    {d.status === "VERIFIED" ? "Verified" : "Indicative"}]
                   </option>
                 ))}
               </select>
@@ -479,8 +515,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 ))}
               </div>
               <p className="text-[12px] text-[#5C5E62] pt-1 leading-normal">
-                * Telangana Gruha Jyothi scheme provides eligible households up to 200 free
-                units/month. Calculated using official TGERC FY 2025-26 telescopic tariffs.
+                * {discom.regulatoryNote}
               </p>
               <BillDecoder
                 monthlyBill={monthlyBill}
@@ -533,7 +568,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
             {/* Micro-adjust panel count */}
             <div className="flex items-center justify-between p-3 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4]">
-              <span className="text-[12px] text-[#5C5E62]">Custom Panel Count (550W TOPCon)</span>
+              <span className="text-[12px] text-[#5C5E62]">
+                Custom Panel Count ({SOLAR_ASSUMPTIONS.panelWatt}W TOPCon)
+              </span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -554,6 +591,33 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </button>
               </div>
             </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[12px] text-[#5C5E62]">
+              <span>
+                Physical Module Area:{" "}
+                <strong className="font-medium text-[#171A20]">
+                  {formatInr(calculation.roofFeasibility.moduleFootprintSqft)} sq.ft.
+                </strong>
+              </span>
+              <span>
+                Recommended Shadow-Free Roof:{" "}
+                <strong className="font-medium text-[#171A20]">
+                  ~{formatInr(calculation.roofFeasibility.recommendedClearRoofSqft)} sq.ft.
+                </strong>
+              </span>
+            </div>
+            {!calculation.roofFeasibility.isFeasible && calculation.roofFeasibility.warning && (
+              <div className="p-3 rounded-[4px] bg-[#FFF8E1] border border-[#F59E0B]/40 text-[12px] text-[#92400E] flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#D97706]" />
+                <span>{calculation.roofFeasibility.warning}</span>
+              </div>
+            )}
+            {calculation.sanctionedLoadFeasibility.requiresLoadEnhancement &&
+              calculation.sanctionedLoadFeasibility.warning && (
+                <div className="p-3 rounded-[4px] bg-[#FFF8E1] border border-[#F59E0B]/40 text-[12px] text-[#92400E] flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#D97706]" />
+                  <span>{calculation.sanctionedLoadFeasibility.warning}</span>
+                </div>
+              )}
           </div>
 
           {/* Section 3: Omnigrid Battery Storage */}
@@ -655,7 +719,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               {showRoofSketcher && (
                 <div className="mt-3">
                   <RoofSketcher
-                    onApplyKw={(_kw, panels, _area) => {
+                    onApplyKw={(_kw, panels, area) => {
+                      setSketchedRoofSqft(area);
                       setPanelCount(Math.min(maxResidentialPanels, Math.max(6, panels)));
                       setShowRoofSketcher(false);
                     }}
@@ -716,32 +781,112 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
             {/* Financial Breakdown */}
             <div className="p-4 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] space-y-2 text-[13px]">
-              <div className="flex justify-between">
-                <span className="text-[#5C5E62]">System Equipment & Turnkey Installation</span>
-                <span className="font-medium tabular-nums">₹{formatInr(totalGrossInr)}</span>
+              <div className="flex justify-between items-baseline">
+                <span className="font-medium text-[#171A20]">
+                  Gross Installed System Cost (Solar
+                  {selectedBatteryUnits > 0 ? " + Omnigrid LFP" : ""})
+                </span>
+                <span className="text-[16px] font-semibold tabular-nums text-[#171A20]">
+                  ₹{formatInr(totalGrossInr)}
+                </span>
               </div>
               <div className="flex justify-between items-center text-[#171A20]">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[#5C5E62]">PM Surya Ghar National Subsidy</span>
+                  <span className="text-[#5C5E62]">
+                    Potential Post-Commissioning DBT Subsidy (Conditional)*
+                  </span>
                   <SourcePopover sourceId="pmSuryaGharSubsidy" showIconOnly />
                 </div>
-                <span className="font-medium tabular-nums">-₹{formatInr(subsidyInr)}</span>
+                <span className="font-medium tabular-nums text-[#1B5E20]">
+                  -₹{formatInr(subsidyInr)}
+                </span>
               </div>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between items-baseline text-[14px]">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-medium">Effective cost after subsidy</span>
-                  <SourcePopover sourceId="tgercTariffs" showIconOnly />
+                  <span className="font-medium">Conditional cost after potential DBT*</span>
+                  <SourcePopover
+                    sourceId={discom.authority === "APERC" ? "apercTariffs" : "tgercTariffs"}
+                    showIconOnly
+                  />
                 </div>
                 <span className="text-[18px] font-semibold tabular-nums">
                   ₹{formatInr(netPayableInr)}
                 </span>
               </div>
+
+              {paymentMode === "loan" && (
+                <div className="pt-2 mt-2 border-t border-[#E3E4E6] space-y-1.5 text-[12px] text-[#5C5E62]">
+                  <div className="flex justify-between">
+                    <span>
+                      Year 0 Customer Down Payment (
+                      {Math.round(calculation.financing.customerMarginPct * 100)}% Solar Margin
+                      {selectedBatteryUnits > 0 ? " + Battery Outlay" : ""})
+                    </span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ₹{formatInr(calculation.financing.customerDownPaymentInr)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Initial Solar Loan Principal (90% of Solar Cost)</span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ₹{formatInr(calculation.financing.initialLoanPrincipalInr)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      Initial EMI (Months 1–{calculation.financing.subsidyCreditMonth} ·{" "}
+                      {calculation.financing.annualInterestRatePct}% p.a. floating)
+                    </span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ~₹{formatInr(calculation.financing.initialMonthlyEmiInr)} / mo
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      Month-{calculation.financing.subsidyCreditMonth} Loan Principal Prepayment via
+                      DBT Subsidy*
+                    </span>
+                    <span className="font-medium tabular-nums text-[#1B5E20]">
+                      -₹{formatInr(calculation.financing.subsidyCreditedToLoanInr)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>
+                      Post-Subsidy Recast EMI (Months {calculation.financing.subsidyCreditMonth + 1}
+                      –{calculation.financing.tenureMonths} · Indicative)
+                    </span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ~₹{formatInr(calculation.financing.postSubsidyMonthlyEmiInr)} / mo
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Total 5-Year Loan Interest Outflow</span>
+                    <span className="font-medium tabular-nums text-[#171A20]">
+                      ₹{formatInr(calculation.financing.totalInterestInr)}
+                    </span>
+                  </div>
+                  {!calculation.financing.isSchemeEligible && (
+                    <div className="text-[12px] text-[#92400E] bg-[#FFF8E1] p-2 rounded border border-[#F59E0B]/30 mt-1">
+                      {calculation.financing.note}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <p className="text-[12px] text-[#5C5E62] leading-tight pt-0.5">
-                *Subsidy is credited via DBT to your bank account post-commissioning (typically
-                within 15–45 days of DISCOM inspection).
+                *Potential DBT subsidy is not an upfront invoice discount; it is conditional on
+                DCR-compliant solar modules, DISCOM bi-directional meter commissioning, and no prior
+                central rooftop solar subsidy. Under SBI PM Surya Ghar loan rules,
+                post-commissioning subsidy is credited directly into the linked SBI loan account to
+                prepay loan principal with zero prepayment penalty (or to your Aadhaar-linked bank
+                account for direct cash purchases). Standalone battery storage is excluded from
+                central subsidy and scheme financing.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex justify-between text-[12px] text-[#5C5E62]">
-                <span>25-Year Est. Net Savings</span>
+                <span>
+                  25-Year Est. Net Savings (
+                  {paymentMode === "loan" ? "Financed Basis" : "Cash Basis"})
+                </span>
                 <span className="font-medium tabular-nums text-[#171A20]">
                   ₹{twentyFiveYearLakhs} Lakhs
                 </span>
@@ -752,7 +897,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   className="inline-flex items-center gap-1.5 text-[12px] text-[#5C5E62] hover:text-[#171A20] transition-colors"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
-                  <span>Source · verified Aug 2026 (TGERC FY 2025-26 &amp; MNRE)</span>
+                  <span>
+                    Source · verified Nov 2026 ({discom.authority}, MNRE &amp; SBI as of{" "}
+                    {calculation.financing.effectiveAsOf})
+                  </span>
                 </a>
               </div>
             </div>
@@ -761,13 +909,29 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
             <WealthCurveVisualizer
               annualBillInr={monthlyBill * 12}
               annualSavingsInr={calculation.annualSavingsInr}
-              netInvestmentInr={netPayableInr}
-              paybackYears={calculation.paybackYears}
+              netInvestmentInr={
+                paymentMode === "loan"
+                  ? netPayableInr + calculation.financing.totalInterestInr
+                  : netPayableInr
+              }
+              paybackYears={
+                paymentMode === "loan" ? calculation.financedPaybackYears : calculation.paybackYears
+              }
               tariffPerKwh={discom.residentialTariffInr}
+              annualGenKwh={annualKwh}
+              paymentMode={paymentMode}
+              projectionOverride={
+                paymentMode === "loan" ? calculation.financedProjection : calculation.projection
+              }
+              authorityLabel={discom.authority}
             />
 
             {/* NASA POWER / PVWatts Monthly Solar Generation Curve */}
-            <MonthlyGenerationChart systemKw={systemKw} className="mt-6" />
+            <MonthlyGenerationChart
+              systemKw={systemKw}
+              initialCity={discom.cityKey}
+              className="mt-6"
+            />
           </div>
 
           {/* Section 6: Proposal Request Form */}
@@ -970,7 +1134,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       {/* Sticky Mobile Bottom Bar */}
       <div className="fixed bottom-0 inset-x-0 z-30 bg-[#FFFFFF] border-t border-[#E3E4E6] px-6 py-3 flex sm:hidden items-center justify-between shadow-lg">
         <div>
-          <div className="text-[12px] text-[#5C5E62]">Effective Cost</div>
+          <div className="text-[12px] text-[#5C5E62]">
+            Gross: ₹{formatInr(totalGrossInr)} · Post-DBT*
+          </div>
           <div className="text-[16px] font-semibold tabular-nums text-[#171A20]">
             ₹{formatInr(netPayableInr)}
           </div>

@@ -12,8 +12,8 @@ This register serves as the authoritative single source of truth and verificatio
 | :------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Scheme**                 | PM Surya Ghar: Muft Bijli Yojana                                                                                                                                            |
 | **Governing Authority**    | Ministry of New and Renewable Energy (MNRE), Government of India                                                                                                            |
-| **CFA Structure**          | • ₹33,000 for 1st kW<br>• ₹33,000 for 2nd kW<br>• ₹12,000 for 3rd kW<br>• Capped at ₹78,000 for residential systems ≥ 3 kW<br>• ₹0 for commercial / industrial segments     |
-| **Special Category**       | ₹36,300/kW for first 2 kW; ₹13,200 for 3rd kW (capped at ₹85,800 for NE states, J&K, Ladakh, HP, Uttarakhand, Lakshadweep, A&N Islands)                                     |
+| **CFA Structure**          | • ₹30,000 for 1st kW<br>• ₹30,000 for 2nd kW<br>• ₹18,000 for 3rd kW<br>• Capped at ₹78,000 for residential systems ≥ 3 kW<br>• ₹0 for commercial / industrial segments     |
+| **Special Category**       | ₹33,000/kW for first 2 kW; ₹19,800 for 3rd kW (capped at ₹85,800 for NE states, J&K, Ladakh, HP, Uttarakhand, Lakshadweep, A&N Islands)                                     |
 | **Disbursement Mode**      | Direct Benefit Transfer (DBT) directly into Aadhaar-seeded consumer bank account following DISCOM commissioning and net-meter testing                                       |
 | **Official Portal**        | [pmsuryaghar.gov.in](https://pmsuryaghar.gov.in)                                                                                                                            |
 | **Operational Guidelines** | MNRE Notification No. 318/61/2024-GCRT (February 2024)                                                                                                                      |
@@ -89,11 +89,11 @@ This register serves as the authoritative single source of truth and verificatio
 
 | Attribute                | Specification                                                                                                                                                                                                                                                                               |
 | :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Statute**              | Income-tax Act, 1961 / Income-tax Act, 2025 (Section 32 / Section 34 Rules)                                                                                                                                                                                                                 |
-| **Eligible Asset Class** | Renewable Energy Devices — Solar Photovoltaic Systems                                                                                                                                                                                                                                       |
+| **Statute**              | Income-tax Act, 1961 (Section 32) / Income-tax Act, 2025 (Section 33 & Notified Income-tax Rules, 2026)                                                                                                                                                                                     |
+| **Eligible Asset Class** | Renewable Energy Devices — Solar Power Generating Systems (Appendix I Block)                                                                                                                                                                                                                 |
 | **Depreciation Rate**    | **40% Written Down Value (WDV)** in Year 1 for commercial & industrial business entities (50% of 40% = 20% if commissioned for < 180 days in the financial year)                                                                                                                            |
-| **Source Reference**     | [Income Tax Department Act & Rules](https://www.incometaxindia.gov.in/documents/d/guest/income_tax_act_2025_as_amended_by_fa_act_2026-pdf) · [TaxGuru Section 34/32 Depreciation Schedule](https://taxguru.in/income-tax/depreciation-income-tax-act-2025-section-34-rates-provisions.html) |
-| **Verification Date**    | August 2026                                                                                                                                                                                                                                                                                 |
+| **Source Reference**     | [Income Tax Department Act & Rules](https://www.incometaxindia.gov.in/documents/d/guest/income_tax_act_2025_as_amended_by_fa_act_2026-pdf)                                                                                                                                                  |
+| **Verification Date**    | November 2026                                                                                                                                                                                                                                                                                |
 
 ---
 
@@ -115,13 +115,13 @@ This register serves as the authoritative single source of truth and verificatio
 | Attribute                 | Specification                                                                                                                              |
 | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | **Financial Institution** | State Bank of India (SBI)                                                                                                                  |
-| **Scheme**                | SBI PM Surya Ghar Solar Loan Scheme                                                                                                        |
-| **Interest Rate**         | **7.00% p.a. floating** (linked to 1-year EBLR concessional green discount)                                                                |
-| **Tenure**                | Up to 60 months (5 years) or 84 months (7 years)                                                                                           |
-| **Collateral**            | Nil tangible collateral required for rooftop installations up to 3 kW capacity                                                             |
-| **Margin Money**          | 10% borrower margin; 90% project cost financed                                                                                             |
-| **Source Reference**      | [SBI Solar Loan Terms](https://sbi.co.in) · [MYR Solar SBI PM Surya Ghar Lending Brief](https://myrsolar.com/sbi-pm-surya-ghar-solar-loan) |
-| **Verification Date**     | August 2026                                                                                                                                |
+| **Scheme**                | SBI Green Loans — PM Surya Ghar Loan for Solar Roof Top                                                                                    |
+| **Interest Rate**         | **6.00% p.a. floating (≤ ₹2,00,000, ≤ 3 kW)** and **8.15% p.a. floating (> ₹2,00,000 to ₹6,00,000, > 3–10 kW)** effective **15 Oct 2026** (older SBI personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025; above ₹6,00,000 scheme ceiling, 9.15% p.a. is modeled as an unverified indicative rate) |
+| **Tenure**                | Up to 60 months (5 years) or 120 months (10 years)                                                                                                                         |
+| **Collateral**            | Nil tangible collateral required for rooftop loans up to ₹2,00,000 (up to 3 kW capacity)                                                                                   |
+| **Margin Money**          | 10% borrower margin; 90% project cost financed                                                                                                                             |
+| **Source Reference**      | [SBI Green Loans — PM Surya Ghar](https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top)                                            |
+| **Verification Date**     | November 2026                                                                                                                                                              |
 
 ---
 

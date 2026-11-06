@@ -94,7 +94,8 @@ async function runAudit() {
       });
 
       console.log(`Auditing ${route.name} (${route.path})...`);
-      const response = await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
+      const response = await page.goto(url, { waitUntil: "load", timeout: 30000 });
+      await page.waitForTimeout(150);
 
       // 1. Status 200
       const status = response ? response.status() : 0;
@@ -201,7 +202,8 @@ async function runAudit() {
     for (const width of [1024, 1440]) {
       const page = await context.newPage();
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE_URL}/`, { waitUntil: "load" });
+      await page.waitForTimeout(200);
 
       const heroStatsWrapped = await page.evaluate(() => {
         const statElements = Array.from(
@@ -224,10 +226,10 @@ async function runAudit() {
     console.log("Verifying Home kW == Studio kW sizing consistency...");
     {
       const homePage = await context.newPage();
-      await homePage.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      await homePage.goto(`${BASE_URL}/`, { waitUntil: "load" });
       // Sizing tier default check or estimate consistency
       const deployPage = await context.newPage();
-      await deployPage.goto(`${BASE_URL}/deploy?bill=12000`, { waitUntil: "networkidle" });
+      await deployPage.goto(`${BASE_URL}/deploy?bill=12000`, { waitUntil: "load" });
 
       const studioKwText = await deployPage
         .locator("text=/\\d+(\\.\\d+)?\\s*kW/")
@@ -245,8 +247,9 @@ async function runAudit() {
     {
       const page = await context.newPage();
       await page.goto(`${BASE_URL}/order/received?ref=WNX-DEMO-ABCDEF`, {
-        waitUntil: "networkidle",
+        waitUntil: "load",
       });
+      await page.waitForTimeout(400);
       const missingSessionBody = await page.textContent("body");
       if (!missingSessionBody.includes("No active submission was found")) {
         failures.push(
@@ -265,7 +268,8 @@ async function runAudit() {
           }),
         );
       });
-      await page.reload({ waitUntil: "networkidle" });
+      await page.reload({ waitUntil: "load" });
+      await page.waitForTimeout(400);
       const staleSessionBody = await page.textContent("body");
       if (!staleSessionBody.includes("No active submission was found")) {
         failures.push(
@@ -279,7 +283,8 @@ async function runAudit() {
     console.log("Verifying explicit demo end-state on /deploy proposal submission...");
     {
       const page = await context.newPage();
-      await page.goto(`${BASE_URL}/deploy`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE_URL}/deploy`, { waitUntil: "load" });
+      await page.waitForTimeout(600);
 
       // Fill form
       await page.fill("#user-name", "Arjun Reddy");
@@ -290,7 +295,7 @@ async function runAudit() {
 
       // Submit
       await page.click('button[type="submit"]');
-      await page.waitForTimeout(1200);
+      await page.waitForTimeout(1400);
 
       // Verify explicit Demo Mode confirmation state
       const confirmationText = await page.textContent("body");
@@ -317,7 +322,8 @@ async function runAudit() {
     {
       const page = await context.newPage();
       await page.setViewportSize({ width: 1440, height: 900 });
-      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE_URL}/`, { waitUntil: "load" });
+      await page.waitForTimeout(600);
 
       // Verify 3 product family links inside #solutions
       const solutionsSection = page.locator("#solutions");
@@ -348,7 +354,7 @@ async function runAudit() {
         failures.push("Homepage hero secondary CTA 'Talk to a Solar Advisor' not visible");
       } else {
         await heroAdvisorBtn.click();
-        await page.waitForTimeout(350);
+        await page.waitForTimeout(450);
         const dialogVisible = await page.locator('[role="dialog"]').first().isVisible();
         if (!dialogVisible) {
           failures.push("Clicking 'Talk to a Solar Advisor' did not open ConsultationDrawer");
@@ -359,13 +365,14 @@ async function runAudit() {
 
       // Verify Mobile Menu Open / Drill-Down / Escape Close at 390x844
       await page.setViewportSize({ width: 390, height: 844 });
-      await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE_URL}/`, { waitUntil: "load" });
+      await page.waitForTimeout(600);
       const menuBtn = page.locator('header button:has-text("Menu")').first();
       if (!(await menuBtn.isVisible())) {
         failures.push("Mobile 'Menu' button not visible at 390x844");
       } else {
         await menuBtn.click();
-        await page.waitForTimeout(300);
+        await page.waitForTimeout(400);
         const mobileNavVisible = await page
           .locator('[aria-label="Mobile Navigation"]')
           .first()
@@ -393,7 +400,7 @@ async function runAudit() {
       const page = await context.newPage();
       await page.setViewportSize({ width: vp.width, height: vp.height });
       for (const route of ALL_ROUTES) {
-        await page.goto(`${BASE_URL}${route.path}`, { waitUntil: "networkidle", timeout: 30000 });
+        await page.goto(`${BASE_URL}${route.path}`, { waitUntil: "load", timeout: 30000 });
         const overflowPx = await page.evaluate(
           () => document.documentElement.scrollWidth - window.innerWidth,
         );
@@ -403,6 +410,84 @@ async function runAudit() {
           );
         }
       }
+      await page.close();
+    }
+
+    // 14. Step 3 Solar Engineering & Regulatory Intelligence Checks
+    console.log(
+      "Verifying Step 3 Solar Engineering, Tariff Status Badges, and Section 33 Tax Intelligence...",
+    );
+    {
+      const page = await context.newPage();
+      await page.setViewportSize({ width: 1440, height: 900 });
+
+      // Check 14a: Homepage Quick Estimator tariff status badge & switching
+      await page.goto(`${BASE_URL}/`, { waitUntil: "load" });
+      await page.waitForTimeout(600);
+      const homeTextInitial = await page.textContent("#savings");
+      if (!homeTextInitial || !homeTextInitial.includes("Verified TGERC Schedule")) {
+        failures.push(
+          "Homepage #savings did not show 'Verified TGERC Schedule' for default TGSPDCL",
+        );
+      }
+      await page.selectOption("#discom-select", "BESCOM");
+      await page.waitForTimeout(300);
+      const homeTextBescom = await page.textContent("#savings");
+      if (!homeTextBescom || !homeTextBescom.includes("Indicative Regional Benchmark")) {
+        failures.push(
+          "Homepage #savings did not switch to 'Indicative Regional Benchmark' when selecting BESCOM",
+        );
+      }
+
+      // Check 14b: /deploy SystemConfigurator 580W TOPCon, BillDecoder, Conditional Subsidy & SBI 2026-10-15 disclosure
+      await page.goto(`${BASE_URL}/deploy?bill=8000&discom=APEPDCL`, {
+        waitUntil: "load",
+      });
+      await page.waitForTimeout(500);
+      const deployBody = await page.textContent("body");
+      if (!deployBody.includes("580W TOPCon")) {
+        failures.push("/deploy did not render unified 580W TOPCon module label");
+      }
+      if (!deployBody.includes("APERC")) {
+        failures.push("/deploy?discom=APEPDCL did not display APERC verified regulatory source");
+      }
+      if (
+        !deployBody.includes("Potential Post-Commissioning DBT Subsidy (Conditional)*") ||
+        !deployBody.includes("2026-10-15")
+      ) {
+        failures.push(
+          "/deploy is missing conditional DBT subsidy label or 2026-10-15 SBI loan effective date",
+        );
+      }
+
+      // Check 14c: /enterprise Section 33 WDV Depreciation & Notified Income-tax Rules, 2026
+      await page.goto(`${BASE_URL}/enterprise`, { waitUntil: "load" });
+      const enterpriseBody = await page.textContent("body");
+      if (
+        !enterpriseBody.includes("Section 33") ||
+        !enterpriseBody.includes("Notified Income-tax Rules, 2026") ||
+        !enterpriseBody.includes("Year 1 WDV Depreciation Allowance") ||
+        !enterpriseBody.includes("Illustrative Cash Tax Shield")
+      ) {
+        failures.push(
+          "/enterprise is missing Section 33 WDV Depreciation Allowance vs Cash Tax Shield or Notified Income-tax Rules, 2026",
+        );
+      }
+
+      // Check 14d: /legal/disclosures APERC 6-tier schedule, SBI 6.00%/8.15% & Notified Income-tax Rules, 2026
+      await page.goto(`${BASE_URL}/legal/disclosures`, { waitUntil: "load" });
+      const disclosuresBody = await page.textContent("body");
+      if (
+        !disclosuresBody.includes("State DISCOM Tariff Schedules & Verification Status") ||
+        !disclosuresBody.includes("Andhra Pradesh (APERC) LT-I(A) Domestic Telescopic Slabs") ||
+        !disclosuresBody.includes("6.00% p.a.") ||
+        !disclosuresBody.includes("8.15% p.a.")
+      ) {
+        failures.push(
+          "/legal/disclosures is missing DISCOM Verification Matrix, APERC 6-tier schedule, or 6.00% / 8.15% SBI Green Loans rates",
+        );
+      }
+
       await page.close();
     }
   } finally {

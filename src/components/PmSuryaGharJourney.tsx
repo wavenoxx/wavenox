@@ -123,13 +123,13 @@ const DOCUMENT_CHECKLIST = [
 ];
 
 const SUBSIDY_BRACKETS = [
-  { capacity: "1 kW", cfaInr: 33000, description: "Flat ₹33,000 CFA for 1st kW" },
-  { capacity: "2 kW", cfaInr: 66000, description: "₹33,000 for 1st kW + ₹33,000 for 2nd kW" },
-  { capacity: "3 kW", cfaInr: 78000, description: "₹66,000 (first 2 kW) + ₹12,000 (3rd kW)" },
+  { capacity: "1 kW", cfaInr: 30000, description: "Flat ₹30,000 CFA for 1st kW" },
+  { capacity: "2 kW", cfaInr: 60000, description: "₹30,000 for 1st kW + ₹30,000 for 2nd kW" },
+  { capacity: "3 kW", cfaInr: 78000, description: "₹60,000 (first 2 kW) + ₹18,000 (3rd kW)" },
   {
     capacity: "Above 3 kW (up to 10 kW)",
     cfaInr: 78000,
-    description: "Capped at maximum ₹78,000 for residential systems",
+    description: "Capped at maximum ₹78,000 for residential systems (General Category)",
   },
 ];
 
@@ -372,13 +372,14 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
           <div className="p-4 rounded-[6px] bg-[#F4F4F4] border border-[#E3E4E6] text-[12px] text-[#5C5E62] space-y-2 leading-relaxed">
             <p>
               <strong>Special Category States / UTs:</strong> Higher CFA scales apply to Himachal
-              Pradesh, Uttarakhand, Jammu &amp; Kashmir, Ladakh, and North-Eastern States (₹33,000
-              for 1st kW, ₹66,000 for 2nd kW, ₹78,000 for ≥3 kW plus relevant state top-ups).
+              Pradesh, Uttarakhand, Jammu &amp; Kashmir, Ladakh, Lakshadweep, Andaman &amp; Nicobar
+              Islands, and North-Eastern States including Sikkim (₹33,000 for 1st kW, ₹66,000 for 2
+              kW, ₹85,800 cap for ≥3 kW).
             </p>
             <p>
               <strong>Residential Housing Societies (GHS/RWA):</strong> Subsidy of ₹18,000 per kW is
-              available for common facilities (e.g. lifts, water pumping) up to a maximum aggregate
-              capacity of 500 kW.
+              available for common facilities (e.g. lifts, water pumping, EV charging) up to a
+              maximum aggregate capacity of 500 kW. Standalone battery storage is excluded from CFA.
             </p>
           </div>
         </div>

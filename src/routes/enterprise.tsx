@@ -8,7 +8,7 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
-import { HYDERABAD_ANNUAL_YIELD_KWH_PER_KW } from "@/config/regulatory";
+import { calculateCommercialSolarAssessment } from "@/config/solar";
 
 export const Route = createFileRoute("/enterprise")({
   staticData: {
@@ -97,26 +97,35 @@ function EnterprisePage() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  // Calculations: ~100 sq.ft per kWp commercial solar, single sourced yield (1,490 kWh/kWp/yr)
+  // Unified Commercial Assessment Engine (Section 33, Income-tax Act, 2025)
   const capacityKw = React.useMemo(() => Math.round(roofAreaSqFt / 100), [roofAreaSqFt]);
   const capacityMw = React.useMemo(() => (capacityKw / 1000).toFixed(2), [capacityKw]);
-  const annualUnitsKwh = React.useMemo(
-    () => Math.round(capacityKw * HYDERABAD_ANNUAL_YIELD_KWH_PER_KW),
-    [capacityKw],
+  const commercialAssessment = React.useMemo(
+    () =>
+      calculateCommercialSolarAssessment({
+        capacityKw,
+        discomCode: "TGSPDCL",
+        commissioningWindow: commissionedHalf === "H1" ? "H1_FULL_RATE" : "H2_HALF_RATE",
+        corporateTaxRatePct: taxRatePct,
+        hasTaxableProfit: taxRatePct > 0,
+      }),
+    [capacityKw, commissionedHalf, taxRatePct],
   );
+  const annualUnitsKwh = commercialAssessment.annualGenKwh;
   const annualSavingsInr = React.useMemo(
     () => Math.round(annualUnitsKwh * commercialTariff),
     [annualUnitsKwh, commercialTariff],
   );
-  const estCapexInr = React.useMemo(() => Math.round(capacityKw * 42000), [capacityKw]);
-  const depreciationRate = commissionedHalf === "H1" ? 0.4 : 0.2;
-  const year1TaxShieldInr = React.useMemo(
-    () => Math.round(estCapexInr * depreciationRate * (taxRatePct / 100)),
-    [estCapexInr, depreciationRate, taxRatePct],
-  );
+  const estCapexInr = commercialAssessment.grossCapexInr;
+  const year1DepreciationDeductionInr = commercialAssessment.year1DepreciationDeductionInr;
+  const year1TaxShieldInr = commercialAssessment.year1IllustrativeTaxShieldInr;
   const estPaybackYears = React.useMemo(
     () => (estCapexInr / Math.max(1, annualSavingsInr)).toFixed(1),
     [estCapexInr, annualSavingsInr],
+  );
+  const taxAdjustedPaybackYears = React.useMemo(
+    () => (Math.max(0, estCapexInr - year1TaxShieldInr) / Math.max(1, annualSavingsInr)).toFixed(1),
+    [estCapexInr, year1TaxShieldInr, annualSavingsInr],
   );
 
   const handleSubmitRfp = async (e: React.FormEvent) => {
@@ -237,7 +246,7 @@ function EnterprisePage() {
               </Button>
             </>
           }
-          disclaimer="*Depreciation deductions under Section 33 of the Income-tax Act, 2025 (formerly Section 32) depend on applicable 2026 block rules and corporate tax regime. Illustrative — consult your Chartered Accountant."
+          disclaimer="*Depreciation deductions under Section 33 of the Income-tax Act, 2025 and Notified Income-tax Rules, 2026 (formerly Section 32) depend on applicable 2026 block rules and corporate tax regime. Illustrative — consult your Chartered Accountant."
         />
 
         {/* 2. PANEL: commercial-industrial */}
@@ -376,6 +385,7 @@ function EnterprisePage() {
                     <option value={25.17}>25.17% (Sec 115BAA corporate)</option>
                     <option value={30.0}>30.00% (Standard corporate / LLP)</option>
                     <option value={22.0}>22.00% (Base manufacturing)</option>
+                    <option value={0}>0% (No Current Taxable Profit / Tax-Exempt)</option>
                   </select>
                 </div>
               </div>
@@ -386,7 +396,9 @@ function EnterprisePage() {
               <div className="text-[36px] sm:text-[48px] font-medium tracking-tight tabular-nums text-[#171A20]">
                 ₹{formatInr(annualSavingsInr)}
               </div>
-              <div className="text-[13px] text-[#5C5E62]">Estimated Annual Electricity Savings</div>
+              <div className="text-[13px] text-[#5C5E62]">
+                Estimated Annual Electricity Savings (~{formatInr(annualUnitsKwh)} kWh/yr)
+              </div>
             </div>
 
             {/* Stat Row */}
@@ -396,29 +408,61 @@ function EnterprisePage() {
                   {
                     value: `${capacityMw} MWp`,
                     label: "Plant Capacity",
-                    sublabel: `~${capacityKw} kWp`,
+                    sublabel: `~${capacityKw} kWp · ₹${formatInr(estCapexInr)} Gross Capex`,
                   },
                   {
                     value: `₹${formatInr(year1TaxShieldInr)}`,
-                    label: "Year 1 Tax Shield*",
-                    sublabel: `Sec 33 (${commissionedHalf === "H1" ? "40%" : "20%"} @ ${taxRatePct}%)`,
+                    label: "Illustrative Year 1 Tax Shield*",
+                    sublabel: `Sec 33 (${commissionedHalf === "H1" ? "40%" : "20%"} WDV Deduction: ₹${formatInr(year1DepreciationDeductionInr)})`,
                   },
                   {
                     value: `${estPaybackYears} Yrs`,
-                    label: "Estimated Payback",
-                    sublabel: "Capex Recovery",
+                    label: "Operational Payback",
+                    sublabel:
+                      taxRatePct > 0
+                        ? `~${taxAdjustedPaybackYears} Yrs w/ Illustrative Tax Shield*`
+                        : "Pre-Tax Capex Recovery",
                   },
                 ]}
               />
             </div>
 
+            {/* Section 33 Ledger Summary */}
+            <div className="p-4 rounded-[6px] bg-[#FFFFFF] border border-[#E3E4E6] grid grid-cols-1 sm:grid-cols-3 gap-3 text-[12px]">
+              <div>
+                <div className="text-[#5C5E62]">Year 1 WDV Depreciation Allowance</div>
+                <div className="font-semibold text-[#171A20] tabular-nums mt-0.5">
+                  ₹{formatInr(year1DepreciationDeductionInr)} (
+                  {commercialAssessment.year1DepreciationRatePct}% of Capex)
+                </div>
+                <div className="text-[#5C5E62] mt-0.5">Deduction from taxable income</div>
+              </div>
+              <div>
+                <div className="text-[#5C5E62]">Illustrative Cash Tax Shield ({taxRatePct}%)</div>
+                <div className="font-semibold text-[#171A20] tabular-nums mt-0.5">
+                  ₹{formatInr(year1TaxShieldInr)}
+                </div>
+                <div className="text-[#5C5E62] mt-0.5">
+                  {taxRatePct > 0 ? "Requires taxable profit capacity" : "No immediate tax shield"}
+                </div>
+              </div>
+              <div>
+                <div className="text-[#5C5E62]">Closing Year 1 WDV Block Balance</div>
+                <div className="font-semibold text-[#171A20] tabular-nums mt-0.5">
+                  ₹{formatInr(commercialAssessment.remainingWdvAfterYear1Inr)}
+                </div>
+                <div className="text-[#5C5E62] mt-0.5">Carried forward to Year 2</div>
+              </div>
+            </div>
+
             {/* Statutory Disclaimer & Source Link */}
             <div className="text-center pt-1 border-t border-[#E3E4E6]/60">
               <p className="text-[12px] text-[#5C5E62]">
-                *Illustrative figures under Section 33 of the Income-tax Act, 2025 (succeeding
-                Section 32 of the 1961 Act). Applicable 2026 depreciation block rates, commissioning
-                windows, and corporate tax benefits depend on your entity&apos;s tax regime and
-                profit profile — consult your Chartered Accountant.
+                *Illustrative figures under Section 33 of the Income-tax Act, 2025 and Notified
+                Income-tax Rules, 2026 (succeeding Section 32 of the 1961 Act). Applicable 2026
+                depreciation block rates, commissioning windows, and corporate tax benefits depend
+                on your entity&apos;s tax regime and profit profile — consult your Chartered
+                Accountant.
               </p>
               <Link
                 to="/legal/disclosures"

@@ -214,7 +214,7 @@ export function RoofSketcher({
                       <div
                         key={i}
                         className="w-5 h-8 bg-[#171A20] rounded-[1px] border border-white/20 shadow-2xs"
-                        title="550W Monocrystalline TOPCon"
+                        title={`${PRODUCTS_CONFIG.module.ratedPowerW}W Monocrystalline TOPCon`}
                       />
                     ))}
 
@@ -397,6 +397,11 @@ export function RoofSketcher({
             </button>
             <p className="text-[12px] text-[#5C5E62] text-center mt-2">
               Transfers roof dimensions directly to the design studio calculation engine.
+            </p>
+            <p className="text-[12px] text-[#5C5E62] bg-[#F4F4F4] p-2.5 rounded-[4px] mt-2 leading-relaxed">
+              <strong>Engineering Note:</strong> Satellite roof sketching provides an indicative
+              area estimate (~100 sq.ft./kW including row spacing) and does not replace physical
+              structural load verification, 3D horizon shade analysis, or DISCOM sanction approval.
             </p>
           </div>
         </div>
