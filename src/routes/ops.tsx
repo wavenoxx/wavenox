@@ -510,6 +510,7 @@ function OpsWorkspacePage() {
 
     const res = await addCrmLeadNote({
       data: {
+        expectedVersion: leadDetail.lead.crm_version,
         leadId: leadDetail.lead.id,
         noteBody: staffNoteText.trim(),
       },
@@ -540,6 +541,7 @@ function OpsWorkspacePage() {
 
     const res = await createCrmFollowupTask({
       data: {
+        expectedVersion: leadDetail.lead.crm_version,
         leadId: leadDetail.lead.id,
         assignedStaffId:
           newTaskAssignee || (sessionState.authenticated ? sessionState.staff.id : ""),
@@ -565,6 +567,7 @@ function OpsWorkspacePage() {
   const handleCompleteTask = async (taskId: string, note: string, confirmed: boolean) => {
     const res = await completeCrmFollowupTask({
       data: {
+        expectedVersion: followupQueue?.tasks.find((task) => task.id === taskId)?.lead_version,
         taskId,
         completionNote: note.trim() || "Completed scheduled follow-up action.",
         customerContactConfirmed: confirmed,
@@ -598,6 +601,7 @@ function OpsWorkspacePage() {
 
     const res = await rescheduleCrmFollowupTask({
       data: {
+        expectedVersion: followupQueue?.tasks.find((task) => task.id === taskId)?.lead_version,
         taskId,
         newDueAt: new Date(parsedDue).toISOString(),
         reason: taskRescheduleReason.trim() || "Rescheduled by coordinator",
@@ -658,6 +662,7 @@ function OpsWorkspacePage() {
 
     const res = await logCrmPrivacyRequest({
       data: {
+        expectedVersion: leadDetail.lead.crm_version,
         leadId: leadDetail.lead.id,
         requestType: privReqType,
         status: privReqStatus,
@@ -2549,8 +2554,13 @@ function OpsWorkspacePage() {
                     </div>
                   </div>
                   <div className="text-[11px] text-neutral-600 font-mono pt-1">
-                    DPDP Consent: {leadDetail.lead.consent_given ? "Verified" : "No"} (
-                    {leadDetail.lead.consent_version ?? "N/A"} @{" "}
+                    DPDP Consent:{" "}
+                    {leadDetail.lead.pii_masked
+                      ? "Restricted"
+                      : leadDetail.lead.consent_given
+                        ? "Verified"
+                        : "No"}{" "}
+                    ({leadDetail.lead.consent_version ?? "N/A"} @{" "}
                     {leadDetail.lead.consent_at_ist ?? "Not provided"}) · Retention:{" "}
                     {leadDetail.lead.retention_category}
                   </div>

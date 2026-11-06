@@ -223,6 +223,7 @@ export interface CrmLeadActivityItem {
 export type FollowupUrgency = "overdue" | "due_today" | "upcoming" | "completed" | "cancelled";
 
 export interface CrmFollowupTaskItem {
+  lead_version: number | null;
   id: string;
   lead_id: string;
   lead_reference_code: string;
@@ -272,7 +273,8 @@ export interface CrmRelatedEnquiryItem {
 }
 
 export interface CrmLeadDetailPayload {
-  lead: Omit<CrmLeadRecord, "phone" | "email"> & {
+  lead: Omit<CrmLeadRecord, "phone" | "email" | "consent_given"> & {
+    consent_given: boolean | null;
     phone_display: string;
     email_display: string | null;
     pii_masked: boolean;
@@ -395,6 +397,7 @@ interface DemoCrmStoreState {
   leads: CrmLeadRecord[];
   activities: Array<Omit<CrmLeadActivityItem, "created_at_ist">>;
   tasks: Array<{
+    lead_version?: number;
     id: string;
     lead_id: string;
     assigned_staff_id: string;
@@ -963,10 +966,55 @@ export function registerDemoLeadInCrmStore(input: {
 // ============================================================================
 // STORAGE ADAPTER INTERFACE (Supports Live Supabase DB & Isolated Demo Store)
 // ============================================================================
+type RelatedChange =
+  | {
+      action: "followup_scheduled";
+      assignee: string;
+      due: string;
+      taskType: CrmTaskType;
+      note: string;
+    }
+  | { action: "followup_rescheduled"; taskId: string; assignee: string; due: string; note: string }
+  | { action: "followup_completed"; taskId: string; confirmed: boolean; note: string }
+  | {
+      action: "privacy_request_logged";
+      requestType: CrmPrivacyRequestType;
+      status: CrmPrivacyRequestStatus;
+      note: string;
+    };
+
+type MutationFailure = {
+  ok: false;
+  code: "NOT_FOUND" | "CONFLICT" | "FORBIDDEN" | "DB_ERROR";
+  message: string;
+};
+
+function mutationFailure(result: MutationFailure) {
+  const status = { NOT_FOUND: 404, CONFLICT: 409, FORBIDDEN: 403, DB_ERROR: 500 }[result.code];
+  return { ok: false as const, status, reason: result.code.toLowerCase(), message: result.message };
+}
+const conflict = {
+  ok: false,
+  code: "CONFLICT",
+  message: "The record changed. Refresh and try again.",
+} as const;
+
 export interface CrmStorageAdapter {
   listStaffMembers: () => Promise<CrmStaffMember[]>;
   getAllLeadsRaw: () => Promise<CrmLeadRecord[]>;
   getLeadById: (leadId: string) => Promise<CrmLeadRecord | null>;
+  transitionLeadStage: (input: {
+    leadId: string;
+    expectedVersion: number;
+    newStatus: CrmLeadStatus;
+    actorStaffId: string;
+    actorLabel: string;
+    reason: string | null;
+    qualificationOutcome: CrmQualificationOutcome | null;
+    disqualificationReason: string | null;
+    restoreFromArchive: boolean;
+    nowIso: string;
+  }) => Promise<{ ok: true; lead: CrmLeadRecord; activityId: string } | MutationFailure>;
   updateLeadRecord: (
     leadId: string,
     expectedVersion: number,
@@ -980,52 +1028,18 @@ export interface CrmStorageAdapter {
       after_state?: CrmAuditStateSnapshot | null;
       reason?: string | null;
     },
-  ) => Promise<
-    | { ok: true; lead: CrmLeadRecord }
-    | { ok: false; code: "NOT_FOUND" | "CONFLICT" | "DB_ERROR"; message: string }
-  >;
-  appendLeadActivity: (activity: {
-    lead_id: string;
-    actor_staff_id: string;
-    actor_label: string;
-    action_type: CrmActivityActionType;
-    note_body?: string | null;
-    before_state?: CrmAuditStateSnapshot | null;
-    after_state?: CrmAuditStateSnapshot | null;
-    reason?: string | null;
-  }) => Promise<{ ok: true; id: string } | { ok: false; message: string }>;
+  ) => Promise<{ ok: true; lead: CrmLeadRecord; activityId: string } | MutationFailure>;
   listLeadActivities: (
     leadId: string,
   ) => Promise<Array<Omit<CrmLeadActivityItem, "created_at_ist">>>;
   listFollowupTasks: (leadId?: string) => Promise<DemoCrmStoreState["tasks"]>;
-  createFollowupTask: (task: {
-    lead_id: string;
-    assigned_staff_id: string;
-    created_by_staff_id: string;
-    task_type: CrmTaskType;
-    due_at: string;
-    summary: string;
-  }) => Promise<{ ok: true; taskId: string } | { ok: false; message: string }>;
-  updateFollowupTask: (
-    taskId: string,
-    patch: {
-      status?: CrmTaskStatus;
-      due_at?: string;
-      assigned_staff_id?: string;
-      completed_at?: string | null;
-      completion_note?: string | null;
-    },
-  ) => Promise<
-    { ok: true; task: DemoCrmStoreState["tasks"][number] } | { ok: false; message: string }
-  >;
   listPrivacyRequests: (leadId?: string) => Promise<DemoCrmStoreState["privacyRequests"]>;
-  createPrivacyRequest: (req: {
-    lead_id: string;
-    request_type: CrmPrivacyRequestType;
-    status: CrmPrivacyRequestStatus;
-    responsible_staff_id: string;
-    resolution_summary: string | null;
-  }) => Promise<{ ok: true; id: string } | { ok: false; message: string }>;
+  mutateRelated: (
+    leadId: string,
+    expectedVersion: number,
+    actor: CrmStaffMember,
+    change: RelatedChange,
+  ) => Promise<{ ok: true; id: string } | MutationFailure>;
 }
 
 function recomputeLeadNextFollowup(leadId: string, store: DemoCrmStoreState): string | null {
@@ -1035,15 +1049,14 @@ function recomputeLeadNextFollowup(leadId: string, store: DemoCrmStoreState): st
   return pending[0]?.due_at ?? null;
 }
 
+export interface DemoCrmStorageOptions {
+  onBeforeAuditInsert?: (activity: Omit<CrmLeadActivityItem, "created_at_ist">) => void;
+}
+
 export function createDemoCrmStorageAdapter(
   store: DemoCrmStoreState = demoCrmStore,
+  options?: DemoCrmStorageOptions,
 ): CrmStorageAdapter {
-  let seq = 500;
-  const nextUuid = (prefix: string) => {
-    seq += 1;
-    return `${prefix}-0000-4000-8000-${String(seq).padStart(12, "0")}`;
-  };
-
   return {
     async listStaffMembers() {
       return store.staff.map((s) => ({ ...s }));
@@ -1054,6 +1067,78 @@ export function createDemoCrmStorageAdapter(
     async getLeadById(leadId: string) {
       const found = store.leads.find((l) => l.id === leadId);
       return found ? { ...found } : null;
+    },
+    async transitionLeadStage(input) {
+      const idx = store.leads.findIndex((l) => l.id === input.leadId);
+      if (idx === -1) {
+        return { ok: false, code: "NOT_FOUND", message: "Lead record not found." };
+      }
+      const current = store.leads[idx];
+      if (current.crm_version !== input.expectedVersion) {
+        return {
+          ok: false,
+          code: "CONFLICT",
+          message:
+            "Concurrent modification conflict: this lead was updated by another staff member. Please refresh and try again.",
+        };
+      }
+
+      const nowIso = input.nowIso || new Date().toISOString();
+      const retentionCategory =
+        current.retention_category !== "legal_hold" &&
+        (input.newStatus === "contract_signed" || input.newStatus === "installed")
+          ? "project_lifecycle_25y"
+          : current.retention_category;
+
+      const updated: CrmLeadRecord = {
+        ...current,
+        status: input.newStatus,
+        stage_updated_at: nowIso,
+        last_activity_at: nowIso,
+        last_contacted_at:
+          input.newStatus === "contacted" && !current.last_contacted_at
+            ? nowIso
+            : current.last_contacted_at,
+        qualified_at:
+          input.newStatus === "qualified" && !current.qualified_at ? nowIso : current.qualified_at,
+        qualification_outcome:
+          input.newStatus === "qualified"
+            ? (input.qualificationOutcome ?? "qualified")
+            : (input.qualificationOutcome ?? current.qualification_outcome),
+        disqualification_reason: input.disqualificationReason ?? current.disqualification_reason,
+        retention_category: retentionCategory,
+        crm_version: current.crm_version + 1,
+      };
+
+      const activityRecord: Omit<CrmLeadActivityItem, "created_at_ist"> = {
+        id: crypto.randomUUID(),
+        lead_id: input.leadId,
+        actor_staff_id: input.actorStaffId,
+        actor_label: input.actorLabel,
+        action_type: "stage_changed",
+        note_body: null,
+        before_state: { status: current.status, crm_version: current.crm_version },
+        after_state: { status: input.newStatus, crm_version: updated.crm_version },
+        reason: input.reason ?? null,
+        created_at: nowIso,
+      };
+
+      try {
+        options?.onBeforeAuditInsert?.(activityRecord);
+      } catch (err) {
+        return {
+          ok: false,
+          code: "DB_ERROR",
+          message:
+            err instanceof Error
+              ? err.message
+              : "Audit activity insertion failed; stage transition rolled back.",
+        };
+      }
+
+      store.leads[idx] = updated;
+      store.activities.unshift(activityRecord);
+      return { ok: true, lead: { ...updated }, activityId: activityRecord.id };
     },
     async updateLeadRecord(leadId, expectedVersion, patch, activity) {
       const idx = store.leads.findIndex((l) => l.id === leadId);
@@ -1069,6 +1154,7 @@ export function createDemoCrmStorageAdapter(
             "Concurrent modification conflict: this lead was updated by another staff member. Please refresh and try again.",
         };
       }
+
       const nowIso = new Date().toISOString();
       const updated: CrmLeadRecord = {
         ...current,
@@ -1076,9 +1162,8 @@ export function createDemoCrmStorageAdapter(
         last_activity_at: nowIso,
         crm_version: current.crm_version + 1,
       };
-      store.leads[idx] = updated;
-      store.activities.unshift({
-        id: nextUuid("20000000"),
+      const activityRecord: Omit<CrmLeadActivityItem, "created_at_ist"> = {
+        id: crypto.randomUUID(),
         lead_id: leadId,
         actor_staff_id: activity.actor_staff_id,
         actor_label: activity.actor_label,
@@ -1088,33 +1173,24 @@ export function createDemoCrmStorageAdapter(
         after_state: activity.after_state ?? null,
         reason: activity.reason ?? null,
         created_at: nowIso,
-      });
-      return { ok: true, lead: { ...updated } };
-    },
-    async appendLeadActivity(activity) {
-      const idx = store.leads.findIndex((l) => l.id === activity.lead_id);
-      if (idx === -1) {
-        return { ok: false, message: "Lead record not found." };
-      }
-      const nowIso = new Date().toISOString();
-      const id = nextUuid("20000000");
-      store.activities.unshift({
-        id,
-        lead_id: activity.lead_id,
-        actor_staff_id: activity.actor_staff_id,
-        actor_label: activity.actor_label,
-        action_type: activity.action_type,
-        note_body: activity.note_body ?? null,
-        before_state: activity.before_state ?? null,
-        after_state: activity.after_state ?? null,
-        reason: activity.reason ?? null,
-        created_at: nowIso,
-      });
-      store.leads[idx] = {
-        ...store.leads[idx],
-        last_activity_at: nowIso,
       };
-      return { ok: true, id };
+
+      try {
+        options?.onBeforeAuditInsert?.(activityRecord);
+      } catch (err) {
+        return {
+          ok: false,
+          code: "DB_ERROR",
+          message:
+            err instanceof Error
+              ? err.message
+              : "Audit activity insertion failed; lead update rolled back.",
+        };
+      }
+
+      store.leads[idx] = updated;
+      store.activities.unshift(activityRecord);
+      return { ok: true, lead: { ...updated }, activityId: activityRecord.id };
     },
     async listLeadActivities(leadId: string) {
       return store.activities
@@ -1125,78 +1201,95 @@ export function createDemoCrmStorageAdapter(
       const filtered = leadId ? store.tasks.filter((t) => t.lead_id === leadId) : store.tasks;
       return filtered.map((t) => ({ ...t }));
     },
-    async createFollowupTask(task) {
-      const leadIdx = store.leads.findIndex((l) => l.id === task.lead_id);
-      if (leadIdx === -1) {
-        return { ok: false, message: "Lead record not found." };
-      }
-      const nowIso = new Date().toISOString();
-      const taskId = nextUuid("30000000");
-      store.tasks.push({
-        id: taskId,
-        lead_id: task.lead_id,
-        assigned_staff_id: task.assigned_staff_id,
-        created_by_staff_id: task.created_by_staff_id,
-        task_type: task.task_type,
-        status: "pending",
-        due_at: task.due_at,
-        summary: task.summary,
-        completed_at: null,
-        completion_note: null,
-        created_at: nowIso,
-        updated_at: nowIso,
-      });
-      store.leads[leadIdx].next_followup_at = recomputeLeadNextFollowup(task.lead_id, store);
-      store.leads[leadIdx].last_activity_at = nowIso;
-      return { ok: true, taskId };
-    },
-    async updateFollowupTask(taskId, patch) {
-      const idx = store.tasks.findIndex((t) => t.id === taskId);
-      if (idx === -1) {
-        return { ok: false, message: "Follow-up task not found." };
-      }
-      const nowIso = new Date().toISOString();
-      const updated = {
-        ...store.tasks[idx],
-        ...patch,
-        updated_at: nowIso,
-      };
-      store.tasks[idx] = updated;
-      const leadIdx = store.leads.findIndex((l) => l.id === updated.lead_id);
-      if (leadIdx !== -1) {
-        store.leads[leadIdx].next_followup_at = recomputeLeadNextFollowup(updated.lead_id, store);
-        store.leads[leadIdx].last_activity_at = nowIso;
-      }
-      return { ok: true, task: { ...updated } };
-    },
     async listPrivacyRequests(leadId?: string) {
       const filtered = leadId
         ? store.privacyRequests.filter((r) => r.lead_id === leadId)
         : store.privacyRequests;
       return filtered.map((r) => ({ ...r }));
     },
-    async createPrivacyRequest(req) {
-      const leadIdx = store.leads.findIndex((l) => l.id === req.lead_id);
-      if (leadIdx === -1) {
-        return { ok: false, message: "Lead record not found." };
+    async mutateRelated(leadId, expectedVersion, actor, change) {
+      const lead = store.leads.find((row) => row.id === leadId);
+      if (!lead) return { ok: false, code: "NOT_FOUND", message: "Lead record not found." };
+      if (lead.crm_version !== expectedVersion) return conflict;
+      const prior =
+        "taskId" in change
+          ? store.tasks.find((row) => row.id === change.taskId && row.lead_id === leadId)
+          : undefined;
+      if ("taskId" in change && prior?.status !== "pending") return conflict;
+      const now = new Date().toISOString();
+      const id = prior?.id ?? crypto.randomUUID();
+      const event = {
+        id: crypto.randomUUID(),
+        lead_id: lead.id,
+        actor_staff_id: actor.id,
+        actor_label: actor.full_name,
+        action_type: change.action,
+        created_at: now,
+        note_body: change.note,
+        reason: null,
+        before_state: prior ? { ...prior } : null,
+        after_state: { id, ...change },
+      };
+      try {
+        options?.onBeforeAuditInsert?.(event);
+      } catch {
+        return { ok: false, code: "DB_ERROR", message: "Mandatory audit insertion failed." };
       }
-      const nowIso = new Date().toISOString();
-      const id = nextUuid("40000000");
-      store.privacyRequests.unshift({
-        id,
-        lead_id: req.lead_id,
-        request_type: req.request_type,
-        status: req.status,
-        responsible_staff_id: req.responsible_staff_id,
-        resolution_summary: req.resolution_summary,
-        requested_at: nowIso,
-        resolved_at: req.status === "fulfilled" ? nowIso : null,
-      });
-      if (req.request_type === "consent_withdrawal") {
-        store.leads[leadIdx].consent_withdrawn_at = nowIso;
-        store.leads[leadIdx].do_not_contact = true;
+      switch (change.action) {
+        case "followup_scheduled":
+          store.tasks.push({
+            id,
+            lead_id: lead.id,
+            assigned_staff_id: change.assignee,
+            created_by_staff_id: actor.id,
+            task_type: change.taskType,
+            status: "pending",
+            due_at: change.due,
+            summary: change.note,
+            completed_at: null,
+            completion_note: null,
+            created_at: now,
+            updated_at: now,
+          });
+          break;
+        case "followup_rescheduled":
+          Object.assign(prior!, {
+            due_at: change.due,
+            assigned_staff_id: change.assignee,
+            updated_at: now,
+          });
+          break;
+        case "followup_completed":
+          Object.assign(prior!, {
+            status: "completed",
+            completed_at: now,
+            completion_note: change.note,
+            updated_at: now,
+          });
+          if (change.confirmed) lead.last_contacted_at = now;
+          break;
+        case "privacy_request_logged":
+          store.privacyRequests.unshift({
+            id,
+            lead_id: lead.id,
+            request_type: change.requestType,
+            status: change.status,
+            responsible_staff_id: actor.id,
+            resolution_summary: change.note,
+            requested_at: now,
+            resolved_at: change.status === "fulfilled" ? now : null,
+          });
+          if (change.requestType === "consent_withdrawal") {
+            lead.consent_withdrawn_at ??= now;
+            lead.do_not_contact = true;
+          }
+          break;
       }
-      store.leads[leadIdx].last_activity_at = nowIso;
+      if (change.action !== "privacy_request_logged")
+        lead.next_followup_at = recomputeLeadNextFollowup(leadId, store);
+      lead.last_activity_at = now;
+      lead.crm_version++;
+      store.activities.unshift(event);
       return { ok: true, id };
     },
   };
@@ -1305,6 +1398,46 @@ function normalizeDbRowToLeadRecord(row: Record<string, unknown>): CrmLeadRecord
 }
 
 export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStorageAdapter {
+  async function auditedRpc(name: string, args: Record<string, unknown>) {
+    const { data, error } = await db.rpc(name, args);
+    if (error) {
+      if (error.code === "40001" || error.message === "CONCURRENT_MODIFICATION_CONFLICT")
+        return conflict;
+      if (error.code === "42501")
+        return { ok: false, code: "FORBIDDEN", message: "Staff permission denied." } as const;
+      if (["LEAD_NOT_FOUND", "TASK_NOT_FOUND"].includes(error.message))
+        return { ok: false, code: "NOT_FOUND", message: "Record not found." } as const;
+      return {
+        ok: false,
+        code: "DB_ERROR",
+        message: "Unable to confirm the CRM change. Refresh before retrying.",
+      } as const;
+    }
+    if (!z.string().uuid().safeParse(data?.activity_id).success) {
+      return {
+        ok: false,
+        code: "DB_ERROR",
+        message: "Mandatory audit activity record missing.",
+      } as const;
+    }
+    return {
+      ok: true,
+      data: data as { activity_id: string; lead?: Record<string, unknown>; id?: string },
+    } as const;
+  }
+  async function updateLead(name: string, args: Record<string, unknown>) {
+    const result = await auditedRpc(name, args);
+    if (!result.ok) return result;
+    if (result.data.lead?.id !== args.p_lead_id || !result.data.lead) {
+      return { ok: false, code: "DB_ERROR", message: "Missing updated lead." } as const;
+    }
+    return {
+      ok: true,
+      lead: normalizeDbRowToLeadRecord(result.data.lead),
+      activityId: result.data.activity_id,
+    } as const;
+  }
+
   return {
     async listStaffMembers() {
       const { data, error } = await db
@@ -1312,7 +1445,7 @@ export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStor
         .select("*")
         .order("full_name", { ascending: true });
       if (error) {
-        throw new Error(`CRM staff query failed (${error.code || "DB_ERROR"}): ${error.message}`);
+        throw new Error(`CRM staff query failed (${error.code || "DB_ERROR"})`);
       }
       return (data ?? []) as CrmStaffMember[];
     },
@@ -1323,9 +1456,7 @@ export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStor
         .order("created_at", { ascending: false })
         .limit(1000);
       if (error) {
-        throw new Error(
-          `CRM consultations query failed (${error.code || "DB_ERROR"}): ${error.message}`,
-        );
+        throw new Error(`CRM consultations query failed (${error.code || "DB_ERROR"})`);
       }
       return (data ?? []).map((r) => normalizeDbRowToLeadRecord(r as Record<string, unknown>));
     },
@@ -1335,91 +1466,32 @@ export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStor
         .select("*")
         .eq("id", leadId)
         .maybeSingle();
-      if (error || !data) return null;
+      if (error) throw new Error("CRM lead query failed.");
+      if (!data) return null;
       return normalizeDbRowToLeadRecord(data as Record<string, unknown>);
     },
-    async updateLeadRecord(leadId, expectedVersion, patch, activity) {
-      const nowIso = new Date().toISOString();
-      const { data: updatedRows, error: updateError } = await db
-        .from("consultations")
-        .update({
-          ...patch,
-          last_activity_at: nowIso,
-          crm_version: expectedVersion + 1,
-        })
-        .eq("id", leadId)
-        .eq("crm_version", expectedVersion)
-        .select("*");
-
-      if (updateError) {
-        return {
-          ok: false,
-          code: "DB_ERROR",
-          message: "Database mutation failed. No audit event was recorded.",
-        };
-      }
-      if (!updatedRows || updatedRows.length === 0) {
-        const exists = await this.getLeadById(leadId);
-        if (!exists) {
-          return { ok: false, code: "NOT_FOUND", message: "Lead record not found." };
-        }
-        return {
-          ok: false,
-          code: "CONFLICT",
-          message:
-            "Concurrent modification conflict: this lead was updated by another staff member. Please refresh.",
-        };
-      }
-
-      const { error: actError } = await db.from("crm_lead_activities").insert({
-        lead_id: leadId,
-        actor_staff_id: activity.actor_staff_id,
-        actor_label: activity.actor_label,
-        action_type: activity.action_type,
-        note_body: activity.note_body ?? null,
-        before_state: activity.before_state ?? null,
-        after_state: activity.after_state ?? null,
-        reason: activity.reason ?? null,
-        created_at: nowIso,
+    async transitionLeadStage(input) {
+      return updateLead("crm_transition_lead_stage", {
+        p_lead_id: input.leadId,
+        p_expected_version: input.expectedVersion,
+        p_actor_staff_id: input.actorStaffId,
+        p_new_status: input.newStatus,
+        p_reason: input.reason,
+        p_qualification_outcome: input.qualificationOutcome,
+        p_disqualification_reason: input.disqualificationReason,
+        p_restore_from_archive: input.restoreFromArchive,
       });
-
-      if (actError) {
-        console.error("[CRM] Audit activity insert error:", actError.code, actError.message);
-      }
-
-      return {
-        ok: true,
-        lead: normalizeDbRowToLeadRecord(updatedRows[0] as Record<string, unknown>),
-      };
     },
-    async appendLeadActivity(activity) {
-      const nowIso = new Date().toISOString();
-      const { data, error } = await db
-        .from("crm_lead_activities")
-        .insert({
-          lead_id: activity.lead_id,
-          actor_staff_id: activity.actor_staff_id,
-          actor_label: activity.actor_label,
-          action_type: activity.action_type,
-          note_body: activity.note_body ?? null,
-          before_state: activity.before_state ?? null,
-          after_state: activity.after_state ?? null,
-          reason: activity.reason ?? null,
-          created_at: nowIso,
-        })
-        .select("id")
-        .single();
-
-      if (error || !data) {
-        return { ok: false, message: "Failed to record staff activity." };
-      }
-
-      await db
-        .from("consultations")
-        .update({ last_activity_at: nowIso })
-        .eq("id", activity.lead_id);
-
-      return { ok: true, id: String(data.id) };
+    async updateLeadRecord(leadId, expectedVersion, patch, activity) {
+      return updateLead("crm_atomic_update_lead_with_audit", {
+        p_lead_id: leadId,
+        p_expected_version: expectedVersion,
+        p_patch: patch,
+        p_actor_staff_id: activity.actor_staff_id,
+        p_action_type: activity.action_type,
+        p_note_body: activity.note_body ?? null,
+        p_reason: activity.reason ?? null,
+      });
     },
     async listLeadActivities(leadId: string) {
       const { data, error } = await db
@@ -1427,60 +1499,23 @@ export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStor
         .select("*")
         .eq("lead_id", leadId)
         .order("created_at", { ascending: false });
-      if (error) return [];
+      if (error) throw new Error("CRM records unavailable.");
       return (data ?? []) as Array<Omit<CrmLeadActivityItem, "created_at_ist">>;
     },
     async listFollowupTasks(leadId?: string) {
-      let query = db.from("crm_followup_tasks").select("*").order("due_at", { ascending: true });
+      let query = db
+        .from("crm_followup_tasks")
+        .select("*, consultations!inner(crm_version)")
+        .order("due_at", { ascending: true });
       if (leadId) {
         query = query.eq("lead_id", leadId);
       }
       const { data, error } = await query;
-      if (error) return [];
-      return (data ?? []) as DemoCrmStoreState["tasks"];
-    },
-    async createFollowupTask(task) {
-      const nowIso = new Date().toISOString();
-      const { data, error } = await db
-        .from("crm_followup_tasks")
-        .insert({
-          lead_id: task.lead_id,
-          assigned_staff_id: task.assigned_staff_id,
-          created_by_staff_id: task.created_by_staff_id,
-          task_type: task.task_type,
-          status: "pending",
-          due_at: task.due_at,
-          summary: task.summary,
-          created_at: nowIso,
-          updated_at: nowIso,
-        })
-        .select("id")
-        .single();
-
-      if (error || !data) {
-        return { ok: false, message: "Failed to create follow-up task." };
-      }
-
-      await db
-        .from("consultations")
-        .update({ next_followup_at: task.due_at, last_activity_at: nowIso })
-        .eq("id", task.lead_id);
-
-      return { ok: true, taskId: String(data.id) };
-    },
-    async updateFollowupTask(taskId, patch) {
-      const nowIso = new Date().toISOString();
-      const { data, error } = await db
-        .from("crm_followup_tasks")
-        .update({ ...patch, updated_at: nowIso })
-        .eq("id", taskId)
-        .select("*")
-        .single();
-
-      if (error || !data) {
-        return { ok: false, message: "Failed to update follow-up task." };
-      }
-      return { ok: true, task: data as DemoCrmStoreState["tasks"][number] };
+      if (error) throw new Error("CRM records unavailable.");
+      return (data ?? []).map(({ consultations, ...task }) => ({
+        ...task,
+        lead_version: consultations.crm_version,
+      })) as DemoCrmStoreState["tasks"];
     },
     async listPrivacyRequests(leadId?: string) {
       let query = db
@@ -1491,39 +1526,37 @@ export function createLiveSupabaseCrmStorageAdapter(db: SupabaseClient): CrmStor
         query = query.eq("lead_id", leadId);
       }
       const { data, error } = await query;
-      if (error) return [];
+      if (error) throw new Error("CRM records unavailable.");
       return (data ?? []) as DemoCrmStoreState["privacyRequests"];
     },
-    async createPrivacyRequest(req) {
-      const nowIso = new Date().toISOString();
-      const { data, error } = await db
-        .from("crm_privacy_requests")
-        .insert({
-          lead_id: req.lead_id,
-          request_type: req.request_type,
-          status: req.status,
-          responsible_staff_id: req.responsible_staff_id,
-          resolution_summary: req.resolution_summary,
-          requested_at: nowIso,
-          resolved_at: req.status === "fulfilled" ? nowIso : null,
-        })
-        .select("id")
-        .single();
-
-      if (error || !data) {
-        return { ok: false, message: "Failed to record privacy request." };
-      }
-      if (req.request_type === "consent_withdrawal") {
-        await db
-          .from("consultations")
-          .update({
-            consent_withdrawn_at: nowIso,
-            do_not_contact: true,
-            last_activity_at: nowIso,
-          })
-          .eq("id", req.lead_id);
-      }
-      return { ok: true, id: String(data.id) };
+    async mutateRelated(leadId, expectedVersion, actor, change) {
+      const common = {
+        p_lead_id: leadId,
+        p_expected_version: expectedVersion,
+        p_actor_staff_id: actor.id,
+      };
+      const result =
+        change.action === "privacy_request_logged"
+          ? await auditedRpc("crm_log_privacy_request", {
+              ...common,
+              p_type: change.requestType,
+              p_status: change.status,
+              p_summary: change.note,
+            })
+          : await auditedRpc("crm_mutate_followup", {
+              ...common,
+              p_action: change.action,
+              p_task_id: "taskId" in change ? change.taskId : null,
+              p_due_at: "due" in change ? change.due : null,
+              p_assignee: "assignee" in change ? change.assignee : null,
+              p_task_type: "taskType" in change ? change.taskType : null,
+              p_note: change.note,
+              p_contact_confirmed: change.action === "followup_completed" && change.confirmed,
+            });
+      if (!result.ok) return result;
+      if (!result.data.id || !z.string().uuid().safeParse(result.data.id).success)
+        return { ok: false, code: "DB_ERROR", message: "Missing committed record." };
+      return { ok: true, id: result.data.id };
     },
   };
 }
@@ -1568,6 +1601,7 @@ export const assignLeadOwnerInputSchema = z.object({
 });
 
 export const addLeadNoteInputSchema = z.object({
+  expectedVersion: z.number().int().min(1),
   leadId: z.string().uuid(),
   noteBody: z.string().trim().min(2, "Note must be at least 2 characters").max(1000),
   qualificationOutcome: z.enum(CRM_QUALIFICATION_OUTCOMES).optional(),
@@ -1575,6 +1609,7 @@ export const addLeadNoteInputSchema = z.object({
 });
 
 export const createFollowupTaskInputSchema = z.object({
+  expectedVersion: z.number().int().min(1),
   leadId: z.string().uuid(),
   assignedStaffId: z.string().uuid(),
   taskType: z.enum(CRM_TASK_TYPES),
@@ -1592,12 +1627,14 @@ export const createFollowupTaskInputSchema = z.object({
 });
 
 export const completeFollowupTaskInputSchema = z.object({
+  expectedVersion: z.number().int().min(1),
   taskId: z.string().uuid(),
   completionNote: z.string().trim().min(2, "Please record a brief completion note").max(500),
   customerContactConfirmed: z.boolean().default(false),
 });
 
 export const rescheduleFollowupTaskInputSchema = z.object({
+  expectedVersion: z.number().int().min(1),
   taskId: z.string().uuid(),
   newDueAt: z
     .string()
@@ -1633,6 +1670,7 @@ export const correctLeadDataInputSchema = z.object({
 });
 
 export const logPrivacyRequestInputSchema = z.object({
+  expectedVersion: z.number().int().min(1),
   leadId: z.string().uuid(),
   requestType: z.enum(CRM_PRIVACY_REQUEST_TYPES),
   status: z.enum(CRM_PRIVACY_REQUEST_STATUSES).default("received"),
@@ -1721,6 +1759,7 @@ export async function executeListCrmLeads(
   const staffMap = new Map(staffMembers.map((s) => [s.id, s.full_name]));
 
   // Count enquiries per normalized phone for duplicate recognition flag
+  const pii = hasCrmPermission(auth.staff.role, "leads:view_unmasked_pii");
   const phoneCountMap = new Map<string, number>();
   for (const lead of allLeads) {
     const norm = normalizeIndianPhone(lead.phone) || lead.phone;
@@ -1775,10 +1814,11 @@ export async function executeListCrmLeads(
       const q = filters.search.toLowerCase();
       const qDigits = q.replace(/\D/g, "");
       const refMatch = lead.reference_code.toLowerCase().includes(q);
-      const nameMatch = lead.client_name.toLowerCase().includes(q);
-      const companyMatch = (lead.company_name || "").toLowerCase().includes(q);
+      const nameMatch = pii && lead.client_name.toLowerCase().includes(q);
+      const companyMatch = pii && (lead.company_name || "").toLowerCase().includes(q);
       const cityMatch = lead.city.toLowerCase().includes(q);
-      const phoneMatch = qDigits.length >= 4 && lead.phone.replace(/\D/g, "").includes(qDigits);
+      const phoneMatch =
+        pii && qDigits.length >= 4 && lead.phone.replace(/\D/g, "").includes(qDigits);
       if (!refMatch && !nameMatch && !companyMatch && !cityMatch && !phoneMatch) {
         return false;
       }
@@ -1808,12 +1848,12 @@ export async function executeListCrmLeads(
       reference_code: lead.reference_code,
       created_at: lead.created_at,
       created_at_ist: formatTimestampIst(lead.created_at),
-      client_name: lead.client_name,
+      client_name: pii ? lead.client_name : "Restricted",
       masked_phone: maskPhoneNumber(lead.phone),
       masked_email: maskEmailAddress(lead.email),
-      company_name: lead.company_name,
+      company_name: pii ? lead.company_name : null,
       city: lead.city,
-      pin_code: lead.pin_code,
+      pin_code: pii ? lead.pin_code : null,
       property_tier: lead.property_tier,
       discom_code: lead.discom_code,
       system_kw: lead.system_kw,
@@ -1923,13 +1963,22 @@ export async function executeGetCrmLeadDetail(
 
   const activities: CrmLeadActivityItem[] = rawActivities.map((a) => ({
     ...a,
+    ...(!canViewUnmaskedPii && {
+      note_body: null,
+      before_state: null,
+      after_state: null,
+      reason: null,
+    }),
     created_at_ist: formatTimestampIst(a.created_at),
   }));
 
   const tasks: CrmFollowupTaskItem[] = rawTasks.map((t) => ({
     ...t,
     lead_reference_code: lead.reference_code,
-    lead_client_name: lead.client_name,
+    lead_version: lead.crm_version,
+    lead_client_name: canViewUnmaskedPii ? lead.client_name : "Restricted",
+    summary: canViewUnmaskedPii ? t.summary : "Restricted",
+    completion_note: canViewUnmaskedPii ? t.completion_note : null,
     lead_city: lead.city,
     lead_status: lead.status,
     assigned_staff_name: staffMap.get(t.assigned_staff_id) ?? "Unassigned",
@@ -1961,12 +2010,32 @@ export async function executeGetCrmLeadDetail(
     data: {
       lead: {
         ...restLead,
+        ...(!canViewUnmaskedPii && {
+          client_name: "Restricted",
+          company_name: null,
+          company_url: null,
+          pin_code: null,
+          consent_given: null,
+          consent_version: null,
+          consent_at: null,
+          consent_withdrawn_at: null,
+          disqualification_reason: null,
+          click_id_value: null,
+          landing_url: null,
+          referrer: null,
+          utm_term: null,
+          utm_content: null,
+          conversion_path: null,
+          first_touch_landing_path: null,
+          last_touch_landing_path: null,
+        }),
         notes: canViewUnmaskedPii ? restLead.notes : null,
         phone_display: canViewUnmaskedPii ? phone : maskPhoneNumber(phone),
         email_display: canViewUnmaskedPii ? email : maskEmailAddress(email),
         pii_masked: !canViewUnmaskedPii,
         created_at_ist: formatTimestampIst(lead.created_at),
-        consent_at_ist: lead.consent_at ? formatTimestampIst(lead.consent_at) : null,
+        consent_at_ist:
+          canViewUnmaskedPii && lead.consent_at ? formatTimestampIst(lead.consent_at) : null,
         next_followup_ist: lead.next_followup_at ? formatTimestampIst(lead.next_followup_at) : null,
         last_contacted_ist: lead.last_contacted_at
           ? formatTimestampIst(lead.last_contacted_at)
@@ -2022,6 +2091,8 @@ export async function executeTransitionCrmLeadStage(
   if (!current) {
     return { ok: false, status: 404, reason: "not_found", message: "Lead record not found." };
   }
+
+  if (current.crm_version !== input.expectedVersion) return mutationFailure(conflict);
 
   if (current.status === input.newStatus) {
     return {
@@ -2081,46 +2152,21 @@ export async function executeTransitionCrmLeadStage(
   }
 
   const nowIso = new Date(ctx.nowMs ?? Date.now()).toISOString();
-  const retentionCategory =
-    input.newStatus === "contract_signed" || input.newStatus === "installed"
-      ? "project_lifecycle_25y"
-      : current.retention_category;
-
-  const patch: Partial<CrmLeadRecord> = {
-    status: input.newStatus,
-    stage_updated_at: nowIso,
-    retention_category: retentionCategory,
-  };
-
-  if (input.newStatus === "contacted" && !current.last_contacted_at) {
-    patch.last_contacted_at = nowIso;
-  }
-  if (input.newStatus === "qualified") {
-    if (!current.qualified_at) patch.qualified_at = nowIso;
-    patch.qualification_outcome = input.qualificationOutcome ?? "qualified";
-  } else if (input.qualificationOutcome) {
-    patch.qualification_outcome = input.qualificationOutcome;
-  }
-  if (input.disqualificationReason) {
-    patch.disqualification_reason = input.disqualificationReason;
-  }
-
-  const res = await storage.updateLeadRecord(current.id, input.expectedVersion, patch, {
-    actor_staff_id: auth.staff.id,
-    actor_label: auth.staff.full_name,
-    action_type: "stage_changed",
-    before_state: { status: current.status, crm_version: current.crm_version },
-    after_state: { status: input.newStatus, crm_version: current.crm_version + 1 },
+  const res = await storage.transitionLeadStage({
+    leadId: current.id,
+    expectedVersion: input.expectedVersion,
+    newStatus: input.newStatus,
+    actorStaffId: auth.staff.id,
+    actorLabel: auth.staff.full_name,
     reason: input.reason ?? null,
+    qualificationOutcome: input.qualificationOutcome ?? null,
+    disqualificationReason: input.disqualificationReason ?? null,
+    restoreFromArchive: Boolean(input.restoreFromArchive),
+    nowIso,
   });
 
   if (!res.ok) {
-    return {
-      ok: false,
-      status: res.code === "CONFLICT" ? 409 : res.code === "NOT_FOUND" ? 404 : 500,
-      reason: res.code.toLowerCase(),
-      message: res.message,
-    };
+    return mutationFailure(res);
   }
 
   return { ok: true, lead: res.lead };
@@ -2167,6 +2213,7 @@ export async function executeAssignCrmLeadOwner(
     return { ok: false, status: 404, reason: "not_found", message: "Lead record not found." };
   }
 
+  if (current.crm_version !== input.expectedVersion) return mutationFailure(conflict);
   const canAssignAny = hasCrmPermission(auth.staff.role, "leads:assign_any");
 
   // Coordinator restriction: cannot reassign a lead already owned by someone else, nor assign to a third person
@@ -2238,12 +2285,7 @@ export async function executeAssignCrmLeadOwner(
   );
 
   if (!res.ok) {
-    return {
-      ok: false,
-      status: res.code === "CONFLICT" ? 409 : 404,
-      reason: res.code.toLowerCase(),
-      message: res.message,
-    };
+    return mutationFailure(res);
   }
 
   return { ok: true, lead: res.lead };
@@ -2286,44 +2328,18 @@ export async function executeAddCrmLeadNote(
     return { ok: false, status: 404, reason: "not_found", message: "Lead record not found." };
   }
 
-  if (input.qualificationOutcome || input.disqualificationReason) {
-    const updateRes = await storage.updateLeadRecord(
-      current.id,
-      current.crm_version,
-      {
-        qualification_outcome: input.qualificationOutcome ?? current.qualification_outcome,
-        disqualification_reason: input.disqualificationReason ?? current.disqualification_reason,
-      },
-      {
-        actor_staff_id: auth.staff.id,
-        actor_label: auth.staff.full_name,
-        action_type: "note_added",
-        note_body: input.noteBody,
-        before_state: { qualification_outcome: current.qualification_outcome },
-        after_state: {
-          qualification_outcome: input.qualificationOutcome ?? current.qualification_outcome,
-        },
-      },
-    );
-    if (!updateRes.ok) {
-      return { ok: false, status: 500, reason: "db_error", message: updateRes.message };
-    }
-    return { ok: true, activityId: updateRes.lead.id };
-  }
-
-  const res = await storage.appendLeadActivity({
-    lead_id: current.id,
+  const patch: Partial<CrmLeadRecord> = {};
+  if (input.qualificationOutcome) patch.qualification_outcome = input.qualificationOutcome;
+  if (input.disqualificationReason) patch.disqualification_reason = input.disqualificationReason;
+  const result = await storage.updateLeadRecord(current.id, input.expectedVersion, patch, {
     actor_staff_id: auth.staff.id,
     actor_label: auth.staff.full_name,
     action_type: "note_added",
     note_body: input.noteBody,
+    before_state: { qualification_outcome: current.qualification_outcome },
+    after_state: patch,
   });
-
-  if (!res.ok) {
-    return { ok: false, status: 500, reason: "db_error", message: res.message };
-  }
-
-  return { ok: true, activityId: res.id };
+  return result.ok ? { ok: true, activityId: result.activityId } : mutationFailure(result);
 }
 
 /**
@@ -2389,35 +2405,14 @@ export async function executeCreateCrmFollowupTask(
     };
   }
 
-  const dueUtcIso = new Date(Date.parse(input.dueAt)).toISOString();
-  const created = await storage.createFollowupTask({
-    lead_id: lead.id,
-    assigned_staff_id: input.assignedStaffId,
-    created_by_staff_id: auth.staff.id,
-    task_type: input.taskType,
-    due_at: dueUtcIso,
-    summary: input.summary,
+  const result = await storage.mutateRelated(lead.id, input.expectedVersion, auth.staff, {
+    action: "followup_scheduled",
+    assignee: input.assignedStaffId,
+    due: new Date(input.dueAt).toISOString(),
+    taskType: input.taskType,
+    note: input.summary,
   });
-
-  if (!created.ok) {
-    return { ok: false, status: 500, reason: "db_error", message: created.message };
-  }
-
-  await storage.appendLeadActivity({
-    lead_id: lead.id,
-    actor_staff_id: auth.staff.id,
-    actor_label: auth.staff.full_name,
-    action_type: "followup_scheduled",
-    note_body: input.summary,
-    after_state: {
-      task_id: created.taskId,
-      task_type: input.taskType,
-      due_at: dueUtcIso,
-      assigned_staff_id: input.assignedStaffId,
-    },
-  });
-
-  return { ok: true, taskId: created.taskId };
+  return result.ok ? { ok: true, taskId: result.id } : mutationFailure(result);
 }
 
 export async function executeCompleteCrmFollowupTask(
@@ -2468,56 +2463,18 @@ export async function executeCompleteCrmFollowupTask(
     };
   }
 
-  const nowIso = new Date(ctx.nowMs ?? Date.now()).toISOString();
-  const updated = await storage.updateFollowupTask(existingTask.id, {
-    status: "completed",
-    completed_at: nowIso,
-    completion_note: input.completionNote,
-  });
-
-  if (!updated.ok) {
-    return { ok: false, status: 500, reason: "db_error", message: updated.message };
-  }
-
-  if (input.customerContactConfirmed) {
-    const lead = await storage.getLeadById(existingTask.lead_id);
-    if (lead) {
-      await storage.updateLeadRecord(
-        lead.id,
-        lead.crm_version,
-        { last_contacted_at: nowIso },
-        {
-          actor_staff_id: auth.staff.id,
-          actor_label: auth.staff.full_name,
-          action_type: "followup_completed",
-          note_body: input.completionNote,
-          before_state: { status: "pending" },
-          after_state: {
-            status: "completed",
-            task_id: existingTask.id,
-            customer_contact_confirmed: true,
-          },
-        },
-      );
-      return { ok: true, taskId: existingTask.id };
-    }
-  }
-
-  await storage.appendLeadActivity({
-    lead_id: existingTask.lead_id,
-    actor_staff_id: auth.staff.id,
-    actor_label: auth.staff.full_name,
-    action_type: "followup_completed",
-    note_body: input.completionNote,
-    before_state: { status: "pending" },
-    after_state: {
-      status: "completed",
-      task_id: existingTask.id,
-      customer_contact_confirmed: false,
+  const result = await storage.mutateRelated(
+    existingTask.lead_id,
+    input.expectedVersion,
+    auth.staff,
+    {
+      action: "followup_completed",
+      taskId: existingTask.id,
+      confirmed: input.customerContactConfirmed,
+      note: input.completionNote,
     },
-  });
-
-  return { ok: true, taskId: existingTask.id };
+  );
+  return result.ok ? { ok: true, taskId: result.id } : mutationFailure(result);
 }
 
 export async function executeRescheduleCrmFollowupTask(
@@ -2561,7 +2518,8 @@ export async function executeRescheduleCrmFollowupTask(
 
   const nextAssignee = input.assignedStaffId ?? existingTask.assigned_staff_id;
   if (
-    nextAssignee !== existingTask.assigned_staff_id &&
+    (nextAssignee !== existingTask.assigned_staff_id ||
+      existingTask.assigned_staff_id !== auth.staff.id) &&
     !hasCrmPermission(auth.staff.role, "tasks:reassign_any")
   ) {
     return {
@@ -2582,33 +2540,19 @@ export async function executeRescheduleCrmFollowupTask(
     };
   }
 
-  const newDueIso = new Date(Date.parse(input.newDueAt)).toISOString();
-  const updated = await storage.updateFollowupTask(existingTask.id, {
-    due_at: newDueIso,
-    assigned_staff_id: nextAssignee,
-  });
-
-  if (!updated.ok) {
-    return { ok: false, status: 500, reason: "db_error", message: updated.message };
-  }
-
-  await storage.appendLeadActivity({
-    lead_id: existingTask.lead_id,
-    actor_staff_id: auth.staff.id,
-    actor_label: auth.staff.full_name,
-    action_type: "followup_rescheduled",
-    reason: input.reason,
-    before_state: {
-      due_at: existingTask.due_at,
-      assigned_staff_id: existingTask.assigned_staff_id,
+  const result = await storage.mutateRelated(
+    existingTask.lead_id,
+    input.expectedVersion,
+    auth.staff,
+    {
+      action: "followup_rescheduled",
+      taskId: existingTask.id,
+      assignee: nextAssignee,
+      due: new Date(input.newDueAt).toISOString(),
+      note: input.reason,
     },
-    after_state: {
-      due_at: newDueIso,
-      assigned_staff_id: nextAssignee,
-    },
-  });
-
-  return { ok: true, taskId: existingTask.id };
+  );
+  return result.ok ? { ok: true, taskId: result.id } : mutationFailure(result);
 }
 
 /**
@@ -2680,12 +2624,7 @@ export async function executeCorrectCrmLeadData(
   });
 
   if (!res.ok) {
-    return {
-      ok: false,
-      status: res.code === "CONFLICT" ? 409 : 500,
-      reason: res.code.toLowerCase(),
-      message: res.message,
-    };
+    return mutationFailure(res);
   }
 
   return { ok: true, lead: res.lead };
@@ -2728,32 +2667,13 @@ export async function executeLogCrmPrivacyRequest(
     return { ok: false, status: 404, reason: "not_found", message: "Lead record not found." };
   }
 
-  const created = await storage.createPrivacyRequest({
-    lead_id: current.id,
-    request_type: input.requestType,
+  const result = await storage.mutateRelated(current.id, input.expectedVersion, auth.staff, {
+    action: "privacy_request_logged",
+    requestType: input.requestType,
     status: input.status,
-    responsible_staff_id: auth.staff.id,
-    resolution_summary: input.resolutionSummary,
+    note: input.resolutionSummary,
   });
-
-  if (!created.ok) {
-    return { ok: false, status: 500, reason: "db_error", message: created.message };
-  }
-
-  await storage.appendLeadActivity({
-    lead_id: current.id,
-    actor_staff_id: auth.staff.id,
-    actor_label: auth.staff.full_name,
-    action_type: "privacy_request_logged",
-    reason: input.resolutionSummary,
-    after_state: {
-      privacy_request_id: created.id,
-      request_type: input.requestType,
-      status: input.status,
-    },
-  });
-
-  return { ok: true, requestId: created.id };
+  return result.ok ? { ok: true, requestId: result.id } : mutationFailure(result);
 }
 
 /**
@@ -2791,6 +2711,7 @@ export async function executeListCrmFollowupQueue(ctx: CrmExecutionContext): Pro
   const leadMap = new Map(allLeads.map((l) => [l.id, l]));
   const staffMap = new Map(staffList.map((s) => [s.id, s.full_name]));
 
+  const pii = hasCrmPermission(auth.staff.role, "leads:view_unmasked_pii");
   const items: CrmFollowupTaskItem[] = rawTasks
     .map((t) => {
       const lead = leadMap.get(t.lead_id);
@@ -2798,7 +2719,10 @@ export async function executeListCrmFollowupQueue(ctx: CrmExecutionContext): Pro
       return {
         ...t,
         lead_reference_code: lead?.reference_code ?? "WNX-UNKNOWN",
-        lead_client_name: lead?.client_name ?? "Unknown Lead",
+        lead_version: t.lead_version ?? lead?.crm_version ?? null,
+        lead_client_name: pii ? (lead?.client_name ?? "Unknown Lead") : "Restricted",
+        summary: pii ? t.summary : "Restricted",
+        completion_note: pii ? t.completion_note : null,
         lead_city: lead?.city ?? "Hyderabad",
         lead_status: lead?.status ?? "new",
         assigned_staff_name: staffMap.get(t.assigned_staff_id) ?? "Unassigned",
@@ -3058,6 +2982,17 @@ export async function executeGetCrmDashboardMetrics(
 // ============================================================================
 // TANSTACK START SERVER FUNCTION WRAPPERS (HttpOnly Cookie + Private Headers)
 // ============================================================================
+export async function respondToCrmMutation<T extends { ok: true } | { ok: false; status: number }>(
+  operation: Promise<T>,
+): Promise<T> {
+  const result = await operation;
+  if (!result.ok) {
+    const { setResponseStatus } = await import("@tanstack/react-start/server");
+    setResponseStatus(result.status);
+  }
+  return result;
+}
+
 export async function buildServerExecutionContext(): Promise<{
   ctx: CrmExecutionContext;
   setSessionCookie: (token: string) => void;
@@ -3121,17 +3056,13 @@ export async function buildServerExecutionContext(): Promise<{
       storageAdapter,
     },
     setSessionCookie(newToken: string) {
-      try {
-        setCookie(CRM_SESSION_COOKIE_NAME, newToken, {
-          httpOnly: true,
-          secure: isProdHttps,
-          sameSite: "lax",
-          path: "/",
-          maxAge: 8 * 60 * 60,
-        });
-      } catch {
-        // ignore if headers already sent
-      }
+      setCookie(CRM_SESSION_COOKIE_NAME, newToken, {
+        httpOnly: true,
+        secure: isProdHttps,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 8 * 60 * 60,
+      });
     },
     clearSessionCookie() {
       try {
@@ -3224,7 +3155,6 @@ export async function handleLoginCrmStaff(data: unknown) {
       },
       ctx.env,
     );
-    setSessionCookie(token);
 
     if (!matched.is_active) {
       return {
@@ -3236,6 +3166,7 @@ export async function handleLoginCrmStaff(data: unknown) {
       };
     }
 
+    setSessionCookie(token);
     return {
       ok: true as const,
       mode: "demo" as const,
@@ -3284,7 +3215,7 @@ export async function handleLoginCrmStaff(data: unknown) {
   const authCheck = await authenticateAndAuthorizeCrmRequest({
     token: accessToken,
     env: ctx.env,
-    authAdapter: createLiveSupabaseAuthAdapter(supabase),
+    authAdapter: ctx.authAdapter,
   });
 
   if (!authCheck.ok) {

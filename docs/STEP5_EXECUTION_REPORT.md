@@ -1,150 +1,27 @@
-# WAVENOX — STEP 5 EXECUTION REPORT
+# Step 5 security hardening execution report
 
-## 1. Executive Summary
-Step 5 upgrades WAVENOX's inbound consultation pipeline into a **private, role-governed, privacy-first internal CRM (`/ops`)** with **deterministic multi-touch marketing attribution** and **auditable sales operations**.
+Work continued on [draft PR #9](https://github.com/wavenoxx/wavenox/pull/9), branch `feat/wavenox-step5-crm-attribution`, from [f1e7645](https://github.com/wavenoxx/wavenox/commit/f1e7645b366a448e99d3ac644c4f1df3f5af6750). The target main commit at intake was [14a45de](https://github.com/wavenoxx/wavenox/commit/14a45deec1468250239d6440d453e25769e3d0b5). The original checkout contained five modified files. Their changes were imported into an isolated branch checkout before validation.
 
-Key capabilities delivered:
-1. **Zero-Trust Staff Authentication & RBAC (`src/server/crm-auth.ts`)**: Invite-only access (`owner_admin`, `sales_coordinator`, `read_only_viewer`) verified server-side against `public.crm_staff_members`, with automatic PII masking (`+91 98•••• ••10`, `vi•••@domain.com`) for `read_only_viewer` and immediate denial (`401`/`403`) for unauthenticated or deactivated accounts.
-2. **PostgreSQL & Supabase Security Hardening (`supabase/migrations/20261106_step5_crm_and_attribution.sql`)**: Explicit `REVOKE ALL` from `PUBLIC` and `anon`, `ENABLE` + `FORCE ROW LEVEL SECURITY` on all CRM tables, `SECURITY DEFINER` staff-role helpers, an append-only audit trigger (`trg_prevent_crm_activity_mutation`) on `public.crm_lead_activities`, and an atomic PostgreSQL RPC (`public.crm_transition_lead_stage`) with optimistic concurrency control.
-3. **Privacy-First Multi-Touch Attribution (`src/lib/telemetry.ts`)**: Captures First Touch (`localStorage`), Last Touch (`sessionStorage`), and Conversion Touch (`getLeadAttributionPayload()`), strips PII query parameters (`phone`, `email`, `name`, `pin`, `usc`, `token`) client- and server-side, preserves `first_touch_*` across internal SPA navigation, and deterministically classifies channels (`paid_search`, `paid_social`, `organic_search`, `referral`, `direct`, `unknown`).
-4. **Operational CRM Workspace (`src/routes/ops.tsx`)**: Protected `/ops` route (`noindex, nofollow, noarchive` + `Disallow: /ops` in `robots.txt`) with 6 views (**Overview**, **All Leads**, **Pipeline**, **Follow-Ups**, **Attribution**, **Settings & Governance**) and a slide-over **Lead Detail** inspector displaying timestamps in `Asia/Kolkata` (`IST`), `"Not provided"` for null fields, and `"Ad spend not connected — ROAS unavailable."`.
+## Changes
 
----
+- The forward migration closes direct CRM table and RPC access for browser roles. The service authenticates the Auth user and checks active staff membership for each operation. Password login cannot change the identity of the database service client.
+- Four service-only RPCs commit material changes and a mandatory audit together. The database locks staff and lead rows, checks the lead version, restricts protected fields and obtains audit actor labels from membership. See the [privilege and transaction tables](STEP5_DATABASE_SECURITY.md).
+- npm resolves React Start 1.169.4 and a single start-server-core 1.169.45. The previous committed npm tree resolved 1.168.58 and 1.169.37 respectively. The obsolete Bun lockfile also contained vulnerable releases and was removed so automated installs use the verified npm lock. [GitHub advisory](https://github.com/advisories/GHSA-qx66-fv34-fjm8) · [Vendor release](https://tanstack.com/blog/tanstack-start-security-update-cve-2026-102989)
 
-## 2. Repository & Lead Pipeline Audit
+## Local evidence, 6 November 2026
 
-| Component | Pre-Step 5 State | Step 5 Upgrade |
-| :--- | :--- | :--- |
-| `public.consultations` | Captured lead contact, preliminary solar config, single-touch UTMs, and basic `status` (`new`..`archived`). | Extended with multi-touch attribution (`first_touch_*`, `last_touch_*`, `conversion_path`, `attribution_channel`, `click_id_*`), lifecycle timestamps, `crm_version` concurrency counter, and DPDP governance flags (`do_not_contact`, `retention_category`). |
-| `src/lib/telemetry.ts` | Single-session `sessionStorage` UTM capture; did not strip PII query params or separate First vs. Last touch. | Full 3-layer First-Touch / Last-Touch / Conversion-Touch engine with URL PII stripping, referrer domain normalization, and deterministic channel classification. |
-| `src/functions/leads.ts` | Validated and persisted inbound leads with `v3 -> v2` schema fallback. | Re-sanitizes multi-touch attribution server-side, adds `v4 -> v3 -> v2` backward-compatible Supabase schema fallback, and registers explicit `LEAD_MODE="demo"` leads into the isolated demo CRM store. |
-| `/ops` Route | Did not exist. | Full invite-only staff CRM workspace (`src/routes/ops.tsx`) backed by `src/functions/crm.ts` and `src/server/crm-service.ts`. |
+| Gate | Inherited working tree | Hardened branch |
+| --- | --- | --- |
+| npm test | 114 passed | 113 passed. Eleven isolated-database cases run separately. A migration text assertion was replaced by runtime privilege tests. |
+| npm run lint | One formatting error and ten warnings | Exit 0, ten existing warnings, copy lint passed |
+| npx tsc --noEmit | Exit 0 | Exit 0 |
+| npm run build | Client and Nitro SSR passed | Client and Nitro SSR passed. Private sentinel and privileged adapter code absent from public JS. |
+| npm run test:e2e | Chromium launch blocked by macOS sandbox | Same local MachPortRendezvous permission denial before page execution |
 
----
+A disposable PostgreSQL 18.6 WASM engine (PGlite) applied the complete migration chain. PostgREST 16.5 served actual loopback HTTP requests against those tables and functions. All eleven [integration cases](../scripts/step5-tests/live.test.ts) passed, including 144 table/RPC denials across anonymous, non-staff, inactive, viewer, coordinator and admin identities. Eight forced audit failures left the lead, audit history, tasks and privacy rows identical to their pre-operation state. The suite also exercised validated LIVE lead submission, legacy provenance, role-restricted reads, actor spoofing, duplicate replay, invalid stage and patch rejection, and loss of database connectivity.
 
-## 3. Staff Authentication & Authorization Architecture
+The local role fixture signs synthetic JWTs. The native PostgreSQL/Supabase Auth and browser jobs are separate checks. The local WASM server serializes connections, so it verifies stale replay but cannot establish native concurrent transaction locking. The [CI workflow](../.github/workflows/step5-hardening.yml) starts a disposable Supabase stack, applies migrations locally, provisions synthetic identities, checks concurrent writes and runs the DEMO route audit and LIVE browser login. See the [PR checks](https://github.com/wavenoxx/wavenox/pull/9/checks) for results for each pushed revision.
 
-- **Verification Path**:
-  - **LIVE Mode**: Verifies Bearer/cookie session token via `supabase.auth.getUser(token)`, then queries `public.crm_staff_members` for an active record (`is_active = true`) matching `auth_user_id` or normalized email. Fails closed (`503`) if `SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY` is missing.
-  - **Explicit DEMO Mode (`LEAD_MODE="demo"`)**: Issues HMAC-SHA256 signed demo tokens bound to provisioned demo staff personas (`owner_admin`, `sales_coordinator`, `read_only_viewer`, plus a deactivated coordinator for negative testing).
-- **Cookie & Cache Hardening**:
-  - Session cookie `wavenox_crm_session` is set with `HttpOnly; SameSite=Lax; Path=/` (plus `Secure` in production).
-  - All CRM server responses attach `Cache-Control: no-store, no-cache, must-revalidate, private`.
-  - Signing out revokes the active token in the server revocation registry (`revokeCrmSessionToken`) and clears the cookie.
+## Release boundary
 
----
-
-## 4. Database Schema & RLS Security Design
-
-Migration: [`supabase/migrations/20261106_step5_crm_and_attribution.sql`](file:///Users/bunny/.gemini/antigravity/scratch/wavenox/supabase/migrations/20261106_step5_crm_and_attribution.sql)
-
-- **Tables**:
-  1. `public.consultations` (additive Step 5 columns + composite operational indexes)
-  2. `public.crm_staff_members` (invite-only staff directory & roles)
-  3. `public.crm_lead_activities` (immutable append-only audit log guarded by `BEFORE UPDATE OR DELETE` trigger `trg_prevent_crm_activity_mutation`)
-  4. `public.crm_followup_tasks` (UTC-stored follow-up queue with completion notes and reschedule count)
-  5. `public.crm_privacy_requests` (DPDP Data Principal request register)
-- **RLS & Grants**:
-  - `REVOKE ALL` on all CRM tables and functions from `PUBLIC` and `anon`.
-  - `FORCE ROW LEVEL SECURITY` enabled on all 5 tables.
-  - All policies verify active staff status via `SECURITY DEFINER` helpers (`crm_is_active_staff()`, `crm_can_write_leads()`, `crm_is_owner_admin()`).
-
----
-
-## 5. Multi-Touch Marketing Attribution Engine
-
-Implemented in [`src/lib/telemetry.ts`](file:///Users/bunny/.gemini/antigravity/scratch/wavenox/src/lib/telemetry.ts) and tested in [`src/lib/telemetry.test.ts`](file:///Users/bunny/.gemini/antigravity/scratch/wavenox/src/lib/telemetry.test.ts):
-- **First Touch (`wavenox_attr_first_v2`)**: Persisted in `localStorage` on initial landing and never overwritten by internal SPA navigation.
-- **Last Touch (`wavenox_attr_last_v2`)**: Persisted in `sessionStorage` and updated only when explicit campaign parameters (`utm_*` or click IDs) are present.
-- **Original Lead Source Preserved**: `source` (`studio`, `drawer`, `enterprise`, `net_metering`, `architects`) is never overwritten by marketing channel classification.
-- **PII Stripping**: Query parameters such as `phone`, `email`, `name`, `pin`, `usc`, `token`, and values matching phone/email/PIN regex patterns are stripped from `landing_url`, `first_touch_landing_path`, `last_touch_landing_path`, and `conversion_path`.
-
----
-
-## 6. Lead Lifecycle & Sales Stage Model
-
-- **Stages**: `new`, `contacted`, `qualified`, `survey_booked`, `quoted`, `contract_signed`, `installed`, `archived`.
-- **Transition Rules**:
-  - Controlled state graph (`ALLOWED_STAGE_TRANSITIONS`) prevents invalid jumps.
-  - Mandatory operational reason required for `quoted`, `contract_signed`, `installed`, and `archived`.
-  - Only `owner_admin` can restore a lead from `archived` (with `restoreArchived = true`).
-  - Optimistic concurrency (`expectedVersion` / `crm_version`) returns `409 CONFLICT` on concurrent edits.
-
----
-
-## 7. Follow-Up Task & SLA Operations
-
-- **Timezone Accuracy**: Stored as UTC ISO-8601 (`TIMESTAMPTZ`), evaluated and displayed in `Asia/Kolkata` (`IST`, `UTC+05:30`).
-- **Urgency Buckets**: `overdue` (due date/time in the past or prior IST calendar date), `due_today` (due later today in IST), `upcoming` (future IST date), and `completed`.
-- **Audit Integration**: Creating, rescheduling, or completing a task records an immutable event in `crm_lead_activities` and optionally updates the parent lead's `last_contacted_at`.
-
----
-
-## 8. Customer Privacy & Audit Trail Controls
-
-- **Role-Based PII Masking**: `read_only_viewer` receives masked phone (`+91 98•••• ••10`), masked email (`vi•••@domain.com`), and masked customer notes from the server.
-- **Separation of Notes**: Customer-submitted `notes` are read-only; staff notes are appended as `note_added` events in `crm_lead_activities`.
-- **Audited Corrections & DPDP Requests**: Corrections require a mandatory reason (`min 5 chars`) and log `before_state` and `after_state`. `owner_admin` can log DPDP `access`, `correction`, `erasure`, and `consent_withdrawal` requests, automatically activating `do_not_contact` when consent is withdrawn.
-
----
-
-## 9. `/ops` CRM User Experience & Accessibility
-
-- **Route**: [`src/routes/ops.tsx`](file:///Users/bunny/.gemini/antigravity/scratch/wavenox/src/routes/ops.tsx)
-- **Search Engine Exclusion**: `<meta name="robots" content="noindex, nofollow, noarchive">` on `/ops` + `Disallow: /ops` in `public/robots.txt` (generated by `scripts/generate-sitemap.mjs`).
-- **Responsive Design**: Desktop table (`lg+`) and mobile/tablet cards (`<lg`) verified with zero horizontal overflow across `320×720`, `390×844`, `768×1024`, `1024×768`, and `1440×900`.
-
----
-
-## 10. Operational Analytics & Honest Reporting
-
-- **Pipeline Counts & Conversion Rates**: Computes factual stage counts, qualification rate (`qualifiedRatePct`), site survey booking rate (`surveyConversionPct`), and signed/installed conversion rate (`contractConversionPct`).
-- **Honest Financial Disclosures**:
-  - Never fabricates pipeline revenue from indicative configurator estimates (`net_price_inr`).
-  - Explicitly displays `"Ad spend not connected — ROAS unavailable."` in both the Overview and Attribution views.
-
----
-
-## 11. Automated Unit, Integration, Security & E2E Test Matrix
-
-| Suite | File | Tests | Coverage |
-| :--- | :--- | :---: | :--- |
-| Marketing Attribution | `src/lib/telemetry.test.ts` | 7 | First/Last/Conversion touch, SPA navigation preservation, PII stripping, channel classification. |
-| CRM Auth, RBAC & Operations | `src/functions/crm.test.ts` | 24 | Unauthenticated/deactivated/unlisted denial, `read_only_viewer` PII masking & write blocking, stage transitions, `409` concurrency, notes, IST follow-up urgency, honest metrics, DPDP privacy requests, SQL migration RLS verification. |
-| Lead Submission Pipeline | `src/functions/leads.test.ts` | 22 | Validation, honeypot, rate limiting, `v4 -> v3 -> v2` schema fallback, server-side attribution sanitization. |
-| Solar, Regulatory & Brand | `src/config/*.test.ts`, `src/lib/suncalc.test.ts` | 59 | All Step 1–4 engineering and financial suites. |
-| Browser E2E & Accessibility | `scripts/run-e2e-audit.mjs` | 17 routes + Step 5 `/ops` | Status 200, Axe WCAG 2.1 AA, zero sub-12px text, zero console errors, `/ops` auth gate, 403 deactivated denial, viewer PII masking, lead search, stage update, staff note, and 5-viewport zero overflow. |
-
----
-
-## 12. Visual QA & Responsive Inspection Summary
-
-All 19 screenshots captured and inspected in `qa-step5/`:
-- `01-login-gate-desktop-1440x900.png` & `01-login-gate-mobile-390x844.png`
-- `02-permission-denied-403-desktop-1440x900.png`
-- `03-readonly-viewer-masked-pii-desktop-1440x900.png`
-- `04-overview-desktop-1440x900.png` & `04-overview-mobile-390x844.png`
-- `05-all-leads-desktop-1440x900.png`, `05-all-leads-landscape-1024x768.png`, `05-all-leads-tablet-768x1024.png`, `05-all-leads-mobile-390x844.png`, `05-all-leads-narrow-320x720.png`
-- `06-pipeline-desktop-1440x900.png` & `06-pipeline-mobile-390x844.png`
-- `07-followups-desktop-1440x900.png` & `07-followups-mobile-390x844.png`
-- `08-attribution-desktop-1440x900.png` & `08-attribution-mobile-390x844.png`
-- `09-governance-desktop-1440x900.png`
-- `10-lead-detail-drawer-desktop-1440x900.png` & `10-lead-detail-drawer-mobile-390x844.png`
-
----
-
-## 13. Known Limitations & Operational Prerequisites
-
-1. **Supabase Migration Execution**: Before enabling `/ops` in production (`LEAD_MODE="live"`), apply `supabase/migrations/20261106_step5_crm_and_attribution.sql` and provision initial staff records in `public.crm_staff_members`.
-2. **Ad Network Spend Integration**: ROAS is intentionally marked `"Ad spend not connected — ROAS unavailable."` until Google Ads / Meta Ads spend APIs are connected in a future marketing-ops integration.
-3. **Contracted Invoice Ledger**: Preliminary solar estimates (`net_price_inr`) are displayed per lead for engineering context only; formal contracted order value tracking belongs to post-survey ERP/invoicing workflows.
-
----
-
-## 14. Git Branch, Commit SHA & Draft PR Status
-
-- **Repository**: `https://github.com/wavenoxx/wavenox.git`
-- **Base Branch**: `main` (`14a45deec1468250239d6440d453e25769e3d0b5`)
-- **Feature Branch**: `feat/wavenox-step5-crm-attribution`
-- **Draft Pull Request**: `https://github.com/wavenoxx/wavenox/pull/9` (Draft PR targeting `main` — not auto-merged, not deployed to production)
-
+The historical [preview at f1e7645](https://vercel.com/wavenoxxs-projects/wavenox/GztZgpgz4x86Ku39aooFJap4Wucd) failed. Verify the exact new SHA's GitHub/Vercel status before sign-off. Production requires separately approved database migration, staff provisioning, environment review and release QA. This task authorizes feature-branch preview only.

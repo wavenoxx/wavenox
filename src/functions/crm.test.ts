@@ -1,6 +1,4 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import * as fs from "node:fs";
-import * as path from "node:path";
 import {
   authenticateAndAuthorizeCrmRequest,
   createDemoStaffSessionToken,
@@ -16,6 +14,8 @@ import {
 import {
   resetDemoCrmStore,
   registerDemoLeadInCrmStore,
+  createDemoCrmStorageAdapter,
+  createLiveSupabaseCrmStorageAdapter,
   executeListCrmLeads,
   executeGetCrmLeadDetail,
   executeTransitionCrmLeadStage,
@@ -29,6 +29,7 @@ import {
   executeListCrmFollowupQueue,
   executeGetCrmDashboardMetrics,
 } from "@/server/crm-service";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { classifyFollowupUrgency, formatTimestampIst, getIstDateKey } from "./crm";
 import { processLeadSubmission, resetLeadRateLimiter } from "./leads";
 
@@ -310,6 +311,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const noteRes = await executeAddCrmLeadNote(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           noteBody: "Viewer attempting to add internal note",
         },
         { token: viewerToken, env: DEMO_ENV },
@@ -320,6 +322,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const taskRes = await executeCreateCrmFollowupTask(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           assignedStaffId: "00000000-0000-4000-8000-000000000102",
           taskType: "call",
           dueAt: new Date(Date.now() + 3600_000).toISOString(),
@@ -593,6 +596,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const noteRes = await executeAddCrmLeadNote(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           noteBody: "Verified 3-phase meter location on east compound wall; shadow-free terrace.",
         },
         { token: coordToken, env: DEMO_ENV },
@@ -623,6 +627,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const createRes = await executeCreateCrmFollowupTask(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           assignedStaffId: coordinator.id,
           taskType: "whatsapp_review",
           dueAt: futureIso,
@@ -653,6 +658,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const rescheduleRes = await executeRescheduleCrmFollowupTask(
         {
           taskId: createRes.taskId,
+          expectedVersion: lead.crm_version + 1,
           newDueAt: new Date(Date.now() + 72 * 3600_000).toISOString(),
           reason: "Client requested afternoon call after architect meeting.",
         },
@@ -664,6 +670,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const completeRes = await executeCompleteCrmFollowupTask(
         {
           taskId: createRes.taskId,
+          expectedVersion: lead.crm_version + 2,
           completionNote: "Sent PDF shading layout on WhatsApp; client confirmed receipt.",
           customerContactConfirmed: true,
         },
@@ -842,6 +849,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const blockedCoord = await executeLogCrmPrivacyRequest(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           requestType: "consent_withdrawal",
           status: "fulfilled",
           resolutionSummary: "Coordinator trying to log privacy request",
@@ -854,6 +862,7 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
       const ownerReq = await executeLogCrmPrivacyRequest(
         {
           leadId: lead.id,
+          expectedVersion: lead.crm_version,
           requestType: "consent_withdrawal",
           status: "fulfilled",
           resolutionSummary:
@@ -876,43 +885,428 @@ describe("Step 5 — Private CRM, Staff Auth, Attribution & Governance Suite", (
     });
   });
 
-  describe("8. Database Migration SQL Security & RLS Verification", () => {
-    it("verifies 20261106_step5_crm_and_attribution.sql enforces RLS, REVOKE ALL from anon/PUBLIC, staff role checks, and append-only audit logs", () => {
-      const migrationPath = path.resolve(
-        process.cwd(),
-        "supabase/migrations/20261106_step5_crm_and_attribution.sql",
+  describe("9. Atomic CRM Mutations, Forced Audit Failure Rollback & Live RPC Wiring (P0-B)", () => {
+    it("rolls back stage transitions, owner assignment, data corrections, notes, follow-up tasks, and privacy requests when audit insertion fails in DEMO adapter", async () => {
+      const ownerToken = issueDemoTokenForRole("owner_admin");
+      const owner = getDemoStaffByRole("owner_admin");
+
+      // Inspect initial state before forced audit failures
+      const initialList = await executeListCrmLeads(
+        { status: "new" },
+        { token: ownerToken, env: DEMO_ENV },
       );
-      const sql = fs.readFileSync(migrationPath, "utf8");
+      expect(initialList.ok).toBe(true);
+      if (!initialList.ok) return;
+      const targetLead = initialList.items[0]!;
+      const initialDetail = await executeGetCrmLeadDetail(targetLead.id, {
+        token: ownerToken,
+        env: DEMO_ENV,
+      });
+      expect(initialDetail.ok).toBe(true);
+      if (!initialDetail.ok) return;
 
-      // 1. RLS enabled on all 5 tables
-      expect(sql).toContain("ALTER TABLE public.consultations ENABLE ROW LEVEL SECURITY;");
-      expect(sql).toContain("ALTER TABLE public.crm_staff_members ENABLE ROW LEVEL SECURITY;");
-      expect(sql).toContain("ALTER TABLE public.crm_lead_activities ENABLE ROW LEVEL SECURITY;");
-      expect(sql).toContain("ALTER TABLE public.crm_followup_tasks ENABLE ROW LEVEL SECURITY;");
-      expect(sql).toContain("ALTER TABLE public.crm_privacy_requests ENABLE ROW LEVEL SECURITY;");
+      const originalVersion = initialDetail.data.lead.crm_version;
+      const originalStatus = initialDetail.data.lead.status;
+      const originalOwner = initialDetail.data.lead.assigned_staff_id;
+      const originalPinCode = initialDetail.data.lead.pin_code;
+      const originalNextFollowup = initialDetail.data.lead.next_followup_at;
+      const originalDoNotContact = initialDetail.data.lead.do_not_contact;
+      const originalActivityCount = initialDetail.data.activities.length;
+      const originalTaskCount = initialDetail.data.tasks.length;
+      const originalPrivacyCount = initialDetail.data.privacyRequests.length;
 
-      // 2. REVOKE ALL from PUBLIC and anon on all tables
-      expect(sql).toContain("REVOKE ALL ON public.consultations FROM PUBLIC, anon;");
-      expect(sql).toContain("REVOKE ALL ON public.crm_staff_members FROM PUBLIC, anon;");
-      expect(sql).toContain("REVOKE ALL ON public.crm_lead_activities FROM PUBLIC, anon;");
-      expect(sql).toContain("REVOKE ALL ON public.crm_followup_tasks FROM PUBLIC, anon;");
-      expect(sql).toContain("REVOKE ALL ON public.crm_privacy_requests FROM PUBLIC, anon;");
+      // Fault-injected storage adapter that forces every audit insert to fail
+      const failingAuditStorage = createDemoCrmStorageAdapter(undefined, {
+        onBeforeAuditInsert: () => {
+          throw new Error("Simulated crm_lead_activities insert failure");
+        },
+      });
 
-      // 3. No permissive USING (true) policy for anon or authenticated
-      expect(sql).not.toMatch(/USING\s*\(\s*true\s*\)/i);
+      // 1. Stage transition must fail and keep status + crm_version unchanged
+      const failedStage = await executeTransitionCrmLeadStage(
+        {
+          leadId: targetLead.id,
+          newStatus: "contacted",
+          expectedVersion: originalVersion,
+          reason: "Attempting transition when audit log is down",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedStage.ok).toBe(false);
+      if (!failedStage.ok) {
+        expect(failedStage.status).toBe(500);
+      }
 
-      // 4. Staff verification helper checks auth.uid() and is_active = true
-      expect(sql).toContain("CREATE OR REPLACE FUNCTION public.get_active_crm_staff_role()");
-      expect(sql).toContain("WHERE auth_user_id = auth.uid()");
-      expect(sql).toContain("AND is_active = true");
+      // 2. Owner assignment must fail and keep assigned_staff_id + crm_version unchanged
+      const failedAssign = await executeAssignCrmLeadOwner(
+        {
+          leadId: targetLead.id,
+          assignedStaffId: owner.id,
+          expectedVersion: originalVersion,
+          reason: "Attempting owner assignment when audit log is down",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedAssign.ok).toBe(false);
+      if (!failedAssign.ok) {
+        expect(failedAssign.status).toBe(500);
+      }
 
-      // 5. Append-only immutability trigger on crm_lead_activities
-      expect(sql).toContain("CREATE TRIGGER trg_prevent_crm_activity_mutation");
-      expect(sql).toContain("BEFORE UPDATE OR DELETE ON public.crm_lead_activities");
+      // 3. Customer data correction must fail and keep pin_code + crm_version unchanged
+      const failedCorrection = await executeCorrectCrmLeadData(
+        {
+          leadId: targetLead.id,
+          expectedVersion: originalVersion,
+          reason: "Attempting data correction when audit log is down",
+          updates: { pin_code: "500099" },
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedCorrection.ok).toBe(false);
+      if (!failedCorrection.ok) {
+        expect(failedCorrection.status).toBe(500);
+      }
 
-      // 6. Atomic stage transition RPC with FOR UPDATE lock
-      expect(sql).toContain("CREATE OR REPLACE FUNCTION public.crm_transition_lead_stage");
-      expect(sql).toContain("FOR UPDATE;");
+      // 4. Staff note (with qualification update) must fail and keep qualification_outcome unchanged
+      const failedNote = await executeAddCrmLeadNote(
+        {
+          leadId: targetLead.id,
+          expectedVersion: originalVersion,
+          noteBody: "Internal note that should roll back on audit failure",
+          qualificationOutcome: "qualified",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedNote.ok).toBe(false);
+      if (!failedNote.ok) {
+        expect(failedNote.status).toBe(500);
+      }
+
+      // 5. Follow-up task creation must fail and roll back the created task + next_followup_at
+      const failedTaskCreate = await executeCreateCrmFollowupTask(
+        {
+          leadId: targetLead.id,
+          expectedVersion: originalVersion,
+          assignedStaffId: owner.id,
+          taskType: "call",
+          dueAt: new Date(Date.now() + 24 * 3600_000).toISOString(),
+          summary: "Task that must roll back when audit insert fails",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedTaskCreate.ok).toBe(false);
+      if (!failedTaskCreate.ok) {
+        expect(failedTaskCreate.status).toBe(500);
+        expect(failedTaskCreate.reason).toBe("db_error");
+      }
+
+      // 6. Privacy request (consent_withdrawal) must fail and roll back do_not_contact + privacy record
+      const failedPrivacy = await executeLogCrmPrivacyRequest(
+        {
+          leadId: targetLead.id,
+          expectedVersion: originalVersion,
+          requestType: "consent_withdrawal",
+          status: "fulfilled",
+          resolutionSummary: "Privacy request that must roll back when audit insert fails",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedPrivacy.ok).toBe(false);
+      if (!failedPrivacy.ok) {
+        expect(failedPrivacy.status).toBe(500);
+        expect(failedPrivacy.reason).toBe("db_error");
+      }
+
+      // Verify the lead's entire state is 100% unchanged after all 6 failed mutations
+      const afterDetail = await executeGetCrmLeadDetail(targetLead.id, {
+        token: ownerToken,
+        env: DEMO_ENV,
+      });
+      expect(afterDetail.ok).toBe(true);
+      if (afterDetail.ok) {
+        expect(afterDetail.data.lead.crm_version).toBe(originalVersion);
+        expect(afterDetail.data.lead.status).toBe(originalStatus);
+        expect(afterDetail.data.lead.assigned_staff_id).toBe(originalOwner);
+        expect(afterDetail.data.lead.pin_code).toBe(originalPinCode);
+        expect(afterDetail.data.lead.next_followup_at).toBe(originalNextFollowup);
+        expect(afterDetail.data.lead.do_not_contact).toBe(originalDoNotContact);
+        expect(afterDetail.data.activities.length).toBe(originalActivityCount);
+        expect(afterDetail.data.tasks.length).toBe(originalTaskCount);
+        expect(afterDetail.data.privacyRequests.length).toBe(originalPrivacyCount);
+      }
+
+      // 7. Also verify task completion and task reschedule roll back on existing pending task when audit fails
+      const queueBefore = await executeListCrmFollowupQueue({ token: ownerToken, env: DEMO_ENV });
+      expect(queueBefore.ok).toBe(true);
+      if (!queueBefore.ok) return;
+      const pendingTask = queueBefore.tasks.find((t) => t.status === "pending")!;
+      expect(pendingTask).toBeDefined();
+      const originalDueAt = pendingTask.due_at;
+
+      const failedReschedule = await executeRescheduleCrmFollowupTask(
+        {
+          taskId: pendingTask.id,
+          expectedVersion: pendingTask.lead_version,
+          newDueAt: "2026-12-01T10:00:00.000Z",
+          reason: "Reschedule when audit is down",
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedReschedule.ok).toBe(false);
+      if (!failedReschedule.ok) {
+        expect(failedReschedule.status).toBe(500);
+        expect(failedReschedule.reason).toBe("db_error");
+      }
+
+      const failedComplete = await executeCompleteCrmFollowupTask(
+        {
+          taskId: pendingTask.id,
+          expectedVersion: pendingTask.lead_version,
+          completionNote: "Complete when audit is down",
+          customerContactConfirmed: false,
+        },
+        { token: ownerToken, env: DEMO_ENV, storageAdapter: failingAuditStorage },
+      );
+      expect(failedComplete.ok).toBe(false);
+      if (!failedComplete.ok) {
+        expect(failedComplete.status).toBe(500);
+        expect(failedComplete.reason).toBe("db_error");
+      }
+
+      const queueAfter = await executeListCrmFollowupQueue({ token: ownerToken, env: DEMO_ENV });
+      expect(queueAfter.ok).toBe(true);
+      if (queueAfter.ok) {
+        const unchangedTask = queueAfter.tasks.find((t) => t.id === pendingTask.id)!;
+        expect(unchangedTask.status).toBe("pending");
+        expect(unchangedTask.due_at).toBe(originalDueAt);
+        expect(unchangedTask.completed_at).toBeNull();
+      }
+    });
+
+    it("wires LIVE stage transitions and lead updates to atomic PostgreSQL RPCs (crm_transition_lead_stage & crm_atomic_update_lead_with_audit) and enforces 409 conflicts and audit presence", async () => {
+      const ownerStaff: CrmStaffMember = {
+        id: "00000000-0000-4000-8000-000000000101",
+        auth_user_id: "live-owner-auth-id",
+        email: "siddharth@wavenox.com",
+        full_name: "Siddharth Varma",
+        role: "owner_admin",
+        is_active: true,
+        created_at: "2026-10-01T00:00:00.000Z",
+        updated_at: "2026-10-01T00:00:00.000Z",
+      };
+
+      const liveAuthAdapter = {
+        verifySupabaseJwt: async () => ({
+          user: { id: ownerStaff.auth_user_id, email: ownerStaff.email },
+        }),
+        findStaffByAuthUserId: async () => ownerStaff,
+      };
+
+      const baseLeadRow = {
+        id: "10000000-0000-4000-8000-000000000003",
+        created_at: "2026-11-05T08:15:00.000Z",
+        reference_code: "WNX-LIVE-9B5W2X",
+        client_name: "Kavitha Deshmukh",
+        phone: "+919000000102",
+        email: null,
+        company_name: null,
+        company_url: null,
+        city: "Bengaluru",
+        pin_code: "560038",
+        property_tier: "independent_home",
+        discom_code: "BESCOM",
+        monthly_bill_inr: 9500,
+        system_kw: 6.96,
+        battery_units: 1,
+        net_price_inr: 615560,
+        roof_area_sqft: 950,
+        source: "drawer",
+        notes: null,
+        status: "new",
+        consent_given: true,
+        consent_version: "2026-11-v2",
+        consent_at: "2026-11-05T08:15:00.000Z",
+        consent_withdrawn_at: null,
+        do_not_contact: false,
+        retention_category: "enquiry_24m",
+        attribution_channel: "organic_search",
+        assigned_staff_id: null,
+        next_followup_at: null,
+        last_contacted_at: null,
+        qualified_at: null,
+        qualification_outcome: "pending",
+        disqualification_reason: null,
+        stage_updated_at: "2026-11-05T08:15:00.000Z",
+        last_activity_at: "2026-11-05T08:15:00.000Z",
+        crm_version: 1,
+      };
+
+      const rpcCalls: Array<{ fn: string; args: Record<string, unknown> }> = [];
+      let rpcBehavior: "success" | "missing_audit_id" | "conflict" | "audit_error" = "success";
+
+      const mockSupabase = {
+        from: (table: string) => {
+          if (table === "consultations") {
+            return {
+              select: () => ({
+                eq: () => ({
+                  maybeSingle: async () => ({ data: { ...baseLeadRow }, error: null }),
+                }),
+              }),
+            };
+          }
+          if (table === "crm_staff_members") {
+            return {
+              select: () => ({
+                order: async () => ({ data: [ownerStaff], error: null }),
+              }),
+            };
+          }
+          throw new Error(`Unexpected direct table query on ${table}`);
+        },
+        rpc: async (fn: string, args: Record<string, unknown>) => {
+          rpcCalls.push({ fn, args });
+          if (rpcBehavior === "conflict") {
+            return {
+              data: null,
+              error: { message: "CONCURRENT_MODIFICATION_CONFLICT", code: "P0001" },
+            };
+          }
+          if (rpcBehavior === "audit_error") {
+            return {
+              data: null,
+              error: { message: "AUDIT_INSERT_FAILED", code: "P0001" },
+            };
+          }
+          if (rpcBehavior === "missing_audit_id") {
+            return {
+              data: {
+                lead: { ...baseLeadRow, status: "contacted", crm_version: 2 },
+                activity_id: null,
+              },
+              error: null,
+            };
+          }
+          if (fn === "crm_transition_lead_stage") {
+            return {
+              data: {
+                lead: {
+                  ...baseLeadRow,
+                  status: args.p_new_status,
+                  crm_version: Number(args.p_expected_version) + 1,
+                },
+                activity_id: "20000000-0000-4000-8000-000000000999",
+              },
+              error: null,
+            };
+          }
+          if (fn === "crm_atomic_update_lead_with_audit") {
+            const patch = (args.p_patch ?? {}) as Record<string, unknown>;
+            return {
+              data: {
+                lead: {
+                  ...baseLeadRow,
+                  ...patch,
+                  crm_version: Number(args.p_expected_version) + 1,
+                },
+                activity_id: "20000000-0000-4000-8000-000000000998",
+              },
+              error: null,
+            };
+          }
+          return { data: null, error: { message: "Unknown RPC" } };
+        },
+      } as unknown as SupabaseClient;
+
+      const liveStorage = createLiveSupabaseCrmStorageAdapter(mockSupabase);
+
+      // 1. Successful atomic stage transition via crm_transition_lead_stage RPC
+      const stageOk = await executeTransitionCrmLeadStage(
+        {
+          leadId: baseLeadRow.id,
+          newStatus: "contacted",
+          expectedVersion: 1,
+          reason: "Live RPC stage transition check",
+        },
+        {
+          token: "valid-live-jwt",
+          env: LIVE_CONFIGURED_ENV,
+          authAdapter: liveAuthAdapter,
+          storageAdapter: liveStorage,
+        },
+      );
+      expect(stageOk.ok).toBe(true);
+      expect(rpcCalls[0]?.fn).toBe("crm_transition_lead_stage");
+      if (stageOk.ok) {
+        expect(stageOk.lead.status).toBe("contacted");
+        expect(stageOk.lead.crm_version).toBe(2);
+      }
+
+      // 2. Rejects mutation if RPC omits mandatory activity_id
+      rpcBehavior = "missing_audit_id";
+      const missingAuditRes = await executeTransitionCrmLeadStage(
+        {
+          leadId: baseLeadRow.id,
+          newStatus: "contacted",
+          expectedVersion: 1,
+          reason: "Should fail when activity_id is missing",
+        },
+        {
+          token: "valid-live-jwt",
+          env: LIVE_CONFIGURED_ENV,
+          authAdapter: liveAuthAdapter,
+          storageAdapter: liveStorage,
+        },
+      );
+      expect(missingAuditRes.ok).toBe(false);
+      if (!missingAuditRes.ok) {
+        expect(missingAuditRes.status).toBe(500);
+        expect(missingAuditRes.message).toContain("Mandatory audit activity record missing");
+      }
+
+      // 3. Propagates 409 conflict when RPC raises CONCURRENT_MODIFICATION_CONFLICT
+      rpcBehavior = "conflict";
+      const conflictRes = await executeAssignCrmLeadOwner(
+        {
+          leadId: baseLeadRow.id,
+          assignedStaffId: ownerStaff.id,
+          expectedVersion: 1,
+          reason: "Stale version check on live RPC",
+        },
+        {
+          token: "valid-live-jwt",
+          env: LIVE_CONFIGURED_ENV,
+          authAdapter: liveAuthAdapter,
+          storageAdapter: liveStorage,
+        },
+      );
+      expect(conflictRes.ok).toBe(false);
+      expect(rpcCalls[2]?.fn).toBe("crm_atomic_update_lead_with_audit");
+      if (!conflictRes.ok) {
+        expect(conflictRes.status).toBe(409);
+        expect(conflictRes.reason).toBe("conflict");
+      }
+
+      // 4. Rejects owner assignment when RPC raises AUDIT_INSERT_FAILED
+      rpcBehavior = "audit_error";
+      const auditErrRes = await executeAssignCrmLeadOwner(
+        {
+          leadId: baseLeadRow.id,
+          assignedStaffId: ownerStaff.id,
+          expectedVersion: 1,
+          reason: "Audit failure check on live RPC",
+        },
+        {
+          token: "valid-live-jwt",
+          env: LIVE_CONFIGURED_ENV,
+          authAdapter: liveAuthAdapter,
+          storageAdapter: liveStorage,
+        },
+      );
+      expect(auditErrRes.ok).toBe(false);
+      if (!auditErrRes.ok) {
+        expect(auditErrRes.status).toBe(500);
+      }
     });
   });
 });

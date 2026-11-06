@@ -197,6 +197,7 @@ export interface CrmLeadActivityItem {
 export type FollowupUrgency = "overdue" | "due_today" | "upcoming" | "completed" | "cancelled";
 
 export interface CrmFollowupTaskItem {
+  lead_version: number | null;
   id: string;
   lead_id: string;
   lead_reference_code: string;
@@ -246,7 +247,8 @@ export interface CrmRelatedEnquiryItem {
 }
 
 export interface CrmLeadDetailPayload {
-  lead: Omit<CrmLeadRecord, "phone" | "email"> & {
+  lead: Omit<CrmLeadRecord, "phone" | "email" | "consent_given"> & {
+    consent_given: boolean | null;
     phone_display: string;
     email_display: string | null;
     pii_masked: boolean;
@@ -440,10 +442,10 @@ export const transitionCrmLeadStage = createServerFn({ method: "POST" })
       | { ok: true; lead: CrmLeadRecord }
       | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeTransitionCrmLeadStage } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeTransitionCrmLeadStage } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeTransitionCrmLeadStage(data, ctx);
+      return respondToCrmMutation(executeTransitionCrmLeadStage(data, ctx));
     },
   );
 
@@ -456,10 +458,10 @@ export const assignCrmLeadOwner = createServerFn({ method: "POST" })
       | { ok: true; lead: CrmLeadRecord }
       | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeAssignCrmLeadOwner } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeAssignCrmLeadOwner } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeAssignCrmLeadOwner(data, ctx);
+      return respondToCrmMutation(executeAssignCrmLeadOwner(data, ctx));
     },
   );
 
@@ -472,10 +474,10 @@ export const addCrmLeadNote = createServerFn({ method: "POST" })
       | { ok: true; activityId: string }
       | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeAddCrmLeadNote } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeAddCrmLeadNote } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeAddCrmLeadNote(data, ctx);
+      return respondToCrmMutation(executeAddCrmLeadNote(data, ctx));
     },
   );
 
@@ -487,10 +489,10 @@ export const createCrmFollowupTask = createServerFn({ method: "POST" })
     }): Promise<
       { ok: true; taskId: string } | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeCreateCrmFollowupTask } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeCreateCrmFollowupTask } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeCreateCrmFollowupTask(data, ctx);
+      return respondToCrmMutation(executeCreateCrmFollowupTask(data, ctx));
     },
   );
 
@@ -502,10 +504,10 @@ export const completeCrmFollowupTask = createServerFn({ method: "POST" })
     }): Promise<
       { ok: true; taskId: string } | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeCompleteCrmFollowupTask } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeCompleteCrmFollowupTask } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeCompleteCrmFollowupTask(data, ctx);
+      return respondToCrmMutation(executeCompleteCrmFollowupTask(data, ctx));
     },
   );
 
@@ -517,10 +519,13 @@ export const rescheduleCrmFollowupTask = createServerFn({ method: "POST" })
     }): Promise<
       { ok: true; taskId: string } | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeRescheduleCrmFollowupTask } =
-        await import("@/server/crm-service");
+      const {
+        buildServerExecutionContext,
+        respondToCrmMutation,
+        executeRescheduleCrmFollowupTask,
+      } = await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeRescheduleCrmFollowupTask(data, ctx);
+      return respondToCrmMutation(executeRescheduleCrmFollowupTask(data, ctx));
     },
   );
 
@@ -533,10 +538,10 @@ export const correctCrmLeadData = createServerFn({ method: "POST" })
       | { ok: true; lead: CrmLeadRecord }
       | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeCorrectCrmLeadData } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeCorrectCrmLeadData } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeCorrectCrmLeadData(data, ctx);
+      return respondToCrmMutation(executeCorrectCrmLeadData(data, ctx));
     },
   );
 
@@ -549,10 +554,10 @@ export const logCrmPrivacyRequest = createServerFn({ method: "POST" })
       | { ok: true; requestId: string }
       | { ok: false; status: number; reason: string; message: string }
     > => {
-      const { buildServerExecutionContext, executeLogCrmPrivacyRequest } =
+      const { buildServerExecutionContext, respondToCrmMutation, executeLogCrmPrivacyRequest } =
         await import("@/server/crm-service");
       const { ctx } = await buildServerExecutionContext();
-      return executeLogCrmPrivacyRequest(data, ctx);
+      return respondToCrmMutation(executeLogCrmPrivacyRequest(data, ctx));
     },
   );
 

@@ -632,7 +632,7 @@ export async function processLeadSubmission(
         click_id_value: sanitizedAttr.click_id_value || null,
       });
     } catch (crmDemoErr) {
-      console.warn("[submitLead] Non-fatal error registering demo lead in CRM store:", crmDemoErr);
+      console.warn("[submitLead] Unable to register demo lead in CRM store");
     }
 
     console.info(
@@ -848,7 +848,6 @@ export async function processLeadSubmission(
       // Log only sanitized error metadata (never `error.details` which can include row PII)
       console.error("[submitLead] Database error:", {
         code: error?.code ?? "unknown",
-        message: error?.message ?? "No rows returned",
         source: validData.source,
       });
       return {
@@ -908,7 +907,7 @@ export async function processLeadSubmission(
           console.warn("[submitLead] Resend API returned non-OK status:", resendResponse.status);
         }
       } catch (notifyErr) {
-        console.warn("[submitLead] Failed to dispatch owner notification email:", notifyErr);
+        console.warn("[submitLead] Failed to dispatch owner notification email");
       }
     }
 
@@ -937,7 +936,7 @@ export async function processLeadSubmission(
       };
     }
 
-    console.error("[submitLead] Unexpected error:", err);
+    console.error("[submitLead] Unexpected database failure");
     return {
       success: false,
       isDemo: false,

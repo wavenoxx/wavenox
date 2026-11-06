@@ -199,7 +199,7 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
             data: null,
             error: {
               code: "50000",
-              message: "Connection terminated unexpectedly",
+              message: "Rejected row with phone +919876543210",
               details: "Failing row contains (Vikram Aditya, +919876543210, vikram@example.com)",
             },
           };

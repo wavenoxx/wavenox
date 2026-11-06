@@ -1,0 +1,47 @@
+name: Step 5 hardening
+on:
+  push:
+    branches: [feat/wavenox-step5-crm-attribution]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: { node-version: 24, cache: npm }
+      - uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v3.2.0
+        with: { version: 2.122.1 }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Start disposable Supabase and apply the complete migration history
+        run: |
+          directory="$RUNNER_TEMP/step5-db"
+          mkdir "$directory"
+          cd "$directory"
+          supabase init
+          cp -R "$GITHUB_WORKSPACE/supabase/migrations" supabase/
+          supabase start -x studio,imgproxy,realtime,edge-runtime,logflare,vector,supavisor > "$RUNNER_TEMP/step5-start.log" || { tail -50 "$RUNNER_TEMP/step5-start.log"; exit 1; }
+          psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f "$GITHUB_WORKSPACE/scripts/step5-tests/fixtures.sql"
+      - name: Verify roles, transactions, concurrent requests and LIVE login
+        run: |
+          supabase status --workdir "$RUNNER_TEMP/step5-db" -o env > "$RUNNER_TEMP/step5-local-env"
+          source "$RUNNER_TEMP/step5-local-env"
+          export STEP5_TEST_DB=supabase STEP5_ANON_KEY="$ANON_KEY" STEP5_SERVICE_KEY="$SERVICE_ROLE_KEY"
+          export STEP5_BROWSER_CREDENTIAL_FILE="$RUNNER_TEMP/step5-login"
+          npx vitest run scripts/step5-tests/live.test.ts
+          LEAD_MODE=live SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/step5-tests/login.mjs

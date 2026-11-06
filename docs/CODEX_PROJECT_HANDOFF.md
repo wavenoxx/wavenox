@@ -1,0 +1,23 @@
+# WAVENOX project handoff
+
+WAVENOX is a premium Indian full-service solar platform for residential and commercial customers. Preserve the brand, consent-based consultation flow, original attribution, India-specific engineering and financing assumptions, and the Design Studio customer journey.
+
+## Foundation
+
+Steps 1–4 delivered secure lead capture, the public showroom, energy and financial calculations, and the intelligent configurator. Step 4 is merged into [main at 14a45de](https://github.com/wavenoxx/wavenox/commit/14a45deec1468250239d6440d453e25769e3d0b5). Step 5 develops the private CRM and attribution on `feat/wavenox-step5-crm-attribution`. Its approved starting SHA is [f1e7645](https://github.com/wavenoxx/wavenox/commit/f1e7645b366a448e99d3ac644c4f1df3f5af6750). Verify the current head and check results on [draft PR #9](https://github.com/wavenoxx/wavenox/pull/9) before continuing.
+
+The verified npm tree uses React 19.3.0, TypeScript 5.9.3, TanStack Router 1.170.46, React Start 1.169.4, Vite 8.3.0, Nitro 3.0.260603-beta, Supabase JS 2.117.1, Zod, Vitest 5.0.1 and Playwright 1.63.0. Preserve the LIVE/DEMO separation. Read the [application architecture](STEP5_CRM_ARCHITECTURE.md), [database boundary](STEP5_DATABASE_SECURITY.md) and [quality-gate record](STEP5_EXECUTION_REPORT.md).
+
+At handoff the local unit, lint, types, client/SSR build and isolated PostgREST checks passed. Browser execution requires a Chromium-capable runner. Use the CI and preview results for the actual commit. Production readiness also requires approved migrations, verified staff provisioning, environment configuration, privacy and financial review, and release sign-off.
+
+## Safe continuation
+
+1. Read [AGENTS.md](../AGENTS.md) and [Rules.md](../Rules.md), inspect the working tree, fetch and inspect branch history. Preserve uncommitted work. Use ordinary reviewed commits and fast-forward pushes to the existing draft PR.
+2. Run the five quality gates from the execution report. Separate mocked, real Data API, native concurrent database, browser and deployment evidence.
+3. Use only disposable local or expressly authorized staging fixtures for database and authentication tests. Keep service credentials server-side. Production migration, data mutation, staff provisioning, merge and production deployment each require separate approval.
+
+## Remaining roadmap
+
+- **Step 6** requires separate development sign-off. Build consented bill and roof intelligence with confidence reporting, source imagery where relevant, and human correction.
+- **Step 7** covers authenticated installation milestones, surveys, documents, support and consent-safe customer notifications.
+- **Step 8** covers production security, accessibility, performance, SEO, legal and financial disclosures, observability, domain readiness and approved release operations.
