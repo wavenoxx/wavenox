@@ -138,3 +138,13 @@ All 19 screenshots captured and inspected in `qa-step5/`:
 1. **Supabase Migration Execution**: Before enabling `/ops` in production (`LEAD_MODE="live"`), apply `supabase/migrations/20261106_step5_crm_and_attribution.sql` and provision initial staff records in `public.crm_staff_members`.
 2. **Ad Network Spend Integration**: ROAS is intentionally marked `"Ad spend not connected — ROAS unavailable."` until Google Ads / Meta Ads spend APIs are connected in a future marketing-ops integration.
 3. **Contracted Invoice Ledger**: Preliminary solar estimates (`net_price_inr`) are displayed per lead for engineering context only; formal contracted order value tracking belongs to post-survey ERP/invoicing workflows.
+
+---
+
+## 14. Git Branch, Commit SHA & Draft PR Status
+
+- **Repository**: `https://github.com/wavenoxx/wavenox.git`
+- **Base Branch**: `main` (`14a45deec1468250239d6440d453e25769e3d0b5`)
+- **Feature Branch**: `feat/wavenox-step5-crm-attribution`
+- **Draft Pull Request**: `https://github.com/wavenoxx/wavenox/pull/9` (Draft PR targeting `main` — not auto-merged, not deployed to production)
+
