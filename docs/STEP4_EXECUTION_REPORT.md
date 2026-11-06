@@ -214,11 +214,11 @@ All 27 baseline and 27 upgraded screenshots were captured and inspected across m
 ## 16. Final Commit SHA
 
 - **Branch**: `feat/wavenox-step4-intelligent-configurator`
-- **Final Commit SHA**: *(Updated upon commit)*
+- **Implementation Commit SHA**: `ad21e35` (see `git rev-parse HEAD` for final docs commit)
 
 ---
 
 ## 17. Draft Pull Request Link
 
 - **Target Base Branch**: `feat/wavenox-step3-solar-engine`
-- **Draft PR**: *(Updated upon PR creation)*
+- **Draft PR**: [Draft PR #8 — `https://github.com/wavenoxx/wavenox/pull/8`](https://github.com/wavenoxx/wavenox/pull/8)
