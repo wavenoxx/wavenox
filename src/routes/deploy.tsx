@@ -6,13 +6,21 @@ import { SystemConfigurator } from "@/components/SystemConfigurator";
 import { BRAND_CONFIG } from "@/config/brand";
 
 export const Route = createFileRoute("/deploy")({
-  validateSearch: (search: Record<string, unknown>): { bill?: number; discom?: string } => ({
-    bill:
+  validateSearch: (search: Record<string, unknown>): { bill?: number; discom?: string } => {
+    const rawBill =
       typeof search.bill === "string" || typeof search.bill === "number"
         ? Number(search.bill)
-        : undefined,
-    discom: typeof search.discom === "string" ? search.discom : undefined,
-  }),
+        : Number.NaN;
+    const validBill =
+      Number.isFinite(rawBill) && rawBill > 0
+        ? Math.min(200000, Math.max(1000, Math.round(rawBill)))
+        : undefined;
+    const rawDiscom = typeof search.discom === "string" ? search.discom.trim() : "";
+    return {
+      bill: validBill,
+      discom: rawDiscom.length > 0 ? rawDiscom : undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: `Design Studio & System Sizing — ${BRAND_CONFIG.name}` },

@@ -6,6 +6,8 @@ export interface BillDecoderProps {
   monthlyBill: number;
   discomCode?: string;
   sanctionedLoadKw?: number;
+  sanctionedLoadConfirmed?: boolean;
+  monthlyUnitsOverride?: number;
   onBillChange?: (bill: number) => void;
   className?: string;
   defaultExpanded?: boolean;
@@ -15,6 +17,8 @@ export function BillDecoder({
   monthlyBill,
   discomCode = "TGSPDCL",
   sanctionedLoadKw,
+  sanctionedLoadConfirmed,
+  monthlyUnitsOverride,
   className = "",
   defaultExpanded = false,
 }: BillDecoderProps) {
@@ -25,6 +29,43 @@ export function BillDecoder({
   }, [discomCode, monthlyBill, sanctionedLoadKw]);
 
   const isVerified = analysis.status === "VERIFIED";
+  const isUnavailable = analysis.status === "UNAVAILABLE";
+  const isSanctionedLoadVerified =
+    typeof sanctionedLoadConfirmed === "boolean"
+      ? sanctionedLoadConfirmed
+      : analysis.sanctionedLoadConfirmed;
+  const displayedUnits =
+    typeof monthlyUnitsOverride === "number" &&
+    Number.isFinite(monthlyUnitsOverride) &&
+    monthlyUnitsOverride > 0
+      ? Math.round(monthlyUnitsOverride)
+      : analysis.estimatedUnits;
+  const hasUnitsOverride =
+    typeof monthlyUnitsOverride === "number" &&
+    Number.isFinite(monthlyUnitsOverride) &&
+    monthlyUnitsOverride > 0;
+
+  if (isUnavailable) {
+    return (
+      <div
+        className={`rounded-[8px] border border-[#F59E0B]/40 bg-[#FFF8E1] p-4 sm:p-5 text-[12px] text-[#92400E] space-y-1.5 ${className}`}
+      >
+        <div className="flex items-center gap-2 font-semibold uppercase tracking-wider text-[#92400E]">
+          <AlertCircle className="w-4 h-4 text-[#D97706] shrink-0" />
+          <span>Utility Verification Required ({discomCode})</span>
+        </div>
+        <div className="text-[14px] font-medium text-[#171A20]">
+          Detailed regional calculation unavailable — advisor assessment required.
+        </div>
+        <p className="text-[#5C5E62] leading-relaxed">
+          Tariff slabs, fixed charges, and net-metering settlement rules for{" "}
+          <strong>{discomCode}</strong> are not in the verified WAVENOX utility registry. Select a
+          supported electricity board above or submit your details below for a custom engineering
+          review.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -46,15 +87,29 @@ export function BillDecoder({
             <span className="text-[12px] text-[#5C5E62] font-mono">{analysis.category}</span>
           </div>
           <div className="text-[16px] sm:text-[18px] font-medium text-[#171A20] leading-snug">
-            Your ₹{monthlyBill.toLocaleString("en-IN")} {discomCode} bill ≈{" "}
-            <span className="font-semibold text-[#171A20] tabular-nums">
-              {analysis.estimatedUnits.toLocaleString("en-IN")} units/month
-            </span>
+            {hasUnitsOverride ? (
+              <>
+                Customer-entered consumption:{" "}
+                <span className="font-semibold text-[#171A20] tabular-nums">
+                  {displayedUnits.toLocaleString("en-IN")} units/month
+                </span>{" "}
+                <span className="text-[13px] font-normal text-[#5C5E62]">
+                  (₹{monthlyBill.toLocaleString("en-IN")} bill)
+                </span>
+              </>
+            ) : (
+              <>
+                Your ₹{monthlyBill.toLocaleString("en-IN")} {discomCode} bill ≈{" "}
+                <span className="font-semibold text-[#171A20] tabular-nums">
+                  {displayedUnits.toLocaleString("en-IN")} units/month
+                </span>
+              </>
+            )}
           </div>
           <div className="text-[12px] text-[#5C5E62] mt-0.5">
             Average effective tariff: ₹{analysis.averageRatePerKwh.toFixed(2)} / kWh ·{" "}
-            {analysis.sanctionedLoadConfirmed
-              ? `Connected load: ${analysis.sanctionedLoadKw} kW`
+            {isSanctionedLoadVerified
+              ? `Connected load: ${analysis.sanctionedLoadKw} kW (Customer-verified)`
               : `Assumed load: ${analysis.sanctionedLoadKw} kW (Unverified)`}{" "}
             · Avoidable energy/duty: ₹{analysis.avoidableChargesTotal.toLocaleString("en-IN")}/mo
           </div>
@@ -136,7 +191,7 @@ export function BillDecoder({
                   <tr className="tabular-nums">
                     <td colSpan={3} className="py-1 text-[#5C5E62]">
                       Contracted Demand Fixed Charges ({analysis.sanctionedLoadKw} kW
-                      {analysis.sanctionedLoadConfirmed ? "" : " assumed"} · Unavoidable)
+                      {isSanctionedLoadVerified ? "" : " assumed"} · Unavoidable)
                     </td>
                     <td className="py-1 text-right text-[#5C5E62]">
                       ₹{analysis.fixedCharge.toFixed(2)}

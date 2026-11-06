@@ -490,6 +490,105 @@ async function runAudit() {
 
       await page.close();
     }
+
+    // 15. Step 4 Intelligent Solar Configurator & Personalized Design Studio Checks
+    console.log(
+      "Verifying Step 4 Intelligent Configurator, Roof Planner, Battery Guidance & Manual Override Preservation...",
+    );
+    {
+      const page = await context.newPage();
+
+      // Check 15a: Narrow phone 320x720 overflow & usability on /deploy
+      await page.setViewportSize({ width: 320, height: 720 });
+      await page.goto(`${BASE_URL}/deploy`, { waitUntil: "load" });
+      await page.waitForTimeout(300);
+      const narrowOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      if (narrowOverflow > 2) {
+        failures.push(`/deploy (320x720 narrow phone): Horizontal overflow (${narrowOverflow}px)`);
+      }
+
+      // Check 15b: Unsupported DISCOM URL handoff (?bill=abc&discom=FAKECO)
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(`${BASE_URL}/deploy?bill=abc&discom=FAKECO`, { waitUntil: "load" });
+      await page.waitForTimeout(400);
+      const fakeBody = await page.textContent("body");
+      if (
+        !fakeBody.includes("Utility Verification Required") ||
+        !fakeBody.includes(
+          "Detailed regional calculation unavailable — advisor assessment required.",
+        )
+      ) {
+        failures.push(
+          "/deploy?bill=abc&discom=FAKECO did not display 'Utility Verification Required' and 'Detailed regional calculation unavailable — advisor assessment required.'",
+        );
+      }
+
+      // Check 15c: Manual panel override preservation & Keep/Apply choice banner
+      await page.goto(`${BASE_URL}/deploy?bill=12000&discom=TGSPDCL`, { waitUntil: "load" });
+      await page.waitForTimeout(400);
+      // Select Small tier (6 panels = 3.48 kW)
+      await page.locator('button[role="radio"]:has-text("Small")').first().click();
+      await page.waitForTimeout(200);
+      // Change bill preset to ₹25k -> should preserve 6 panels and show manual-override-banner
+      await page.locator('button[role="radio"]:has-text("₹25k")').first().click();
+      await page.waitForTimeout(250);
+      const overrideBanner = page.locator('[data-testid="manual-override-banner"]');
+      if (!(await overrideBanner.isVisible())) {
+        failures.push(
+          "/deploy did not preserve custom panel selection and show manual-override-banner when bill changed",
+        );
+      } else {
+        await overrideBanner.locator('button:has-text("Apply updated recommendation")').click();
+        await page.waitForTimeout(200);
+      }
+
+      // Check 15d: Roof Planner zero/insufficient roof without artificial 200 sq.ft. floor
+      await page
+        .locator('button:has-text("Plan Usable Terrace Area & Obstructions")')
+        .first()
+        .click();
+      await page.waitForTimeout(300);
+      await page.locator("#gross-terrace-slider").fill("600");
+      await page.locator("#setback-slider").fill("5");
+      await page.locator("#tank-slider").fill("400");
+      await page.locator("#walkway-slider").fill("300");
+      await page.waitForTimeout(250);
+      const roofText = await page.textContent("body");
+      if (!roofText.includes("0 Feasible Modules (0 sq.ft. Net Usable Area)")) {
+        failures.push(
+          "RoofSketcher did not report 0 sq.ft. usable area and 0 feasible modules when deductions exceed gross roof",
+        );
+      }
+
+      // Check 15e: Battery selection & Preliminary Solar Assessment modal
+      await page.locator('button[role="radio"]:has-text("2 Units")').first().click();
+      await page.waitForTimeout(200);
+      await page.locator('button:has-text("Preview Proposal (PDF)")').first().click();
+      await page.waitForTimeout(350);
+      const modalText = await page.textContent("body");
+      if (
+        !modalText.includes("Preliminary Solar Assessment") ||
+        !modalText.includes("Indicative System Design")
+      ) {
+        failures.push(
+          "Preliminary Proposal modal is missing 'Preliminary Solar Assessment' or 'Indicative System Design'",
+        );
+      }
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(250);
+
+      // Check 15f: Form validation error state when submitting empty form
+      await page.click('button[type="submit"]');
+      await page.waitForTimeout(250);
+      const errVisible = await page.locator("#studio-form-error").isVisible();
+      if (!errVisible) {
+        failures.push("Submitting empty /deploy form did not render #studio-form-error alert");
+      }
+
+      await page.close();
+    }
   } finally {
     await browser.close();
     if (serverProcess) {
