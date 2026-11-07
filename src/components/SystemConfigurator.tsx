@@ -122,6 +122,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   // Keep state synchronized when URL search params change via SPA navigation
   React.useEffect(() => {
     if (initialBill !== undefined || initialDiscom !== undefined) {
+      setConfirmedBillBasis("");
       const nextBill = sanitizeBillInput(initialBill);
       const nextDiscom = initialDiscom?.trim() || DISCOMS[0].code;
       setMonthlyBill(nextBill);
@@ -234,8 +235,19 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   };
 
   const handleConfirmedBill = (data: ConfirmedBillInputs) => {
-    const units = data.monthlyUnitsOverride ?? parsedMonthlyUnitsOverride;
-    const load = data.sanctionedLoadKw ?? parsedSanctionedLoadKw;
+    // Preserve stored precision inputs even when the customer temporarily selected estimate mode.
+    const previousUnits = Number(customMonthlyUnitsStr);
+    const previousLoad = Number(customSanctionedLoadStr);
+    const units =
+      data.monthlyUnitsOverride ??
+      (customMonthlyUnitsStr.trim() && Number.isFinite(previousUnits) && previousUnits >= 0
+        ? previousUnits
+        : undefined);
+    const load =
+      data.sanctionedLoadKw ??
+      (customSanctionedLoadStr.trim() && Number.isFinite(previousLoad) && previousLoad > 0
+        ? previousLoad
+        : undefined);
     const loadConfirmed =
       data.sanctionedLoadKw !== undefined ? data.sanctionedLoadConfirmed : sanctionedLoadConfirmed;
     setMonthlyBill(data.monthlyBillInr);

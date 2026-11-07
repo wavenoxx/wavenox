@@ -5,13 +5,16 @@ export function BillPagePreview({
   index,
   marks,
   onChange,
+  disabled = false,
 }: {
   page: BillPage;
   index: number;
   marks: Redaction[];
   onChange: (marks: Redaction[]) => void;
+  disabled?: boolean;
 }) {
   const [visible, setVisible] = React.useState(false);
+  const [fullSize, setFullSize] = React.useState(false);
   const [start, setStart] = React.useState<{ x: number; y: number } | null>(null);
   const [draft, setDraft] = React.useState<Redaction | null>(null);
   const canvas = React.useRef<HTMLCanvasElement>(null);
@@ -46,6 +49,7 @@ export function BillPagePreview({
         <span className="text-sm font-medium">Page {index + 1} · local preview</span>
         <button
           type="button"
+          disabled={disabled}
           className="min-h-11 px-3 text-sm underline"
           onClick={() => setVisible(!visible)}
         >
@@ -58,35 +62,64 @@ export function BillPagePreview({
             Drag over names, account numbers, addresses and QR codes to hide them before processing.
             Black areas will be removed from the transmitted image.
           </p>
-          <canvas
-            ref={canvas}
-            width={page.width}
-            height={page.height}
-            aria-label={`Private bill page ${index + 1}, drag to redact`}
-            className="w-full h-auto border touch-none cursor-crosshair"
-            onPointerDown={(e) => {
-              e.currentTarget.setPointerCapture(e.pointerId);
-              setStart(point(e));
-            }}
-            onPointerMove={(e) => {
-              if (!start) return;
-              const p = point(e);
-              setDraft({
-                x: Math.min(start.x, p.x),
-                y: Math.min(start.y, p.y),
-                width: Math.abs(p.x - start.x),
-                height: Math.abs(p.y - start.y),
-              });
-            }}
-            onPointerUp={() => {
-              if (draft && draft.width > 0.003 && draft.height > 0.003) onChange([...marks, draft]);
-              setStart(null);
-              setDraft(null);
-            }}
-          />
+          <button
+            type="button"
+            disabled={disabled}
+            className="min-h-11 px-3 bg-[#EEEEEE] rounded text-xs"
+            onClick={() => setFullSize(!fullSize)}
+          >
+            {fullSize ? "Fit preview" : "Read at full size"}
+          </button>
+          {fullSize && (
+            <p className="text-xs text-[#5C5E62]">
+              Scroll to read small digits. Return to fit view to draw redactions.
+            </p>
+          )}
+          <div
+            className={fullSize ? "max-h-[500px] overflow-auto" : ""}
+            role="region"
+            aria-label={`Scrollable bill page ${index + 1}`}
+            tabIndex={fullSize ? 0 : undefined}
+          >
+            <canvas
+              role="img"
+              ref={canvas}
+              width={page.width}
+              height={page.height}
+              aria-label={`Private bill page ${index + 1}, drag to redact`}
+              className={
+                fullSize
+                  ? "max-w-none h-auto border touch-auto"
+                  : "w-full h-auto border touch-none cursor-crosshair"
+              }
+              style={fullSize ? { width: page.width } : undefined}
+              onPointerDown={(e) => {
+                if (disabled || fullSize) return;
+                e.currentTarget.setPointerCapture(e.pointerId);
+                setStart(point(e));
+              }}
+              onPointerMove={(e) => {
+                if (disabled || fullSize || !start) return;
+                const p = point(e);
+                setDraft({
+                  x: Math.min(start.x, p.x),
+                  y: Math.min(start.y, p.y),
+                  width: Math.abs(p.x - start.x),
+                  height: Math.abs(p.y - start.y),
+                });
+              }}
+              onPointerUp={() => {
+                if (!disabled && draft && draft.width > 0.003 && draft.height > 0.003)
+                  onChange([...marks, draft]);
+                setStart(null);
+                setDraft(null);
+              }}
+            />
+          </div>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
+              disabled={disabled}
               className="min-h-11 px-3 bg-[#EEEEEE] rounded text-xs"
               onClick={() => onChange([...marks, { x: 0, y: 0, width: 1, height: 0.25 }])}
             >
@@ -94,6 +127,7 @@ export function BillPagePreview({
             </button>
             <button
               type="button"
+              disabled={disabled}
               className="min-h-11 px-3 bg-[#EEEEEE] rounded text-xs"
               onClick={() => onChange([...marks, { x: 0, y: 0.75, width: 1, height: 0.25 }])}
             >
@@ -101,6 +135,7 @@ export function BillPagePreview({
             </button>
             <button
               type="button"
+              disabled={disabled}
               className="min-h-11 px-3 text-xs underline"
               onClick={() => onChange(marks.slice(0, -1))}
             >

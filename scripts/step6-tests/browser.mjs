@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
+import sharp from "sharp";
 const port = 8096,
   url = `http://127.0.0.1:${port}`;
 const artifacts = new URL("../../qa-artifacts/step6/", import.meta.url);
@@ -94,13 +95,29 @@ try {
     assert.equal(postCount, 0, "No transfer before explicit extraction");
     assert(await panel.getByRole("button", { name: "Extract readings with OpenAI" }).isDisabled());
     await panel.getByRole("button", { name: "Reveal locally to redact" }).click();
+    await panel.getByRole("button", { name: "Read at full size" }).click();
+    assert((await panel.locator("canvas").boundingBox()).width >= 1000);
+    await panel.getByRole("button", { name: "Fit preview" }).click();
     await panel.getByRole("button", { name: "Hide bottom quarter" }).click();
-    await panel.screenshot({ path: new URL(`${device}-redaction.png`, artifacts).pathname });
+    await panel.screenshot({
+      style: "header { visibility: hidden !important; }",
+      path: new URL(`${device}-redaction.png`, artifacts).pathname,
+    });
     await panel.getByLabel(/I have reviewed the redactions/).check();
     await panel.getByRole("button", { name: "Extract readings with OpenAI" }).click();
     await panel.getByText("Readings extracted by OpenAI.", { exact: false }).waitFor();
     assert.equal(postCount, 1);
     assert.equal(posted.pages[0].mime, "image/jpeg");
+    const transmitted = Buffer.from(posted.pages[0].data, "base64");
+    const meta = await sharp(transmitted).metadata();
+    const pixel = await sharp(transmitted)
+      .extract({ left: 5, top: Math.floor(meta.height * 0.9), width: 1, height: 1 })
+      .raw()
+      .toBuffer();
+    assert(
+      [...pixel].every((value) => value < 30),
+      "Redaction is burned into transmitted pixels",
+    );
     assert(!JSON.stringify(posted).includes("two-month.png"));
     await panel
       .getByLabel("Period consumption (kWh for whole period)", { exact: false })
@@ -114,7 +131,10 @@ try {
     const beforePanels = await page.locator('[data-testid="manual-override-banner"]').count();
     void beforePanels;
     await panel.getByLabel(/I checked the state/).check();
-    await panel.screenshot({ path: new URL(`${device}-review.png`, artifacts).pathname });
+    await panel.screenshot({
+      style: "header { visibility: hidden !important; }",
+      path: new URL(`${device}-review.png`, artifacts).pathname,
+    });
     await panel.getByRole("button", { name: "Confirm and apply bill readings" }).click();
     await page.getByTestId("confirmed-bill-basis").waitFor();
     assert.equal(await page.locator("#studio-monthly-units").inputValue(), "450");
@@ -124,7 +144,10 @@ try {
     await input.setInputFiles(fixture("two-month.pdf"));
     await panel.getByText("Page 2 · local preview").waitFor({ timeout: 30000 });
     await panel.getByRole("button", { name: "Reveal locally to redact" }).first().click();
-    await panel.screenshot({ path: new URL(`${device}-pdf.png`, artifacts).pathname });
+    await panel.screenshot({
+      style: "header { visibility: hidden !important; }",
+      path: new URL(`${device}-pdf.png`, artifacts).pathname,
+    });
     await panel.getByRole("button", { name: "Clear / cancel" }).click();
     for (const file of ["corrupt.pdf", "too-many-pages.pdf", "active-content.pdf"]) {
       await input.setInputFiles(fixture(file));
@@ -150,6 +173,12 @@ try {
     await panel.getByRole("alert").filter({ hasText: "Extraction is unavailable" }).waitFor();
     mode = "slow";
     await panel.getByRole("button", { name: "Extract readings with OpenAI" }).click();
+    assert(
+      await panel
+        .getByLabel("Period consumption (kWh for whole period)", { exact: false })
+        .isDisabled(),
+      "Draft edits are locked while extraction is pending",
+    );
     await panel.getByRole("button", { name: "Clear / cancel" }).click();
     await page.waitForTimeout(1500);
     assert.equal(
@@ -178,7 +207,10 @@ try {
     await roof.locator("#tank-slider").fill("20");
     await roof.locator("#walkway-slider").fill("30");
     assert.equal((await roof.getByTestId("roof-usable-area").textContent()).trim(), "526 sq.ft.");
-    await roof.screenshot({ path: new URL(`${device}-roof.png`, artifacts).pathname });
+    await roof.screenshot({
+      style: "header { visibility: hidden !important; }",
+      path: new URL(`${device}-roof.png`, artifacts).pathname,
+    });
     await roof.getByLabel("Roof measurement method").selectOption("l-shape");
     await roof.getByLabel("Corner cutout length (ft)").fill("50");
     await roof.getByRole("alert").waitFor();
@@ -188,6 +220,10 @@ try {
       .include('section[aria-label="Bill intelligence"]')
       .include('section[aria-label="Preliminary roof assessment"]')
       .analyze();
+    await writeFile(
+      new URL(`${device}-accessibility.json`, artifacts),
+      JSON.stringify(axe.violations, null, 2),
+    );
     assert.deepEqual(
       axe.violations.filter((v) => ["critical", "serious"].includes(v.impact)).map((v) => v.id),
       [],

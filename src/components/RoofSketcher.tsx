@@ -277,6 +277,7 @@ export function RoofSketcher({
           {g.maxFeasiblePanels > 0 ? (
             <div
               className="flex flex-wrap gap-2"
+              role="img"
               aria-label={`Simulated layout of ${g.maxFeasiblePanels} solar modules`}
             >
               {Array.from({ length: Math.min(36, g.maxFeasiblePanels) }, (_, i) => (

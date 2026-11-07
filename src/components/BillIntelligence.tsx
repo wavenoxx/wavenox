@@ -45,6 +45,7 @@ export function BillIntelligence({
   const [notice, setNotice] = React.useState("");
   const [error, setError] = React.useState("");
   const [warnings, setWarnings] = React.useState<string[]>([]);
+  const [extractionComplete, setExtractionComplete] = React.useState(false);
   const [changed, setChanged] = React.useState<Set<BillFieldKey>>(new Set());
   const controller = React.useRef<AbortController | null>(null);
   const version = React.useRef(0);
@@ -53,6 +54,7 @@ export function BillIntelligence({
     version.current++;
     controller.current?.abort();
     controller.current = null;
+    setExtractionComplete(false);
     setPages([]);
     setMarks([]);
     setFields(emptyBillFields());
@@ -151,6 +153,7 @@ export function BillIntelligence({
       const result = normalizeExtraction(raw.extraction, pages.length);
       if (current !== version.current) return;
       setFields(result.fields);
+      setExtractionComplete(true);
       // Explicit extraction replaces this review draft only, never the live Studio values.
       const next = blankValues();
       for (const field of result.fields)
@@ -287,8 +290,9 @@ export function BillIntelligence({
           ))}
           {pages.map((p, i) => (
             <BillPagePreview
-              key={i}
+              key={`${i}-${extractionComplete}`}
               page={p}
+              disabled={busy !== null}
               index={i}
               marks={marks[i] ?? []}
               onChange={(m) => {
@@ -367,7 +371,11 @@ export function BillIntelligence({
               {error}
             </p>
           )}
-          <div className="space-y-4 border-t border-[#E3E4E6] pt-4">
+          <fieldset
+            disabled={busy !== null}
+            className="min-w-0 space-y-4 border-t border-[#E3E4E6] pt-4"
+            aria-label="Review bill readings"
+          >
             <h3 className="text-base font-medium">Review bill readings</h3>
             <p className="text-xs text-[#5C5E62]">
               Reading quality is a qualitative AI assessment, not a calibrated probability. Missing
@@ -446,6 +454,7 @@ export function BillIntelligence({
                   value={periodMode}
                   onChange={(e) => {
                     setPeriodMode(e.target.value as "months" | "days");
+                    setError("");
                     setConfirmed(false);
                   }}
                 >
@@ -463,6 +472,7 @@ export function BillIntelligence({
                   value={periodLength}
                   onChange={(e) => {
                     setPeriodLength(e.target.value);
+                    setError("");
                     setConfirmed(false);
                   }}
                 />
@@ -480,6 +490,7 @@ export function BillIntelligence({
                   value={loadUnit}
                   onChange={(e) => {
                     setLoadUnit(e.target.value as "kW" | "kVA" | "HP");
+                    setError("");
                     setConfirmed(false);
                   }}
                 >
@@ -526,7 +537,7 @@ export function BillIntelligence({
             >
               Confirm and apply bill readings
             </button>
-          </div>
+          </fieldset>
         </div>
       )}
     </section>
