@@ -1,33 +1,35 @@
 # WAVENOX project handoff
 
-WAVENOX is a premium Indian full-service solar platform for residential and commercial customers. Preserve the brand, consent-based consultation flow, original attribution, India-specific engineering and financing assumptions, and the Design Studio customer journey.
+Updated 7 November 2026. WAVENOX is a premium Indian full-service solar platform for residential and commercial customers. Preserve its brand, consent-based consultation flow, original attribution, India-specific engineering and financing assumptions, and Design Studio journey.
 
-## Foundation
+## Verified foundation and roadmap
 
-Steps 1–4 delivered secure lead capture, the public showroom, energy and financial calculations, and the intelligent configurator. Step 4 is merged into [main at 14a45de](https://github.com/wavenoxx/wavenox/commit/14a45deec1468250239d6440d453e25769e3d0b5). Step 5 develops the private CRM and attribution on `feat/wavenox-step5-crm-attribution`. Its approved starting SHA is [f1e7645](https://github.com/wavenoxx/wavenox/commit/f1e7645b366a448e99d3ac644c4f1df3f5af6750). Verify the current head and check results on [draft PR #9](https://github.com/wavenoxx/wavenox/pull/9) before continuing.
+Steps 1–4 delivered secure lead capture, the public showroom, energy/financial calculations and the intelligent configurator. Step 5 delivered private CRM, attribution, server-only database permissions and atomic audited mutations. [PR #9](https://github.com/wavenoxx/wavenox/pull/9) was already merged when Step 6 began. Its approved foundation is [665a2b5](https://github.com/wavenoxx/wavenox/commit/665a2b59529de2ebe2e99bde68a3f89cc02dd9ee); the Step 6 base [97dd875](https://github.com/wavenoxx/wavenox/commit/97dd875e2120401848249405c8e8f6600bd00d45) has the identical source tree. No published history was rewritten. The original Antigravity checkout was preserved.
 
-The verified npm tree uses React 19.3.0, TypeScript 5.9.3, TanStack Router 1.170.46, React Start 1.169.4, Vite 8.3.0, Nitro 3.0.260603-beta, Supabase JS 2.117.1, Zod, Vitest 5.0.1 and Playwright 1.63.0. Preserve the LIVE/DEMO separation. Read the [application architecture](STEP5_CRM_ARCHITECTURE.md), [database boundary](STEP5_DATABASE_SECURITY.md) and [quality-gate record](STEP5_EXECUTION_REPORT.md).
+Step 6 is implemented on `feat/wavenox-step6-ai-bill-roof-intelligence`, with [Draft PR #10](https://github.com/wavenoxx/wavenox/pull/10) targeting `main`. Verify its current head and checks before continuing. It adds local bill previews/redaction, a server-only OpenAI adapter, explicit human review, manual fallback and measured rectangle/L-shape roof planning. No satellite service, customer location collection, document database storage or automatic CRM insertion was added. See the [execution evidence](STEP6_EXECUTION_REPORT.md), [bill architecture](STEP6_AI_BILL_ARCHITECTURE.md), [roof capabilities](STEP6_ROOF_INTELLIGENCE.md) and [privacy boundary](STEP6_PRIVACY_SECURITY.md).
 
-Step 5 hardening is code complete at [b012902](https://github.com/wavenoxx/wavenox/commit/b01290267409670780c66cc2b317a77a684e888c). The [verification run](https://github.com/wavenoxx/wavenox/actions/runs/42259670455) passed the public/CRM Chromium audit, eleven native Supabase integration cases and the LIVE login/cookie/audit/replay/logout test. Vercel confirmed a successful preview for that SHA. The 7 November resumed local gates passed unit tests (113), lint, types and client/SSR build. Local Chromium is blocked by the macOS sandbox. Protected preview runtime access requires the appropriate Vercel team connection.
+## Architecture and verification
 
-Production readiness requires approved migrations, verified staff provisioning, environment configuration, privacy and financial review, and release sign-off. Step 6 is ready for a separately approved development task. The original Antigravity checkout's inherited changes were preserved in place, while Codex committed and pushed from an isolated checkout.
+The npm lockfile resolves React 19.3.0, TypeScript 5.9.3, TanStack Router 1.170.46 / React Start 1.169.4 / start-server-core 1.169.45, Vite 8.3.6, Nitro 3.0.260603-beta, Supabase JS 2.117.1, Zod 4.6.7, Vitest 5.0.1 and Playwright 1.63.0. Bill processing uses OpenAI SDK 7.53.0, PDF.js 6.5.438 and Sharp 0.35.5. Keep the existing Step 3/4 calculation functions authoritative. Preserve LIVE/DEMO separation and the [CRM architecture](STEP5_CRM_ARCHITECTURE.md) / [database boundary](STEP5_DATABASE_SECURITY.md).
+
+The current local suite passes 152 cases; fourteen opt-in cases are skipped by default (eleven database, three live-provider). Lint passes with ten inherited warnings; types and client/SSR build pass. Actual desktop/mobile browser and isolated Supabase results are recorded by commit in the Step 6 execution report. Local Chromium cannot launch under this macOS sandbox; the user authorized GitHub Actions for that gate. Test transport stubs are not evidence of real OCR accuracy.
+
+## Release prerequisites
+
+The user approved secure OpenAI key setup. Its local destination is ignored `.env.local`; never read its values into tool output, Git, browser code or documentation. A key alone does not activate processing: `BILL_AI_ENABLED=true` is also required. Live synthetic provider attempts returned HTTP 429, so real extraction remains unverified and production AI is inactive. Resolve provider access/quota, test representative bill accuracy, approve retention/disclosure and add distributed quotas/cost controls before activation.
+
+Live CRM still requires separately approved migrations, staff provisioning and environment configuration. Production readiness also needs privacy, legal/financial, observability and release reviews. Roof structure, shading, wind loads, geometry and hosting approval require a physical survey.
 
 ## Safe continuation
 
-1. Read [AGENTS.md](../AGENTS.md) and [Rules.md](../Rules.md), inspect the working tree, fetch and inspect branch history. Preserve uncommitted work. Use ordinary reviewed commits and fast-forward pushes to the existing draft PR.
-2. Run the five quality gates from the execution report. Separate mocked, real Data API, native concurrent database, browser and deployment evidence.
-3. Use only disposable local or expressly authorized staging fixtures for database and authentication tests. Keep service credentials server-side. Production migration, data mutation, staff provisioning, merge and production deployment each require separate approval.
+1. Read [AGENTS.md](../AGENTS.md) and [Rules.md](../Rules.md), inspect the working tree, fetch and inspect branch history. Preserve all uncommitted work. Use reviewed commits and ordinary feature-branch pushes; never rewrite shared history.
+2. Verify the prior stage's final SHA and PR status before selecting the next base. Do not restart from outdated main. Run unit, lint, type, build and browser gates. Separate mocked, real provider, database, browser and deployment evidence.
+3. Use disposable local or expressly authorized staging database fixtures. Keep service credentials server-side and audited mutations transactional. Production migration, customer-data changes, provisioning, merge and production deployment each require explicit approval.
+4. Keep documents ephemeral, disclose external processing, require human confirmation, and preserve customer overrides. Never invent readings, calibrated confidence, imagery capabilities or financial guarantees.
 
-## Remaining roadmap
+## Remaining stages
 
-- **Step 6** requires separate development sign-off. Build consented bill and roof intelligence with confidence reporting, source imagery where relevant, and human correction.
-- **Step 7** covers authenticated installation milestones, surveys, documents, support and consent-safe customer notifications.
-- **Step 8** covers production security, accessibility, performance, SEO, legal and financial disclosures, observability, domain readiness and approved release operations.
+- **Step 7:** separately scoped authenticated installation milestones, surveys, documents, support and consent-safe notifications.
+- **Step 8:** production security, accessibility, performance, SEO, legal/financial disclosures, observability, domain readiness and approved release operations.
 
-## Step 6 continuation (7 November 2026)
-
-Step 5 PR #9 is now merged at main 97dd875; its tree matches approved SHA 665a2b59529de2ebe2e99bde68a3f89cc02dd9ee. Step 6 develops on `feat/wavenox-step6-ai-bill-roof-intelligence`, targeting main. Read [the Step 6 plan](STEP6_IMPLEMENTATION_PLAN.md), [bill architecture](STEP6_AI_BILL_ARCHITECTURE.md), [roof scope](STEP6_ROOF_INTELLIGENCE.md), [privacy boundary](STEP6_PRIVACY_SECURITY.md), and [execution evidence](STEP6_EXECUTION_REPORT.md).
-
-The existing Studio now supports local bill previews/redaction, a server-only OpenAI adapter, explicit review/confirmation, safe manual fallback and measured rectangle/L-shape roof inputs. Original documents are ephemeral; no database document storage or automatic CRM insertion was added. No satellite service or customer imagery measurement is configured. Existing financial engines and transactional CRM boundaries remain authoritative.
-
-Local unit, lint, types and build gates pass. Browser/native database evidence must be verified on the Step 6 PR checks. Live synthetic provider verification returned HTTP 429 and is not claimed successful. Production activation requires quota/access, representative provider tests, retention review and distributed cost/abuse controls. The ignored local key must never enter Git, client bundles, logs or documentation. Step 7 and Step 8 remain separately scoped work; nothing here authorizes production deployment or migration.
+Do not start either stage or activate production services merely because Step 6 code is complete.
