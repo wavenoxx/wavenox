@@ -1331,6 +1331,7 @@ export function decodeBill(
   discomCode: string,
   billInr: number,
   sanctionedLoadKw?: number,
+  monthlyUnitsOverride?: number,
 ): DetailedBillAnalysis {
   const profile = getDiscomTariffProfile(discomCode);
   const sanctionedLoadConfirmed =
@@ -1339,7 +1340,11 @@ export function decodeBill(
     sanctionedLoadKw > 0;
   const effectiveLoadKw = sanctionedLoadConfirmed ? sanctionedLoadKw! : 5;
 
-  if (!profile || !Number.isFinite(billInr) || billInr <= 0) {
+  const hasKnownUnits =
+    typeof monthlyUnitsOverride === "number" &&
+    Number.isFinite(monthlyUnitsOverride) &&
+    monthlyUnitsOverride >= 0;
+  if (!profile || ((!Number.isFinite(billInr) || billInr <= 0) && !hasKnownUnits)) {
     return {
       status: profile ? profile.status : "UNAVAILABLE",
       authority: profile ? profile.authority : "Unsupported Utility",
@@ -1365,7 +1370,9 @@ export function decodeBill(
     };
   }
 
-  const units = Math.max(1, unitsForBill(profile.code, billInr, effectiveLoadKw));
+  const units = hasKnownUnits
+    ? Math.round(monthlyUnitsOverride!)
+    : Math.max(1, unitsForBill(profile.code, billInr, effectiveLoadKw));
   const billRes = calculateElectricityBill(profile, units, {
     sanctionedLoadKw: effectiveLoadKw,
     sanctionedLoadConfirmed,

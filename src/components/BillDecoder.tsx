@@ -25,8 +25,8 @@ export function BillDecoder({
   const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
 
   const analysis: DetailedBillAnalysis = React.useMemo(() => {
-    return decodeBill(discomCode, monthlyBill, sanctionedLoadKw);
-  }, [discomCode, monthlyBill, sanctionedLoadKw]);
+    return decodeBill(discomCode, monthlyBill, sanctionedLoadKw, monthlyUnitsOverride);
+  }, [discomCode, monthlyBill, sanctionedLoadKw, monthlyUnitsOverride]);
 
   const isVerified = analysis.status === "VERIFIED";
   const isUnavailable = analysis.status === "UNAVAILABLE";
@@ -37,13 +37,13 @@ export function BillDecoder({
   const displayedUnits =
     typeof monthlyUnitsOverride === "number" &&
     Number.isFinite(monthlyUnitsOverride) &&
-    monthlyUnitsOverride > 0
+    monthlyUnitsOverride >= 0
       ? Math.round(monthlyUnitsOverride)
       : analysis.estimatedUnits;
   const hasUnitsOverride =
     typeof monthlyUnitsOverride === "number" &&
     Number.isFinite(monthlyUnitsOverride) &&
-    monthlyUnitsOverride > 0;
+    monthlyUnitsOverride >= 0;
 
   if (isUnavailable) {
     return (

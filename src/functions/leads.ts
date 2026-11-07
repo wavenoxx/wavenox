@@ -454,7 +454,7 @@ export async function processLeadSubmission(
   if (!parsed.success) {
     const flattened = parsed.error.flatten();
     const firstErrorMessage =
-      parsed.error.errors[0]?.message || "Validation failed. Please verify your inputs.";
+      parsed.error.issues[0]?.message || "Validation failed. Please verify your inputs.";
     return {
       success: false,
       isDemo: mode === "demo",

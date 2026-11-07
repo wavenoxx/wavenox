@@ -1744,7 +1744,7 @@ export async function executeListCrmLeads(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid filter parameters.",
+      message: parsed.error.issues[0]?.message || "Invalid filter parameters.",
     };
   }
   const filters = parsed.data;
@@ -2081,7 +2081,7 @@ export async function executeTransitionCrmLeadStage(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid stage transition payload.",
+      message: parsed.error.issues[0]?.message || "Invalid stage transition payload.",
     };
   }
   const input = parsed.data;
@@ -2199,7 +2199,7 @@ export async function executeAssignCrmLeadOwner(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid owner assignment payload.",
+      message: parsed.error.issues[0]?.message || "Invalid owner assignment payload.",
     };
   }
   const input = parsed.data;
@@ -2318,7 +2318,7 @@ export async function executeAddCrmLeadNote(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid note payload.",
+      message: parsed.error.issues[0]?.message || "Invalid note payload.",
     };
   }
   const input = parsed.data;
@@ -2369,7 +2369,7 @@ export async function executeCreateCrmFollowupTask(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid follow-up task input.",
+      message: parsed.error.issues[0]?.message || "Invalid follow-up task input.",
     };
   }
   const input = parsed.data;
@@ -2439,7 +2439,7 @@ export async function executeCompleteCrmFollowupTask(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid task completion input.",
+      message: parsed.error.issues[0]?.message || "Invalid task completion input.",
     };
   }
   const input = parsed.data;
@@ -2501,7 +2501,7 @@ export async function executeRescheduleCrmFollowupTask(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid reschedule payload.",
+      message: parsed.error.issues[0]?.message || "Invalid reschedule payload.",
     };
   }
   const input = parsed.data;
@@ -2582,7 +2582,7 @@ export async function executeCorrectCrmLeadData(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid data correction input.",
+      message: parsed.error.issues[0]?.message || "Invalid data correction input.",
     };
   }
   const input = parsed.data;
@@ -2657,7 +2657,7 @@ export async function executeLogCrmPrivacyRequest(
       ok: false,
       status: 400,
       reason: "validation_error",
-      message: parsed.error.errors[0]?.message || "Invalid privacy request payload.",
+      message: parsed.error.issues[0]?.message || "Invalid privacy request payload.",
     };
   }
   const input = parsed.data;
@@ -3131,7 +3131,7 @@ export async function handleLoginCrmStaff(data: unknown) {
     return {
       ok: false as const,
       status: 400,
-      message: parsed.error.errors[0]?.message || "Invalid sign-in credentials.",
+      message: parsed.error.issues[0]?.message || "Invalid sign-in credentials.",
     };
   }
 
