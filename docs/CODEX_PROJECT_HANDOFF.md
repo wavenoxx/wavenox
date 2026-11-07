@@ -8,7 +8,9 @@ Steps 1–4 delivered secure lead capture, the public showroom, energy and finan
 
 The verified npm tree uses React 19.3.0, TypeScript 5.9.3, TanStack Router 1.170.46, React Start 1.169.4, Vite 8.3.0, Nitro 3.0.260603-beta, Supabase JS 2.117.1, Zod, Vitest 5.0.1 and Playwright 1.63.0. Preserve the LIVE/DEMO separation. Read the [application architecture](STEP5_CRM_ARCHITECTURE.md), [database boundary](STEP5_DATABASE_SECURITY.md) and [quality-gate record](STEP5_EXECUTION_REPORT.md).
 
-At handoff the local unit, lint, types, client/SSR build and isolated PostgREST checks passed. Browser execution requires a Chromium-capable runner. Use the CI and preview results for the actual commit. Production readiness also requires approved migrations, verified staff provisioning, environment configuration, privacy and financial review, and release sign-off.
+Step 5 hardening is code complete at [b012902](https://github.com/wavenoxx/wavenox/commit/b01290267409670780c66cc2b317a77a684e888c). The [verification run](https://github.com/wavenoxx/wavenox/actions/runs/42259670455) passed the public/CRM Chromium audit, eleven native Supabase integration cases and the LIVE login/cookie/audit/replay/logout test. Vercel confirmed a successful preview for that SHA. The 7 November resumed local gates passed unit tests (113), lint, types and client/SSR build. Local Chromium is blocked by the macOS sandbox. Protected preview runtime access requires the appropriate Vercel team connection.
+
+Production readiness requires approved migrations, verified staff provisioning, environment configuration, privacy and financial review, and release sign-off. Step 6 is ready for a separately approved development task. The original Antigravity checkout's inherited changes were preserved in place, while Codex committed and pushed from an isolated checkout.
 
 ## Safe continuation
 

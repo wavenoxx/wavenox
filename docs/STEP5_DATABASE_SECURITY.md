@@ -30,3 +30,7 @@ The four CRM RPCs use invoker rights with an empty search path. Only the trusted
 Every mutation requires the client's observed integer version. The database compares it after locking the lead. Replaying a successful request with its original version produces a conflict. The server takes the actor ID from verified membership, and SQL reads the display name and enforces role restrictions again. The transaction computes its audit state from the locked rows. An exception in the audit INSERT aborts the entire RPC.
 
 A service credential is privileged and must stay in the trusted server environment. PostgreSQL owners and administrators remain trusted operators. Provision staff separately with an approved administrative process. See the [execution report](STEP5_EXECUTION_REPORT.md) for observed test results.
+
+## Runtime verification
+
+The [native Supabase verification](https://github.com/wavenoxx/wavenox/actions/runs/42259670455/job/128035987155) passed all eleven integration cases. Six identities produced 144 rejected direct table/RPC requests. Eight injected audit failures rolled back every affected row. Native concurrent writes committed one mutation and one audit, and the browser observed HTTP 409 for stale replay. These checks used disposable fixtures. Production database state was outside this execution's authorized scope.
