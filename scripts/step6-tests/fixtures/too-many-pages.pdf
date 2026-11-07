@@ -1,0 +1,89 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 847 >>
+stream
+BT /F1 12 Tf
+1 0 0 1 36 780 Tm (SYNTHETIC TEST BILL - NOT A CUSTOMER RECORD) Tj
+1 0 0 1 36 736 Tm (TGSPDCL | Telangana | Domestic / Residential) Tj
+1 0 0 1 36 692 Tm (Electricity consumption statement) Tj
+1 0 0 1 36 648 Tm (Billing period: 01 September 2026 to 31 October 2026) Tj
+1 0 0 1 36 604 Tm (Billing duration: 2 months \(61 days\)) Tj
+1 0 0 1 36 560 Tm (Period consumption: 840 kWh) Tj
+1 0 0 1 36 516 Tm (Energy charges: INR 5000.00) Tj
+1 0 0 1 36 472 Tm (Fixed / customer charges: INR 100.00) Tj
+1 0 0 1 36 428 Tm (Total payable: INR 6000.00) Tj
+1 0 0 1 36 384 Tm (Sanctioned load: 5 kW) Tj
+1 0 0 1 36 340 Tm (Connection: Three phase) Tj
+1 0 0 1 36 296 Tm (Account: TEST-000 | Customer: SYNTHETIC FIXTURE) Tj
+1 0 0 1 36 252 Tm (Address: OMITTED | Phone: OMITTED) Tj
+1 0 0 1 36 208 Tm (For software QA only. Charges are test values.) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 140 >>
+stream
+BT /F1 12 Tf
+1 0 0 1 36 780 Tm (SYNTHETIC TEST BILL - CONTINUATION PAGE 2) Tj
+1 0 0 1 36 736 Tm (No additional readings on this page.) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 140 >>
+stream
+BT /F1 12 Tf
+1 0 0 1 36 780 Tm (SYNTHETIC TEST BILL - CONTINUATION PAGE 3) Tj
+1 0 0 1 36 736 Tm (No additional readings on this page.) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 140 >>
+stream
+BT /F1 12 Tf
+1 0 0 1 36 780 Tm (SYNTHETIC TEST BILL - CONTINUATION PAGE 4) Tj
+1 0 0 1 36 736 Tm (No additional readings on this page.) Tj
+ET
+endstream
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000134 00000 n 
+0000000204 00000 n 
+0000000330 00000 n 
+0000001228 00000 n 
+0000001354 00000 n 
+0000001545 00000 n 
+0000001671 00000 n 
+0000001862 00000 n 
+0000001990 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+2182
+%%EOF

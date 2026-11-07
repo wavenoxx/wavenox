@@ -23,3 +23,11 @@ Production readiness requires approved migrations, verified staff provisioning, 
 - **Step 6** requires separate development sign-off. Build consented bill and roof intelligence with confidence reporting, source imagery where relevant, and human correction.
 - **Step 7** covers authenticated installation milestones, surveys, documents, support and consent-safe customer notifications.
 - **Step 8** covers production security, accessibility, performance, SEO, legal and financial disclosures, observability, domain readiness and approved release operations.
+
+## Step 6 continuation (7 November 2026)
+
+Step 5 PR #9 is now merged at main 97dd875; its tree matches approved SHA 665a2b59529de2ebe2e99bde68a3f89cc02dd9ee. Step 6 develops on `feat/wavenox-step6-ai-bill-roof-intelligence`, targeting main. Read [the Step 6 plan](STEP6_IMPLEMENTATION_PLAN.md), [bill architecture](STEP6_AI_BILL_ARCHITECTURE.md), [roof scope](STEP6_ROOF_INTELLIGENCE.md), [privacy boundary](STEP6_PRIVACY_SECURITY.md), and [execution evidence](STEP6_EXECUTION_REPORT.md).
+
+The existing Studio now supports local bill previews/redaction, a server-only OpenAI adapter, explicit review/confirmation, safe manual fallback and measured rectangle/L-shape roof inputs. Original documents are ephemeral; no database document storage or automatic CRM insertion was added. No satellite service or customer imagery measurement is configured. Existing financial engines and transactional CRM boundaries remain authoritative.
+
+Local unit, lint, types and build gates pass. Browser/native database evidence must be verified on the Step 6 PR checks. Live synthetic provider verification returned HTTP 429 and is not claimed successful. Production activation requires quota/access, representative provider tests, retention review and distributed cost/abuse controls. The ignored local key must never enter Git, client bundles, logs or documentation. Step 7 and Step 8 remain separately scoped work; nothing here authorizes production deployment or migration.

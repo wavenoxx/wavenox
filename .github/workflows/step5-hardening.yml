@@ -1,7 +1,7 @@
-name: Step 5 hardening
+name: WAVENOX security and customer regression
 on:
   push:
-    branches: [feat/wavenox-step5-crm-attribution]
+    branches: [feat/wavenox-step5-crm-attribution, feat/wavenox-step6-ai-bill-roof-intelligence]
 permissions:
   contents: read
 jobs:
@@ -15,7 +15,18 @@ jobs:
         with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run build
       - run: npm run test:e2e
+      - run: npm run test:e2e:step6
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: step6-browser-evidence
+          path: qa-artifacts/step6/
+          retention-days: 7
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 20

@@ -29,6 +29,8 @@ import { media } from "@/config/media";
 import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
 import { WealthCurveVisualizer } from "./WealthCurveVisualizer";
 import { BillDecoder } from "./BillDecoder";
+import { BillIntelligence } from "./BillIntelligence";
+import type { ConfirmedBillInputs } from "@/lib/bill-intelligence";
 import { MonthlyGenerationChart } from "./MonthlyGenerationChart";
 import { RoofSketcher } from "./RoofSketcher";
 import { BatteryHonestyAdvisor } from "./BatteryHonestyAdvisor";
@@ -76,6 +78,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [address, setAddress] = React.useState("");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(safeInitialDiscom);
   const [monthlyBill, setMonthlyBill] = React.useState(safeInitialBill);
+  const [confirmedBillBasis, setConfirmedBillBasis] = React.useState("");
   const [inputMode, setInputMode] = React.useState<"estimate" | "known">("estimate");
   const [customMonthlyUnitsStr, setCustomMonthlyUnitsStr] = React.useState("");
   const [customSanctionedLoadStr, setCustomSanctionedLoadStr] = React.useState("");
@@ -136,7 +139,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const parsedMonthlyUnitsOverride = React.useMemo(() => {
     if (inputMode !== "known" || !customMonthlyUnitsStr.trim()) return undefined;
     const val = Number(customMonthlyUnitsStr);
-    return Number.isFinite(val) && val > 0 ? Math.round(val) : undefined;
+    return Number.isFinite(val) && val >= 0 ? Math.round(val) : undefined;
   }, [inputMode, customMonthlyUnitsStr]);
 
   const parsedSanctionedLoadKw = React.useMemo(() => {
@@ -230,7 +233,43 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     setShowOverrideChoicePrompt(false);
   };
 
+  const handleConfirmedBill = (data: ConfirmedBillInputs) => {
+    const units = data.monthlyUnitsOverride ?? parsedMonthlyUnitsOverride;
+    const load = data.sanctionedLoadKw ?? parsedSanctionedLoadKw;
+    const loadConfirmed =
+      data.sanctionedLoadKw !== undefined ? data.sanctionedLoadConfirmed : sanctionedLoadConfirmed;
+    setMonthlyBill(data.monthlyBillInr);
+    setSelectedDiscomCode(data.discomCode);
+    setInputMode("known");
+    if (data.monthlyUnitsOverride !== undefined)
+      setCustomMonthlyUnitsStr(String(data.monthlyUnitsOverride));
+    if (data.sanctionedLoadKw !== undefined) {
+      setCustomSanctionedLoadStr(String(data.sanctionedLoadKw));
+      setSanctionedLoadConfirmed(data.sanctionedLoadConfirmed);
+    }
+    setConfirmedBillBasis(
+      data.basis +
+        (data.monthlyUnitsOverride === undefined && units !== undefined
+          ? " Your existing consumption override was retained."
+          : "") +
+        (data.sanctionedLoadKw === undefined && load !== undefined
+          ? " Your existing sanctioned-load input was retained."
+          : ""),
+    );
+    const next = buildSolarRecommendation({
+      ...data,
+      inputMode: "known",
+      monthlyUnitsOverride: units,
+      sanctionedLoadKw: load,
+      sanctionedLoadConfirmed: loadConfirmed,
+    });
+    if (!isManualPanelOverride)
+      setPanelCount(Math.min(maxResidentialPanels, next.recommendedPanels));
+    else setShowOverrideChoicePrompt(panelCount !== next.recommendedPanels);
+  };
+
   const handleBillChange = (val: number) => {
+    setConfirmedBillBasis("");
     const safeVal = sanitizeBillInput(val);
     setMonthlyBill(safeVal);
     const nextRec = buildSolarRecommendation({
@@ -252,6 +291,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   };
 
   const handleDiscomChange = (newDiscomCode: string) => {
+    setConfirmedBillBasis("");
     setSelectedDiscomCode(newDiscomCode);
     const nextRec = buildSolarRecommendation({
       monthlyBillInr: monthlyBill,
@@ -631,6 +671,14 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               </select>
             </div>
 
+            <BillIntelligence onConfirm={handleConfirmedBill} />
+            {confirmedBillBasis && (
+              <p className="text-xs text-[#5C5E62]" data-testid="confirmed-bill-basis">
+                {confirmedBillBasis} The engine still uses its disclosed regional, seasonal and
+                regulatory assumptions.
+              </p>
+            )}
+
             {/* Monthly Electricity Bill Input */}
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-baseline">
@@ -739,7 +787,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                         max={25000}
                         inputMode="numeric"
                         value={customMonthlyUnitsStr}
-                        onChange={(e) => setCustomMonthlyUnitsStr(e.target.value)}
+                        onChange={(e) => {
+                          setCustomMonthlyUnitsStr(e.target.value);
+                          setConfirmedBillBasis("");
+                        }}
                         placeholder={
                           isUnavailable ? "e.g. 900" : `~${calculation.monthlyUnits} kWh`
                         }

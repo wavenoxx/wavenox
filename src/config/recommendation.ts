@@ -153,16 +153,41 @@ export interface RoofSketcherGeometryResult {
  */
 export function calculateRoofSketcherGeometry(params: {
   grossAreaSqft: number;
+  lengthFt?: number;
+  widthFt?: number;
+  cutoutLengthFt?: number;
+  cutoutWidthFt?: number;
   parapetMarginFt: number;
   waterTankSqft: number;
   walkwaySqft: number;
   discomCode?: string;
   targetPanels?: number;
 }): RoofSketcherGeometryResult {
-  const grossAreaSqft =
-    typeof params.grossAreaSqft === "number" &&
-    Number.isFinite(params.grossAreaSqft) &&
-    params.grossAreaSqft > 0
+  const measured = params.lengthFt !== undefined || params.widthFt !== undefined;
+  const length = params.lengthFt ?? 0;
+  const width = params.widthFt ?? 0;
+  const cutLength = params.cutoutLengthFt ?? 0;
+  const cutWidth = params.cutoutWidthFt ?? 0;
+  if (
+    measured &&
+    (![length, width, cutLength, cutWidth].every(Number.isFinite) ||
+      length <= 0 ||
+      width <= 0 ||
+      length > 500 ||
+      width > 500 ||
+      cutLength < 0 ||
+      cutWidth < 0 ||
+      cutLength >= length ||
+      cutWidth >= width)
+  ) {
+    throw new Error("Enter valid roof dimensions and a smaller corner cutout.");
+  }
+  const measuredArea = length * width - cutLength * cutWidth;
+  const grossAreaSqft = measured
+    ? Math.floor(measuredArea)
+    : typeof params.grossAreaSqft === "number" &&
+        Number.isFinite(params.grossAreaSqft) &&
+        params.grossAreaSqft > 0
       ? Math.round(params.grossAreaSqft)
       : 0;
 
@@ -194,7 +219,14 @@ export function calculateRoofSketcherGeometry(params: {
   );
 
   const approxPerimeterFt = grossAreaSqft > 0 ? 4 * Math.sqrt(grossAreaSqft) : 0;
-  const setbackDeductionSqft = Math.round(approxPerimeterFt * parapetMarginFt);
+  // For a corner cutout, deduct its full footprint from the inset rectangle.
+  // This deliberately reserves extra area around the re-entrant corner.
+  const setbackDeductionSqft = measured
+    ? Math.ceil(
+        length * width -
+          Math.max(0, length - 2 * parapetMarginFt) * Math.max(0, width - 2 * parapetMarginFt),
+      )
+    : Math.round(approxPerimeterFt * parapetMarginFt);
   const totalDeductionsSqft = setbackDeductionSqft + waterTankSqft + walkwaySqft;
   const rawNetSqft = grossAreaSqft - totalDeductionsSqft;
   const netUsableSqft = Math.max(0, rawNetSqft);
@@ -514,7 +546,7 @@ export function buildSolarRecommendation(
     inputMode === "known" &&
     typeof input.monthlyUnitsOverride === "number" &&
     Number.isFinite(input.monthlyUnitsOverride) &&
-    input.monthlyUnitsOverride > 0;
+    input.monthlyUnitsOverride >= 0;
 
   const hasKnownRoof =
     typeof input.availableRoofSqft === "number" &&
