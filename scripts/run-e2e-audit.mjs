@@ -589,6 +589,161 @@ async function runAudit() {
 
       await page.close();
     }
+
+    // 16. Step 5 Private CRM (/ops), Multi-Touch Attribution, RBAC & Governance Checks
+    console.log(
+      "Verifying Step 5 Private CRM (/ops), Auth Gate, PII Masking, Attribution & Workflows...",
+    );
+    {
+      const page = await context.newPage();
+      await page.setViewportSize({ width: 1440, height: 900 });
+
+      // Check 16a: Unauthenticated /ops access gate & noindex meta & zero pre-auth PII leak
+      await page.goto(`${BASE_URL}/ops`, { waitUntil: "load" });
+      await page.waitForTimeout(400);
+      const loginGateVisible = await page.locator("#ops-demo-persona-panel").isVisible();
+      if (!loginGateVisible) {
+        failures.push("/ops did not render #ops-demo-persona-panel when unauthenticated");
+      }
+      const robotsContent = await page.locator('meta[name="robots"]').getAttribute("content");
+      if (!robotsContent || !robotsContent.includes("noindex")) {
+        failures.push("/ops is missing <meta name='robots' content='noindex, nofollow'>");
+      }
+      const unauthHtml = await page.content();
+      if (unauthHtml.includes("9848024110") || unauthHtml.includes("Vikramaditya Rao")) {
+        failures.push("/ops leaked customer PII in HTML prior to staff authentication");
+      }
+
+      // Check 16b: Submit a lead on /deploy with UTM + gclid + PII in URL query string
+      await page.goto(
+        `${BASE_URL}/deploy?utm_source=google&utm_medium=cpc&utm_campaign=hyd_step5_e2e&gclid=EAIaIQobChMI_step5_e2e&phone=9849099887`,
+        { waitUntil: "load" },
+      );
+      await page.waitForTimeout(500);
+      await page.fill("#user-name", "Nandini Devi E2E");
+      await page.fill("#user-phone", "9849099887");
+      await page.fill("#user-address", "Hyderabad");
+      await page.fill("#user-pin", "500033");
+      await page.check("#studio-consent");
+      await page.click('button[type="submit"]');
+      await page.waitForTimeout(1200);
+
+      // Check 16c: Deactivated staff persona is denied access on /ops
+      await page.goto(`${BASE_URL}/ops`, { waitUntil: "load" });
+      await page.waitForTimeout(400);
+      await page.click('[data-testid="demo-persona-sales_coordinator-disabled"]');
+      await page.waitForTimeout(500);
+      const deactivatedText = await page.textContent("body");
+      if (!deactivatedText.includes("403 Permission Denied")) {
+        failures.push("/ops did not block deactivated_staff login with 403 Permission Denied");
+      }
+
+      // Check 16d: Read-only viewer sees masked phone numbers and no write controls
+      await page.click('[data-testid="demo-persona-read_only_viewer-active"]');
+      await page.waitForTimeout(700);
+      const workspaceVisible = await page.locator("#ops-view-overview").isVisible();
+      if (!workspaceVisible) {
+        failures.push("/ops did not open workspace after read_only_viewer sign-in");
+      }
+      await page.click("#ops-tab-leads");
+      await page.waitForTimeout(300);
+      const viewerTableText = await page.textContent("#ops-view-leads");
+      if (!viewerTableText || !viewerTableText.includes("••••")) {
+        failures.push("/ops read_only_viewer did not mask phone numbers with ••••");
+      }
+      if (viewerTableText && viewerTableText.includes("9849099887")) {
+        failures.push("/ops read_only_viewer leaked unmasked customer phone number 9849099887");
+      }
+
+      // Check 16e: Logout revokes session and returns to login gate
+      await page.click("#ops-signout-btn");
+      await page.waitForTimeout(500);
+      if (!(await page.locator("#ops-demo-persona-panel").isVisible())) {
+        failures.push("/ops did not return to login gate after clicking Sign Out");
+      }
+
+      // Check 16f: Sign in as owner_admin, inspect new E2E lead, verify sanitized attribution, assign owner, transition stage, add note & schedule follow-up
+      await page.click('[data-testid="demo-persona-owner_admin-active"]');
+      await page.waitForTimeout(700);
+
+      // Navigate to Attribution view and verify honest ROAS banner
+      await page.click("#ops-tab-attribution");
+      await page.waitForTimeout(300);
+      const attrViewText = await page.textContent("#ops-view-attribution");
+      if (!attrViewText || !attrViewText.includes("Ad spend not connected — ROAS unavailable.")) {
+        failures.push(
+          "/ops Attribution view is missing 'Ad spend not connected — ROAS unavailable.' notice",
+        );
+      }
+
+      // Navigate to All Leads and search for "Nandini Devi E2E"
+      await page.click("#ops-tab-leads");
+      await page.waitForTimeout(300);
+      await page.fill("#ops-search-input", "Nandini Devi E2E");
+      await page.waitForTimeout(400);
+      const inspectBtns = page.locator('[data-testid^="inspect-lead-"]');
+      if ((await inspectBtns.count()) < 1) {
+        failures.push("/ops All Leads search did not find newly submitted 'Nandini Devi E2E' lead");
+      } else {
+        await inspectBtns.first().click();
+        await page.waitForTimeout(400);
+        const drawerVisible = await page.locator("#ops-lead-detail-drawer").isVisible();
+        if (!drawerVisible) {
+          failures.push("Clicking Inspect did not open #ops-lead-detail-drawer");
+        } else {
+          const drawerText = await page.textContent("#ops-lead-detail-drawer");
+          if (!drawerText.includes("+91 98490 99887") && !drawerText.includes("9849099887")) {
+            failures.push("owner_admin could not see full phone 9849099887 in drawer");
+          }
+          if (!drawerText.includes("hyd_step5_e2e")) {
+            failures.push("Lead Detail drawer did not display persisted campaign hyd_step5_e2e");
+          }
+
+          // Update stage to contacted
+          await page.selectOption("#ops-stage-select", "contacted");
+          await page.click("#ops-stage-submit-btn");
+          await page.waitForTimeout(400);
+
+          // Add internal staff note
+          await page.fill(
+            "#ops-note-textarea",
+            "E2E Audit note: Verified roof area on satellite imagery.",
+          );
+          await page.click("#ops-note-submit-btn");
+          await page.waitForTimeout(400);
+
+          const updatedDrawerText = await page.textContent("#ops-lead-detail-drawer");
+          if (!updatedDrawerText.includes("E2E Audit note: Verified roof area")) {
+            failures.push(
+              "Adding staff note in Lead Detail drawer did not appear in activity timeline",
+            );
+          }
+
+          await page.click("#ops-close-detail-btn");
+          await page.waitForTimeout(250);
+        }
+      }
+
+      // Check 16g: Zero horizontal overflow on /ops across all 5 required viewports
+      for (const vp of [
+        { width: 320, height: 720, label: "320x720" },
+        { width: 390, height: 844, label: "390x844" },
+        { width: 768, height: 1024, label: "768x1024" },
+        { width: 1024, height: 768, label: "1024x768" },
+        { width: 1440, height: 900, label: "1440x900" },
+      ]) {
+        await page.setViewportSize({ width: vp.width, height: vp.height });
+        await page.waitForTimeout(200);
+        const opsOverflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - window.innerWidth,
+        );
+        if (opsOverflow > 2) {
+          failures.push(`/ops (${vp.label}): Horizontal overflow detected (${opsOverflow}px > 0)`);
+        }
+      }
+
+      await page.close();
+    }
   } finally {
     await browser.close();
     if (serverProcess) {

@@ -57,9 +57,6 @@ export function hasValidSupabaseServerConfig(
   return resolveSupabaseServerCredentials(env) !== null;
 }
 
-let cachedClient: SupabaseClient | null = null;
-let cachedCredentialsKey = "";
-
 /**
  * Returns a server-side Supabase client initialized with the privileged Service Role Key.
  *
@@ -78,19 +75,12 @@ export function getServerSupabaseClient(
     );
   }
 
-  const cacheKey = `${creds.url}::${creds.serviceRoleKey}`;
-  if (cachedClient && cachedCredentialsKey === cacheKey) {
-    return cachedClient;
-  }
-
-  cachedClient = createClient(creds.url, creds.serviceRoleKey, {
+  // Auth sign-in mutates client session state even with persistSession disabled.
+  return createClient(creds.url, creds.serviceRoleKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
   });
-  cachedCredentialsKey = cacheKey;
-
-  return cachedClient;
 }

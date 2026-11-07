@@ -3,6 +3,11 @@ import { z } from "zod";
 import { BRAND_CONFIG } from "@/config/brand";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseServerEnv } from "@/server/supabase";
+import {
+  sanitizeIncomingAttributionPayload,
+  type AttributionChannel,
+  type ClickIdType,
+} from "@/lib/telemetry";
 
 const PLACEHOLDER_VALUES = new Set([
   "https://your-project-id.supabase.co",
@@ -203,13 +208,30 @@ export const leadSubmissionSchema = z.object({
     .optional(),
   hp_extra: z.string().optional(), // Non-guessable honeypot field for bot suppression
   turnstile_token: z.string().optional(), // Cloudflare Turnstile token
-  utm_source: z.string().max(150).optional(),
-  utm_medium: z.string().max(150).optional(),
-  utm_campaign: z.string().max(150).optional(),
-  utm_term: z.string().max(150).optional(),
-  utm_content: z.string().max(150).optional(),
-  landing_url: z.string().max(1000).optional(),
-  referrer: z.string().max(1000).optional(),
+  utm_source: z.string().max(500).optional().catch(undefined),
+  utm_medium: z.string().max(500).optional().catch(undefined),
+  utm_campaign: z.string().max(500).optional().catch(undefined),
+  utm_term: z.string().max(500).optional().catch(undefined),
+  utm_content: z.string().max(500).optional().catch(undefined),
+  landing_url: z.string().max(2000).optional().catch(undefined),
+  referrer: z.string().max(2000).optional().catch(undefined),
+  // Step 5 multi-touch attribution fields (never block valid lead submission if malformed)
+  first_touch_source: z.string().max(500).optional().catch(undefined),
+  first_touch_medium: z.string().max(500).optional().catch(undefined),
+  first_touch_campaign: z.string().max(500).optional().catch(undefined),
+  first_touch_landing_path: z.string().max(2000).optional().catch(undefined),
+  first_touch_referrer_domain: z.string().max(500).optional().catch(undefined),
+  first_touch_at: z.string().max(100).optional().catch(undefined),
+  last_touch_source: z.string().max(500).optional().catch(undefined),
+  last_touch_medium: z.string().max(500).optional().catch(undefined),
+  last_touch_campaign: z.string().max(500).optional().catch(undefined),
+  last_touch_landing_path: z.string().max(2000).optional().catch(undefined),
+  last_touch_referrer_domain: z.string().max(500).optional().catch(undefined),
+  last_touch_at: z.string().max(100).optional().catch(undefined),
+  conversion_path: z.string().max(1000).optional().catch(undefined),
+  attribution_channel: z.string().max(100).optional().catch(undefined),
+  click_id_type: z.string().max(50).optional().catch(undefined),
+  click_id_value: z.string().max(255).optional().catch(undefined),
 });
 
 export type LeadSubmissionInput = z.infer<typeof leadSubmissionSchema>;
@@ -349,6 +371,29 @@ function createSupabaseDatabaseClient(
   };
 }
 
+function isStep5SchemaCompatibilityError(error: {
+  code?: string;
+  message?: string;
+  details?: string;
+}): boolean {
+  const code = (error.code || "").toUpperCase();
+  const msg = `${error.message || ""} ${error.details || ""}`.toLowerCase();
+  const step5Markers = [
+    "first_touch_",
+    "last_touch_",
+    "conversion_path",
+    "attribution_channel",
+    "click_id_",
+    "client_email",
+    "crm_lead_attribution_channel_check",
+    "crm_lead_click_id_type_check",
+  ];
+  if (code === "PGRST204" || code === "42703" || code === "23514") {
+    return step5Markers.some((marker) => msg.includes(marker));
+  }
+  return step5Markers.some((marker) => msg.includes(marker));
+}
+
 function isLegacySchemaCompatibilityError(
   error: {
     code?: string;
@@ -398,6 +443,7 @@ export async function processLeadSubmission(
     dbClient?: LeadDatabaseClient;
     getSupabaseClient?: (env?: SupabaseServerEnv) => SupabaseClient;
     skipRateLimit?: boolean;
+    onDemoLeadRegistered?: (demoLead: Record<string, unknown>) => void;
   },
 ): Promise<LeadSubmissionResponse> {
   const env: LeadExecutionEnv = options?.env ?? (typeof process !== "undefined" ? process.env : {});
@@ -480,10 +526,115 @@ export async function processLeadSubmission(
     };
   }
 
+  // Sanitize incoming attribution parameters to strip any accidental PII from URLs/referrers
+  const sanitizedAttr = sanitizeIncomingAttributionPayload({
+    utm_source: validData.utm_source,
+    utm_medium: validData.utm_medium,
+    utm_campaign: validData.utm_campaign,
+    utm_term: validData.utm_term,
+    utm_content: validData.utm_content,
+    landing_url: validData.landing_url,
+    referrer: validData.referrer,
+    first_touch_source: validData.first_touch_source,
+    first_touch_medium: validData.first_touch_medium,
+    first_touch_campaign: validData.first_touch_campaign,
+    first_touch_landing_path: validData.first_touch_landing_path,
+    first_touch_referrer_domain: validData.first_touch_referrer_domain,
+    first_touch_at: validData.first_touch_at,
+    last_touch_source: validData.last_touch_source,
+    last_touch_medium: validData.last_touch_medium,
+    last_touch_campaign: validData.last_touch_campaign,
+    last_touch_landing_path: validData.last_touch_landing_path,
+    last_touch_referrer_domain: validData.last_touch_referrer_domain,
+    last_touch_at: validData.last_touch_at,
+    conversion_path: validData.conversion_path,
+    attribution_channel: validData.attribution_channel as AttributionChannel | undefined,
+    click_id_type: validData.click_id_type as ClickIdType | undefined,
+    click_id_value: validData.click_id_value,
+  });
+
+  const cleanUtmSource = sanitizedAttr.utm_source || null;
+  const cleanUtmMedium = sanitizedAttr.utm_medium || null;
+  const cleanUtmCampaign = sanitizedAttr.utm_campaign || null;
+  const cleanUtmTerm = sanitizedAttr.utm_term || null;
+  const cleanUtmContent = sanitizedAttr.utm_content || null;
+  const cleanLandingUrl = sanitizedAttr.landing_url || null;
+  const cleanReferrer = sanitizedAttr.referrer || null;
+
+  const hasMultiTouchInput = Boolean(
+    validData.first_touch_source ||
+    validData.first_touch_medium ||
+    validData.first_touch_campaign ||
+    validData.first_touch_landing_path ||
+    validData.first_touch_referrer_domain ||
+    validData.last_touch_source ||
+    validData.last_touch_medium ||
+    validData.last_touch_campaign ||
+    validData.last_touch_landing_path ||
+    validData.last_touch_referrer_domain ||
+    validData.conversion_path ||
+    validData.attribution_channel ||
+    validData.click_id_type ||
+    validData.click_id_value,
+  );
+
   // 5. EXPLICIT DEMO MODE
   // Only active when LEAD_MODE="demo" or VITE_LEAD_MODE="demo".
   if (mode === "demo") {
     const demoReferenceCode = generateReferenceCode("demo");
+    const consentTimestampIso = validData.consent_timestamp
+      ? new Date(validData.consent_timestamp).toISOString()
+      : new Date().toISOString();
+
+    try {
+      options?.onDemoLeadRegistered?.({
+        referenceCode: demoReferenceCode,
+        name: validData.name,
+        email: validData.email?.trim() || null,
+        phone: normalizedPhone,
+        company_name: validData.company_name?.trim() || null,
+        company_url: validData.company_url?.trim() || null,
+        city: validData.city || "Hyderabad",
+        pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
+        property_tier: validData.property_tier,
+        discom_code: validData.discom_code || null,
+        monthly_bill_inr: validData.monthly_bill_inr ?? null,
+        system_kw: validData.system_kw ?? null,
+        battery_units: validData.battery_units ?? 0,
+        net_price_inr: validData.net_price_inr ?? null,
+        roof_area_sqft: validData.roof_area_sqft ?? null,
+        source: validData.source,
+        notes: validData.notes?.trim() || null,
+        consent_version: validData.consent_version,
+        consent_at: consentTimestampIso,
+        utm_source: cleanUtmSource,
+        utm_medium: cleanUtmMedium,
+        utm_campaign: cleanUtmCampaign,
+        utm_term: cleanUtmTerm,
+        utm_content: cleanUtmContent,
+        landing_url: cleanLandingUrl,
+        referrer: cleanReferrer,
+        first_touch_source: sanitizedAttr.first_touch_source || cleanUtmSource,
+        first_touch_medium: sanitizedAttr.first_touch_medium || cleanUtmMedium,
+        first_touch_campaign: sanitizedAttr.first_touch_campaign || cleanUtmCampaign,
+        first_touch_landing_path: sanitizedAttr.first_touch_landing_path || cleanLandingUrl,
+        first_touch_referrer_domain: sanitizedAttr.first_touch_referrer_domain || null,
+        first_touch_at: sanitizedAttr.first_touch_at || consentTimestampIso,
+        last_touch_source: sanitizedAttr.last_touch_source || cleanUtmSource,
+        last_touch_medium: sanitizedAttr.last_touch_medium || cleanUtmMedium,
+        last_touch_campaign: sanitizedAttr.last_touch_campaign || cleanUtmCampaign,
+        last_touch_landing_path: sanitizedAttr.last_touch_landing_path || cleanLandingUrl,
+        last_touch_referrer_domain: sanitizedAttr.last_touch_referrer_domain || null,
+        last_touch_at: sanitizedAttr.last_touch_at || consentTimestampIso,
+        conversion_path: sanitizedAttr.conversion_path || cleanLandingUrl,
+        attribution_channel: sanitizedAttr.attribution_channel,
+        click_id_type: sanitizedAttr.click_id_type || null,
+        click_id_value: sanitizedAttr.click_id_value || null,
+      });
+    } catch (crmDemoErr) {
+      console.warn("[submitLead] Unable to register demo lead in CRM store");
+    }
+
     console.info(
       `[submitLead] Explicit DEMO mode active. Returning simulated reference ${demoReferenceCode} for source="${validData.source}".`,
     );
@@ -556,13 +707,35 @@ export async function processLeadSubmission(
       consent_given: validData.consent_given,
       consent_version: validData.consent_version,
       consent_at: consentTimestampIso,
-      utm_source: validData.utm_source || null,
-      utm_medium: validData.utm_medium || null,
-      utm_campaign: validData.utm_campaign || null,
-      utm_term: validData.utm_term || null,
-      utm_content: validData.utm_content || null,
-      landing_url: validData.landing_url || null,
-      referrer: validData.referrer || null,
+      utm_source: cleanUtmSource,
+      utm_medium: cleanUtmMedium,
+      utm_campaign: cleanUtmCampaign,
+      utm_term: cleanUtmTerm,
+      utm_content: cleanUtmContent,
+      landing_url: cleanLandingUrl,
+      referrer: cleanReferrer,
+    });
+
+    // Build Step 5 v4 payload when multi-touch attribution fields are provided by the client
+    const buildV4Payload = (refCode: string): Record<string, unknown> => ({
+      ...buildV3Payload(refCode),
+      ...(cleanEmail ? { email: cleanEmail } : {}),
+      first_touch_source: sanitizedAttr.first_touch_source || cleanUtmSource,
+      first_touch_medium: sanitizedAttr.first_touch_medium || cleanUtmMedium,
+      first_touch_campaign: sanitizedAttr.first_touch_campaign || cleanUtmCampaign,
+      first_touch_landing_path: sanitizedAttr.first_touch_landing_path || cleanLandingUrl,
+      first_touch_referrer_domain: sanitizedAttr.first_touch_referrer_domain || null,
+      first_touch_at: sanitizedAttr.first_touch_at || consentTimestampIso,
+      last_touch_source: sanitizedAttr.last_touch_source || cleanUtmSource,
+      last_touch_medium: sanitizedAttr.last_touch_medium || cleanUtmMedium,
+      last_touch_campaign: sanitizedAttr.last_touch_campaign || cleanUtmCampaign,
+      last_touch_landing_path: sanitizedAttr.last_touch_landing_path || cleanLandingUrl,
+      last_touch_referrer_domain: sanitizedAttr.last_touch_referrer_domain || null,
+      last_touch_at: sanitizedAttr.last_touch_at || consentTimestampIso,
+      conversion_path: sanitizedAttr.conversion_path || cleanLandingUrl,
+      attribution_channel: sanitizedAttr.attribution_channel,
+      click_id_type: sanitizedAttr.click_id_type || null,
+      click_id_value: sanitizedAttr.click_id_value || null,
     });
 
     // Documented Compatibility Fallback for v2 databases that have not yet run migration v3:
@@ -606,23 +779,34 @@ export async function processLeadSubmission(
         consent_given: validData.consent_given,
         consent_version: validData.consent_version,
         consent_at: consentTimestampIso,
-        utm_source: validData.utm_source || null,
-        utm_medium: validData.utm_medium || null,
-        utm_campaign: validData.utm_campaign || null,
-        utm_term: validData.utm_term || null,
-        utm_content: validData.utm_content || null,
-        landing_url: validData.landing_url || null,
-        referrer: validData.referrer || null,
+        utm_source: cleanUtmSource,
+        utm_medium: cleanUtmMedium,
+        utm_campaign: cleanUtmCampaign,
+        utm_term: cleanUtmTerm,
+        utm_content: cleanUtmContent,
+        landing_url: cleanLandingUrl,
+        referrer: cleanReferrer,
       };
     };
 
     let activeRefCode = generateReferenceCode("live");
-    let activeBuilder = buildV3Payload;
+    let activeBuilder = hasMultiTouchInput ? buildV4Payload : buildV3Payload;
     let sourceFallbackUsed = false;
 
     let { data: insertedRows, error } = await dbClient.insertConsultation(
       activeBuilder(activeRefCode),
     );
+
+    // If database has not yet applied Step 5 v4 migration, fall back cleanly to v3 payload
+    if (error && hasMultiTouchInput && isStep5SchemaCompatibilityError(error)) {
+      console.warn(
+        `[submitLead] Step 5 attribution schema fallback triggered (${error.code || "column"}). Retrying with v3 payload.`,
+      );
+      activeBuilder = buildV3Payload;
+      const v3Retry = await dbClient.insertConsultation(activeBuilder(activeRefCode));
+      insertedRows = v3Retry.data;
+      error = v3Retry.error;
+    }
 
     // If database has not yet applied v3 migration (missing company_name/company_url or v2 source check constraint),
     // fall back to the v2-compatible payload while preserving original source and company metadata in `notes`.
@@ -664,7 +848,6 @@ export async function processLeadSubmission(
       // Log only sanitized error metadata (never `error.details` which can include row PII)
       console.error("[submitLead] Database error:", {
         code: error?.code ?? "unknown",
-        message: error?.message ?? "No rows returned",
         source: validData.source,
       });
       return {
@@ -724,7 +907,7 @@ export async function processLeadSubmission(
           console.warn("[submitLead] Resend API returned non-OK status:", resendResponse.status);
         }
       } catch (notifyErr) {
-        console.warn("[submitLead] Failed to dispatch owner notification email:", notifyErr);
+        console.warn("[submitLead] Failed to dispatch owner notification email");
       }
     }
 
@@ -753,7 +936,7 @@ export async function processLeadSubmission(
       };
     }
 
-    console.error("[submitLead] Unexpected error:", err);
+    console.error("[submitLead] Unexpected database failure");
     return {
       success: false,
       isDemo: false,
@@ -773,7 +956,12 @@ export const submitLead = createServerFn({ method: "POST" })
   .validator((data: unknown) => data)
   .handler(async ({ data }): Promise<LeadSubmissionResponse> => {
     const { getServerSupabaseClient } = await import("@/server/supabase");
+    const { registerDemoLeadInCrmStore } = await import("@/server/crm-service");
     return processLeadSubmission(data, {
       getSupabaseClient: getServerSupabaseClient,
+      onDemoLeadRegistered: (demoLead) =>
+        registerDemoLeadInCrmStore(
+          demoLead as unknown as Parameters<typeof registerDemoLeadInCrmStore>[0],
+        ),
     });
   });
