@@ -1,6 +1,16 @@
 import { z } from "zod";
 import { DISCOMS } from "@/config/solar";
 
+// The existing calculation registry groups these boards under Delhi-NCR.
+// Bill evidence uses their actual states; do not alter the engineering region.
+// Sources: dhbvn.org.in/web/portal/about-dhbvn; rts.bsesdelhi.com/about-us.
+export function billStateForDiscom(discom: { code: string; state: string }): string {
+  if (discom.code === "DHBVN") return "Haryana";
+  if (discom.code === "BRPL") return "Delhi";
+  return discom.state;
+}
+export const BILL_STATES = [...new Set(DISCOMS.map(billStateForDiscom))];
+
 export const BILL_LIMITS = {
   originalBytes: 10 * 1024 * 1024,
   pages: 3,
@@ -132,7 +142,7 @@ export function normalizeExtraction(raw: unknown, pageCount: number): BillExtrac
         }
       } else {
         const allowed: Partial<Record<BillFieldKey, string[]>> = {
-          state: [...new Set(DISCOMS.map((d) => d.state)), "OTHER"],
+          state: [...BILL_STATES, "OTHER"],
           discom: [...DISCOMS.map((d) => d.code), "OTHER"],
           consumerCategory: ["residential", "commercial", "other"],
           connectionType: ["single_phase", "three_phase", "other"],
@@ -224,7 +234,7 @@ export function confirmBillReview(raw: BillReviewInput): ConfirmedBillInputs {
   if (v.periodMode === "months" && v.periodLength > 12)
     throw new Error("Use 1–12 whole billing months, or enter the actual number of days.");
   const discom = DISCOMS.find((d) => d.code === v.discomCode);
-  if (discom && v.state !== discom.state)
+  if (discom && v.state !== billStateForDiscom(discom))
     throw new Error("The state and electricity board do not match. Confirm both from your bill.");
   const start = v.periodStart?.trim();
   const end = v.periodEnd?.trim();

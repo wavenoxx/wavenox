@@ -24,6 +24,35 @@ const review = {
 };
 
 describe("confirmed bill handoff", () => {
+  it.each([
+    ["DHBVN", "Haryana", "Delhi"],
+    ["BRPL", "Delhi", "Haryana"],
+  ])(
+    "accepts the actual bill state for %s without changing its calculation region",
+    (code, state, wrongState) => {
+      const extraction = normalizeExtraction(
+        {
+          fields: [
+            {
+              key: "state",
+              value: state,
+              unit: "none",
+              quality: "clear",
+              page: 1,
+              region: "header",
+              issue: "none",
+            },
+          ],
+        },
+        1,
+      );
+      expect(extraction.fields.find((f) => f.key === "state")?.value).toBe(state);
+      expect(confirmBillReview({ ...review, discomCode: code, state }).discomCode).toBe(code);
+      expect(() => confirmBillReview({ ...review, discomCode: code, state: wrongState })).toThrow(
+        /do not match/,
+      );
+    },
+  );
   it("periodizes a two-calendar-month bill and uses kWh in the existing engine", () => {
     const result = confirmBillReview(review);
     expect(result.monthlyUnitsOverride).toBe(420);

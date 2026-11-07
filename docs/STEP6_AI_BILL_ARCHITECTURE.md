@@ -33,4 +33,6 @@ Explicitly applied readings replace the relevant Studio inputs. Custom panel, ba
 - [Model capabilities](https://developers.openai.com/api/docs/models/gpt-4.1-mini)
 - [PDF.js API](https://mozilla.github.io/pdf.js/api/draft/module-pdfjsLib.html)
 
+Bill-state labels use Haryana for DHBVN and Delhi for BRPL, consistent with [DHBVN](https://www.dhbvn.org.in/web/portal/about-dhbvn) and [BRPL](https://rts.bsesdelhi.com/about-us). Their existing Delhi-NCR calculation-region settings are preserved. State matching does not expand tariff coverage.
+
 All eleven existing DISCOM codes are available; this adds no regulatory coverage. The current bill workflow is residential. Commercial documents can be reviewed but require professional assessment rather than residential financial calculations. Real-provider verification encountered HTTP 429; see the execution report. No claim of successful real-world OCR or calibrated accuracy is made.

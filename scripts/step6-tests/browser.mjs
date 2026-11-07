@@ -100,7 +100,7 @@ try {
     await panel.getByRole("button", { name: "Fit preview" }).click();
     await panel.getByRole("button", { name: "Hide bottom quarter" }).click();
     await panel.screenshot({
-      style: "header { visibility: hidden !important; }",
+      style: "header, .fixed.bottom-0 { visibility: hidden !important; }",
       path: new URL(`${device}-redaction.png`, artifacts).pathname,
     });
     await panel.getByLabel(/I have reviewed the redactions/).check();
@@ -132,7 +132,7 @@ try {
     void beforePanels;
     await panel.getByLabel(/I checked the state/).check();
     await panel.screenshot({
-      style: "header { visibility: hidden !important; }",
+      style: "header, .fixed.bottom-0 { visibility: hidden !important; }",
       path: new URL(`${device}-review.png`, artifacts).pathname,
     });
     await panel.getByRole("button", { name: "Confirm and apply bill readings" }).click();
@@ -145,7 +145,7 @@ try {
     await panel.getByText("Page 2 · local preview").waitFor({ timeout: 30000 });
     await panel.getByRole("button", { name: "Reveal locally to redact" }).first().click();
     await panel.screenshot({
-      style: "header { visibility: hidden !important; }",
+      style: "header, .fixed.bottom-0 { visibility: hidden !important; }",
       path: new URL(`${device}-pdf.png`, artifacts).pathname,
     });
     await panel.getByRole("button", { name: "Clear / cancel" }).click();
@@ -208,7 +208,7 @@ try {
     await roof.locator("#walkway-slider").fill("30");
     assert.equal((await roof.getByTestId("roof-usable-area").textContent()).trim(), "526 sq.ft.");
     await roof.screenshot({
-      style: "header { visibility: hidden !important; }",
+      style: "header, .fixed.bottom-0 { visibility: hidden !important; }",
       path: new URL(`${device}-roof.png`, artifacts).pathname,
     });
     await roof.getByLabel("Roof measurement method").selectOption("l-shape");
@@ -236,7 +236,7 @@ try {
     report.push({
       device,
       status: "passed",
-      provider: "mocked transport; real provider verified separately",
+      provider: "mocked transport; no real-provider verification in this browser test",
       screenshots: 4,
     });
     await context.close();

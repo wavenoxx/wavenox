@@ -3,6 +3,8 @@ import { FileText, LoaderCircle } from "lucide-react";
 import { DISCOMS } from "@/config/solar";
 import {
   BILL_LIMITS,
+  BILL_STATES,
+  billStateForDiscom,
   BILL_ISSUES,
   FIELD_LABELS,
   confirmBillReview,
@@ -391,7 +393,7 @@ export function BillIntelligence({
                   onChange={(e) => edit("state", e.target.value)}
                 >
                   <option value="">Select state</option>
-                  {[...new Set(DISCOMS.map((d) => d.state))].map((s) => (
+                  {BILL_STATES.map((s) => (
                     <option key={s}>{s}</option>
                   ))}
                   <option value="OTHER">Other / unsupported</option>
@@ -408,7 +410,7 @@ export function BillIntelligence({
                   <option value="">Select board</option>
                   {DISCOMS.map((d) => (
                     <option key={d.code} value={d.code}>
-                      {d.code} · {d.state}
+                      {d.code} · {billStateForDiscom(d)}
                     </option>
                   ))}
                   <option value="OTHER">Other / unsupported</option>
