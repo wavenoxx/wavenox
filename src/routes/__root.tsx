@@ -83,11 +83,12 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  console.error(error);
   const router = useRouter();
+  const privateRoute = ["/portal", "/ops"].includes(router.state.location.pathname);
+  if (!privateRoute) console.error(error);
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
+    if (!privateRoute) reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error, privateRoute]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#111215] text-[#FFFFFF] px-6 text-center select-text">

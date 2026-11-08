@@ -1,3 +1,4 @@
+import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import * as React from "react";
 import { createFileRoute, useHydrated } from "@tanstack/react-router";
 import {
@@ -81,7 +82,8 @@ export const Route = createFileRoute("/ops")({
   component: OpsWorkspacePage,
 });
 
-type OpsTab = "overview" | "leads" | "pipeline" | "followups" | "attribution" | "governance";
+type OpsTab =
+  "projects" | "overview" | "leads" | "pipeline" | "followups" | "attribution" | "governance";
 
 const STAGE_LABELS: Record<CrmLeadStatus, string> = {
   new: "New Enquiry",
@@ -1000,6 +1002,7 @@ function OpsWorkspacePage() {
                 icon: FileText,
               },
               { id: "pipeline", label: "Pipeline", icon: Layers },
+              { id: "projects", label: "Projects", icon: Layers },
               {
                 id: "followups",
                 label: `Follow-Ups (${
@@ -1070,6 +1073,7 @@ function OpsWorkspacePage() {
 
       {/* Main Content Container */}
       <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 space-y-6">
+        {activeTab === "projects" && <ProjectWorkspace audience="staff" role={staff.role} />}
         {/* ================================================================ */}
         {/* TAB 1: OVERVIEW                                                  */}
         {/* ================================================================ */}

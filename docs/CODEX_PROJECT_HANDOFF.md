@@ -1,12 +1,12 @@
 # WAVENOX project handoff
 
-Updated 7 November 2026. WAVENOX is a premium Indian full-service solar platform for residential and commercial customers. Preserve its brand, consent-based consultation flow, original attribution, India-specific engineering and financing assumptions, and Design Studio journey.
+Updated 8 November 2026. WAVENOX is a premium Indian full-service solar platform for residential and commercial customers. Preserve its brand, consent-based consultation flow, original attribution, India-specific engineering and financing assumptions, and Design Studio journey.
 
 ## Verified foundation and roadmap
 
 Steps 1–4 delivered secure lead capture, the public showroom, energy/financial calculations and the intelligent configurator. Step 5 delivered private CRM, attribution, server-only database permissions and atomic audited mutations. [PR #9](https://github.com/wavenoxx/wavenox/pull/9) was already merged when Step 6 began. Its approved foundation is [665a2b5](https://github.com/wavenoxx/wavenox/commit/665a2b59529de2ebe2e99bde68a3f89cc02dd9ee); the Step 6 base [97dd875](https://github.com/wavenoxx/wavenox/commit/97dd875e2120401848249405c8e8f6600bd00d45) has the identical source tree. No published history was rewritten. The original Antigravity checkout was preserved.
 
-Step 6 is implemented on `feat/wavenox-step6-ai-bill-roof-intelligence`, with [Draft PR #10](https://github.com/wavenoxx/wavenox/pull/10) targeting `main`. Verify its current head and checks before continuing. It adds local bill previews/redaction, a server-only OpenAI adapter, explicit human review, manual fallback and measured rectangle/L-shape roof planning. No satellite service, customer location collection, document database storage or automatic CRM insertion was added. See the [execution evidence](STEP6_EXECUTION_REPORT.md), [bill architecture](STEP6_AI_BILL_ARCHITECTURE.md), [roof capabilities](STEP6_ROOF_INTELLIGENCE.md) and [privacy boundary](STEP6_PRIVACY_SECURITY.md).
+Step 6 is implemented on `feat/wavenox-step6-ai-bill-roof-intelligence`, with [PR #10](https://github.com/wavenoxx/wavenox/pull/10) targeting `main`. Verify its current head and checks before continuing. It adds local bill previews/redaction, a server-only OpenAI adapter, explicit human review, manual fallback and measured rectangle/L-shape roof planning. No satellite service, customer location collection, document database storage or automatic CRM insertion was added. See the [execution evidence](STEP6_EXECUTION_REPORT.md), [bill architecture](STEP6_AI_BILL_ARCHITECTURE.md), [roof capabilities](STEP6_ROOF_INTELLIGENCE.md) and [privacy boundary](STEP6_PRIVACY_SECURITY.md).
 
 ## Architecture and verification
 
@@ -33,3 +33,11 @@ Live CRM still requires separately approved migrations, staff provisioning and e
 - **Step 8:** production security, accessibility, performance, SEO, legal/financial disclosures, observability, domain readiness and approved release operations.
 
 Do not start either stage or activate production services merely because Step 6 code is complete.
+
+## Step 7 continuation checkpoint
+
+Step 6 PR #10 is merged; approved main/base is `9037b75ded4f11ba7505b2e6b82b5a4fdb4ae308`. Step 7 is implemented on `feat/wavenox-step7-installation-journey-portal`, pending native CI/browser/preview verification. Preserve all current changes and inspect its current head before continuing. See [implementation plan](STEP7_IMPLEMENTATION_PLAN.md), [architecture](STEP7_CUSTOMER_PORTAL_ARCHITECTURE.md), [lifecycle](STEP7_PROJECT_LIFECYCLE.md), [security](STEP7_DATABASE_SECURITY.md) and [execution evidence](STEP7_EXECUTION_REPORT.md).
+
+New customer authentication uses approved Supabase email OTP exchanged for a separate one-hour HttpOnly opaque session. Project membership, active account status and staff scope are enforced server-side. Ten private tables and service-only RPCs preserve atomic audits. Documents are private reviewed JPEG/PNG scans delivered through an authenticated endpoint; no public/signed URLs. Customer-visible updates and support responses remain separate from internal notes. `PORTAL_EMAIL_ENABLED=false` until reviewed SMTP and code-only templates are provisioned. No production migration, accounts or records were changed.
+
+Local checkpoint: 179 tests passed, 32 opt-in skipped; lint/type/build pass; runtime audit zero. Native Supabase and browser proof remain CI gates. Local Chromium remains sandbox-blocked and Docker is not running. Do not mark code complete based on these local results alone. Remaining Step 8 is a separate scope after Step 7 sign-off; do not begin release operations automatically.

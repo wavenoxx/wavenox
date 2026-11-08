@@ -46,19 +46,41 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    const pathname = new URL(request.url).pathname;
+    const isPrivate =
+      pathname === "/portal" || pathname === "/ops" || pathname.startsWith("/api/project");
     try {
+      if (
+        pathname === "/api/projects" ||
+        pathname === "/api/project-documents" ||
+        pathname.startsWith("/api/project-documents/")
+      ) {
+        const { handleProjectRequest } = await import("./server/project-runtime");
+        return await handleProjectRequest(request);
+      }
       if (new URL(request.url).pathname === "/api/bill-extraction") {
         const { handleBillRequest } = await import("./server/bill-http");
         return await handleBillRequest(request);
       }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
+      if (isPrivate) {
+        const headers = new Headers(response.headers);
+        headers.set("cache-control", "private, no-store, max-age=0");
+        headers.set("x-robots-tag", "noindex, nofollow");
+        return new Response(response.body, { status: response.status, headers });
+      }
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
-      console.error(error);
+      if (!isPrivate) console.error(error);
       return new Response(renderErrorPage(), {
         status: 500,
-        headers: { "content-type": "text/html; charset=utf-8" },
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          ...(isPrivate
+            ? { "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" }
+            : {}),
+        },
       });
     }
   },
