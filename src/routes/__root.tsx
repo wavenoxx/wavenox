@@ -84,7 +84,7 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
-  const privateRoute = ["/portal", "/ops"].includes(router.state.location.pathname);
+  const privateRoute = /^\/(portal|ops)(\/|$)/.test(router.state.location.pathname);
   if (!privateRoute) console.error(error);
   useEffect(() => {
     if (!privateRoute) reportLovableError(error, { boundary: "tanstack_root_error_component" });

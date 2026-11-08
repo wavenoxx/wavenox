@@ -47,8 +47,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const pathname = new URL(request.url).pathname;
-    const isPrivate =
-      pathname === "/portal" || pathname === "/ops" || pathname.startsWith("/api/project");
+    const isPrivate = /^\/(portal|ops)(\/|$)/.test(pathname) || pathname.startsWith("/api/project");
     try {
       if (
         pathname === "/api/projects" ||

@@ -291,10 +291,10 @@ export function createProjectsHandler(options: Options) {
             try {
               await options.auth.requestCode(body.email);
             } catch {
-              /* Generic response prevents account enumeration; no delivery claim. */
+              /* Bounded provider I/O plus a fixed response floor reduces timing enumeration; no delivery claim. */
             }
           }
-          await new Promise((r) => setTimeout(r, Math.max(0, 400 - Date.now())));
+          await new Promise((r) => setTimeout(r, Math.max(0, 2000 - (Date.now() - started))));
           return json({
             ok: true,
             message:

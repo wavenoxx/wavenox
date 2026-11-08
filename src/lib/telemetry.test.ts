@@ -81,6 +81,15 @@ describe("Marketing Attribution & Telemetry Privacy Engine (Step 5 — Phase B)"
     });
   });
 
+  it.each(["/portal", "/portal/", "/ops"])(
+    "does not capture private route attribution for %s",
+    (path) => {
+      const browser = createMockBrowserWindow("https://wavenox.in" + path + "?utm_source=private");
+      expect(recordTelemetryNavigation()).toEqual({});
+      expect(browser.store.size).toBe(0);
+    },
+  );
+
   it("1. strips phone numbers, emails, tokens, and non-campaign query parameters from landing URLs", () => {
     const dirtyUrl =
       "https://wavenox.in/deploy?utm_source=Google&utm_medium=CPC&utm_campaign=hyd_villas_2026&phone=9876543210&email=client@example.com&token=secret-jwt-123&name=Arjun+Reddy&bill=15000";

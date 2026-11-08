@@ -865,7 +865,7 @@ function OpsWorkspacePage() {
                     type="button"
                     data-testid={`demo-persona-${persona.role}-${persona.is_active ? "active" : "disabled"}`}
                     onClick={() => void handleDemoPersonaLogin(persona.email)}
-                    disabled={isLoggingIn}
+                    disabled={!hydrated || isLoggingIn}
                     className="w-full text-left p-3 rounded-lg border border-neutral-200 hover:border-[#171A20] hover:bg-neutral-50 transition flex items-center justify-between gap-2"
                   >
                     <div className="min-w-0">

@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { createClient } from "@supabase/supabase-js";
-import { randomUUID } from "node:crypto";
+import { randomUUID, randomInt } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 import { createLiveProjectStore } from "../../src/server/project-store";
@@ -47,7 +47,7 @@ async function createProject() {
     id,
     reference_code: "WNX-S7-" + id.slice(0, 8),
     client_name: "Synthetic portal fixture",
-    phone: "9999912345",
+    phone: "9" + randomInt(100000000, 999999999),
     city: "Hyderabad",
     property_tier: "villa",
     source: "drawer",

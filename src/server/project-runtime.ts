@@ -32,7 +32,7 @@ export async function handleProjectRequest(request: Request): Promise<Response> 
     auth: db
       ? {
           async requestCode(email) {
-            const { error } = await getServerSupabaseClient(env).auth.signInWithOtp({
+            const { error } = await getServerSupabaseClient(env, 1500).auth.signInWithOtp({
               email,
               options: { shouldCreateUser: true },
             });

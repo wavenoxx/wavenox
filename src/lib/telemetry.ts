@@ -545,7 +545,7 @@ export function recordTelemetryNavigation(
 
   try {
     const activeUrl = rawUrl ?? window.location.href;
-    if (["/portal", "/ops"].includes(new URL(activeUrl, window.location.origin).pathname))
+    if (/^\/(portal|ops)(\/|$)/.test(new URL(activeUrl, window.location.origin).pathname))
       return {};
 
     const activeRef = rawReferrer ?? document.referrer;

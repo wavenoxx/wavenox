@@ -63,7 +63,14 @@ try {
       .locator("#ops-login-password")
       .fill(await readFile(process.env.STEP5_BROWSER_CREDENTIAL_FILE, "utf8"));
     await staff.locator("#ops-login-submit").click();
-  } else await staff.getByTestId("demo-persona-owner_admin-active").click();
+  } else {
+    const loginResponse = staff.waitForResponse(
+      (r) =>
+        r.request().method() === "POST" && r.request().postData()?.includes("demoPersonaEmail"),
+    );
+    await staff.getByTestId("demo-persona-owner_admin-active").click();
+    assert.equal((await loginResponse).status(), 200, "DEMO sign-in transport");
+  }
   await staff.locator("#ops-tab-projects").click();
   await staff.getByRole("heading", { name: "Installation projects", exact: true }).waitFor();
   let projectId, customerEmail, db;
@@ -280,6 +287,23 @@ try {
   );
   console.log("Step 7 browser journeys passed across five viewports.");
 } catch (error) {
+  if (browser)
+    for (const [c, context] of browser.contexts().entries())
+      for (const [p, page] of context.pages().entries()) {
+        await page
+          .screenshot({
+            path: new URL(`${live ? "live" : "demo"}-failure-${c}-${p}.png`, artifacts).pathname,
+            fullPage: true,
+          })
+          .catch(() => {});
+        await writeFile(
+          new URL(`${live ? "live" : "demo"}-failure-${c}-${p}.txt`, artifacts),
+          await page
+            .locator("body")
+            .innerText()
+            .catch(() => ""),
+        );
+      }
   await writeFile(
     new URL(`${live ? "live" : "demo"}-failure.log`, artifacts),
     String(error) + "\n" + logs.slice(-10000),

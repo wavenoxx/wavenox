@@ -49,7 +49,7 @@ function CustomerPortal() {
     "min-h-11 rounded bg-neutral-900 px-5 py-3 text-sm font-medium text-white disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700";
   return (
     <div className="min-h-screen bg-white text-neutral-900">
-      <header className="border-b border-neutral-200">
+      <header className="border-b border-neutral-200 [&_a]:min-h-11">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-8">
           <BrandLogo size="sm" />
           <span className="text-xs uppercase tracking-widest text-neutral-600">
