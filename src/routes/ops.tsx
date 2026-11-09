@@ -440,7 +440,11 @@ function OpsWorkspacePage() {
   };
 
   const handleSignOut = async () => {
-    await logoutCrmStaff();
+    const result = await logoutCrmStaff();
+    if (!result.ok) {
+      setWorkspaceError(result.message);
+      return;
+    }
     const refreshed = await getCrmSession();
     setSessionState(refreshed);
     setActiveTab("overview");

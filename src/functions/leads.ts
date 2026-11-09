@@ -300,8 +300,8 @@ async function verifyTurnstile(token: string, secretKey: string): Promise<boolea
     });
     const outcome = (await res.json()) as { success: boolean };
     return outcome.success === true;
-  } catch (err) {
-    console.warn("[Turnstile] Validation check error:", err);
+  } catch {
+    console.warn("[Turnstile] Validation unavailable");
     return false;
   }
 }

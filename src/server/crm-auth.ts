@@ -314,6 +314,7 @@ export interface CrmAuthDatabaseAdapter {
     accessToken: string,
   ) => Promise<{ user: { id: string; email?: string } | null; error?: string }>;
   findStaffByAuthUserId: (authUserId: string) => Promise<CrmStaffMember | null>;
+  revokeSession?: (accessToken: string) => Promise<boolean>;
 }
 
 export function createLiveSupabaseAuthAdapter(supabase: SupabaseClient): CrmAuthDatabaseAdapter {
@@ -322,6 +323,29 @@ export function createLiveSupabaseAuthAdapter(supabase: SupabaseClient): CrmAuth
       const { data, error } = await supabase.auth.getUser(accessToken);
       if (error || !data?.user) {
         return { user: null, error: error?.message || "Invalid session token" };
+      }
+      // getUser verifies identity, but a JWT can outlive provider logout. Read the
+      // session claim only AFTER verification and bind it to the verified user.
+      let sessionId: unknown;
+      try {
+        sessionId = JSON.parse(
+          Buffer.from(accessToken.split(".")[1], "base64url").toString("utf8"),
+        ).session_id;
+      } catch {
+        return { user: null, error: "Invalid session" };
+      }
+      if (
+        typeof sessionId !== "string" ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId)
+      ) {
+        return { user: null, error: "Invalid session" };
+      }
+      const active = await supabase.rpc("crm_session_is_active", {
+        p_session_id: sessionId,
+        p_user_id: data.user.id,
+      });
+      if (active.error || active.data !== true) {
+        return { user: null, error: "Session unavailable or revoked" };
       }
       return {
         user: {
@@ -341,6 +365,12 @@ export function createLiveSupabaseAuthAdapter(supabase: SupabaseClient): CrmAuth
         return null;
       }
       return data as CrmStaffMember;
+    },
+    async revokeSession(accessToken: string) {
+      const { error } = await supabase.auth.admin.signOut(accessToken, "local");
+      // Provider errors (including configuration/authorization errors) never
+      // become a successful global sign-out claim.
+      return !error;
     },
   };
 }

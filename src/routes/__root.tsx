@@ -137,6 +137,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
       { name: "description", content: BRAND_CONFIG.description },
       { name: "author", content: BRAND_CONFIG.legalName },
+      ...(BRAND_CONFIG.status !== "active"
+        ? [{ name: "robots", content: "noindex, nofollow" }]
+        : []),
       { property: "og:title", content: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
       { property: "og:description", content: BRAND_CONFIG.description },
       { property: "og:type", content: "website" },
@@ -191,7 +194,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       </head>
       <body>

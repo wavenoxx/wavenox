@@ -1,13 +1,19 @@
 name: WAVENOX security and customer regression
 on:
   push:
-    branches: [feat/wavenox-step5-crm-attribution, feat/wavenox-step6-ai-bill-roof-intelligence, feat/wavenox-step7-installation-journey-portal]
+    branches:
+      [
+        feat/wavenox-step5-crm-attribution,
+        feat/wavenox-step6-ai-bill-roof-intelligence,
+        feat/wavenox-step7-installation-journey-portal,
+        feat/wavenox-step8-production-release-audit,
+      ]
 permissions:
   contents: read
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with: { persist-credentials: false }
@@ -22,6 +28,9 @@ jobs:
       - run: npm run test:e2e
       - run: npm run test:e2e:step6
       - run: node scripts/step7-tests/browser.mjs
+      - name: Build Node production target for release measurements
+        run: NITRO_PRESET=node-server npm run build
+      - run: node scripts/step8-tests/release-audit.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -58,6 +67,7 @@ jobs:
           npx vitest run scripts/step5-tests/live.test.ts
           psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f scripts/step7-tests/fixtures.sql
           STEP7_TEST_DB=supabase npx vitest run scripts/step7-tests/database.test.ts
+          STEP8_TEST_DB=supabase npx vitest run scripts/step8-tests/security.test.ts
           LEAD_MODE=live SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/step5-tests/login.mjs
           STEP7_BROWSER_LIVE=true LEAD_MODE=live SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/step7-tests/browser.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
