@@ -40,3 +40,6 @@ dist-ssr
 qa-artifacts/
 .npm/
 Library/
+
+# Supabase CLI local cache
+supabase/.temp/

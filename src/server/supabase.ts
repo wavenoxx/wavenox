@@ -66,6 +66,7 @@ export function hasValidSupabaseServerConfig(
  */
 export function getServerSupabaseClient(
   env: SupabaseServerEnv = typeof process !== "undefined" ? process.env : {},
+  fetchTimeoutMs?: number,
 ): SupabaseClient {
   const creds = resolveSupabaseServerCredentials(env);
 
@@ -77,6 +78,19 @@ export function getServerSupabaseClient(
 
   // Auth sign-in mutates client session state even with persistSession disabled.
   return createClient(creds.url, creds.serviceRoleKey, {
+    ...(fetchTimeoutMs
+      ? {
+          global: {
+            fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+              fetch(input, {
+                ...init,
+                signal: init?.signal
+                  ? AbortSignal.any([init.signal, AbortSignal.timeout(fetchTimeoutMs)])
+                  : AbortSignal.timeout(fetchTimeoutMs),
+              }),
+          },
+        }
+      : {}),
     auth: {
       persistSession: false,
       autoRefreshToken: false,

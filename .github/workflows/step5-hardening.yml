@@ -1,7 +1,7 @@
 name: WAVENOX security and customer regression
 on:
   push:
-    branches: [feat/wavenox-step5-crm-attribution, feat/wavenox-step6-ai-bill-roof-intelligence]
+    branches: [feat/wavenox-step5-crm-attribution, feat/wavenox-step6-ai-bill-roof-intelligence, feat/wavenox-step7-installation-journey-portal]
 permissions:
   contents: read
 jobs:
@@ -21,11 +21,12 @@ jobs:
       - run: npm run build
       - run: npm run test:e2e
       - run: npm run test:e2e:step6
+      - run: node scripts/step7-tests/browser.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: step6-browser-evidence
-          path: qa-artifacts/step6/
+          name: customer-browser-evidence
+          path: qa-artifacts/
           retention-days: 7
   database:
     runs-on: ubuntu-latest
@@ -55,4 +56,13 @@ jobs:
           export STEP5_TEST_DB=supabase STEP5_ANON_KEY="$ANON_KEY" STEP5_SERVICE_KEY="$SERVICE_ROLE_KEY"
           export STEP5_BROWSER_CREDENTIAL_FILE="$RUNNER_TEMP/step5-login"
           npx vitest run scripts/step5-tests/live.test.ts
+          psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f scripts/step7-tests/fixtures.sql
+          STEP7_TEST_DB=supabase npx vitest run scripts/step7-tests/database.test.ts
           LEAD_MODE=live SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/step5-tests/login.mjs
+          STEP7_BROWSER_LIVE=true LEAD_MODE=live SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/step7-tests/browser.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: step7-live-browser-evidence
+          path: qa-artifacts/step7/
+          retention-days: 7
