@@ -98,7 +98,7 @@ function ProjectForm({
   return (
     <form
       aria-label={title}
-      className="grid min-w-0 gap-4 rounded border border-neutral-200 bg-white p-4 sm:p-6"
+      className="grid min-w-0 content-start gap-4 rounded border border-neutral-200 bg-white p-4 sm:p-6"
       onChange={() => {
         requestId.current = "";
       }}

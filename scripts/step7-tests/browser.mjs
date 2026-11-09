@@ -44,7 +44,10 @@ try {
   assert(ready, "Server starts");
   browser = await chromium.launch();
   const staffContext = await browser.newContext({ viewport: { width: 1440, height: 900 } }),
-    customerContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    customerContext = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      reducedMotion: "reduce",
+    });
   const staff = await staffContext.newPage(),
     customer = await customerContext.newPage();
   const errors = [];
@@ -135,6 +138,7 @@ try {
     await customer.getByRole("button", { name: "Explore synthetic customer a" }).click();
   }
   await customer.getByRole("heading", { name: "Your projects", exact: true }).waitFor();
+  await customer.getByLabel("Select project").waitFor({ state: "visible" });
   assert.equal(await customer.getByLabel("Select project").locator("option").count(), 1);
   const cookie = (await customerContext.cookies()).find((c) => c.name === "wavenox_portal_session");
   assert(cookie.httpOnly && cookie.sameSite === "Lax");
@@ -199,8 +203,18 @@ try {
   await review.getByRole("button", { name: "Save change" }).click();
   await staff.getByRole("status").filter({ hasText: "Change recorded" }).waitFor();
   await customer.getByRole("button", { name: "Refresh projects", exact: true }).click();
+  await customer.getByRole("button", { name: "Appointments", exact: true }).click();
+  await customer.getByRole("heading", { name: "Survey · Confirmed", exact: true }).waitFor();
+  await customer.screenshot({
+    path: new URL(`${live ? "live" : "demo"}-appointments-390.png`, artifacts).pathname,
+    fullPage: true,
+  });
   await customer.getByRole("button", { name: "Documents", exact: true }).click();
   await customer.getByText("Synthetic survey summary", { exact: true }).waitFor();
+  await customer.screenshot({
+    path: new URL(`${live ? "live" : "demo"}-documents-390.png`, artifacts).pathname,
+    fullPage: true,
+  });
   const download = customer.waitForEvent("download");
   await customer.getByRole("button", { name: "Download scan" }).click();
   assert((await download).suggestedFilename().endsWith(".jpg"));
@@ -235,6 +249,10 @@ try {
   assert(
     !(await customer.locator("body").innerText()).includes("PRIVATE SUPPORT BROWSER SENTINEL"),
   );
+  await customer.screenshot({
+    path: new URL(`${live ? "live" : "demo"}-support-390.png`, artifacts).pathname,
+    fullPage: true,
+  });
   await staff.screenshot({
     path: new URL(`${live ? "live" : "demo"}-staff.png`, artifacts).pathname,
     fullPage: true,
@@ -247,7 +265,23 @@ try {
     [1440, 900],
   ]) {
     await customer.setViewportSize({ width, height });
-    await customer.getByRole("button", { name: "Journey", exact: true }).click();
+    await customer.getByRole("button", { name: "Journey", exact: true }).focus();
+    await customer.keyboard.press("Enter");
+    await customer.getByRole("list", { name: "Installation milestones" }).waitFor();
+    const smallText = await customer
+      .locator("main *")
+      .evaluateAll((elements) =>
+        elements
+          .filter(
+            (e) =>
+              e.childElementCount === 0 &&
+              e.textContent?.trim() &&
+              e.getBoundingClientRect().height > 0 &&
+              Number.parseFloat(getComputedStyle(e).fontSize) < 12,
+          )
+          .map((e) => e.tagName),
+      );
+    assert.deepEqual(smallText, [], "Visible text meets the 12px floor");
     assert(
       await customer.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       "No horizontal overflow",
