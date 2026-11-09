@@ -240,7 +240,7 @@ BEGIN
  ELSIF p_action='status' THEN
   st:=p_payload->>'state';
   IF st=p.state THEN RAISE EXCEPTION 'NO_STATE_CHANGE' USING ERRCODE='PT400'; END IF;
-  IF st='completed' AND (SELECT count(*) FROM public.project_milestones m JOIN public.project_documents d ON d.id=m.evidence_document_id AND d.project_id=p.id AND d.status='verified' AND d.kind=m.key WHERE m.project_id=p.id AND m.key IN ('commissioning','handover') AND m.state='completed')<>2 THEN RAISE EXCEPTION 'COMPLETION_EVIDENCE_REQUIRED' USING ERRCODE='PT400'; END IF;
+  IF st='completed' AND (SELECT count(*) FROM public.project_milestones completed_milestone JOIN public.project_documents evidence_doc ON evidence_doc.id=completed_milestone.evidence_document_id AND evidence_doc.project_id=p.id AND evidence_doc.status='verified' AND evidence_doc.kind=completed_milestone.key WHERE completed_milestone.project_id=p.id AND completed_milestone.key IN ('commissioning','handover') AND completed_milestone.state='completed')<>2 THEN RAISE EXCEPTION 'COMPLETION_EVIDENCE_REQUIRED' USING ERRCODE='PT400'; END IF;
   old_state:=jsonb_build_object('state',p.state,'completed_at',p.completed_at);
   UPDATE public.installation_projects SET state=st,completed_at=CASE WHEN st='completed' THEN now() ELSE NULL END WHERE id=p.id;
   new_state:=jsonb_build_object('state',st); visible:=true;

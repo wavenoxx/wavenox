@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import {
   APPOINTMENT_STATES,
   DOCUMENT_KINDS,
@@ -42,15 +42,23 @@ export function ProjectField({
   required?: boolean;
   maxLength?: number;
 }) {
+  const fieldId = useId();
   return (
-    <label className="grid min-w-0 gap-2 text-sm font-medium">
-      {label}
+    <div className="grid min-w-0 gap-2 text-sm font-medium">
+      <label htmlFor={fieldId}>{label}</label>
       {children ? (
-        <select className={inputClass} name={name} defaultValue={value} required={required}>
+        <select
+          id={fieldId}
+          className={inputClass}
+          name={name}
+          defaultValue={value}
+          required={required}
+        >
           {children}
         </select>
       ) : type === "textarea" ? (
         <textarea
+          id={fieldId}
           className={inputClass}
           name={name}
           defaultValue={value}
@@ -60,6 +68,7 @@ export function ProjectField({
         />
       ) : (
         <input
+          id={fieldId}
           className={inputClass}
           name={name}
           type={type}
@@ -68,7 +77,7 @@ export function ProjectField({
           maxLength={maxLength}
         />
       )}
-    </label>
+    </div>
   );
 }
 function ProjectForm({

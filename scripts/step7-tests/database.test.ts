@@ -436,6 +436,60 @@ describe.skipIf(!enabled)("native Step 7 Auth, PostgreSQL, REST and Storage", ()
     });
     await expect(store.read(customerA, projectA)).rejects.toMatchObject({ status: 403 });
   });
+  it("completes a project only through real staff transitions and reviewed evidence", async () => {
+    const id = (await createProject()).result.projectId;
+    for (const key of ["installation", "commissioning", "handover"]) {
+      await command(id, "milestone", {
+        key,
+        state: "in_progress",
+        summary: "Synthetic operational work started",
+      });
+      let evidenceDocumentId = null;
+      if (key !== "installation") {
+        evidenceDocumentId = randomUUID();
+        const path = `${id}/${evidenceDocumentId}.jpg`;
+        const bytes = await sharp({
+          create: { width: 40, height: 40, channels: 3, background: "white" },
+        })
+          .jpeg()
+          .toBuffer();
+        await store.upload(path, bytes);
+        await command(id, "document", {
+          id: evidenceDocumentId,
+          title: "Synthetic " + key + " evidence",
+          kind: key,
+          visibility: "customer",
+          storagePath: path,
+          mime: "image/jpeg",
+        });
+        await command(id, "document_review", {
+          id: evidenceDocumentId,
+          verified: true,
+          reason: "Synthetic evidence independently reviewed",
+        });
+      }
+      await command(id, "milestone", {
+        key,
+        state: "completed",
+        summary: "Synthetic operational work completed",
+        evidenceDocumentId,
+      });
+    }
+    await command(id, "status", {
+      state: "completed",
+      reason: "Synthetic commissioning and handover verified",
+    });
+    const p = await store.read(owner, id);
+    expect(p.state).toBe("completed");
+    expect(p.completed_at).toBeTruthy();
+    await expect(
+      command(id, "document_review", {
+        id: p.milestones.find((m) => m.key === "handover")!.evidence_document_id,
+        verified: false,
+        reason: "Attempt to withdraw relied-on evidence",
+      }),
+    ).rejects.toMatchObject({ status: 409 });
+  });
   it("fails closed if LIVE database configuration is missing", async () => {
     const handler = createProjectsHandler({
       mode: "live",
