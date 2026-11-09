@@ -144,7 +144,7 @@ describe.skipIf(!enabled)("native Step 7 Auth, PostgreSQL, REST and Storage", ()
         "project_activities",
         "project_rate_limits",
       ])
-        expect((await direct.from(table).select("*")).error, table).not.toBeNull();
+        expect((await direct.from(table).select("*")).error?.code, table).toBe("42501");
       for (const [rpc, args] of Object.entries({
         project_read: { p_actor_kind: "staff", p_actor_id: owner.id, p_project_id: projectA },
         project_open_customer_session: {
@@ -162,7 +162,33 @@ describe.skipIf(!enabled)("native Step 7 Auth, PostgreSQL, REST and Storage", ()
           p_payload: { summary: "Forgery attempt" },
         },
       }))
-        expect((await direct.rpc(rpc, args)).error, rpc).not.toBeNull();
+        expect((await direct.rpc(rpc, args)).error?.code, rpc).toBe("42501");
+      expect(
+        (
+          await direct
+            .from("installation_projects")
+            .update({ title: "Unauthorized replacement" })
+            .eq("id", projectA)
+        ).error?.code,
+      ).toBe("42501");
+      expect(
+        (await direct.from("project_memberships").delete().eq("project_id", projectA)).error?.code,
+      ).toBe("42501");
+      expect(
+        (
+          await direct.from("project_activities").insert({
+            project_id: projectA,
+            actor_kind: "staff",
+            actor_id: owner.id,
+            actor_label: "Forged actor",
+            action: "forged",
+            summary: "Forged history attempt",
+            request_id: randomUUID(),
+            payload_hash: "forged",
+            result: {},
+          })
+        ).error?.code,
+      ).toBe("42501");
       const upload = await direct.storage
         .from("project-documents")
         .upload(`${projectA}/${randomUUID()}.jpg`, Buffer.from("forged"), {

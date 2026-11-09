@@ -227,9 +227,9 @@ function CustomerPortal() {
         <section className="border-t pt-6 text-sm text-neutral-600">
           <h2 className="font-semibold text-neutral-900">Account & privacy</h2>
           <p className="mt-2">
-            Project access can be revoked by an authorized coordinator. Revocation does not delete
-            records subject to reviewed operational retention requirements. Sign out when using a
-            shared device.
+            Project access can be revoked by an authorized project administrator. Revocation does
+            not delete records subject to reviewed operational retention requirements. Sign out when
+            using a shared device.
           </p>
           <Link to="/legal/privacy" className="mt-2 inline-flex min-h-11 items-center underline">
             Privacy and access requests

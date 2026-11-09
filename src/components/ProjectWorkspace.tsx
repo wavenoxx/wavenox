@@ -461,12 +461,11 @@ export function ProjectWorkspace({
                   >
                     {editing && (
                       <>
-                        <ProjectField label="Record" name="record" value={appointmentId || "new"}>
-                          <option value="new">New appointment</option>
-                          {appointment && (
-                            <option value={appointment.id}>Selected existing appointment</option>
-                          )}
-                        </ProjectField>
+                        <p className="text-sm text-neutral-600">
+                          {appointmentId
+                            ? "Editing the selected appointment."
+                            : "Creating a new appointment."}
+                        </p>
                         {appointmentId && (
                           <button
                             type="button"
