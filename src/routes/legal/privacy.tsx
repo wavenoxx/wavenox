@@ -7,7 +7,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 export const Route = createFileRoute("/legal/privacy")({
   head: () => ({
     meta: [
-      { title: `Privacy Policy & DPDP Act Compliance — ${BRAND_CONFIG.name}` },
+      { title: `Privacy Policy & Data Protection — ${BRAND_CONFIG.name}` },
       {
         name: "description",
         content: `Privacy Policy and data governance standards under India's Digital Personal Data Protection Act, 2023 (DPDP Act) for ${BRAND_CONFIG.legalName}.`,

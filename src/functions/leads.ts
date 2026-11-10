@@ -272,6 +272,11 @@ function isRateLimited(identifier: string): boolean {
         ipRequestTimestamps.set(key, active);
       }
     }
+    // Do not let a stream of unique numbers grow this runtime's memory indefinitely.
+    // Existing keys retain their window; new keys can retry after expiry.
+    if (ipRequestTimestamps.size >= MAX_RATE_LIMIT_KEYS && !ipRequestTimestamps.has(identifier)) {
+      return true;
+    }
   }
   const history = ipRequestTimestamps.get(identifier) || [];
   const recent = history.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
@@ -297,11 +302,12 @@ async function verifyTurnstile(token: string, secretKey: string): Promise<boolea
     const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       body: params,
+      signal: AbortSignal.timeout(10_000),
     });
     const outcome = (await res.json()) as { success: boolean };
     return outcome.success === true;
-  } catch (err) {
-    console.warn("[Turnstile] Validation check error:", err);
+  } catch {
+    console.warn("[Turnstile] Validation unavailable");
     return false;
   }
 }

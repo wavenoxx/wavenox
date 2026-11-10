@@ -83,7 +83,7 @@ export function SourcePopover({
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-[#F57C00] shrink-0" />
               <span className="text-[12px] font-semibold uppercase tracking-wider text-[#171A20]">
-                Verified Assumption
+                {data.status}
               </span>
             </div>
             <button
@@ -124,8 +124,8 @@ export function SourcePopover({
               </span>
             </div>
             <div className="flex justify-between text-[#5C5E62]">
-              <span>Verified:</span>
-              <span className="font-medium text-[#171A20]">{data.verifiedDate}</span>
+              <span>Reviewed:</span>
+              <span className="font-medium text-[#171A20]">{data.reviewedDate}</span>
             </div>
             {data.notes && (
               <p className="text-[12px] text-[#5C5E62] pt-1 leading-normal italic">*{data.notes}</p>

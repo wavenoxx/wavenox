@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState, lazy, Suspense, type ReactNode } from "react";
 import "@fontsource-variable/inter/wght.css";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import interLatinExt from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -137,6 +139,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
       { name: "description", content: BRAND_CONFIG.description },
       { name: "author", content: BRAND_CONFIG.legalName },
+      ...(BRAND_CONFIG.status !== "active"
+        ? [{ name: "robots", content: "noindex, nofollow" }]
+        : []),
       { property: "og:title", content: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
       { property: "og:description", content: BRAND_CONFIG.description },
       { property: "og:type", content: "website" },
@@ -146,6 +151,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#171A20" },
     ],
     links: [
+      {
+        rel: "preload",
+        href: interLatin,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: interLatinExt,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       {
         rel: "stylesheet",
         href: appCss,
@@ -191,7 +210,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       </head>
       <body>

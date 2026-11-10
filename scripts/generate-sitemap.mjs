@@ -23,14 +23,11 @@ const ROUTES = [
   { path: "/legal/disclosures", priority: "0.5", changefreq: "yearly" },
 ];
 
-const today = new Date().toISOString().split("T")[0];
-
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${ROUTES.map(
   (r) => `  <url>
     <loc>${SITE_URL}${r.path === "/" ? "/" : r.path}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
   </url>`,
@@ -42,6 +39,9 @@ const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /order/received
 Disallow: /ops
+Disallow: /portal
+Disallow: /api/
+Disallow: /_serverFn/
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;

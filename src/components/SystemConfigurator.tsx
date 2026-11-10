@@ -26,15 +26,21 @@ import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow } from "@/components/system";
 import { media } from "@/config/media";
-import { ArchitecturalDossierModal, type DossierData } from "./ArchitecturalDossierModal";
+import type { DossierData } from "./ArchitecturalDossierModal";
 import { WealthCurveVisualizer } from "./WealthCurveVisualizer";
 import { BillDecoder } from "./BillDecoder";
 import { BillIntelligence } from "./BillIntelligence";
 import type { ConfirmedBillInputs } from "@/lib/bill-intelligence";
 import { MonthlyGenerationChart } from "./MonthlyGenerationChart";
-import { RoofSketcher } from "./RoofSketcher";
 import { BatteryHonestyAdvisor } from "./BatteryHonestyAdvisor";
 import { SourcePopover } from "./SourcePopover";
+
+const ArchitecturalDossierModal = React.lazy(() =>
+  import("./ArchitecturalDossierModal").then((m) => ({ default: m.ArchitecturalDossierModal })),
+);
+const RoofSketcher = React.lazy(() =>
+  import("./RoofSketcher").then((m) => ({ default: m.RoofSketcher })),
+);
 
 export interface SystemConfiguratorProps {
   initialBill?: number;
@@ -1217,19 +1223,21 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
 
                 {showRoofSketcher && (
                   <div className="mt-3">
-                    <RoofSketcher
-                      discomCode={selectedDiscomCode}
-                      targetPanels={panelCount}
-                      onApplyKw={(_kw, feasiblePanels, area) => {
-                        setSketchedRoofSqft(area);
-                        setKnownRoofSqftStr(String(area));
-                        if (feasiblePanels >= 6) {
-                          setPanelCount(Math.min(maxResidentialPanels, feasiblePanels));
-                          setIsManualPanelOverride(true);
-                        }
-                        setShowRoofSketcher(false);
-                      }}
-                    />
+                    <React.Suspense fallback={<p role="status">Loading roof planner…</p>}>
+                      <RoofSketcher
+                        discomCode={selectedDiscomCode}
+                        targetPanels={panelCount}
+                        onApplyKw={(_kw, feasiblePanels, area) => {
+                          setSketchedRoofSqft(area);
+                          setKnownRoofSqftStr(String(area));
+                          if (feasiblePanels >= 6) {
+                            setPanelCount(Math.min(maxResidentialPanels, feasiblePanels));
+                            setIsManualPanelOverride(true);
+                          }
+                          setShowRoofSketcher(false);
+                        }}
+                      />
+                    </React.Suspense>
                   </div>
                 )}
               </div>
@@ -2024,11 +2032,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       )}
 
       {/* Architectural Feasibility Proposal Preview Modal */}
-      <ArchitecturalDossierModal
-        isOpen={previewDossierOpen}
-        onClose={() => setPreviewDossierOpen(false)}
-        data={currentDossierData}
-      />
+      {previewDossierOpen && (
+        <React.Suspense fallback={<p role="status">Loading proposal preview…</p>}>
+          <ArchitecturalDossierModal
+            isOpen={previewDossierOpen}
+            onClose={() => setPreviewDossierOpen(false)}
+            data={currentDossierData}
+          />
+        </React.Suspense>
+      )}
     </div>
   );
 }

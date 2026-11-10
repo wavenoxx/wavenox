@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SystemConfigurator } from "@/components/SystemConfigurator";
 import { BRAND_CONFIG } from "@/config/brand";
+import { media } from "@/config/media";
 
 export const Route = createFileRoute("/deploy")({
   validateSearch: (search: Record<string, unknown>): { bill?: number; discom?: string } => {
@@ -39,7 +40,26 @@ export const Route = createFileRoute("/deploy")({
       { property: "og:url", content: `${BRAND_CONFIG.domain}/deploy` },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/deploy` }],
+    links: [
+      { rel: "canonical", href: `${BRAND_CONFIG.domain}/deploy` },
+      {
+        rel: "preload",
+        as: "image",
+        type: "image/avif",
+        href: media["res-hero"].mobileAvif,
+        media: "(max-width: 768px)",
+        fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        type: "image/avif",
+        imageSrcSet: media["res-hero"].avif,
+        imageSizes: "100vw",
+        media: "(min-width: 769px)",
+        fetchPriority: "high",
+      },
+    ],
     scripts: [
       {
         type: "application/ld+json",

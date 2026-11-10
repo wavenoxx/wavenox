@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { protectResponse } from "./server/response-policy";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -55,11 +56,11 @@ export default {
         pathname.startsWith("/api/project-documents/")
       ) {
         const { handleProjectRequest } = await import("./server/project-runtime");
-        return await handleProjectRequest(request);
+        return protectResponse(await handleProjectRequest(request), request);
       }
       if (new URL(request.url).pathname === "/api/bill-extraction") {
         const { handleBillRequest } = await import("./server/bill-http");
-        return await handleBillRequest(request);
+        return protectResponse(await handleBillRequest(request), request);
       }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
@@ -67,20 +68,26 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "private, no-store, max-age=0");
         headers.set("x-robots-tag", "noindex, nofollow");
-        return new Response(response.body, { status: response.status, headers });
+        return protectResponse(
+          new Response(response.body, { status: response.status, headers }),
+          request,
+        );
       }
-      return await normalizeCatastrophicSsrResponse(response);
+      return protectResponse(await normalizeCatastrophicSsrResponse(response), request);
     } catch (error) {
       if (!isPrivate) console.error(error);
-      return new Response(renderErrorPage(), {
-        status: 500,
-        headers: {
-          "content-type": "text/html; charset=utf-8",
-          ...(isPrivate
-            ? { "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" }
-            : {}),
-        },
-      });
+      return protectResponse(
+        new Response(renderErrorPage(), {
+          status: 500,
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            ...(isPrivate
+              ? { "cache-control": "private, no-store", "x-robots-tag": "noindex, nofollow" }
+              : {}),
+          },
+        }),
+        request,
+      );
     }
   },
 };

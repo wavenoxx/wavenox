@@ -1,0 +1,48 @@
+# WAVENOX production release and incident runbook
+
+**Status: prepared, not executed.** Separate explicit approval is required for production restoration, migrations, provisioning, customer-data smoke tests and deployment. No person is assigned implicitly; the business owner must name a release operator, database operator, operations owner and privacy contact.
+
+## Ordered enablement
+
+1. **Freeze the approved candidate.** Record main/feature/merge SHA, Draft PR review, green CI and dependency audit. Preserve Lovable history. Inventory production project, region, domain, existing deployment and migration ledger read-only. If Supabase is inactive or access is denied, stop activation and obtain the appropriate access/restore approval.
+2. **Verify environment names without exporting secrets.** Server-only SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY); optional Turnstile and Resend owner-notification configuration. Explicit LEAD_MODE=live and matching build-time VITE_LEAD_MODE. Keep BILL_AI_ENABLED=false and PORTAL_EMAIL_ENABLED=false. No secret in VITE_ variables, client artifacts, screenshots or logs. Verify preview/public brand status and canonical domain separately; previews must remain noindex.
+3. **Back up and rehearse recovery.** Before any migration, approved database operator records an encrypted backup/PITR recovery point, retention, restore credentials and a successful isolated restore test with duration. Database backups do not replace Storage object backup/inventory. Define business RPO/RTO and confirm the actual plan supports them. Do not mark backups verified from a dashboard setting alone.
+4. **Review the migration ledger and SQL.** Apply only missing files, in repository order, in approved staging first: consultations v1/v2/v3; Step 5 CRM; Step 5 server-only audit; Step 7 projects; Step 8 staff-session check. The new file is `20261109182756_step8_staff_session_revocation.sql`. Check Auth schema columns on the actual Supabase version. It is additive, returns a boolean and grants EXECUTE only to service_role. Never replay old permissive grants over hardening.
+5. **Authorized production migration window.** Only after separate approval, take the fresh recovery point and apply reviewed missing migrations using the supported operator workflow. Verify transaction success and migration ledger, RLS, effective grants and RPC signatures before code rollout. The new code fails staff authentication closed if the session function is absent. Do not temporarily grant authenticated access to work around failure.
+6. **Staff provisioning.** Operations owner verifies staff identity and least-privilege role; database operator performs approved provisioning. No public admin signup. Test owner/coordinator/viewer/inactive/non-staff behavior using expressly approved synthetic accounts. Verify copied staff JWT rejection after logout on a second instance.
+7. **CRM smoke.** Verify authorized reads/masking, permitted stage change, stale-version conflict, immutable consent/customer notes, exactly one audit per success and rollback on a disposable failure test. Never install an audit-failure trigger in production.
+8. **Storage and portal readiness.** Verify project-documents is private, browser-role policies deny direct access, approved scans can be uploaded/reviewed/downloaded, another project cannot fetch them, and revocation immediately blocks access. Verify metadata/audit compensation and orphan inventory process. Never make the bucket public to solve download errors.
+9. **Email and onboarding.** Configure reviewed SMTP and code-only Supabase templates with short OTP expiry and rate limits; verify real delivery to controlled approved test addresses, invalid/expired/reused OTP rejection and generic enumeration-safe responses. Approve customer invitation policy and identity evidence. Only then separately authorize PORTAL_EMAIL_ENABLED=true. No production invitations are sent by this audit.
+10. **Deployment/domain.** Separately approve production deployment of the verified SHA. Validate Node/platform compatibility, SSR build, domain ownership, HTTPS and redirects, security/cache headers, canonical URLs, robots and sitemap. Only set public site status active after business identity/contact/territory approval. Check all private routes remain noindex/no-store, independent of public indexing.
+11. **Lead smoke and operational acceptance.** With explicit permission, submit one synthetic lead through each relevant path or a bounded agreed sample. Confirm persisted reference/source/consent, exact customer confirmation and no false notification claim. Record IDs privately for approved cleanup; do not put personal data in the release report. Verify rate-limit, database-down and provider-down user errors.
+12. **Monitoring and sign-off.** Enable the reviewed monitoring design, send safe test alerts, verify operator acknowledgement and backup freshness. Confirm legal/financial notices, retention, contact channel and support coverage. Business owner signs code, deployment, operational and launch decisions separately. Paid traffic remains disabled until conversion and abuse gates pass.
+
+## Cleanup and retention jobs to provision
+
+No cleanup scheduler is active by this task. Database operator must review and schedule bounded batches for expired project sessions, consumed/expired invitations, and stale rate-limit records, with indexes and counts-only logs. Preserve audit history under approved retention. Review unused Auth sessions through provider-supported controls.
+
+Storage operator compares private objects to document metadata; quarantine/report unmatched objects older than an approved grace period before deletion, allowing for uploads in flight. Investigate failed compensation. Back up retained files first. No automatic legal-document purge or broad delete statement is supplied.
+
+## Monitoring design (not an active integration)
+
+| Signal | Safe data | Initial alert/review policy |
+| --- | --- | --- |
+| Deployment/build and public API availability | SHA, status class, duration, fixed route family | Alert on failed deployment or sustained 5xx; operator verifies rollback candidate |
+| Lead persistence / CRM / portal operation failures | Fixed operation category, status, aggregate count; no request body | Alert on repeated failures or baseline deviation; verify database availability and migrations |
+| OTP/provider failures and abuse | Aggregate status/rate counts; no email, code or IP in app logs | Alert on provider rejection/429 spikes; disable sending and preserve generic UX |
+| AI quota/cost | Aggregate usage and cost; no image/text | Keep disabled until quotas and spend alerts are tested |
+| Storage failures | Fixed error class and count; no document path/title | Stop publication after failed metadata/audit; inspect orphan inventory privately |
+| Security rejections | Aggregate forbidden/conflict counts | Investigate anomalous volume; do not interpret every expected 403 as compromise |
+| Backup/cleanup | Last success, duration, rows processed, oldest pending age | Alert when approved schedule is missed; rehearse restore periodically |
+
+Production global errors are deliberately generic; platform request/deployment IDs may be used for correlation only after confirming they contain no PII. Do not ingest headers, cookies, query strings, payloads, OCR text or raw exception causes. Route monitoring must redact dynamic identifiers. Logs need access control and reviewed retention. No Sentry, paid monitoring service, outbound alert recipient or integration is represented as configured.
+
+## Incident response and rollback
+
+- **P0 suspected disclosure, credential compromise or audit corruption:** release operator stops affected operations/traffic, preserves restricted evidence, involves privacy/security owner, revokes/rotates compromised credentials through approved providers, and assesses notification duties with counsel. Do not paste sensitive logs into tickets.
+- **P1 persistent lead, Auth, Storage or portal outage:** stop acquisition/invitations, show truthful service errors, inspect provider/migration/deployment health and restore the last compatible application candidate after approval.
+- **P2 localized UI/performance issue:** record reproducible evidence and patch through the normal feature/PR gates; avoid unrelated rewrites.
+
+Rollback application code to the recorded last compatible deployment after approval. Retain additive schema/grant hardening; never roll back to broad authenticated CRM access. The Step 8 session helper can remain installed when older code is restored, but that older code has weaker logout behavior and is not a preferred security rollback. Prefer disabling staff operations during repair. For data corruption use an isolated restore to assess recovery first; production restore requires its own approval and loss window.
+
+Post-rollback verify LIVE fail-closed behavior, consent-preserving lead persistence, staff/customer isolation, document denial, audit integrity and alert acknowledgement. Record timeline, root cause, recovery point, customer communication decision and preventative action. Only the assigned privacy/operations owner sends approved incident communications; no automated customer messages are added.

@@ -47,7 +47,7 @@ export const PM_SURYA_GHAR_SOURCE: DataSource = {
   title: "PM Surya Ghar: Muft Bijli Yojana National Portal & MNRE Operational Guidelines",
   url: "https://pmsuryaghar.gov.in",
   verifiedOn: "2026-11-05",
-  documentRef: "MNRE File No. 318/331/2023-GCRT & Operational Guidelines",
+  documentRef: "MNRE File No. 318/17/2024-GCRT, 7 June 2024; amendment 318/140/2024, 7 July 2025",
   authority: "Ministry of New and Renewable Energy (MNRE), Government of India",
   state: "All India",
   consumerCategory: "Residential Grid-Connected & RWA/GHS",
@@ -360,15 +360,15 @@ export function evaluateSubsidyEligibility(
 export const TGERC_TARIFF_SOURCE: DataSource = {
   title:
     "TGERC Retail Supply Tariff Orders FY 2025-26 & FY 2026-27 (Schedule of Retail Tariffs — LT-I Domestic)",
-  url: "https://tgsouthernpower.org/resources/PDF/Tariffs/63tarifffile.pdf",
-  verifiedOn: "2026-11-05",
+  url: "https://tgerc.telangana.gov.in/file_upload/uploads/Tariff%20Orders/Tariff%20Schedule/Tariff%20Schedule%202026-27.pdf",
+  verifiedOn: "2026-11-10",
   documentRef: "TGERC O.P. Nos. 102 & 103 of 2024; FY 2026-27 Retail Supply Tariff Order",
   authority: "Telangana Electricity Regulatory Commission (TGERC)",
   state: "Telangana",
   discom: "TGSPDCL / TGNPDCL",
-  consumerCategory: "LT-I Domestic (A, B, C) & HT/LT Commercial",
+  consumerCategory: "LT-I Domestic A / B(i) / B(ii) & HT/LT Commercial",
   financialYear: "FY 2026-27",
-  effectiveFrom: "2025-04-01",
+  effectiveFrom: "2026-04-01",
   status: "VERIFIED",
   category: "OFFICIAL_REGULATORY_FACT",
   restrictions:
@@ -378,15 +378,15 @@ export const TGERC_TARIFF_SOURCE: DataSource = {
 export const APERC_TARIFF_SOURCE: DataSource = {
   title:
     "APERC Retail Supply Tariff Orders FY 2025-26 & FY 2026-27 (LT Category-I(A) Domestic Telescopic Schedule)",
-  url: "https://aperc.gov.in/page/Tariff_Orders",
-  verifiedOn: "2026-11-05",
+  url: "https://www.apeasternpower.com/MqKfcSkRsjsSlg0NlDDHYCT7dKQ%3D?fileName=TSFY2026-27.pdf&filePath=%2Fupload%2FExternal_Files%2F%2FRegulatory%2FTARIFFORDERS%2F",
+  verifiedOn: "2026-11-10",
   documentRef: "APERC Retail Supply Tariff Order for FY 2025-26 & FY 2026-27 (APEPDCL / APSPDCL)",
   authority: "Andhra Pradesh Electricity Regulatory Commission (APERC)",
   state: "Andhra Pradesh",
   discom: "APEPDCL / APSPDCL",
   consumerCategory: "LT Category-I(A) Domestic & LT Category-II Commercial",
   financialYear: "FY 2026-27",
-  effectiveFrom: "2025-04-01",
+  effectiveFrom: "2026-04-01",
   status: "VERIFIED",
   category: "OFFICIAL_REGULATORY_FACT",
   restrictions:
@@ -1973,9 +1973,11 @@ export const IS_875_WIND_SOURCE: DataSource = {
   url: "https://standardsbis.bsbedge.com",
   verifiedOn: "2026-11-05",
   documentRef: "IS 875 (Part 3): 2015 Clause 6.2 Basic Wind Speed Map",
+  restrictions:
+    "Preliminary wind design inputs require site-specific verification by a structural engineer; no structural certification is implied.",
   authority: "Bureau of Indian Standards (BIS)",
-  status: "VERIFIED",
-  category: "OFFICIAL_REGULATORY_FACT",
+  status: "INDICATIVE",
+  category: "ENGINEERING_MODEL_ASSUMPTION",
 };
 
 export const WIND_SPEED_STANDARDS = {
@@ -2006,10 +2008,10 @@ export const WIND_SPEED_STANDARDS = {
 export const INCOME_TAX_SECTION_33_SOURCE: DataSource = {
   title:
     "Income-tax Act, 2025 (in force 1 April 2026) — Section 33 Depreciation & Notified Income-tax Rules, 2026",
-  url: "https://incometaxindia.gov.in",
-  verifiedOn: "2026-11-05",
+  url: "https://www.incometaxindia.gov.in/documents/d/guest/en-notified-it-rules-2026-20-03-2026-pdf",
+  verifiedOn: "2026-11-10",
   documentRef:
-    "Income-tax Act, 2025 Section 33 & Notified Income-tax Rules, 2026 (Appendix I — Renewable Energy Devices: Solar Power Generating Systems)",
+    "Income-tax Act, 2025 Section 33 & Notified Income-tax Rules, 2026 (G.S.R. 198(E), 20 March 2026; Appendix I, renewable energy devices, solar power generating systems, Gazette page 1806)",
   authority: "Central Board of Direct Taxes (CBDT), Ministry of Finance",
   consumerCategory: "Commercial & Industrial Assessees",
   financialYear: "FY 2026-27 (Tax Year 2026-27)",
@@ -2047,7 +2049,7 @@ export const SBI_SOLAR_LOAN_SOURCE: DataSource = {
   title:
     "State Bank of India (SBI) Green Loans — PM Surya Ghar Loan for Solar Roof Top (Effective 15 Oct 2026)",
   url: "https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top",
-  verifiedOn: "2026-11-05",
+  verifiedOn: "2026-11-10",
   effectiveFrom: "2026-10-15",
   documentRef:
     "SBI Green Loans PM Surya Ghar Schedule (6.00% p.a. ≤ ₹2L for ≤ 3 kW; 8.15% p.a. > ₹2L–₹6L for > 3 kW to 10 kW effective 15 Oct 2026; older personal-banking page lists 5.75% / 7.90% as of 15 Dec 2025)",
@@ -2118,12 +2120,12 @@ export const STATUTORY_CONNECTION_RULES = {
 // 9. MODULE PERFORMANCE & LINEAR WARRANTY MATHEMATICS
 // ----------------------------------------------------------------------------
 export const MODULE_WARRANTY_SOURCE: DataSource = {
-  title: "Tier-1 N-Type TOPCon Dual-Glass Bifacial PV Module Engineering Datasheet",
+  title: "Indicative N-Type TOPCon performance model; manufacturer SKU to be selected",
   url: "https://wavenox.in/technology",
   verifiedOn: "2026-11-05",
-  documentRef: "IEC 61215 / IEC 61730 / BIS IS 14286 ALMM Compliant Specification",
-  authority: "IEC / BIS Standards & Tier-1 OEM Specification",
-  status: "VERIFIED",
+  documentRef: "Selected manufacturer datasheet and warranty required",
+  authority: "WAVENOX engineering assumption",
+  status: "INDICATIVE",
   category: "ENGINEERING_MODEL_ASSUMPTION",
 };
 

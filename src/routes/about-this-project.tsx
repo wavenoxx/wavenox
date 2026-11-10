@@ -35,7 +35,7 @@ export const Route = createFileRoute("/about-this-project")({
       {
         property: "og:description",
         content:
-          "How WAVENOX blends Tesla-grade design restraint with Indian regulatory rigor and verified NASA POWER solar meteorology.",
+          "How WAVENOX blends Tesla-grade design restraint with Indian regulatory rigor and indicative regional solar modeling.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/about-this-project` },
@@ -449,11 +449,11 @@ function AboutThisProjectPage() {
               06 · Authoritative Citations
             </span>
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
-              Complete Verified Sources Catalog
+              Sources & Model Assumptions
             </h2>
             <p className="text-[14px] text-[#5C5E62] max-w-2xl">
-              Every numerical claim and equation on this platform is linked to an official statutory
-              document or verified meteorological dataset.
+              Published schedules and preliminary engineering assumptions are identified separately.
+              Project eligibility, equipment warranties and site performance require verification.
             </p>
           </div>
 
@@ -467,7 +467,7 @@ function AboutThisProjectPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-[14px] font-medium text-[#171A20]">{source.metric}</span>
                     <span className="text-[12px] text-[#166534] font-semibold bg-[#DCFCE7] px-2 py-0.5 rounded">
-                      Verified {source.verifiedDate}
+                      {source.status}
                     </span>
                   </div>
                   <div className="text-[12px] text-[#5C5E62]">

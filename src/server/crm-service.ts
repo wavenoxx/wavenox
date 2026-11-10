@@ -3236,11 +3236,33 @@ export async function handleLoginCrmStaff(data: unknown) {
   };
 }
 
-export async function handleLogoutCrmStaff() {
-  const { ctx, clearSessionCookie } = await buildServerExecutionContext();
+export async function executeLogoutCrmStaff(ctx: CrmExecutionContext) {
+  if (ctx.token && resolveLeadExecutionMode(ctx.env) === "live") {
+    try {
+      if (!(await ctx.authAdapter?.revokeSession?.(ctx.token))) {
+        return {
+          ok: false as const,
+          status: 503,
+          message: "Sign-out could not be confirmed. Please retry.",
+        };
+      }
+    } catch {
+      return {
+        ok: false as const,
+        status: 503,
+        message: "Sign-out could not be confirmed. Please retry.",
+      };
+    }
+  }
   if (ctx.token) {
     revokeCrmSessionToken(ctx.token);
   }
-  clearSessionCookie();
   return { ok: true as const };
+}
+
+export async function handleLogoutCrmStaff() {
+  const { ctx, clearSessionCookie } = await buildServerExecutionContext();
+  const result = await executeLogoutCrmStaff(ctx);
+  if (result.ok) clearSessionCookie();
+  return result;
 }

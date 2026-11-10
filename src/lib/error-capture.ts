@@ -5,6 +5,7 @@ let lastCapturedError: { error: unknown; at: number } | undefined;
 const TTL_MS = 5_000;
 
 function record(error: unknown) {
+  if (process.env.NODE_ENV === "production") return;
   lastCapturedError = { error, at: Date.now() };
 }
 
@@ -16,6 +17,11 @@ const CAUSE_DEPTH_LIMIT = 5;
 const DESCRIPTION_LENGTH_LIMIT = 8_000;
 
 export function describeError(error: unknown): string {
+  if (process.env.NODE_ENV === "production") {
+    // Error messages, stacks, causes and arbitrary objects can contain submitted
+    // customer values or credentials. Production logs use an allowlisted event.
+    return JSON.stringify({ event: "server_error" });
+  }
   const parts: string[] = [];
   let current: unknown = error;
   for (let depth = 0; depth < CAUSE_DEPTH_LIMIT && current != null; depth++) {
@@ -54,6 +60,10 @@ function isErrorLike(value: unknown): value is Error {
 // recorded for consumeLastCapturedError and expanded before serialization.
 const originalConsoleError = console.error.bind(console);
 console.error = (...args: unknown[]) => {
+  if (process.env.NODE_ENV === "production") {
+    originalConsoleError(describeError(undefined));
+    return;
+  }
   const expanded = args.map((arg) => {
     if (!isErrorLike(arg)) return arg;
     record(arg);

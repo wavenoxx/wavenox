@@ -326,9 +326,9 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
           </div>
 
           <div className="text-[12px] text-[#5C5E62] bg-[#F4F4F4] p-3.5 rounded-[4px] leading-relaxed">
-            * <strong>DPDP Compliance Note:</strong> When WAVENOX assists with document preparation,
-            files are processed solely for DISCOM technical upload and are never shared with
-            marketing aggregators or commercial lead brokers.
+            * <strong>Document Privacy Note:</strong> When WAVENOX assists with document
+            preparation, files are processed solely for DISCOM technical upload and are never shared
+            with marketing aggregators or commercial lead brokers.
           </div>
         </div>
       )}
