@@ -1,0 +1,46 @@
+# Step 8 production readiness
+
+Reviewed 10 November 2026. Code delivery does not authorize launch. Production migrations, account provisioning and deployment remain unauthorized.
+
+## Readiness and accountable roles
+
+Named operators have not been assigned. The roles below are required owners, not invented staffing.
+
+| Gate | Observed state | Required owner and acceptance evidence |
+| --- | --- | --- |
+| Production database | Supabase project `razcywkwnpgxgjbwdjdj` reported INACTIVE; migration-history request timed out | Database operator: approved restoration, backup/restore evidence, exact migration ledger and grant checks |
+| CRM | Code/native tests verified; live staff and schema unverified | Operations owner + database operator: reviewed migrations including session check, least-privilege staff provisioning and synthetic staging smoke |
+| Portal/Storage | Disposable ownership/Auth/Storage tests pass; production bucket/SMTP unverified | Operations owner: private bucket, verified delivery, code-only OTP templates, short expiry, approved invitations and access-revocation test |
+| Public lead capture | Validated LIVE persistence and compatibility tests; no production submission authorized | Release owner: approved synthetic production smoke with persisted row and accurate confirmation; anti-spam and contact details verified |
+| Domain/TLS/hosting | Canonical configured as wavenox.in; Vercel Git status reports preview build success | Hosting owner: domain ownership, HTTPS, redirect/canonical/header/cache configuration and protected preview runtime checks |
+| Bill AI | Disabled; historical real-provider HTTP 429, no representative accuracy evidence | AI operator + privacy owner: working quota, representative evaluation, cost alerts, distributed abuse limits, retention and disclosure approval |
+| Monitoring/backups | No operational integration verified | Release operator: alert routing, incident owner, backup schedule and timed restore rehearsal |
+| Legal/commercial identity | Brand config supports verified entity; no statutory identity sign-off supplied | Business/privacy owner: entity/contact/service territory, contracts, warranties, retention and complaints process |
+| Launch | Not approved | Business owner: explicit written release sign-off after the runbook |
+
+Supabase discovery was read-only. No restore, migration, live file operation, customer or staff provisioning occurred. Vercel team inspection returned 403; a supported authorization request was opened, but protected runtime access was not established. GitHub's Vercel status is build evidence only.
+
+## Lead and conversion integrity
+
+Homepage/residential shared drawer, enterprise, Design Studio, net-metering and architects use the same validated lead server function. Explicit consent, normalized phone, bounded values, honeypot, Turnstile when configured, attribution sanitization and real insert-result checks remain. Default is LIVE; absent credentials fail closed. No silent DEMO substitution exists.
+
+Compatibility retries are limited to recognized missing Step 5 attribution columns and older source constraints. V2-compatible retries preserve original source/company context in notes; unrelated constraint failures are not silently retried. Unit tests cover both behavior and persistence failure. Native tests use synthetic disposable leads. Reference codes identify submissions, never customer accounts. Optional owner notifications follow persistence and their failure does not erase the saved enquiry or pretend email delivery succeeded.
+
+Current burst limiting is not a fleet-wide WAF. The bounded in-memory limiter and database duplicate trigger do not replace verified edge/IP abuse protection. Configure Turnstile frontend/backend keys consistently, test expiry/failure, and establish distributed protection before paid acquisition. No production test enquiry was sent.
+
+## Solar, finance and evidence review
+
+No numerical formula, sizing engine, generation array, subsidy amount, EMI calculation or recommendation algorithm was changed.
+
+- [TGERC FY 2026–27 tariff schedule](https://tgerc.telangana.gov.in/file_upload/uploads/Tariff%20Orders/Tariff%20Schedule/Tariff%20Schedule%202026-27.pdf), printed page 289: visually inspected domestic rates 1.95/3.10, 3.40/4.80 and 5.10/7.70/9.00/9.50/10.00. Current nomenclature is A/B(i)/B(ii); historical internal B/C identifiers remain for compatibility. Customer-facing reference labels and effective year were corrected. [TGERC settlement proceeding](https://tgerc.telangana.gov.in/file_upload/uploads/Regulations/Final/tserc/2025/Proceeding%20Solar.pdf), page 3, supports 2.57/kWh until further proceedings.
+- [AP FY 2026–27 schedule hosted by APEPDCL](https://www.apeasternpower.com/MqKfcSkRsjsSlg0NlDDHYCT7dKQ%3D?fileName=TSFY2026-27.pdf&filePath=%2Fupload%2FExternal_Files%2F%2FRegulatory%2FTARIFFORDERS%2F), printed page 172, visually inspected: domestic 1.90/3.00/4.50/6.00/8.75/9.75 and 10/kW fixed charge match existing inputs. AP surplus remains explicitly indicative; variable surcharge and individual bill eligibility are not guaranteed.
+- [MNRE residential CFA guideline (government utility copy)](https://meecl.nic.in/wp-content/uploads/2024/08/Annexure-C-Operational-Guidelines-for-the-Implementation-of-PM-Surya-Ghar-Muft-Bijli-Yojana.pdf) and [7 July 2025 amendment](https://cdnbbsr.s3waas.gov.in/s3716e1b8c6cd17b771da77391355749f3/uploads/2025/07/202507081690964295.pdf): conflicting document references were reconciled to 318/17/2024-GCRT (7 June 2024), amended by 318/140/2024. Eligibility remains customer-confirmed/conditional; scheme implementation period is through 31 March 2027 under that guideline.
+- [SBI product table](https://sbi.bank.in/web/sbi-green/green-loans/personal/pm-surya-ghar-loan-for-solar-roof-top) explicitly lists 6.00%/8.15% effective 15 October 2026. Its older FAQ still says 5.75%/7.90% as of December 2025. The dated product table supports the existing model; bank sanction, floating rates, term and modeled subsidy-credit timing remain indicative.
+- [Income-tax Department's Section 33](https://wmstatic-prd.incometaxindia.gov.in/web/guest/w/section-33-180) and [notified 2026 Rules](https://www.incometaxindia.gov.in/documents/d/guest/en-notified-it-rules-2026-20-03-2026-pdf), Gazette page 1806, support the depreciation reference and 40% solar entry. Official indexed text was available; direct full-document fetching was intermittently denied/timed out. The generic homepage citation was replaced. Entity tax regime, put-to-use date, tax capacity and deductions require a Chartered Accountant; estimates are not cash grants.
+- Generation, wind load, module degradation/temperature and appliance loads are model assumptions. No reproducible site weather export, selected OEM warranty or structural certificate was supplied. Catalog/popover labels now state that limitation and remove the blanket DPDP compliance claim. Physical survey, sanctioned load, DT hosting, shading and equipment approval remain necessary.
+
+## Privacy commencement and retention
+
+[G.S.R. 843(E)](https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf) establishes phased commencement: specified institutional provisions on publication, a further tranche after one year, and most substantive processing provisions after eighteen months. Using its printed 13 November 2025 publication date gives 13 November 2026 and 13 May 2027; legal review must confirm applicable dates, including the Gazette upload identifier dated 14 November. The [2026 removal-of-difficulties order](https://www.meity.gov.in/static/uploads/2026/10/daf495a7b5798a3dfa72a944b51fc176.pdf) concerns section 9 wording, not blanket acceleration of commencement. See Step 7 security documentation for Rules and corrigendum links.
+
+Consent, purpose limitation, private access and revocation are implemented controls, not a compliance certification. Before launch approve notices, grievance contacts, processor terms, incident handling and a retention schedule. Access revocation does not delete retained operational evidence. Bill originals remain ephemeral; project scans have separate authorized retention. Do not purge signed agreements or other legal records automatically.

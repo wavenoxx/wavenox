@@ -41,6 +41,24 @@ describe("Production-Safe Lead Submission Pipeline (Step 1 — Phase D & H)", ()
   });
 
   describe("1. Mode Resolution & Explicit Demo Mode", () => {
+    it("bounds unique-phone abuse and admits new enquiries after the window expires", async () => {
+      vi.spyOn(console, "info").mockImplementation(() => {});
+      let now = Date.now();
+      vi.spyOn(Date, "now").mockImplementation(() => now);
+      const options = { env: { LEAD_MODE: "demo" } };
+      for (let n = 0; n < 2000; n++) {
+        const result = await processLeadSubmission(
+          { ...BASE_VALID_INPUT, phone: String(9000000000 + n) },
+          options,
+        );
+        expect(result.success).toBe(true);
+      }
+      const blocked = await processLeadSubmission(BASE_VALID_INPUT, options);
+      expect(blocked.success).toBe(false);
+      expect(blocked.referenceCode).toBeUndefined();
+      now += 10 * 60 * 1000 + 1;
+      expect((await processLeadSubmission(BASE_VALID_INPUT, options)).success).toBe(true);
+    });
     it("activates DEMO mode ONLY when LEAD_MODE='demo' or VITE_LEAD_MODE='demo'", () => {
       expect(resolveLeadExecutionMode({})).toBe("live");
       expect(resolveLeadExecutionMode({ LEAD_MODE: "live" })).toBe("live");

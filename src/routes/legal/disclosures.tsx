@@ -108,12 +108,10 @@ function DisclosuresPage() {
                   Regional Specific Yield ({SOLAR_ASSUMPTIONS.yieldKwhPerKwYear} kWh/kWp/year —
                   Indicative Engineering Model Assumption):
                 </strong>{" "}
-                Derived from verified NASA POWER 22-year climatology (GHI &amp; ambient temperature)
-                combined with an NREL PVWatts v8 standard 14.08% system loss derate factor (soiling,
-                inverter, wiring, mismatch, and availability). While the underlying meteorological
-                dataset is verified, the modeled kWh/kWp/year yield is classified as{" "}
-                <code>INDICATIVE</code> because actual output depends on site shading, tilt, and
-                azimuth.
+                A preliminary regional generation benchmark informed by NASA POWER / NREL PVWatts
+                reference methods. A reproducible site weather/model export has not been
+                independently validated for this estimate. Yield remains <code>INDICATIVE</code>;
+                actual output depends on losses, shading, tilt, azimuth and equipment.
               </li>
               <li>
                 <strong className="text-[#171A20]">N-Type TOPCon Efficiency:</strong> Our models
@@ -298,14 +296,14 @@ function DisclosuresPage() {
                     <strong>LT-I(A) (≤ 100 units/mo):</strong> 0–50 @ ₹1.95, 51–100 @ ₹3.10
                   </li>
                   <li>
-                    <strong>LT-I(B) (101–200 units/mo):</strong> 0–100 @ ₹3.40, 101–200 @ ₹4.80
+                    <strong>LT-I(B)(i) (101–200 units/mo):</strong> 0–100 @ ₹3.40, 101–200 @ ₹4.80
                   </li>
                   <li>
-                    <strong>LT-I(C) (&gt; 200 units/mo):</strong> 0–200 @ ₹5.10, 201–300 @ ₹7.70,
-                    301–400 @ ₹9.00, 401–800 @ ₹9.50, &gt;800 @ ₹10.00
+                    <strong>LT-I(B)(ii) (&gt; 200 units/mo):</strong> 0–200 @ ₹5.10, 201–300 @
+                    ₹7.70, 301–400 @ ₹9.00, 401–800 @ ₹9.50, &gt;800 @ ₹10.00
                   </li>
                   <li>
-                    <strong>Fixed &amp; Customer Charges:</strong> LT-I(C) fixed charge
+                    <strong>Fixed &amp; Customer Charges:</strong> LT-I(B)(ii) fixed charge
                     ₹10/kW/month; customer charge ₹25–₹80/month; electricity duty ₹0.06/kWh.
                   </li>
                   <li>
@@ -517,8 +515,8 @@ function DisclosuresPage() {
                 7. Statutory Verification & Sources Register
               </h2>
               <p className="text-xs text-[#5C5E62] mt-1">
-                Every constant, tariff slab, subsidy formula, and physical assumption is verified
-                against official regulatory orders and codes.
+                Published tariffs and subsidy rules are distinguished from indicative physical
+                assumptions; references are reviewed against official regulatory orders and codes.
               </p>
             </div>
 
@@ -528,7 +526,7 @@ function DisclosuresPage() {
                   <tr className="bg-[#F8F8FA] border-b border-[#E2E8F0] text-[#171A20]">
                     <th className="py-2.5 px-4 font-semibold">Subject</th>
                     <th className="py-2.5 px-4 font-semibold">Statutory Reference & Document</th>
-                    <th className="py-2.5 px-4 font-semibold">Verified</th>
+                    <th className="py-2.5 px-4 font-semibold">Reviewed</th>
                     <th className="py-2.5 px-4 font-semibold">Source Link</th>
                   </tr>
                 </thead>
@@ -764,7 +762,7 @@ function DisclosuresPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[#171A20] hover:underline"
                       >
-                        <span>Datasheet</span>
+                        <span>Model assumptions</span>
                         <ExternalLink size={11} />
                       </a>
                     </td>

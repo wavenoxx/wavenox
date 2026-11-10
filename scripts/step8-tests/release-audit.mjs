@@ -129,7 +129,7 @@ try {
       failures.push(`${path}: canonical mismatch`);
     report.seo.push({ path, ...data });
   }
-  for (const path of pages) {
+  for (const path of routes) {
     for (const [width, height] of sizes) {
       await page.setViewportSize({ width, height });
       await page.goto(base + path, { waitUntil: "networkidle" });
