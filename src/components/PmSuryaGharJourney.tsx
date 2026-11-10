@@ -346,7 +346,12 @@ export function PmSuryaGharJourney({ className = "" }: PmSuryaGharJourneyProps) 
             </p>
           </div>
 
-          <div className="overflow-x-auto">
+          <div
+            role="region"
+            aria-label="PM Surya Ghar central subsidy brackets"
+            tabIndex={0}
+            className="overflow-x-auto rounded-[6px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+          >
             <table className="w-full text-left text-[13px] border border-[#E3E4E6] rounded-[6px] overflow-hidden">
               <thead className="bg-[#F4F4F4] text-[#171A20] font-semibold">
                 <tr>

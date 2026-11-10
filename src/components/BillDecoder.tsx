@@ -140,7 +140,12 @@ export function BillDecoder({
       {/* Expandable Slab Breakdown Table */}
       {isExpanded && (
         <div className="p-4 sm:p-5 border-t border-[#E3E4E6] space-y-4 animate-in fade-in-0 duration-200">
-          <div className="overflow-x-auto">
+          <div
+            role="region"
+            aria-label="Monthly electricity tariff slab breakdown"
+            tabIndex={0}
+            className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+          >
             <table className="w-full text-left text-[12px] sm:text-[13px]">
               <thead>
                 <tr className="border-b border-[#E3E4E6] text-[#5C5E62]">

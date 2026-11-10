@@ -6,19 +6,19 @@ Reviewed 10 November 2026. Code delivery does not authorize launch. Production m
 
 Named operators have not been assigned. The roles below are required owners, not invented staffing.
 
-| Gate | Observed state | Required owner and acceptance evidence |
-| --- | --- | --- |
-| Production database | Supabase project `razcywkwnpgxgjbwdjdj` reported INACTIVE; migration-history request timed out | Database operator: approved restoration, backup/restore evidence, exact migration ledger and grant checks |
-| CRM | Code/native tests verified; live staff and schema unverified | Operations owner + database operator: reviewed migrations including session check, least-privilege staff provisioning and synthetic staging smoke |
-| Portal/Storage | Disposable ownership/Auth/Storage tests pass; production bucket/SMTP unverified | Operations owner: private bucket, verified delivery, code-only OTP templates, short expiry, approved invitations and access-revocation test |
-| Public lead capture | Validated LIVE persistence and compatibility tests; no production submission authorized | Release owner: approved synthetic production smoke with persisted row and accurate confirmation; anti-spam and contact details verified |
-| Domain/TLS/hosting | Canonical configured as wavenox.in; Vercel Git status reports preview build success | Hosting owner: domain ownership, HTTPS, redirect/canonical/header/cache configuration and protected preview runtime checks |
-| Bill AI | Disabled; historical real-provider HTTP 429, no representative accuracy evidence | AI operator + privacy owner: working quota, representative evaluation, cost alerts, distributed abuse limits, retention and disclosure approval |
-| Monitoring/backups | No operational integration verified | Release operator: alert routing, incident owner, backup schedule and timed restore rehearsal |
-| Legal/commercial identity | Brand config supports verified entity; no statutory identity sign-off supplied | Business/privacy owner: entity/contact/service territory, contracts, warranties, retention and complaints process |
-| Launch | Not approved | Business owner: explicit written release sign-off after the runbook |
+| Gate                      | Observed state                                                                                 | Required owner and acceptance evidence                                                                                                            |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Production database       | Supabase project `razcywkwnpgxgjbwdjdj` reported INACTIVE; migration-history request timed out | Database operator: approved restoration, backup/restore evidence, exact migration ledger and grant checks                                         |
+| CRM                       | Code/native tests verified; live staff and schema unverified                                   | Operations owner + database operator: reviewed migrations including session check, least-privilege staff provisioning and synthetic staging smoke |
+| Portal/Storage            | Disposable ownership/Auth/Storage tests pass; production bucket/SMTP unverified                | Operations owner: private bucket, verified delivery, code-only OTP templates, short expiry, approved invitations and access-revocation test       |
+| Public lead capture       | Validated LIVE persistence and compatibility tests; no production submission authorized        | Release owner: approved synthetic production smoke with persisted row and accurate confirmation; anti-spam and contact details verified           |
+| Domain/TLS/hosting        | Canonical configured as wavenox.in; Vercel Git status reports preview build success            | Hosting owner: domain ownership, HTTPS, redirect/canonical/header/cache configuration and protected preview runtime checks                        |
+| Bill AI                   | Disabled; historical real-provider HTTP 429, no representative accuracy evidence               | AI operator + privacy owner: working quota, representative evaluation, cost alerts, distributed abuse limits, retention and disclosure approval   |
+| Monitoring/backups        | No operational integration verified                                                            | Release operator: alert routing, incident owner, backup schedule and timed restore rehearsal                                                      |
+| Legal/commercial identity | Brand config supports verified entity; no statutory identity sign-off supplied                 | Business/privacy owner: entity/contact/service territory, contracts, warranties, retention and complaints process                                 |
+| Launch                    | Not approved                                                                                   | Business owner: explicit written release sign-off after the runbook                                                                               |
 
-Supabase discovery was read-only. No restore, migration, live file operation, customer or staff provisioning occurred. Vercel team inspection returned 403; a supported authorization request was opened, but protected runtime access was not established. GitHub's Vercel status is build evidence only.
+Supabase discovery was read-only. No restore, migration, live file operation, customer or staff provisioning occurred. Vercel team inspection returned 403; a supported authorization request was opened, but protected runtime access was not established. GitHub's Vercel status is build evidence only. In the Antigravity 2.0 continuation environment, neither Supabase management credentials nor Vercel team credentials are present; read-only non-activation constraints remain strictly enforced (`PRODUCTION DEPLOYMENT AUTHORIZED: NO`, `PRODUCTION DATABASE MIGRATION AUTHORIZED: NO`).
 
 ## Lead and conversion integrity
 

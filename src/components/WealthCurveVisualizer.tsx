@@ -120,10 +120,10 @@ export function WealthCurveVisualizer({
         <div>
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-[#F57C00]" />
-            <h4 className="text-[14px] font-medium tracking-wide uppercase text-[#E5E7EB]">
+            <h3 className="text-[14px] font-medium tracking-wide uppercase text-[#E5E7EB]">
               25-Year Cumulative Cash Flow (
               {paymentMode === "loan" ? "Financed Loan Mode" : "Cash Purchase Mode"})
-            </h4>
+            </h3>
           </div>
           <p className="text-[12px] text-[#9CA3AF] mt-1">
             {authorityLabel} tariff escalation assumption (3.0% YoY) · 0.40%/yr linear module

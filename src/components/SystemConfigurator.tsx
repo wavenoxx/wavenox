@@ -22,7 +22,6 @@ import {
   buildSolarRecommendation,
   type BackupPriorityId,
 } from "@/config/recommendation";
-import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
 import { Media, StatRow } from "@/components/system";
 import { media } from "@/config/media";
@@ -32,7 +31,6 @@ import { BillDecoder } from "./BillDecoder";
 import { BillIntelligence } from "./BillIntelligence";
 import type { ConfirmedBillInputs } from "@/lib/bill-intelligence";
 import { MonthlyGenerationChart } from "./MonthlyGenerationChart";
-import { BatteryHonestyAdvisor } from "./BatteryHonestyAdvisor";
 import { SourcePopover } from "./SourcePopover";
 
 const ArchitecturalDossierModal = React.lazy(() =>
@@ -40,6 +38,9 @@ const ArchitecturalDossierModal = React.lazy(() =>
 );
 const RoofSketcher = React.lazy(() =>
   import("./RoofSketcher").then((m) => ({ default: m.RoofSketcher })),
+);
+const BatteryHonestyAdvisor = React.lazy(() =>
+  import("./BatteryHonestyAdvisor").then((m) => ({ default: m.BatteryHonestyAdvisor })),
 );
 
 export interface SystemConfiguratorProps {
@@ -455,7 +456,10 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     setSubmitError(null);
 
     try {
-      const telemetry = getStoredTelemetry();
+      const [{ submitLead }, telemetry] = await Promise.all([
+        import("@/functions/leads"),
+        Promise.resolve(getStoredTelemetry()),
+      ]);
       const res = await submitLead({
         data: {
           name: userName.trim(),
@@ -1400,7 +1404,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </button>
                 {showBatteryAdvisor && (
                   <div className="mt-3">
-                    <BatteryHonestyAdvisor />
+                    <React.Suspense fallback={<p role="status">Loading backup estimator…</p>}>
+                      <BatteryHonestyAdvisor />
+                    </React.Suspense>
                   </div>
                 )}
               </div>

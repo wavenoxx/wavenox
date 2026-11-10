@@ -64,7 +64,7 @@ export function Media({
         alt={finalAlt}
         loading={loading}
         fetchPriority={fetchPriority}
-        decoding={priority ? "sync" : "async"}
+        decoding="async"
         width={width || descriptor.width}
         height={height || descriptor.height}
         className={imgClasses}
@@ -94,7 +94,7 @@ export function Media({
         alt={finalAlt}
         loading={loading}
         fetchPriority={fetchPriority}
-        decoding={priority ? "sync" : "async"}
+        decoding="async"
         width={width || descriptor.width}
         height={height || descriptor.height}
         className={imgClasses}

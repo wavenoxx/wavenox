@@ -241,24 +241,33 @@ function DisclosuresPage() {
               </strong>{" "}
               is applied:
             </p>
-            <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
+            <div
+              role="region"
+              aria-label="State DISCOM tariff schedules and verification status"
+              tabIndex={0}
+              className="overflow-x-auto rounded-xl border border-[#E2E8F0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+            >
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-[#F8F8FA] border-b border-[#E2E8F0] text-[#171A20]">
-                    <th className="py-2.5 px-4 font-semibold">DISCOM Code</th>
-                    <th className="py-2.5 px-4 font-semibold">State</th>
-                    <th className="py-2.5 px-4 font-semibold">Verification Status</th>
-                    <th className="py-2.5 px-4 font-semibold">Residential Base</th>
-                    <th className="py-2.5 px-4 font-semibold">Commercial HT Base</th>
-                    <th className="py-2.5 px-4 font-semibold">Surplus Export Rate (Indicative)</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">DISCOM Code</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">State</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">Verification Status</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">Residential Base</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">Commercial HT Base</th>
+                    <th className="py-2.5 px-3 sm:px-4 font-semibold">
+                      Surplus Export Rate (Indicative)
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0]">
                   {DISCOMS.map((d) => (
                     <tr key={d.code} className="hover:bg-[#FDFDFD]">
-                      <td className="py-2.5 px-4 font-mono font-medium text-[#171A20]">{d.code}</td>
-                      <td className="py-2.5 px-4 text-[#5C5E62]">{d.state}</td>
-                      <td className="py-2.5 px-4">
+                      <td className="py-2.5 px-3 sm:px-4 font-mono font-medium text-[#171A20]">
+                        {d.code}
+                      </td>
+                      <td className="py-2.5 px-3 sm:px-4 text-[#5C5E62]">{d.state}</td>
+                      <td className="py-2.5 px-3 sm:px-4">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium ${
                             d.status === "VERIFIED"
@@ -271,13 +280,13 @@ function DisclosuresPage() {
                             : "Indicative Benchmark"}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 tabular-nums">
+                      <td className="py-2.5 px-3 sm:px-4 tabular-nums">
                         ₹{d.residentialTariffInr.toFixed(2)} / kWh
                       </td>
-                      <td className="py-2.5 px-4 tabular-nums">
+                      <td className="py-2.5 px-3 sm:px-4 tabular-nums">
                         ₹{d.commercialTariffInr.toFixed(2)} / kWh
                       </td>
-                      <td className="py-2.5 px-4 tabular-nums text-[#5C5E62]">
+                      <td className="py-2.5 px-3 sm:px-4 tabular-nums text-[#5C5E62]">
                         ₹{d.exportRateInr.toFixed(2)} / kWh (Indicative)
                       </td>
                     </tr>
@@ -520,7 +529,12 @@ function DisclosuresPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
+            <div
+              role="region"
+              aria-label="Statutory verification and sources register"
+              tabIndex={0}
+              className="overflow-x-auto rounded-xl border border-[#E2E8F0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+            >
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-[#F8F8FA] border-b border-[#E2E8F0] text-[#171A20]">

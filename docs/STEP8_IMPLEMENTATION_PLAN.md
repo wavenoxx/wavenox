@@ -28,3 +28,12 @@ Read-only Supabase discovery reports WAVENOX project `razcywkwnpgxgjbwdjdj` INAC
 - Source catalog contains a blanket DPDP compliance label and generic manufacturer/engineering citations; reconcile these against actual evidence.
 
 All findings remain distinct from production activation. Final measured results and severity decisions belong in the execution and readiness reports.
+
+## Antigravity 2.0 final release-gate continuation (10 November 2026)
+
+Started from `3cab87aa15c66b7eb29e9bffdc77dfe3fd8976c5` (merged PR #12, Step 8 commit `d8583ec91510753d0f7b6ce6ed7cabf9b556a48b`) on branch `fix/wavenox-step8-final-release-gates` to close the 7 remaining release-audit failures observed in GitHub Actions run `42752891435` without lowering budgets or changing solar financial mathematics:
+
+1. **Work Package A (Mobile accessibility/layout)**: Add keyboard-focusable region semantics (`role="region"`, `aria-label`, `tabIndex={0}`, visible focus outline) and responsive mobile cell padding (`px-3 sm:px-6` / `p-3 sm:p-4`) to horizontal scroll tables on `/warranty`, `/about-this-project`, `/legal/disclosures`, and shared components so Axe `scrollable-region-focusable` passes at `320×720` and `390×844` across all 16 public routes.
+2. **Work Package B (`/deploy` mobile LCP)**: Optimize mobile hero assets (`res-hero-mobile.*` and `studio-estate-mobile.*` from 118.5 KB / 113.1 KB to 36.9 KB / 28.0 KB AVIF at `640×1138`), remove competing `<link rel="preload">` for `inter-latin-ext` (85.4 KB) in `src/routes/__root.tsx`, switch priority image decoding to `decoding="async"`, and lazy-load collapsed/deferred drawers (`BatteryHonestyAdvisor`, `BillPagePreview`, `bill-document`) so `/deploy` mobile LCP meets the `<= 4,000 ms` budget.
+3. **Work Package C (CI merge gates)**: Configure `.github/workflows/step5-hardening.yml` to run on `pull_request` targeting `main`, `push` to `main`, and `push` to `fix/wavenox-step8-final-release-gates` with least-privilege `contents: read` permissions and both `browser` and `database` jobs required.
+4. **Work Packages D–F (Read-only operational posture & complete Step 8 report package)**: Preserve read-only non-activation boundaries (`PRODUCTION DEPLOYMENT AUTHORIZED: NO`, `PRODUCTION DATABASE MIGRATION AUTHORIZED: NO`) and publish `docs/STEP8_PERFORMANCE_REPORT.md`, `docs/STEP8_SEO_ACCESSIBILITY_REPORT.md`, `docs/STEP8_EXECUTION_REPORT.md`, and the Antigravity continuation handoff.
