@@ -168,9 +168,9 @@ async function main() {
       }
     }
 
-    // Generate mobile portrait (True 9:16 aspect ratio - 1080w x 1920h for crisp Retina mobile screens)
-    const mobileWidth = 1080;
-    const mobileHeight = 1920;
+    // Generate mobile portrait (True 9:16 aspect ratio - 540w x 960h for fast mobile LCP)
+    const mobileWidth = 540;
+    const mobileHeight = 960;
 
     let mobileImgBuffer = null;
     if (shot.mobileSource) {
@@ -200,8 +200,7 @@ async function main() {
         position: "center",
         kernel: sharp.kernel.lanczos3,
       })
-      .sharpen({ sigma: 0.8, m1: 0.05, m2: 1.5, x1: 2 })
-      .avif({ quality: shot.isHero ? 86 : 80, effort: 6 })
+      .avif({ quality: shot.isHero ? 56 : 54, effort: 6 })
       .toFile(path.join(outDir, mobileAvifFile));
 
     const mobileWebpFile = `${shot.slug}-mobile.webp`;
@@ -211,8 +210,7 @@ async function main() {
         position: "center",
         kernel: sharp.kernel.lanczos3,
       })
-      .sharpen({ sigma: 0.8, m1: 0.05, m2: 1.5, x1: 2 })
-      .webp({ quality: shot.isHero ? 92 : 84, smartSubsample: true })
+      .webp({ quality: shot.isHero ? 78 : 74, smartSubsample: true })
       .toFile(path.join(outDir, mobileWebpFile));
 
     const mobileJpgFile = `${shot.slug}-mobile.jpg`;
@@ -222,7 +220,7 @@ async function main() {
         position: "center",
         kernel: sharp.kernel.lanczos3,
       })
-      .jpeg({ quality: shot.isHero ? 90 : 84, mozjpeg: true })
+      .jpeg({ quality: shot.isHero ? 80 : 76, mozjpeg: true })
       .toFile(path.join(outDir, mobileJpgFile));
 
     // Master default jpg guaranteed to exist on disk

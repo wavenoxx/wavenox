@@ -259,64 +259,73 @@ function WarrantyPage() {
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div
+              role="region"
+              aria-label="Specified N-Type TOPCon vs conventional output retention comparison"
+              tabIndex={0}
+              className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+            >
               <table className="w-full text-left text-[13px] sm:text-[14px] border-collapse">
                 <thead>
                   <tr className="border-b border-[#E3E4E6] bg-[#F4F4F4]/60 text-[12px] font-semibold text-[#5C5E62] uppercase tracking-wider">
-                    <th className="py-3.5 px-6">Milestone</th>
-                    <th className="py-3.5 px-6">Conventional Poly/Mono</th>
-                    <th className="py-3.5 px-6 text-[#171A20]">Tier-1 N-Type TOPCon (OEM)</th>
-                    <th className="py-3.5 px-6 text-right">Protection Advantage</th>
+                    <th className="py-3.5 px-3 sm:px-6">Milestone</th>
+                    <th className="py-3.5 px-3 sm:px-6">Conventional Poly/Mono</th>
+                    <th className="py-3.5 px-3 sm:px-6 text-[#171A20]">
+                      Tier-1 N-Type TOPCon (OEM)
+                    </th>
+                    <th className="py-3.5 px-3 sm:px-6 text-right">Protection Advantage</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E3E4E6]">
                   <tr>
-                    <td className="py-4 px-6 font-medium text-[#171A20]">Year 1 Initial</td>
-                    <td className="py-4 px-6 text-[#5C5E62]">97.0% (LID degradation)</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                    <td className="py-4 px-3 sm:px-6 font-medium text-[#171A20]">Year 1 Initial</td>
+                    <td className="py-4 px-3 sm:px-6 text-[#5C5E62]">97.0% (LID degradation)</td>
+                    <td className="py-4 px-3 sm:px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(1).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
+                    <td className="py-4 px-3 sm:px-6 text-right font-medium text-[#B45309]">
                       +2.0% Lower Initial Loss
                     </td>
                   </tr>
                   <tr className="bg-[#F4F4F4]/30">
-                    <td className="py-4 px-6 font-medium text-[#171A20]">Annual Degradation</td>
-                    <td className="py-4 px-6 text-[#5C5E62]">0.70% / year</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                    <td className="py-4 px-3 sm:px-6 font-medium text-[#171A20]">
+                      Annual Degradation
+                    </td>
+                    <td className="py-4 px-3 sm:px-6 text-[#5C5E62]">0.70% / year</td>
+                    <td className="py-4 px-3 sm:px-6 font-semibold text-[#171A20]">
                       ≤ {MODULE_WARRANTY_TERMS.annualDegradationPct.toFixed(2)}% / year
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
+                    <td className="py-4 px-3 sm:px-6 text-right font-medium text-[#B45309]">
                       43% Lower Loss
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-4 px-6 font-medium text-[#171A20]">Year 10 Output</td>
-                    <td className="py-4 px-6 text-[#5C5E62]">90.7%</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                    <td className="py-4 px-3 sm:px-6 font-medium text-[#171A20]">Year 10 Output</td>
+                    <td className="py-4 px-3 sm:px-6 text-[#5C5E62]">90.7%</td>
+                    <td className="py-4 px-3 sm:px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(10).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
+                    <td className="py-4 px-3 sm:px-6 text-right font-medium text-[#B45309]">
                       +4.7% Yield Gain
                     </td>
                   </tr>
                   <tr className="bg-[#F4F4F4]/30">
-                    <td className="py-4 px-6 font-medium text-[#171A20]">Year 20 Output</td>
-                    <td className="py-4 px-6 text-[#5C5E62]">83.7%</td>
-                    <td className="py-4 px-6 font-semibold text-[#171A20]">
+                    <td className="py-4 px-3 sm:px-6 font-medium text-[#171A20]">Year 20 Output</td>
+                    <td className="py-4 px-3 sm:px-6 text-[#5C5E62]">83.7%</td>
+                    <td className="py-4 px-3 sm:px-6 font-semibold text-[#171A20]">
                       ≥ {calculateModuleDegradation(20).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-medium text-[#B45309]">
+                    <td className="py-4 px-3 sm:px-6 text-right font-medium text-[#B45309]">
                       +7.7% Yield Gain
                     </td>
                   </tr>
                   <tr className="bg-[#171A20] text-white">
-                    <td className="py-4 px-6 font-semibold">Year 25 Guaranteed</td>
-                    <td className="py-4 px-6 text-white/70">80.2% (Often unserviceable)</td>
-                    <td className="py-4 px-6 font-bold text-white">
+                    <td className="py-4 px-3 sm:px-6 font-semibold">Year 25 Guaranteed</td>
+                    <td className="py-4 px-3 sm:px-6 text-white/70">80.2% (Often unserviceable)</td>
+                    <td className="py-4 px-3 sm:px-6 font-bold text-white">
                       ≥ {calculateModuleDegradation(25).toFixed(1)}%
                     </td>
-                    <td className="py-4 px-6 text-right font-bold text-[#F57C00]">
+                    <td className="py-4 px-3 sm:px-6 text-right font-bold text-[#F57C00]">
                       +9.2% More Power
                     </td>
                   </tr>

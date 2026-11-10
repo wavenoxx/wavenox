@@ -1,13 +1,16 @@
 name: WAVENOX security and customer regression
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
-      [
-        feat/wavenox-step5-crm-attribution,
-        feat/wavenox-step6-ai-bill-roof-intelligence,
-        feat/wavenox-step7-installation-journey-portal,
-        feat/wavenox-step8-production-release-audit,
-      ]
+      - main
+      - fix/wavenox-step8-final-release-gates
+      - feat/wavenox-step5-crm-attribution
+      - feat/wavenox-step6-ai-bill-roof-intelligence
+      - feat/wavenox-step7-installation-journey-portal
+      - feat/wavenox-step8-production-release-audit
 permissions:
   contents: read
 jobs:

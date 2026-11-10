@@ -317,7 +317,12 @@ export function ArchitecturalDossierModal({
                   </span>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div
+                  role="region"
+                  aria-label="Proposal specification table"
+                  tabIndex={0}
+                  className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+                >
                   <table className="w-full text-left text-[12px] border-collapse">
                     <thead>
                       <tr className="border-b border-[#E3E4E6] text-[12px] uppercase font-bold text-[#5C5E62]">
@@ -504,7 +509,12 @@ export function ArchitecturalDossierModal({
                     </span>
                   </div>
 
-                  <div className="overflow-x-auto">
+                  <div
+                    role="region"
+                    aria-label="Proposal specification table"
+                    tabIndex={0}
+                    className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+                  >
                     <table className="w-full text-left text-[12px] border-collapse">
                       <thead>
                         <tr className="border-b border-[#E3E4E6] text-[12px] uppercase font-bold text-[#5C5E62] bg-[#F8F9FA]">

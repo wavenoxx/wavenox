@@ -378,15 +378,20 @@ function AboutThisProjectPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
+          <div
+            role="region"
+            aria-label="Platform transformation matrix"
+            tabIndex={0}
+            className="overflow-x-auto rounded-[6px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
+          >
             <table className="w-full text-left text-[13px] border border-[#E3E4E6] rounded-[6px] overflow-hidden">
               <thead className="bg-[#F4F4F4] text-[#171A20] font-semibold">
                 <tr>
-                  <th className="p-4 border-b border-[#E3E4E6] w-1/4">System Dimension</th>
-                  <th className="p-4 border-b border-[#E3E4E6] w-3/8 text-[#B42318]">
+                  <th className="p-3 sm:p-4 border-b border-[#E3E4E6] w-1/4">System Dimension</th>
+                  <th className="p-3 sm:p-4 border-b border-[#E3E4E6] w-3/8 text-[#B42318]">
                     Before Audit
                   </th>
-                  <th className="p-4 border-b border-[#E3E4E6] w-3/8 text-[#166534]">
+                  <th className="p-3 sm:p-4 border-b border-[#E3E4E6] w-3/8 text-[#166534]">
                     After (WAVENOX Standard)
                   </th>
                 </tr>
@@ -394,14 +399,16 @@ function AboutThisProjectPage() {
               <tbody className="divide-y divide-[#E3E4E6]">
                 {AUDIT_BEFORE_AFTER.map((item, idx) => (
                   <tr key={idx} className="hover:bg-[#F9FAFB]">
-                    <td className="p-4 font-medium text-[#171A20] align-top">
+                    <td className="p-3 sm:p-4 font-medium text-[#171A20] align-top">
                       <div>{item.dimension}</div>
                       <span className="inline-block mt-1 text-[12px] font-semibold uppercase tracking-wider text-[#171A20] bg-[#F4F4F4] px-2 py-0.5 rounded">
                         {item.badge}
                       </span>
                     </td>
-                    <td className="p-4 text-[#5C5E62] align-top leading-relaxed">{item.before}</td>
-                    <td className="p-4 text-[#171A20] font-medium align-top leading-relaxed bg-[#F0FDF4]/30">
+                    <td className="p-3 sm:p-4 text-[#5C5E62] align-top leading-relaxed">
+                      {item.before}
+                    </td>
+                    <td className="p-3 sm:p-4 text-[#171A20] font-medium align-top leading-relaxed bg-[#F0FDF4]/30">
                       {item.after}
                     </td>
                   </tr>

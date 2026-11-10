@@ -14,13 +14,11 @@ import {
   type ConfirmedBillInputs,
   type ExtractedBillField,
 } from "@/lib/bill-intelligence";
-import {
-  prepareBillDocument,
-  redactBillPage,
-  type BillPage,
-  type Redaction,
-} from "@/lib/bill-document";
-import { BillPagePreview } from "./BillPagePreview";
+import type { BillPage, Redaction } from "@/lib/bill-document";
+
+const BillPagePreview = React.lazy(() =>
+  import("./BillPagePreview").then((m) => ({ default: m.BillPagePreview })),
+);
 const inputStyle =
   "w-full min-h-11 px-3 border border-[#D1D5DB] rounded bg-white text-sm text-[#171A20] focus:outline-none focus:ring-2 focus:ring-[#171A20]";
 const buttonStyle =
@@ -113,6 +111,7 @@ export function BillIntelligence({
     const abort = new AbortController();
     controller.current = abort;
     try {
+      const { prepareBillDocument } = await import("@/lib/bill-document");
       const prepared = await prepareBillDocument(file, abort.signal);
       if (current !== version.current) return;
       setPages(prepared.pages);
@@ -137,6 +136,7 @@ export function BillIntelligence({
     setNotice("");
     setConfirmed(false);
     try {
+      const { redactBillPage } = await import("@/lib/bill-document");
       const data = await Promise.all(
         pages.map(async (p, i) => ({
           mime: "image/jpeg",
@@ -291,17 +291,21 @@ export function BillIntelligence({
             </p>
           ))}
           {pages.map((p, i) => (
-            <BillPagePreview
+            <React.Suspense
               key={`${i}-${extractionComplete}`}
-              page={p}
-              disabled={busy !== null}
-              index={i}
-              marks={marks[i] ?? []}
-              onChange={(m) => {
-                setMarks((old) => old.map((v, j) => (j === i ? m : v)));
-                setConsent(false);
-              }}
-            />
+              fallback={<p role="status">Loading page preview…</p>}
+            >
+              <BillPagePreview
+                page={p}
+                disabled={busy !== null}
+                index={i}
+                marks={marks[i] ?? []}
+                onChange={(m) => {
+                  setMarks((old) => old.map((v, j) => (j === i ? m : v)));
+                  setConsent(false);
+                }}
+              />
+            </React.Suspense>
           ))}
           {pages.length > 0 && (
             <div className="space-y-3">

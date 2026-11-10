@@ -130,7 +130,7 @@ export function MonthlyGenerationChart({
           <span className="text-[12px] text-[#5C5E62] uppercase tracking-wider block">
             Daily Average ({activeItem?.month})
           </span>
-          <span className="text-[20px] sm:text-[24px] font-medium text-[#F57C00] tabular-nums">
+          <span className="text-[20px] sm:text-[24px] font-medium text-[#B45309] tabular-nums">
             {activeItem?.dailyKwh} kWh / day
           </span>
         </div>

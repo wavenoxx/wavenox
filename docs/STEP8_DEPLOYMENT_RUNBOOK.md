@@ -4,7 +4,7 @@
 
 ## Ordered enablement
 
-1. **Freeze the approved candidate.** Record main/feature/merge SHA, Draft PR review, green CI and dependency audit. Preserve Lovable history. Inventory production project, region, domain, existing deployment and migration ledger read-only. If Supabase is inactive or access is denied, stop activation and obtain the appropriate access/restore approval.
+1. **Freeze the approved candidate.** Record main/feature/merge SHA, Draft PR review, green CI (`browser` and `database` jobs in `.github/workflows/step5-hardening.yml`, which now trigger on `pull_request` to `main`, `push` to `main`, and `push` to `fix/wavenox-step8-final-release-gates` and feature branches) and dependency audit. Configure GitHub branch protection on `main` to require pull requests and required status checks `browser` and `database` before merge. Preserve Lovable history. Inventory production project, region, domain, existing deployment and migration ledger read-only. If Supabase is inactive or access is denied, stop activation and obtain the appropriate access/restore approval.
 2. **Verify environment names without exporting secrets.** Server-only SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY); optional Turnstile and Resend owner-notification configuration. Explicit LEAD_MODE=live and matching build-time VITE_LEAD_MODE. Keep BILL_AI_ENABLED=false and PORTAL_EMAIL_ENABLED=false. No secret in VITE_ variables, client artifacts, screenshots or logs. Verify preview/public brand status and canonical domain separately; previews must remain noindex.
 3. **Back up and rehearse recovery.** Before any migration, approved database operator records an encrypted backup/PITR recovery point, retention, restore credentials and a successful isolated restore test with duration. Database backups do not replace Storage object backup/inventory. Define business RPO/RTO and confirm the actual plan supports them. Do not mark backups verified from a dashboard setting alone.
 4. **Review the migration ledger and SQL.** Apply only missing files, in repository order, in approved staging first: consultations v1/v2/v3; Step 5 CRM; Step 5 server-only audit; Step 7 projects; Step 8 staff-session check. The new file is `20261109182756_step8_staff_session_revocation.sql`. Check Auth schema columns on the actual Supabase version. It is additive, returns a boolean and grants EXECUTE only to service_role. Never replay old permissive grants over hardening.
@@ -25,15 +25,15 @@ Storage operator compares private objects to document metadata; quarantine/repor
 
 ## Monitoring design (not an active integration)
 
-| Signal | Safe data | Initial alert/review policy |
-| --- | --- | --- |
-| Deployment/build and public API availability | SHA, status class, duration, fixed route family | Alert on failed deployment or sustained 5xx; operator verifies rollback candidate |
+| Signal                                             | Safe data                                                          | Initial alert/review policy                                                                   |
+| -------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Deployment/build and public API availability       | SHA, status class, duration, fixed route family                    | Alert on failed deployment or sustained 5xx; operator verifies rollback candidate             |
 | Lead persistence / CRM / portal operation failures | Fixed operation category, status, aggregate count; no request body | Alert on repeated failures or baseline deviation; verify database availability and migrations |
-| OTP/provider failures and abuse | Aggregate status/rate counts; no email, code or IP in app logs | Alert on provider rejection/429 spikes; disable sending and preserve generic UX |
-| AI quota/cost | Aggregate usage and cost; no image/text | Keep disabled until quotas and spend alerts are tested |
-| Storage failures | Fixed error class and count; no document path/title | Stop publication after failed metadata/audit; inspect orphan inventory privately |
-| Security rejections | Aggregate forbidden/conflict counts | Investigate anomalous volume; do not interpret every expected 403 as compromise |
-| Backup/cleanup | Last success, duration, rows processed, oldest pending age | Alert when approved schedule is missed; rehearse restore periodically |
+| OTP/provider failures and abuse                    | Aggregate status/rate counts; no email, code or IP in app logs     | Alert on provider rejection/429 spikes; disable sending and preserve generic UX               |
+| AI quota/cost                                      | Aggregate usage and cost; no image/text                            | Keep disabled until quotas and spend alerts are tested                                        |
+| Storage failures                                   | Fixed error class and count; no document path/title                | Stop publication after failed metadata/audit; inspect orphan inventory privately              |
+| Security rejections                                | Aggregate forbidden/conflict counts                                | Investigate anomalous volume; do not interpret every expected 403 as compromise               |
+| Backup/cleanup                                     | Last success, duration, rows processed, oldest pending age         | Alert when approved schedule is missed; rehearse restore periodically                         |
 
 Production global errors are deliberately generic; platform request/deployment IDs may be used for correlation only after confirming they contain no PII. Do not ingest headers, cookies, query strings, payloads, OCR text or raw exception causes. Route monitoring must redact dynamic identifiers. Logs need access control and reviewed retention. No Sentry, paid monitoring service, outbound alert recipient or integration is represented as configured.
 
