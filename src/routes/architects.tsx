@@ -290,7 +290,12 @@ function ArchitectsPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] shadow-xs">
+          <div
+            role="region"
+            aria-label="Architectural specifications"
+            tabIndex={0}
+            className="overflow-x-auto rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
             <table className="w-full text-left text-[13px] border-collapse">
               <thead>
                 <tr className="bg-[#F8F9FA] border-b border-[#E3E4E6] text-[12px] uppercase font-bold text-[#5C5E62]">
