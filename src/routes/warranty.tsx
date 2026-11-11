@@ -17,8 +17,6 @@ import {
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/system/Button";
-import { Media } from "@/components/system/Media";
-import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/lib/consultation";
@@ -47,23 +45,7 @@ export const Route = createFileRoute("/warranty")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [
-      { rel: "canonical", href: `${BRAND_CONFIG.domain}/warranty` },
-      {
-        rel: "preload",
-        as: "image",
-        href: "/media/home-hero-1600w.webp",
-        media: "(min-width: 768px)",
-        type: "image/webp",
-      },
-      {
-        rel: "preload",
-        as: "image",
-        href: "/media/home-hero-mobile.webp",
-        media: "(max-width: 767px)",
-        type: "image/webp",
-      },
-    ],
+    links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/warranty` }],
     scripts: [
       {
         type: "application/ld+json",
