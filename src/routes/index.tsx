@@ -21,57 +21,33 @@ import { openConsultationDrawer } from "@/lib/consultation";
 const SOLUTION_FAMILIES = [
   {
     id: "solar-panels",
-    eyebrow: "01 · Residential Rooftop",
-    spec: "3 kW – 25 kW · N-Type TOPCon",
+    eyebrow: "01 · Residential Rooftop · 3 kW – 25 kW",
     title: "Solar Panels for Homes",
     description:
-      "Low-profile rooftop and elevated pergola solar systems engineered to reduce monthly DISCOM bills while preserving usable terrace space.",
-    highlights: [
-      "Up to ₹78,000 central subsidy*",
-      "25-year OEM linear module warranty",
-      "Concealed conduit & waterproofing care",
-    ],
+      "Low-profile rooftop arrays and elevated terrace pergolas built around Indian slab waterproofing, concealed conduit routing, and residential PM Surya Ghar subsidies.",
     mediaKey: "res-hero" as const,
-    primaryLabel: "Explore Solar Panels",
-    primaryTo: "/residential",
-    secondaryLabel: "Get Estimate",
-    secondaryTo: "/deploy",
+    ctaLabel: "Explore Solar Panels",
+    to: "/residential",
   },
   {
     id: "solar-storage",
-    eyebrow: "02 · Residential Backup",
-    spec: "14.3 kWh – 28.6 kWh · LiFePO4",
+    eyebrow: "02 · Solar + Storage · 14.3 – 28.6 kWh",
     title: "Solar + Battery Storage",
     description:
-      "Store daytime solar generation for evening self-use and automatic sub-20ms backup switchover when utility power drops.",
-    highlights: [
-      "< 20 ms automatic outage transfer",
-      "Runs inverter ACs & essential home loads",
-      "10-year OEM battery & inverter warranty",
-    ],
+      "Pair daytime solar generation with modular LiFePO4 storage and compatible hybrid inverters to supply supported home circuits during grid outages.",
     mediaKey: "omnigrid-hero" as const,
-    primaryLabel: "Explore Omnigrid",
-    primaryTo: "/omnigrid",
-    secondaryLabel: "Configure",
-    secondaryTo: "/deploy",
+    ctaLabel: "Explore Battery Storage",
+    to: "/omnigrid",
   },
   {
     id: "commercial-solar",
-    eyebrow: "03 · Enterprises & Facilities",
-    spec: "25 kW – Multi-MW · C&I",
+    eyebrow: "03 · Enterprises & Facilities · 25 kW+",
     title: "Commercial Solar",
     description:
-      "High-yield rooftop and campus solar installations designed for daytime tariff reduction, tax depreciation planning, and ESG reporting.",
-    highlights: [
-      "3 to 4 year indicative payback*",
-      "Section 33 tax depreciation modeling*",
-      "Coordinated HT/LT net-metering",
-    ],
+      "High-yield arrays for industrial roofs and campuses designed to offset daytime tariffs alongside Section 33 tax depreciation modeling.",
     mediaKey: "commercial-hero" as const,
-    primaryLabel: "Explore Commercial",
-    primaryTo: "/enterprise",
-    secondaryLabel: "Request Assessment",
-    secondaryTo: "/enterprise",
+    ctaLabel: "Explore Commercial",
+    to: "/enterprise",
   },
 ] as const;
 
@@ -80,39 +56,96 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "subsidy",
     question: "How does the PM Surya Ghar subsidy work?",
     answer:
-      "Eligible homes receive up to ₹78,000 direct benefit transfer from the central government for systems 3 kW or larger. WAVENOX files all national portal documentation and coordinates the DISCOM net-metering inspection end-to-end.",
+      "Eligible residential households with systems of 3 kW or larger may qualify for up to ₹78,000 Direct Benefit Transfer under MNRE PM Surya Ghar guidelines after DISCOM net-meter commissioning. WAVENOX prepares national portal documentation and coordinates utility inspections with the authorized installation partner.",
   },
   {
     id: "outage",
     question: "Will my solar panels work during a power outage?",
     answer:
-      "Standard grid-tied systems shut off during blackouts for utility safety. When paired with Omnigrid battery storage, your home switches to stored solar in under 20 milliseconds, keeping lights, appliances, and air conditioning running without interruption.",
+      "Standard grid-tied solar systems shut down during blackouts for utility anti-islanding safety. When paired with a compatible hybrid inverter and modular LiFePO4 battery storage wired to critical backup circuits, supported appliances can continue operating during grid outages depending on battery state of charge.",
   },
   {
     id: "ac-run",
-    question: "Can Omnigrid battery run 1.5-ton air conditioners during blackouts?",
+    question: "Can battery storage run air conditioners during outages?",
     answer:
-      "Yes. Omnigrid delivers 6.0 kW continuous output with 10.0 kW peak surge capability, effortlessly starting and powering 1.5-ton and 2.0-ton 5-star inverter air conditioners, water pumps, and luxury appliances.",
+      "A compatible hybrid battery configuration rated at 6.0 kW continuous output (10.0 kW surge target) can support 1.5-ton inverter air conditioners alongside essential lighting and Wi-Fi loads; actual backup duration depends on installed kWh capacity, state of charge, and appliance duty cycles.",
   },
   {
     id: "terrace",
     question: "Can I still use my terrace after installing solar?",
     answer:
-      "Yes. Our elevated pergola structures maintain 7 to 9 feet of clear headroom, transforming your terrace into a shaded outdoor living space while bifacial panels produce clean power overhead.",
+      "Yes. Elevated pergola structures can be engineered with 7 to 9 feet of clear headroom where structurally feasible, keeping walkable shaded terrace space open beneath overhead bifacial modules.",
   },
   {
     id: "waterproofing",
     question: "Will installing solar on my terrace cause roof leakage or slab damage?",
     answer:
-      "We utilize non-penetrating precast ballasted foundation blocks or chemical-anchor pedestals sealed with multi-layer elastomeric waterproofing membranes to protect the structural integrity of your terrace roof slab.",
+      "Mounting assemblies use non-penetrating precast ballasted blocks or sealed chemical-anchor pedestals specified after structural and waterproofing inspection to protect the roof slab.",
   },
   {
     id: "timeline",
     question: "How long does installation and net metering take?",
     answer:
-      "On-site rooftop installation takes 2 to 3 days. DISCOM net-metering approvals and bi-directional meter energization typically complete within 2 to 4 weeks under Ministry of Power 2024 deemed approval timelines.",
+      "Physical rooftop mounting typically takes 2 to 3 days once final engineering designs are approved. Total commissioning and bi-directional net-metering activation depend on roof readiness, DISCOM feeder capacity, and utility inspection schedules (commonly 2 to 4 weeks).",
   },
 ];
+
+const STEPS = [
+  {
+    num: "01",
+    title: "Consultation",
+    desc: "Share your property type, city, and monthly electricity bill for initial sizing and DISCOM tariff review.",
+  },
+  {
+    num: "02",
+    title: "Site Assessment",
+    desc: "Terrace measurement, 3D sun-path shading analysis, and structural waterproofing inspection.",
+  },
+  {
+    num: "03",
+    title: "Design & Quotation",
+    desc: "Itemized system engineering proposal covering module placement, conduit routing, and subsidy eligibility.",
+  },
+  {
+    num: "04",
+    title: "Installation Coordination",
+    desc: "Authorized partner execution with concealed raceways, earthing, and structural anchorage.",
+  },
+  {
+    num: "05",
+    title: "Utility Commissioning",
+    desc: "DISCOM net-metering filing, bi-directional meter installation, and grid synchronization.",
+  },
+  {
+    num: "06",
+    title: "After-Sales Support",
+    desc: "Inverter cloud portal onboarding, subsidy tracking assistance, and OEM warranty coordination.",
+  },
+] as const;
+
+const TRUST_CARDS = [
+  {
+    title: "Three-Tier Warranty Clarity",
+    description:
+      "Clear separation between 25-year OEM module performance warranties, 10-year OEM inverter and battery coverage, and authorized partner workmanship terms in your signed contract.",
+    linkLabel: "Review Warranty Scope",
+    to: "/warranty",
+  },
+  {
+    title: "Transparent Tariff & Subsidy Basis",
+    description:
+      "Residential estimates use published TGERC (Telangana) and APERC (Andhra Pradesh) telescopic tariff slabs, labeled benchmarks for other states, and MNRE subsidy rules.",
+    linkLabel: "Inspect Calculation Sources",
+    to: "/legal/disclosures",
+  },
+  {
+    title: "Coordinated Delivery & Privacy",
+    description:
+      "Surveys and physical installations are carried out by authorized WAVENOX partners under unified design standards with explicit DPDP Act 2023 consent controls.",
+    linkLabel: "Read Delivery Model",
+    to: "/our-story",
+  },
+] as const;
 
 export const Route = createFileRoute("/")({
   staticData: {
@@ -196,63 +229,6 @@ export const Route = createFileRoute("/")({
   component: IndexPage,
 });
 
-const STEPS = [
-  {
-    num: "01",
-    title: "Consultation",
-    desc: "Share your property type, city, and monthly power bill for an initial sizing and tariff review.",
-  },
-  {
-    num: "02",
-    title: "Site Assessment",
-    desc: "Terrace measurement, 3D sun-path shading study, and structural load verification.",
-  },
-  {
-    num: "03",
-    title: "Design & Quotation",
-    desc: "Itemized system engineering proposal with module layout, conduit path, and subsidy eligibility.",
-  },
-  {
-    num: "04",
-    title: "Installation Coordination",
-    desc: "Authorized WAVENOX partner installation with concealed raceways and waterproofed mountings.",
-  },
-  {
-    num: "05",
-    title: "Utility Commissioning",
-    desc: "DISCOM net-metering application, bi-directional meter inspection, and grid synchronization.",
-  },
-  {
-    num: "06",
-    title: "After-Sales Support",
-    desc: "Inverter cloud monitoring setup, subsidy documentation tracking, and warranty coordination.",
-  },
-];
-
-const TRUST_CARDS = [
-  {
-    title: "Three-Tier Warranty Clarity",
-    description:
-      "Clear separation between 25-year OEM module performance warranties, 10-year OEM inverter and battery coverage, and authorized partner workmanship coverage as defined in your signed installation contract.",
-    linkLabel: "Review Warranty Scope",
-    to: "/warranty",
-  },
-  {
-    title: "Transparent Tariff & Subsidy Basis",
-    description:
-      "Residential estimates use verified TGERC (Telangana) and APERC (Andhra Pradesh) FY 2025-26/2026-27 telescopic tariff schedules, labeled regional benchmarks for other states, and MNRE PM Surya Ghar subsidy slabs.",
-    linkLabel: "Inspect Calculation Sources",
-    to: "/legal/disclosures",
-  },
-  {
-    title: "Coordinated Delivery & Privacy",
-    description:
-      "Physical installation is fulfilled by authorized WAVENOX partners under unified engineering standards, with strict DPDP Act 2023 customer data protection.",
-    linkLabel: "Read Delivery Model",
-    to: "/our-story",
-  },
-] as const;
-
 function formatInr(val: number): string {
   return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(val);
 }
@@ -275,21 +251,22 @@ function IndexPage() {
       <Header />
 
       <main>
-        {/* 1. PANEL: home-hero — Immediate Product Clarity */}
+        {/* SCENE 01: ARCHITECTURAL SOLAR HERO */}
         <Panel
           id="solar-panels"
           as="h1"
           media={media["home-hero"]}
           priority={true}
           tone="dark"
+          className="scroll-mt-14"
           title="Solar, Designed Around Your Home"
-          lead="Explore rooftop solar and battery storage engineered for Indian homes, with a coordinated journey from consultation to commissioning."
+          lead="Custom rooftop solar and battery storage for Indian homes, from DISCOM tariff modeling to net-meter commissioning."
           stats={
             <StatRow
               stats={[
                 { value: "₹78,000", label: "Max Central Subsidy*" },
-                { value: "25 Years", label: "OEM Module Warranty" },
-                { value: "1,490 kWh", label: "Annual Yield / kWp" },
+                { value: "25 Years", label: "OEM Module Warranty*" },
+                { value: "1,490 kWh", label: "Annual Yield / kWp*" },
               ]}
             />
           }
@@ -313,109 +290,105 @@ function IndexPage() {
               </Button>
             </>
           }
-          disclaimer="*Central subsidy under PM Surya Ghar Muft Bijli Yojana subject to residential eligibility and national portal sanctioning."
+          disclaimer="*PM Surya Ghar DBT subsidy depends on residential eligibility and national portal approval. Yield reflects an indicative Hyderabad reference model (1,490 kWh/kWp/yr)."
         />
 
-        {/* 2. QUIET SECTION: Three Clear Solution Paths */}
+        {/* SCENE 02: THREE SOLAR PATHS (BORDERLESS ARCHITECTURAL GALLERY) */}
         <QuietSection
           id="solutions"
           bg="white"
+          className="scroll-mt-14"
+          containerClassName="max-w-6xl"
           title="Three Solar Paths. One Coordinated Experience."
-          lead="Select the system architecture designed for your property, daytime load profile, and backup power requirements."
+          lead="Choose the system architecture tailored to your roof layout, daytime demand, and backup requirements."
         >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            {SOLUTION_FAMILIES.map((family) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
+            {SOLUTION_FAMILIES.map((family, idx) => (
               <article
                 key={family.id}
-                className="flex flex-col justify-between rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] overflow-hidden shadow-xs hover:border-[#171A20]/40 transition-colors"
+                className={`flex flex-col justify-between space-y-6 ${
+                  idx > 0 ? "pt-8 border-t border-[#E3E4E6] lg:pt-0 lg:border-t-0" : ""
+                }`}
               >
-                <div>
+                <div className="space-y-4">
                   <Link
-                    to={family.primaryTo}
-                    className="block relative aspect-[16/10] w-full overflow-hidden bg-[#171A20] group"
+                    to={family.to}
+                    className="block relative aspect-[16/10] w-full overflow-hidden rounded-[6px] bg-[#F4F4F4] border border-black/[0.06] group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
                   >
                     <Media
                       media={media[family.mediaKey]}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-                    <span className="absolute bottom-3 left-4 text-[12px] font-medium tracking-wide text-[#FFFFFF] bg-black/55 backdrop-blur-xs px-2.5 py-1 rounded-[4px]">
-                      {family.spec}
-                    </span>
                   </Link>
 
-                  <div className="p-6 space-y-3">
-                    <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62]">
+                  <div className="space-y-2 pt-1">
+                    <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
                       {family.eyebrow}
                     </div>
-                    <h3 className="text-[20px] font-medium tracking-tight text-[#171A20]">
+                    <h3 className="text-[22px] font-medium tracking-[-0.015em] text-[#171A20]">
                       {family.title}
                     </h3>
-                    <p className="text-[14px] text-[#5C5E62] leading-relaxed">
+                    <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-[1.6]">
                       {family.description}
                     </p>
-                    <ul className="pt-2 space-y-1.5 border-t border-[#E3E4E6]">
-                      {family.highlights.map((item) => (
-                        <li
-                          key={item}
-                          className="text-[13px] text-[#171A20] flex items-center gap-2"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#171A20] shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
 
-                <div className="px-6 pb-6 pt-2 flex flex-wrap items-center gap-2.5">
+                <div>
                   <Button
-                    to={family.primaryTo}
+                    to={family.to}
                     variant="primary"
                     tone="light"
-                    className="flex-1 px-4"
+                    className="w-full sm:w-auto"
                   >
-                    {family.primaryLabel}
-                  </Button>
-                  <Button
-                    to={family.secondaryTo}
-                    variant="secondary"
-                    tone="light"
-                    className="flex-1 px-4"
-                  >
-                    {family.secondaryLabel}
+                    {family.ctaLabel}
                   </Button>
                 </div>
               </article>
             ))}
           </div>
+
+          <div className="mt-12 pt-8 border-t border-[#E3E4E6] text-center">
+            <TextLink to="/deploy" arrow>
+              Unsure which system fits your roof? Compare options in the Design Studio
+            </TextLink>
+          </div>
         </QuietSection>
 
-        {/* 3. PANEL: home-design — Architectural Solar */}
+        {/* SCENE 03: ROOFTOP BEAUTY & INDIAN HEAT ENGINEERING (CONSOLIDATES #design + #heat-performance) */}
         <Panel
           id="design"
           media={media["home-design"]}
           tone="dark"
-          title="Clean, All-Black Architecture"
-          lead="Low-profile modules, concealed conduit raceways, and elevated pergola frames that sit cleanly on Indian terraces."
+          className="scroll-mt-14"
+          topAddon={
+            <div
+              id="heat-performance"
+              className="scroll-mt-24 inline-flex items-center px-3.5 py-1 rounded-full bg-[#171A20]/65 border border-white/20 text-[12px] font-medium tracking-[0.05em] uppercase text-[#FFFFFF] backdrop-blur-xs"
+            >
+              Architecture &amp; Thermal Engineering
+            </div>
+          }
+          title="Engineered for Indian Rooftops and 45°C Summers"
+          lead="Low-profile terrace mounts and concealed conduit raceways paired with −0.30%/°C thermal engineering."
           stats={
             <StatRow
               stats={[
-                { value: "Flush", label: "Terrace Mount" },
-                { value: "Concealed", label: "Conduit Routing" },
-                { value: "158 km/h", label: "IS 875 Wind Rating" },
+                { value: "-0.30% / °C", label: "Temp. Coeff.*" },
+                { value: "22.45%+", label: "Efficiency*" },
+                { value: "158 km/h", label: "Wind Basis*" },
               ]}
             />
           }
           actions={
             <>
               <Button
-                to="/deploy"
+                onClick={() => setSpecsOpen(true)}
                 variant="primary"
                 tone="dark"
                 className="w-full sm:w-auto min-w-[210px]"
               >
-                Get Solar Estimate
+                View Technical Specs
               </Button>
               <Button
                 to="/residential"
@@ -427,21 +400,23 @@ function IndexPage() {
               </Button>
             </>
           }
+          disclaimer="*Reference 580W N-Type TOPCon (22.45%–22.8%) and IS 875 44 m/s wind basis; final specs follow site survey and OEM datasheet."
         />
 
-        {/* 4. PANEL: home-outage — Solar + Battery Explanation */}
+        {/* SCENE 04A: SOLAR + BATTERY OUTAGE PROTECTION */}
         <Panel
           id="outage-protection"
           media={media["home-outage"]}
           tone="dark"
-          title="Solar + Battery for Uninterrupted Power"
-          lead="Standard grid-tied solar shuts off during blackouts for utility safety. Pair your array with Omnigrid LiFePO4 storage for automatic sub-20ms backup switchover."
+          className="scroll-mt-14"
+          title="Backup Power When the Grid Goes Down"
+          lead="Standard grid-tied solar shuts down during power cuts for utility anti-islanding safety. Pairing your array with compatible LiFePO4 battery storage powers essential circuits through outages."
           stats={
             <StatRow
               stats={[
-                { value: "< 20 ms", label: "Backup Switchover" },
+                { value: "< 20 ms*", label: "UPS Transfer Spec*" },
                 { value: "14.3 kWh", label: "Modular LFP Storage" },
-                { value: "6.0 kW", label: "Continuous Output" },
+                { value: "6.0 kW*", label: "Continuous Output*" },
               ]}
             />
           }
@@ -461,25 +436,123 @@ function IndexPage() {
                 tone="dark"
                 className="w-full sm:w-auto min-w-[210px]"
               >
-                Get Solar Estimate
+                Configure Solar + Storage
               </Button>
             </>
           }
-          disclaimer="Backup runtime depends on installed battery capacity, state of charge, and active household appliance loads."
+          disclaimer="*Transfer time, continuous backup power, and runtime depend on your installed hybrid inverter model, battery state of charge, and active home appliance loads."
         />
 
-        {/* 5. QUIET SECTION: Simple Energy Savings Entry Point */}
+        {/* SCENE 04B: ENERGY VISIBILITY & ILLUSTRATIVE MONITORING EXAMPLE */}
+        <QuietSection
+          id="monitoring"
+          bg="white"
+          className="scroll-mt-14 border-b border-[#E3E4E6]"
+          containerClassName="max-w-6xl"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            <div className="lg:col-span-6 space-y-5 text-center lg:text-left">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62]">
+                Energy Visibility · OEM Inverter Cloud
+              </div>
+              <h2 className="text-[26px] sm:text-[32px] lg:text-[38px] font-medium tracking-[-0.02em] leading-[1.14] text-[#171A20]">
+                Generation, Home Load &amp; Reserve in One View
+              </h2>
+              <p className="text-[15px] sm:text-[16px] text-[#5C5E62] leading-[1.6] max-w-[52ch] mx-auto lg:mx-0">
+                Compatible hybrid inverters stream solar output, household demand, battery reserve,
+                and net-metering export directly to the inverter manufacturer&apos;s app. WAVENOX
+                assists with initial portal setup and only reviews diagnostic logs with your
+                explicit authorization.
+              </p>
+              <div className="pt-1">
+                <TextLink to="/omnigrid" hash="flow-simulation" arrow>
+                  Explore 24-hour energy flow modeling
+                </TextLink>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 flex flex-col items-center">
+              <div className="w-full max-w-[356px] rounded-[32px] p-4 bg-[#171A20] text-[#FFFFFF] shadow-xl border-4 border-[#393C41]">
+                <div className="rounded-[22px] bg-[#171A20] p-5 space-y-5">
+                  <div className="flex justify-between items-center gap-2 text-[12px] text-[#FFFFFF]/80">
+                    <span className="font-medium text-[#FFFFFF] whitespace-nowrap">
+                      OEM Inverter App
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-[4px] bg-[#FFFFFF]/10 text-[#FFFFFF] text-[12px] whitespace-nowrap">
+                      Illustrative sample
+                    </span>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-3">
+                      <div>
+                        <div className="text-[12px] text-[#FFFFFF]/70">Solar Production</div>
+                        <div className="text-[19px] font-medium text-[#FFFFFF] tabular-nums">
+                          5.8 kW
+                        </div>
+                      </div>
+                      <span className="text-[12px] text-[#FFFFFF]/75 whitespace-nowrap">
+                        Midday Peak
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-[12px]">
+                      <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06]">
+                        <div className="text-[#FFFFFF]/70">Home Load</div>
+                        <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5 whitespace-nowrap">
+                          1.6 kW
+                        </div>
+                      </div>
+                      <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06]">
+                        <div className="text-[#FFFFFF]/70">Battery Reserve</div>
+                        <div className="flex items-baseline gap-1.5 mt-0.5 whitespace-nowrap">
+                          <span className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
+                            98%
+                          </span>
+                          <span className="text-[12px] text-[#FFFFFF]/70 tabular-nums">
+                            +2.2 kW
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-2">
+                      <div>
+                        <div className="text-[12px] text-[#FFFFFF]/70">Grid Net Export</div>
+                        <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums whitespace-nowrap">
+                          2.0 kW export
+                        </div>
+                      </div>
+                      <span className="text-[12px] text-[#F57C00] font-medium whitespace-nowrap">
+                        Net Metering
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[12px] text-[#5C5E62] text-center max-w-[38ch] mt-4">
+                Illustrative monitoring example. Screens and metrics depend on your installed OEM
+                inverter hardware and cloud provider.
+              </p>
+            </div>
+          </div>
+        </QuietSection>
+
+        {/* SCENE 05: PERSONALIZED SOLAR DESIGN & SAVINGS */}
         <QuietSection
           id="savings"
           bg="surface"
+          className="scroll-mt-14"
+          containerClassName="max-w-4xl"
           title="Estimate Your Solar System & Savings"
-          lead="Select your electricity board and monthly power bill to view an indicative system size, annual savings, and central subsidy."
+          lead="Select your electricity board and monthly power bill to preview indicative system size, annual savings, and central subsidy eligibility."
         >
-          <div className="max-w-2xl mx-auto space-y-10">
-            {/* Controls: DISCOM select & Bill slider */}
-            <div className="space-y-6 bg-[#FFFFFF] p-6 sm:p-8 rounded-[8px] border border-[#E3E4E6]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
+          <div className="max-w-3xl mx-auto bg-[#FFFFFF] p-6 sm:p-10 rounded-[8px] border border-[#E3E4E6] space-y-8">
+            {/* Top Controls: DISCOM Selector + Bill Slider */}
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
                     Electricity Board (DISCOM)
                   </label>
@@ -501,7 +574,7 @@ function IndexPage() {
                   id="discom-select"
                   value={selectedDiscom}
                   onChange={(e) => setSelectedDiscom(e.target.value)}
-                  className="h-10 px-3 bg-[#F4F4F4] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  className="h-11 px-3.5 bg-[#F4F4F4] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
                 >
                   {DISCOMS.map((d) => (
                     <option key={d.code} value={d.code}>
@@ -511,12 +584,12 @@ function IndexPage() {
                 </select>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 pt-2">
                 <div className="flex justify-between items-baseline">
                   <span className="text-[13px] font-medium text-[#5C5E62]">
                     Monthly Electricity Bill
                   </span>
-                  <span className="text-[20px] font-medium tabular-nums text-[#171A20]">
+                  <span className="text-[22px] font-medium tabular-nums text-[#171A20]">
                     ₹{formatInr(monthlyBill)}
                   </span>
                 </div>
@@ -535,77 +608,58 @@ function IndexPage() {
                   <span>₹2,000 / mo</span>
                   <span>₹35,000+ / mo</span>
                 </div>
-                <p className="text-[12px] text-[#5C5E62] pt-1 text-center leading-normal">
-                  * {solarEstimate.assumptions.discom.regulatoryNote}
-                </p>
               </div>
+            </div>
 
-              {/* 3-Metric Indicative Output Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#E3E4E6] text-center">
-                <div className="p-3 rounded-[6px] bg-[#F4F4F4]">
-                  <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
-                    {solarEstimate.recommendedKw} kW
-                  </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">
-                    Recommended ({solarEstimate.recommendedPanels} Panels)
-                  </div>
+            {/* Middle: 3 Primary Metric Outputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#E3E4E6] text-center">
+              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
+                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                  {solarEstimate.recommendedKw} kW
                 </div>
-                <div className="p-3 rounded-[6px] bg-[#F4F4F4]">
-                  <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
-                    ₹{formatInr(solarEstimate.annualSavingsInr)}
-                  </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Est. Annual Savings</div>
-                </div>
-                <div className="p-3 rounded-[6px] bg-[#F4F4F4]">
-                  <div className="text-[24px] sm:text-[28px] font-medium tracking-tight tabular-nums text-[#171A20]">
-                    ₹{formatInr(solarEstimate.subsidyInr)}
-                  </div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">
-                    Potential DBT Subsidy (Conditional)*
-                  </div>
+                <div className="text-[12px] text-[#5C5E62] mt-1">
+                  Recommended ({solarEstimate.recommendedPanels} Panels)
                 </div>
               </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 rounded-[6px] bg-[#F4F4F4]/70 text-[12px] text-[#5C5E62]">
-                <span>
-                  Est. Generation:{" "}
-                  <strong className="font-medium text-[#171A20]">
-                    {formatInr(solarEstimate.annualGenKwh)} kWh/yr
-                  </strong>{" "}
-                  ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr indicative)
-                </span>
-                <span>
-                  Gross Turnkey Capex:{" "}
-                  <strong className="font-medium text-[#171A20]">
-                    ₹{formatInr(solarEstimate.grossInr)}
-                  </strong>{" "}
-                  · Conditional Post-DBT*:{" "}
-                  <strong className="font-medium text-[#171A20]">
-                    ₹{formatInr(solarEstimate.netInr)}
-                  </strong>
-                </span>
+              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
+                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                  ₹{formatInr(solarEstimate.annualSavingsInr)}
+                </div>
+                <div className="text-[12px] text-[#5C5E62] mt-1">Est. Annual Savings</div>
               </div>
+              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
+                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+                  ₹{formatInr(solarEstimate.subsidyInr)}
+                </div>
+                <div className="text-[12px] text-[#5C5E62] mt-1">
+                  Potential DBT Subsidy (Conditional)*
+                </div>
+              </div>
+            </div>
 
-              <p className="text-[12px] text-[#5C5E62] text-center">
-                {solarEstimate.status === "VERIFIED"
-                  ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and conditional MNRE PM Surya Ghar central subsidy guidelines.`
-                  : `Modeled on an indicative regional tariff benchmark (₹${solarEstimate.assumptions.tariffInrPerKwh.toFixed(2)}/kWh for ${solarEstimate.assumptions.discom.state}) and conditional MNRE PM Surya Ghar subsidy guidelines.`}{" "}
-                Unavoidable monthly fixed charges (~₹
-                {formatInr(solarEstimate.billBreakdown.unavoidableChargesInr)}/mo) remain payable to
-                your DISCOM.{" "}
-                <Link
-                  to="/legal/disclosures"
-                  hash="sources"
-                  className="underline hover:text-[#171A20]"
-                >
-                  Source · verified Nov 2026 ({solarEstimate.assumptions.discom.authority} &amp;
-                  MNRE)
-                </Link>
-              </p>
+            {/* Compact System Generation & Capex Summary */}
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 rounded-[6px] bg-[#F4F4F4]/70 text-[12px] text-[#5C5E62]">
+              <span>
+                Indicative Generation:{" "}
+                <strong className="font-medium text-[#171A20]">
+                  {formatInr(solarEstimate.annualGenKwh)} kWh/yr
+                </strong>{" "}
+                ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr)
+              </span>
+              <span>
+                Gross Turnkey:{" "}
+                <strong className="font-medium text-[#171A20]">
+                  ₹{formatInr(solarEstimate.grossInr)}
+                </strong>{" "}
+                · Post-DBT*:{" "}
+                <strong className="font-medium text-[#171A20]">
+                  ₹{formatInr(solarEstimate.netInr)}
+                </strong>
+              </span>
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-1">
               <Button
                 to="/deploy"
                 search={{ bill: monthlyBill, discom: selectedDiscom }}
@@ -624,215 +678,124 @@ function IndexPage() {
                 Talk to a Solar Advisor
               </Button>
             </div>
-            <div className="text-center">
-              <TextLink to="/legal/disclosures" arrow>
-                How we calculate savings &amp; tariffs
-              </TextLink>
-            </div>
-          </div>
-        </QuietSection>
 
-        {/* 6. PANEL: home-heat — Built for Indian Heat */}
-        <Panel
-          id="heat-performance"
-          media={media["home-heat"]}
-          tone="dark"
-          title="Built for Indian Heat"
-          lead="N-type TOPCon bifacial cells maintain high output through 45°C summer afternoons and monsoon cloud cover."
-          stats={
-            <StatRow
-              stats={[
-                { value: "-0.30% / °C", label: "Temperature Coeff." },
-                { value: "22.8%", label: "Module Efficiency" },
-                { value: "IP68", label: "Junction Box Rating" },
-              ]}
-            />
-          }
-          actions={
-            <>
-              <Button
-                onClick={() => setSpecsOpen(true)}
-                variant="secondary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                View Technical Specs
-              </Button>
-              <Button
-                to="/technology"
-                variant="primary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Explore Engineering
-              </Button>
-            </>
-          }
-        />
-
-        {/* 7. QUIET SECTION: Track Live Generation */}
-        <QuietSection
-          id="monitoring"
-          bg="white"
-          title="Track Live Generation"
-          lead="Monitor solar production, home consumption, and battery state of charge in real time through your inverter manufacturer's cloud app."
-        >
-          <div className="flex flex-col items-center">
-            {/* Minimalist Phone Mockup */}
-            <div className="w-[280px] sm:w-[320px] rounded-[36px] p-4 bg-[#171A20] text-[#FFFFFF] shadow-2xl border-4 border-[#393C41]">
-              {/* Phone Screen */}
-              <div className="rounded-[24px] bg-[#171A20] p-5 space-y-6">
-                <div className="flex justify-between items-center text-[12px] text-[#FFFFFF]/60">
-                  <span>Inverter Cloud App</span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F57C00] animate-pulse" />
-                    Realtime
-                  </span>
-                </div>
-
-                {/* Energy Diagram */}
-                <div className="space-y-4">
-                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
-                    <div>
-                      <div className="text-[12px] text-[#FFFFFF]/60">Solar Production</div>
-                      <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">
-                        5.8 kW
-                      </div>
-                    </div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#F57C00]" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-[12px]">
-                    <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
-                      <div className="text-[#FFFFFF]/60">Home Load</div>
-                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
-                        1.6 kW
-                      </div>
-                    </div>
-                    <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5">
-                      <div className="text-[#FFFFFF]/60">Omnigrid Battery</div>
-                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
-                        98% (2.2 kW)
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-[4px] bg-[#FFFFFF]/5 flex justify-between items-center">
-                    <div>
-                      <div className="text-[12px] text-[#FFFFFF]/60">Grid Net Export</div>
-                      <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
-                        2.0 kW (Sending)
-                      </div>
-                    </div>
-                    <div className="text-[12px] text-[#F57C00] font-medium">+Net Metering</div>
-                  </div>
-                </div>
+            {/* Unified Bottom Regulatory Disclosure */}
+            <div className="pt-5 border-t border-[#E3E4E6] space-y-2 text-center">
+              <p className="text-[12px] text-[#5C5E62] leading-relaxed">
+                *
+                {solarEstimate.status === "VERIFIED"
+                  ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and conditional MNRE PM Surya Ghar central subsidy guidelines.`
+                  : `Modeled on an indicative regional benchmark (₹${solarEstimate.assumptions.tariffInrPerKwh.toFixed(2)}/kWh for ${solarEstimate.assumptions.discom.state}) and conditional MNRE PM Surya Ghar guidelines.`}{" "}
+                {solarEstimate.assumptions.discom.regulatoryNote} Unavoidable monthly fixed charges
+                (~₹{formatInr(solarEstimate.billBreakdown.unavoidableChargesInr)}/mo) remain payable
+                to your DISCOM. Actual system pricing, roof capacity, and export settlements depend
+                on a site survey and formal quotation.
+              </p>
+              <div>
+                <Link
+                  to="/legal/disclosures"
+                  hash="sources"
+                  className="text-[12px] font-medium text-[#171A20] underline underline-offset-4 hover:text-[#5C5E62] transition-colors"
+                >
+                  Inspect tariff sources &amp; calculation methodology (
+                  {solarEstimate.assumptions.discom.authority} &amp; MNRE)
+                </Link>
               </div>
             </div>
-
-            <div className="mt-8 text-center">
-              <TextLink to="/deploy" arrow>
-                Configure your solar system
-              </TextLink>
-            </div>
           </div>
         </QuietSection>
 
-        {/* 8. QUIET SECTION: From Consultation to Power-On + Trust Through Clarity */}
+        {/* SCENE 06: FROM CONSULTATION TO POWER-ON (OPEN 3x2 ARCHITECTURAL GRID) */}
         <QuietSection
           id="process"
-          bg="surface"
+          bg="white"
+          className="scroll-mt-14"
+          containerClassName="max-w-6xl"
           title="From Consultation to Power-On"
-          lead="A coordinated six-step delivery journey from initial roof assessment to bi-directional meter energization."
+          lead="A coordinated six-stage workflow from initial tariff review and roof survey to DISCOM bi-directional meter commissioning."
         >
-          <div className="space-y-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-2">
-              {STEPS.map((step) => (
-                <div
-                  key={step.num}
-                  className="p-5 rounded-[6px] bg-[#FFFFFF] border border-[#E3E4E6] space-y-2"
-                >
-                  <span className="text-[12px] font-semibold tabular-nums text-[#5C5E62] block">
-                    STEP {step.num}
-                  </span>
-                  <h3 className="text-[15px] font-medium text-[#171A20]">{step.title}</h3>
-                  <p className="text-[13px] text-[#5C5E62] leading-relaxed">{step.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-[12px] text-[#5C5E62] text-center max-w-2xl mx-auto">
-              Project timelines depend on roof structural readiness, local DISCOM feeder capacity,
-              and state utility inspection schedules.
-            </p>
-
-            {/* Trust Through Clarity Governance Summary */}
-            <div className="pt-8 border-t border-[#E3E4E6]">
-              <div className="text-center max-w-2xl mx-auto mb-8">
-                <h3 className="text-[20px] sm:text-[22px] font-medium tracking-tight text-[#171A20]">
-                  Built on Verifiable Engineering &amp; Governance
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+            {STEPS.map((step) => (
+              <div key={step.num} className="pt-5 border-t border-[#E3E4E6] space-y-2.5">
+                <span className="text-[12px] font-semibold tracking-[0.08em] uppercase tabular-nums text-[#5C5E62] block">
+                  STEP {step.num}
+                </span>
+                <h3 className="text-[19px] font-medium tracking-[-0.01em] text-[#171A20]">
+                  {step.title}
                 </h3>
-                <p className="text-[14px] text-[#5C5E62] mt-1.5">
-                  Every specification, tariff assumption, and warranty boundary is documented openly
-                  before you commit.
-                </p>
+                <p className="text-[14px] text-[#5C5E62] leading-[1.6]">{step.desc}</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {TRUST_CARDS.map((card) => (
-                  <div
-                    key={card.title}
-                    className="p-6 rounded-[6px] bg-[#FFFFFF] border border-[#E3E4E6] flex flex-col justify-between space-y-4"
-                  >
-                    <div className="space-y-2">
-                      <h4 className="text-[16px] font-medium text-[#171A20]">{card.title}</h4>
-                      <p className="text-[13px] text-[#5C5E62] leading-relaxed">
-                        {card.description}
-                      </p>
-                    </div>
-                    <div>
-                      <TextLink to={card.to} arrow>
-                        {card.linkLabel}
-                      </TextLink>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-[#E3E4E6] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <p className="text-[12px] text-[#5C5E62] max-w-2xl">
+              Commissioning timelines depend on terrace structural readiness, local DISCOM feeder
+              capacity, and utility inspection schedules.
+            </p>
+            <TextLink to="/net-metering" arrow className="shrink-0">
+              Review DISCOM net-metering workflow
+            </TextLink>
           </div>
         </QuietSection>
 
-        {/* 9. QUIET SECTION: Questions & Answers */}
+        {/* SCENE 07: TRUST, GOVERNANCE & FREQUENTLY ASKED QUESTIONS */}
         <QuietSection
           id="faq"
-          bg="white"
-          title="Questions & Answers"
-          lead="Clear answers on rooftop solar, government subsidies, and grid backup."
+          bg="surface"
+          className="scroll-mt-14"
+          containerClassName="max-w-6xl"
+          title="Governance, Warranties & Common Questions"
+          lead="Every specification, tariff basis, and warranty boundary is documented openly before you commit."
         >
-          <div className="max-w-2xl mx-auto space-y-8">
-            <Faq items={FAQ_ITEMS} defaultValue="subsidy" />
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-2">
+          {/* Part A: Three Editorial Governance Foundations */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-14 mb-14 border-b border-[#E3E4E6]">
+            {TRUST_CARDS.map((card) => (
+              <div key={card.title} className="flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-[17px] font-medium text-[#171A20]">{card.title}</h3>
+                  <p className="text-[14px] text-[#5C5E62] leading-[1.6]">{card.description}</p>
+                </div>
+                <div>
+                  <TextLink to={card.to} arrow>
+                    {card.linkLabel}
+                  </TextLink>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Part B: Accessible 6-Item Accordion Synchronized with FAQPage JSON-LD */}
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="bg-[#FFFFFF] rounded-[8px] border border-[#E3E4E6] px-6 sm:px-8">
+              <Faq items={FAQ_ITEMS} defaultValue="subsidy" className="border-t-0 border-b-0" />
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
               <TextLink to="/faq" arrow>
                 Browse complete Knowledge Base (26 Topics)
               </TextLink>
               <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
-                Talk to a WAVENOX solar advisor
+                Speak with a WAVENOX advisor ({BRAND_CONFIG.contact.phone.display})
               </TextLink>
             </div>
           </div>
         </QuietSection>
 
-        {/* 10. PANEL: home-final — Final Consultation CTA */}
+        {/* SCENE 08: FINAL CONSULTATION INVITATION + FOOTER */}
         <Panel
           id="consultation"
+          height="closing"
           media={media["home-final"]}
           tone="dark"
+          className="scroll-mt-14"
           title="Plan Your Solar System with WAVENOX"
-          lead="Get an indicative solar estimate for your roof or speak with a WAVENOX advisor to review feasibility, subsidies, and system design."
+          lead="Generate an indicative estimate for your roof online or request a call with an advisor to review feasibility, subsidies, and design."
           stats={
             <StatRow
               stats={[
                 { value: "15 Mins", label: "Initial Advisory Call" },
-                { value: "₹0", label: "Indicative Roof Sizing" },
+                { value: "₹0", label: "Online Sizing Preview" },
               ]}
             />
           }
@@ -856,10 +819,10 @@ function IndexPage() {
               </Button>
             </>
           }
+          disclaimer="Online estimates and advisory calls carry no purchase obligation; formal engineering quotations follow site evaluation."
         />
       </main>
 
-      {/* 11. FOOTER */}
       <Footer />
 
       {/* Technical Specifications Drawer */}
