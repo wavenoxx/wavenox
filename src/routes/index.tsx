@@ -73,7 +73,7 @@ const SOLUTION_FAMILIES = [
     secondaryLabel: "Request Assessment",
     secondaryTo: "/enterprise",
   },
-];
+] as const;
 
 const FAQ_ITEMS: FaqItem[] = [
   {
@@ -368,19 +368,23 @@ function IndexPage() {
                   </div>
                 </div>
 
-                <div className="px-6 pb-6 pt-2 flex items-center gap-3">
-                  <Link
+                <div className="px-6 pb-6 pt-2 flex flex-wrap items-center gap-2.5">
+                  <Button
                     to={family.primaryTo}
-                    className="flex-1 h-10 px-4 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium hover:bg-[#2C3038] transition-colors flex items-center justify-center text-center"
+                    variant="primary"
+                    tone="light"
+                    className="flex-1 px-4"
                   >
                     {family.primaryLabel}
-                  </Link>
-                  <Link
+                  </Button>
+                  <Button
                     to={family.secondaryTo}
-                    className="h-10 px-4 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] text-[#171A20] text-[13px] font-medium hover:bg-[#EAEAEA] transition-colors flex items-center justify-center text-center"
+                    variant="secondary"
+                    tone="light"
+                    className="flex-1 px-4"
                   >
                     {family.secondaryLabel}
-                  </Link>
+                  </Button>
                 </div>
               </article>
             ))}
@@ -475,20 +479,22 @@ function IndexPage() {
             {/* Controls: DISCOM select & Bill slider */}
             <div className="space-y-6 bg-[#FFFFFF] p-6 sm:p-8 rounded-[8px] border border-[#E3E4E6]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
                     Electricity Board (DISCOM)
                   </label>
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded-[4px] text-[12px] font-medium ${
-                      solarEstimate.status === "VERIFIED"
-                        ? "bg-[#E8F5E9] text-[#1B5E20]"
-                        : "bg-[#FFF8E1] text-[#8D6E00]"
-                    }`}
-                  >
-                    {solarEstimate.status === "VERIFIED"
-                      ? `Verified ${solarEstimate.assumptions.discom.authority} Schedule`
-                      : "Indicative Regional Benchmark"}
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] text-[#171A20] text-[12px] font-medium">
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        solarEstimate.status === "VERIFIED" ? "bg-[#B45309]" : "bg-[#5C5E62]"
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {solarEstimate.status === "VERIFIED"
+                        ? `Verified ${solarEstimate.assumptions.discom.authority} Schedule`
+                        : "Indicative Regional Benchmark"}
+                    </span>
                   </span>
                 </div>
                 <select
