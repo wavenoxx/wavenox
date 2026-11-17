@@ -5,14 +5,12 @@ import type { MediaDescriptor } from "@/components/system/Media";
 export const media = {
   "home-hero": {
     src: "/media/home-hero-1600w.jpg",
-    alt: "Contemporary villa at golden hour with black solar panels on its flat roof and a pool in the garden",
-    width: 2752,
-    height: 1536,
-    avif: "/media/home-hero-640w.avif 640w, /media/home-hero-1080w.avif 1080w, /media/home-hero-1600w.avif 1600w, /media/home-hero-1920w.avif 1920w, /media/home-hero-2560w.avif 2560w",
-    webp: "/media/home-hero-640w.webp 640w, /media/home-hero-1080w.webp 1080w, /media/home-hero-1600w.webp 1600w, /media/home-hero-1920w.webp 1920w, /media/home-hero-2560w.webp 2560w",
+    alt: "Contemporary solar-powered eco-luxury residence with an all-black rooftop solar array, home battery storage, EV charger, and landscaped lawn",
+    width: 1672,
+    height: 941,
+    webp: "/media/home-hero-640w.webp 640w, /media/home-hero-1080w.webp 1080w, /media/home-hero-1672w.webp 1672w",
     mobileSrc: "/media/home-hero-mobile.jpg",
     mobileWebp: "/media/home-hero-mobile.webp",
-    mobileAvif: "/media/home-hero-mobile.avif",
   } as MediaDescriptor,
   "home-design": {
     src: "/media/home-design-1376w.jpg",
