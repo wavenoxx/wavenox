@@ -11,7 +11,7 @@ const manifestPath = path.resolve(rootDir, "src/config/media.ts");
 const shots = [
   {
     slug: "home-hero",
-    outputSlug: "home-hero-v2",
+    outputSlug: "home-hero-v3",
     source: path.resolve(rootDir, "src/assets/home-hero-master.webp"),
     mobileSource: path.resolve(rootDir, "src/assets/home-hero-mobile-master.webp"),
     alt: "Contemporary solar-powered eco-luxury residence with an all-black rooftop solar array, home battery storage, EV charger, and landscaped lawn",
@@ -261,44 +261,53 @@ async function main() {
     let mobileWebpSrcSet = `/media/${mobileWebpFile}`;
 
     if (shot.preserveNativeWebpHero) {
-      const mobileBreakpoints = [480, 725, mobileOrigW].filter(
+      const mobileBreakpoints = [480, 640, mobileOrigW].filter(
         (w, idx, arr) => w <= mobileOrigW && arr.indexOf(w) === idx,
       );
       const mobileAspectRatio = mobileOrigW / mobileOrigH;
       const mobileWebpEntries = [];
+      const isNativeMobileWebp = path.extname(shot.mobileSource || "").toLowerCase() === ".webp";
 
       for (const mw of mobileBreakpoints) {
         const mh = Math.round(mw / mobileAspectRatio);
         const mwFile = `${filePrefix}-mobile-${mw}w.webp`;
         const mwPath = path.join(outDir, mwFile);
-        await sharp(mobileImgBuffer)
-          .resize(mw, mh, {
-            fit: "cover",
-            withoutEnlargement: true,
-            kernel: sharp.kernel.lanczos3,
-          })
-          .webp({
-            quality: mw === mobileOrigW ? 92 : 78,
-            alphaQuality: 100,
-            smartSubsample: true,
-            effort: 6,
-            preset: "photo",
-          })
-          .toFile(mwPath);
+        if (mw === mobileOrigW && isNativeMobileWebp) {
+          await fs.writeFile(mwPath, mobileImgBuffer);
+        } else {
+          await sharp(mobileImgBuffer)
+            .resize(mw, mh, {
+              fit: "cover",
+              withoutEnlargement: true,
+              kernel: sharp.kernel.lanczos3,
+            })
+            .webp({
+              quality: 56,
+              alphaQuality: 100,
+              smartSubsample: true,
+              effort: 6,
+              preset: "photo",
+            })
+            .toFile(mwPath);
+        }
         mobileWebpEntries.push(`/media/${mwFile} ${mw}w`);
       }
       mobileWebpSrcSet = mobileWebpEntries.join(", ");
 
       // Also write canonical -mobile.webp and -mobile.jpg fallback
-      await sharp(mobileImgBuffer)
-        .webp({
-          quality: 92,
-          alphaQuality: 100,
-          smartSubsample: true,
-          effort: 6,
-          preset: "photo",
-        })
-        .toFile(path.join(outDir, mobileWebpFile));
+      if (isNativeMobileWebp) {
+        await fs.writeFile(path.join(outDir, mobileWebpFile), mobileImgBuffer);
+      } else {
+        await sharp(mobileImgBuffer)
+          .webp({
+            quality: 94,
+            alphaQuality: 100,
+            smartSubsample: true,
+            effort: 6,
+            preset: "photo",
+          })
+          .toFile(path.join(outDir, mobileWebpFile));
+      }
       await sharp(mobileImgBuffer)
         .jpeg({ quality: 92, mozjpeg: true })
         .toFile(path.join(outDir, mobileJpgFile));

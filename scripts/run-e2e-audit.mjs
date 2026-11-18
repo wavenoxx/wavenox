@@ -338,26 +338,26 @@ async function runAudit() {
         }
       }
 
-      // Verify Hero Primary CTA ("Get Solar Estimate" -> /deploy)
+      // Verify Hero Primary CTA ("Design Your System" -> /deploy)
       const heroEstimateBtn = page
-        .locator('#solar-panels a[href="/deploy"]:has-text("Get Solar Estimate")')
+        .locator('#solar-panels a[href="/deploy"]:has-text("Design Your System")')
         .first();
       if (!(await heroEstimateBtn.isVisible())) {
-        failures.push("Homepage hero primary CTA 'Get Solar Estimate' not visible");
+        failures.push("Homepage hero primary CTA 'Design Your System' not visible");
       }
 
-      // Verify Hero Secondary CTA ("Talk to a Solar Advisor" opens ConsultationDrawer)
+      // Verify Hero Secondary CTA ("Book a Consultation" opens ConsultationDrawer)
       const heroAdvisorBtn = page
-        .locator('#solar-panels button:has-text("Talk to a Solar Advisor")')
+        .locator('#solar-panels button:has-text("Book a Consultation")')
         .first();
       if (!(await heroAdvisorBtn.isVisible())) {
-        failures.push("Homepage hero secondary CTA 'Talk to a Solar Advisor' not visible");
+        failures.push("Homepage hero secondary CTA 'Book a Consultation' not visible");
       } else {
         await heroAdvisorBtn.click();
         await page.waitForTimeout(450);
         const dialogVisible = await page.locator('[role="dialog"]').first().isVisible();
         if (!dialogVisible) {
-          failures.push("Clicking 'Talk to a Solar Advisor' did not open ConsultationDrawer");
+          failures.push("Clicking 'Book a Consultation' did not open ConsultationDrawer");
         }
         await page.keyboard.press("Escape");
         await page.waitForTimeout(250);

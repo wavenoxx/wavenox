@@ -45,7 +45,12 @@ export function Panel({
 }: PanelProps) {
   const isDark = tone === "dark";
   const toneClasses = isDark ? "bg-[#171A20] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#171A20]";
-  const heightClasses = height === "closing" ? "min-h-[80svh] lg:min-h-[84svh]" : "min-h-[100svh]";
+  const heightClasses =
+    height === "closing"
+      ? "min-h-[80svh] lg:min-h-[84svh]"
+      : mobileNaturalFrame
+        ? "max-[768px]:min-h-0 max-[768px]:aspect-[1122/1402] min-[769px]:min-h-[100svh]"
+        : "min-h-[100svh]";
 
   return (
     <section
@@ -73,12 +78,13 @@ export function Panel({
           <div
             className={
               mobileNaturalFrame
-                ? "hidden md:block absolute inset-0 pointer-events-none z-10"
+                ? "hidden min-[769px]:block absolute inset-0 pointer-events-none z-10"
                 : "absolute inset-0 pointer-events-none z-10"
             }
             style={{
-              background:
-                "linear-gradient(180deg, rgba(11,14,19,0.62) 0%, rgba(11,14,19,0.20) 26%, rgba(11,14,19,0.0) 44%, rgba(11,14,19,0.04) 60%, rgba(11,14,19,0.64) 78%, rgba(11,14,19,0.88) 100%)",
+              background: mobileNaturalFrame
+                ? "linear-gradient(180deg, rgba(11,14,19,0.56) 0%, rgba(11,14,19,0.22) 24%, rgba(11,14,19,0.0) 42%, rgba(11,14,19,0.0) 80%, rgba(11,14,19,0.18) 100%)"
+                : "linear-gradient(180deg, rgba(11,14,19,0.62) 0%, rgba(11,14,19,0.20) 26%, rgba(11,14,19,0.0) 44%, rgba(11,14,19,0.04) 60%, rgba(11,14,19,0.64) 78%, rgba(11,14,19,0.88) 100%)",
             }}
           />
         ) : (
@@ -92,17 +98,23 @@ export function Panel({
         )}
         {mobileNaturalFrame && isDark && (
           <div
-            className="md:hidden absolute inset-x-0 top-0 h-56 pointer-events-none z-10"
+            className="min-[769px]:hidden absolute inset-x-0 top-0 h-40 pointer-events-none z-10"
             style={{
               background:
-                "linear-gradient(180deg, rgba(11,14,19,0.74) 0%, rgba(11,14,19,0.48) 56%, rgba(11,14,19,0.0) 100%)",
+                "linear-gradient(180deg, rgba(11,14,19,0.52) 0%, rgba(11,14,19,0.22) 55%, rgba(11,14,19,0.0) 100%)",
             }}
           />
         )}
       </div>
 
       {/* Top Section: Title & Lead within upper safe zone */}
-      <div className="relative pt-16 sm:pt-20 lg:pt-24 pb-2 px-4 sm:px-6 lg:px-12 text-center z-20 w-full max-w-4xl mx-auto">
+      <div
+        className={`relative ${
+          mobileNaturalFrame
+            ? "pt-14 min-[375px]:pt-[60px] sm:pt-20 lg:pt-24 pb-1"
+            : "pt-16 sm:pt-20 lg:pt-24 pb-2"
+        } px-4 sm:px-6 lg:px-12 text-center z-20 w-full max-w-4xl mx-auto`}
+      >
         <Reveal immediate={priority}>
           {title &&
             (as === "h1" ? (
@@ -115,7 +127,13 @@ export function Panel({
               </h2>
             ))}
           {lead && (
-            <p className="text-[14px] sm:text-[16px] lg:text-[17px] font-normal leading-[1.45] sm:leading-[1.55] text-inherit/90 max-w-[36ch] sm:max-w-[54ch] mx-auto mt-2 sm:mt-2.5 text-balance">
+            <p
+              className={`${
+                mobileNaturalFrame
+                  ? "text-[13px] min-[375px]:text-[14px] sm:text-[16px] lg:text-[17px] mt-1.5 sm:mt-2.5 leading-[1.35] sm:leading-[1.55]"
+                  : "text-[14px] sm:text-[16px] lg:text-[17px] mt-2 sm:mt-2.5 leading-[1.45] sm:leading-[1.55]"
+              } font-normal text-inherit/90 max-w-[36ch] sm:max-w-[54ch] mx-auto text-balance`}
+            >
               {lead}
             </p>
           )}
@@ -124,12 +142,24 @@ export function Panel({
       </div>
 
       {/* Middle Photographic Focal Band */}
-      <div className="relative flex-1 min-h-[140px] sm:min-h-[180px] flex items-center justify-center px-4 sm:px-6 z-20">
+      <div
+        className={`relative flex-1 ${
+          mobileNaturalFrame
+            ? "min-h-0 min-[769px]:min-h-[180px]"
+            : "min-h-[140px] sm:min-h-[180px]"
+        } flex items-center justify-center px-4 sm:px-6 z-20`}
+      >
         {children}
       </div>
 
       {/* Bottom Dock: Stats, Actions, Disclaimer */}
-      <div className="relative pb-5 sm:pb-8 lg:pb-10 pt-3 px-4 sm:px-6 lg:px-12 flex flex-col items-center gap-3 sm:gap-4 lg:gap-5 z-20 w-full max-w-4xl mx-auto text-center">
+      <div
+        className={`relative ${
+          mobileNaturalFrame
+            ? "pb-4 min-[375px]:pb-5 sm:pb-8 lg:pb-10 pt-2"
+            : "pb-5 sm:pb-8 lg:pb-10 pt-3"
+        } px-4 sm:px-6 lg:px-12 flex flex-col items-center gap-3 sm:gap-4 lg:gap-5 z-20 w-full max-w-4xl mx-auto text-center`}
+      >
         {stats && (
           <Reveal immediate={priority} delay={0.08} className="w-full">
             {stats}
@@ -138,7 +168,13 @@ export function Panel({
 
         {actions && (
           <Reveal immediate={priority} delay={0.14} className="w-full">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4 w-full max-w-[320px] sm:max-w-none mx-auto">
+            <div
+              className={
+                mobileNaturalFrame
+                  ? "grid grid-cols-2 sm:flex sm:flex-row items-center justify-center gap-2 min-[375px]:gap-3 sm:gap-4 w-full max-w-[390px] sm:max-w-none mx-auto"
+                  : "flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4 w-full max-w-[320px] sm:max-w-none mx-auto"
+              }
+            >
               {actions}
             </div>
           </Reveal>

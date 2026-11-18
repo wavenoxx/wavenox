@@ -40,6 +40,7 @@ export function Media({
 
   const finalAlt = descriptor.alt || alt || "";
   const loading = priority ? "eager" : "lazy";
+  const decoding = priority ? ("sync" as const) : ("async" as const);
   // React 19 supports fetchPriority
   const fetchPriority = priority ? ("high" as const) : ("auto" as const);
 
@@ -64,7 +65,7 @@ export function Media({
         alt={finalAlt}
         loading={loading}
         fetchPriority={fetchPriority}
-        decoding="async"
+        decoding={decoding}
         width={width || descriptor.width}
         height={height || descriptor.height}
         className={imgClasses}
@@ -77,6 +78,7 @@ export function Media({
     descriptor.mobileAvif || descriptor.mobileWebp || descriptor.mobileSrc,
   );
   const desktopMedia = hasMobileSources ? "(min-width: 769px)" : undefined;
+  const mobileSizes = priority ? "(max-width: 420px) 360px, 100vw" : "100vw";
 
   return (
     <picture className={fill ? "block w-full h-full" : undefined}>
@@ -85,7 +87,7 @@ export function Media({
         <source
           media="(max-width: 768px)"
           srcSet={descriptor.mobileAvif}
-          sizes={/\s\d+w\b/.test(descriptor.mobileAvif) ? "100vw" : undefined}
+          sizes={/\s\d+w\b/.test(descriptor.mobileAvif) ? mobileSizes : undefined}
           type="image/avif"
         />
       )}
@@ -93,7 +95,7 @@ export function Media({
         <source
           media="(max-width: 768px)"
           srcSet={descriptor.mobileWebp}
-          sizes={/\s\d+w\b/.test(descriptor.mobileWebp) ? "100vw" : undefined}
+          sizes={/\s\d+w\b/.test(descriptor.mobileWebp) ? mobileSizes : undefined}
           type="image/webp"
         />
       )}
@@ -113,7 +115,7 @@ export function Media({
         alt={finalAlt}
         loading={loading}
         fetchPriority={fetchPriority}
-        decoding="async"
+        decoding={decoding}
         width={width || descriptor.width}
         height={height || descriptor.height}
         className={imgClasses}

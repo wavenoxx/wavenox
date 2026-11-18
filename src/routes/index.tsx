@@ -177,7 +177,7 @@ export const Route = createFileRoute("/")({
         as: "image",
         type: "image/webp",
         imageSrcSet: media["home-hero"].mobileWebp,
-        imageSizes: "100vw",
+        imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
       },
@@ -261,38 +261,28 @@ function IndexPage() {
           mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
-          title="Solar, Designed Around Your Home"
-          lead="Custom rooftop solar and battery storage for Indian homes, from DISCOM tariff modeling to net-meter commissioning."
-          stats={
-            <StatRow
-              stats={[
-                { value: "₹78,000", label: "Max Central Subsidy*" },
-                { value: "25 Years", label: "OEM Module Warranty*" },
-                { value: "1,490 kWh", label: "Annual Yield / kWp*" },
-              ]}
-            />
-          }
+          title="Home Solar"
+          lead="Lower Your Power Bills. Run Your Home on Solar."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] !px-2.5 min-[375px]:!px-3 sm:!px-7 text-[12px] min-[375px]:text-[13px] sm:text-[14px]"
               >
-                Get Solar Estimate
+                Design Your System
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] !px-2.5 min-[375px]:!px-3 sm:!px-7 text-[12px] min-[375px]:text-[13px] sm:text-[14px] bg-[#171A20]/80 backdrop-blur-md text-[#FFFFFF] border border-[#FFFFFF]/30 hover:bg-[#171A20]/90 shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
               >
-                Talk to a Solar Advisor
+                Book a Consultation
               </Button>
             </>
           }
-          disclaimer="*PM Surya Ghar DBT subsidy depends on residential eligibility and national portal approval. Yield reflects an indicative Hyderabad reference model (1,490 kWh/kWp/yr)."
         />
 
         {/* SCENE 02: THREE SOLAR PATHS (BORDERLESS ARCHITECTURAL GALLERY) */}
