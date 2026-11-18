@@ -11,6 +11,7 @@ const manifestPath = path.resolve(rootDir, "src/config/media.ts");
 const shots = [
   {
     slug: "home-hero",
+    outputSlug: "home-hero-v2",
     source: path.resolve(rootDir, "src/assets/home-hero-master.webp"),
     mobileSource: path.resolve(rootDir, "src/assets/home-hero-mobile-master.webp"),
     alt: "Contemporary solar-powered eco-luxury residence with an all-black rooftop solar array, home battery storage, EV charger, and landscaped lawn",
@@ -114,7 +115,8 @@ async function main() {
   const manifestEntries = [];
 
   for (const shot of shots) {
-    console.log(`Processing shot: ${shot.slug}...`);
+    const filePrefix = shot.outputSlug || shot.slug;
+    console.log(`Processing shot: ${shot.slug} (${filePrefix})...`);
     const imgBuffer = await fs.readFile(shot.source);
     const metadata = await sharp(imgBuffer).metadata();
     const origWidth = metadata.width || 1920;
@@ -141,7 +143,7 @@ async function main() {
 
       for (const w of heroBreakpoints) {
         const h = Math.round(w / aspectRatio);
-        const webpFileName = `${shot.slug}-${w}w.webp`;
+        const webpFileName = `${filePrefix}-${w}w.webp`;
         const webpPath = path.join(outDir, webpFileName);
         if (w === origWidth && path.extname(shot.source).toLowerCase() === ".webp") {
           await fs.writeFile(webpPath, imgBuffer);
@@ -162,20 +164,25 @@ async function main() {
 
       for (const w of jpgBreakpoints) {
         const h = Math.round(w / aspectRatio);
-        const jpgFileName = `${shot.slug}-${w}w.jpg`;
+        const jpgFileName = `${filePrefix}-${w}w.jpg`;
         const jpgPath = path.join(outDir, jpgFileName);
         await sharp(imgBuffer)
           .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
           .jpeg({ quality: 92, mozjpeg: true })
           .toFile(jpgPath);
         desktopJpgList.push(`/media/${jpgFileName} ${w}w`);
+
+        // Keep legacy og:image path /media/${shot.slug}-1600w.jpg updated when filePrefix differs
+        if (shot.outputSlug && w === Math.min(1600, origWidth)) {
+          await fs.copyFile(jpgPath, path.join(outDir, `${shot.slug}-${w}w.jpg`));
+        }
       }
     } else {
       for (const w of activeBreakpoints) {
         const h = Math.round(w / aspectRatio);
 
         // AVIF
-        const avifFileName = `${shot.slug}-${w}w.avif`;
+        const avifFileName = `${filePrefix}-${w}w.avif`;
         const avifPath = path.join(outDir, avifFileName);
         await sharp(imgBuffer)
           .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
@@ -185,7 +192,7 @@ async function main() {
         desktopAvifList.push(`/media/${avifFileName} ${w}w`);
 
         // WebP
-        const webpFileName = `${shot.slug}-${w}w.webp`;
+        const webpFileName = `${filePrefix}-${w}w.webp`;
         const webpPath = path.join(outDir, webpFileName);
         await sharp(imgBuffer)
           .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
@@ -195,7 +202,7 @@ async function main() {
         desktopWebpList.push(`/media/${webpFileName} ${w}w`);
 
         // JPG fallback
-        const jpgFileName = `${shot.slug}-${w}w.jpg`;
+        const jpgFileName = `${filePrefix}-${w}w.jpg`;
         const jpgPath = path.join(outDir, jpgFileName);
         await sharp(imgBuffer)
           .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
@@ -248,29 +255,55 @@ async function main() {
       ? mobileOrigH
       : Math.min(maxMobileHeight, mobileOrigH);
 
-    const mobileWebpFile = `${shot.slug}-mobile.webp`;
-    const mobileJpgFile = `${shot.slug}-mobile.jpg`;
+    const mobileWebpFile = `${filePrefix}-mobile.webp`;
+    const mobileJpgFile = `${filePrefix}-mobile.jpg`;
     let mobileAvifFile = null;
+    let mobileWebpSrcSet = `/media/${mobileWebpFile}`;
 
     if (shot.preserveNativeWebpHero) {
-      if (path.extname(shot.mobileSource || "").toLowerCase() === ".webp") {
-        await fs.writeFile(path.join(outDir, mobileWebpFile), mobileImgBuffer);
-      } else {
+      const mobileBreakpoints = [480, 725, mobileOrigW].filter(
+        (w, idx, arr) => w <= mobileOrigW && arr.indexOf(w) === idx,
+      );
+      const mobileAspectRatio = mobileOrigW / mobileOrigH;
+      const mobileWebpEntries = [];
+
+      for (const mw of mobileBreakpoints) {
+        const mh = Math.round(mw / mobileAspectRatio);
+        const mwFile = `${filePrefix}-mobile-${mw}w.webp`;
+        const mwPath = path.join(outDir, mwFile);
         await sharp(mobileImgBuffer)
+          .resize(mw, mh, {
+            fit: "cover",
+            withoutEnlargement: true,
+            kernel: sharp.kernel.lanczos3,
+          })
           .webp({
-            quality: 94,
+            quality: mw === mobileOrigW ? 92 : 78,
             alphaQuality: 100,
             smartSubsample: true,
             effort: 6,
             preset: "photo",
           })
-          .toFile(path.join(outDir, mobileWebpFile));
+          .toFile(mwPath);
+        mobileWebpEntries.push(`/media/${mwFile} ${mw}w`);
       }
+      mobileWebpSrcSet = mobileWebpEntries.join(", ");
+
+      // Also write canonical -mobile.webp and -mobile.jpg fallback
+      await sharp(mobileImgBuffer)
+        .webp({
+          quality: 92,
+          alphaQuality: 100,
+          smartSubsample: true,
+          effort: 6,
+          preset: "photo",
+        })
+        .toFile(path.join(outDir, mobileWebpFile));
       await sharp(mobileImgBuffer)
         .jpeg({ quality: 92, mozjpeg: true })
         .toFile(path.join(outDir, mobileJpgFile));
     } else {
-      mobileAvifFile = `${shot.slug}-mobile.avif`;
+      mobileAvifFile = `${filePrefix}-mobile.avif`;
       await sharp(mobileImgBuffer)
         .resize(mobileWidth, mobileHeight, {
           fit: "cover",
@@ -308,7 +341,7 @@ async function main() {
       : activeBreakpoints.includes(1600)
         ? 1600
         : activeBreakpoints[activeBreakpoints.length - 1];
-    const defaultJpg = `/media/${shot.slug}-${fallbackWidth}w.jpg`;
+    const defaultJpg = `/media/${filePrefix}-${fallbackWidth}w.jpg`;
 
     manifestEntries.push({
       slug: shot.slug,
@@ -319,7 +352,7 @@ async function main() {
       avif: desktopAvifList.length > 0 ? desktopAvifList.join(", ") : undefined,
       webp: desktopWebpList.join(", "),
       mobileSrc: `/media/${mobileJpgFile}`,
-      mobileWebp: `/media/${mobileWebpFile}`,
+      mobileWebp: mobileWebpSrcSet,
       mobileAvif: mobileAvifFile ? `/media/${mobileAvifFile}` : undefined,
     });
   }

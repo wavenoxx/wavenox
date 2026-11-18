@@ -73,20 +73,39 @@ export function Media({
     );
   }
 
+  const hasMobileSources = Boolean(
+    descriptor.mobileAvif || descriptor.mobileWebp || descriptor.mobileSrc,
+  );
+  const desktopMedia = hasMobileSources ? "(min-width: 769px)" : undefined;
+
   return (
     <picture className={fill ? "block w-full h-full" : undefined}>
       {/* Mobile crop (<= 768px) */}
       {descriptor.mobileAvif && (
-        <source media="(max-width: 768px)" srcSet={descriptor.mobileAvif} type="image/avif" />
+        <source
+          media="(max-width: 768px)"
+          srcSet={descriptor.mobileAvif}
+          sizes={/\s\d+w\b/.test(descriptor.mobileAvif) ? "100vw" : undefined}
+          type="image/avif"
+        />
       )}
       {descriptor.mobileWebp && (
-        <source media="(max-width: 768px)" srcSet={descriptor.mobileWebp} type="image/webp" />
+        <source
+          media="(max-width: 768px)"
+          srcSet={descriptor.mobileWebp}
+          sizes={/\s\d+w\b/.test(descriptor.mobileWebp) ? "100vw" : undefined}
+          type="image/webp"
+        />
       )}
       {descriptor.mobileSrc && <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />}
 
-      {/* Desktop / Default sources */}
-      {descriptor.avif && <source srcSet={descriptor.avif} sizes="100vw" type="image/avif" />}
-      {descriptor.webp && <source srcSet={descriptor.webp} sizes="100vw" type="image/webp" />}
+      {/* Desktop / Default sources (>= 769px when dedicated mobile sources exist) */}
+      {descriptor.avif && (
+        <source media={desktopMedia} srcSet={descriptor.avif} sizes="100vw" type="image/avif" />
+      )}
+      {descriptor.webp && (
+        <source media={desktopMedia} srcSet={descriptor.webp} sizes="100vw" type="image/webp" />
+      )}
 
       {/* Fallback img */}
       <img

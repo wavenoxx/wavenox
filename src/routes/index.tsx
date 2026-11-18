@@ -176,7 +176,8 @@ export const Route = createFileRoute("/")({
         rel: "preload",
         as: "image",
         type: "image/webp",
-        href: media["home-hero"].mobileWebp,
+        imageSrcSet: media["home-hero"].mobileWebp,
+        imageSizes: "100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
       },
@@ -257,6 +258,7 @@ function IndexPage() {
           as="h1"
           media={media["home-hero"]}
           priority={true}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Solar, Designed Around Your Home"

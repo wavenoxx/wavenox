@@ -20,6 +20,7 @@ export interface PanelProps {
   children?: React.ReactNode;
   className?: string;
   objectPosition?: string;
+  mobileNaturalFrame?: boolean;
 }
 
 export function Panel({
@@ -40,6 +41,7 @@ export function Panel({
   children,
   className = "",
   objectPosition = "center",
+  mobileNaturalFrame = false,
 }: PanelProps) {
   const isDark = tone === "dark";
   const toneClasses = isDark ? "bg-[#171A20] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#171A20]";
@@ -61,7 +63,7 @@ export function Panel({
             alt={alt}
             priority={priority}
             fill
-            objectPosition={objectPosition}
+            objectPosition={mobileNaturalFrame ? "center top" : objectPosition}
             className="w-full h-full object-cover"
           />
         )}
@@ -69,7 +71,11 @@ export function Panel({
         {/* Calm directional scrims preserve middle photographic focal clarity */}
         {isDark ? (
           <div
-            className="absolute inset-0 pointer-events-none z-10"
+            className={
+              mobileNaturalFrame
+                ? "hidden md:block absolute inset-0 pointer-events-none z-10"
+                : "absolute inset-0 pointer-events-none z-10"
+            }
             style={{
               background:
                 "linear-gradient(180deg, rgba(11,14,19,0.62) 0%, rgba(11,14,19,0.20) 26%, rgba(11,14,19,0.0) 44%, rgba(11,14,19,0.04) 60%, rgba(11,14,19,0.64) 78%, rgba(11,14,19,0.88) 100%)",
@@ -81,6 +87,15 @@ export function Panel({
             style={{
               background:
                 "linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.18) 28%, rgba(255,255,255,0.0) 50%, rgba(255,255,255,0.88) 100%)",
+            }}
+          />
+        )}
+        {mobileNaturalFrame && isDark && (
+          <div
+            className="md:hidden absolute inset-x-0 top-0 h-56 pointer-events-none z-10"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(11,14,19,0.74) 0%, rgba(11,14,19,0.48) 56%, rgba(11,14,19,0.0) 100%)",
             }}
           />
         )}
