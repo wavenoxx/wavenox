@@ -285,115 +285,166 @@ function IndexPage() {
           }
         />
 
-        {/* SCENE 02: THREE SOLAR PATHS (BORDERLESS ARCHITECTURAL GALLERY) */}
+        {/* SCENE 02: THREE SOLAR PATHS (ARCHITECTURAL PRODUCT GALLERY) */}
         <QuietSection
           id="solutions"
           bg="white"
+          eyebrow="01 · System Architecture"
           className="scroll-mt-14"
-          containerClassName="max-w-6xl"
           title="Three Solar Paths. One Coordinated Experience."
           lead="Choose the system architecture tailored to your roof layout, daytime demand, and backup requirements."
         >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
-            {SOLUTION_FAMILIES.map((family, idx) => (
-              <article
-                key={family.id}
-                className={`flex flex-col justify-between space-y-6 ${
-                  idx > 0 ? "pt-8 border-t border-[#E3E4E6] lg:pt-0 lg:border-t-0" : ""
-                }`}
-              >
-                <div className="space-y-4">
-                  <Link
-                    to={family.to}
-                    className="block relative aspect-[16/10] w-full overflow-hidden rounded-[6px] bg-[#F4F4F4] border border-black/[0.06] group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
-                  >
-                    <Media
-                      media={media[family.mediaKey]}
-                      className="w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]"
-                    />
-                  </Link>
-
-                  <div className="space-y-2 pt-1">
-                    <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
-                      {family.eyebrow}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-10">
+            {SOLUTION_FAMILIES.map((family) => {
+              const [stepCode, segmentLabel, capacityLabel] = family.eyebrow.split(" · ");
+              return (
+                <article
+                  key={family.id}
+                  className="flex flex-col justify-between space-y-6 pt-5 border-t border-[#E3E4E6]"
+                >
+                  <div className="space-y-5">
+                    <div className="flex items-center justify-between gap-2 text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62] tabular-nums">
+                      <span>
+                        {stepCode} · {segmentLabel}
+                      </span>
+                      <span className="text-[#171A20]">{capacityLabel}</span>
                     </div>
-                    <h3 className="text-[22px] font-medium tracking-[-0.015em] text-[#171A20]">
-                      {family.title}
-                    </h3>
-                    <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-[1.6]">
-                      {family.description}
-                    </p>
-                  </div>
-                </div>
 
-                <div>
-                  <Button
-                    to={family.to}
-                    variant="primary"
-                    tone="light"
-                    className="w-full sm:w-auto"
-                  >
-                    {family.ctaLabel}
-                  </Button>
-                </div>
-              </article>
-            ))}
+                    <Link
+                      to={family.to}
+                      className="block relative aspect-[16/10.5] w-full overflow-hidden rounded-[4px] bg-[#F4F4F4] border border-black/[0.06] group focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+                    >
+                      <Media
+                        media={media[family.mediaKey]}
+                        objectPosition="center 35%"
+                        className="w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]"
+                      />
+                    </Link>
+
+                    <div className="space-y-2.5 pt-0.5">
+                      <h3 className="text-[22px] sm:text-[24px] font-medium tracking-[-0.018em] leading-[1.2] text-[#171A20]">
+                        {family.title}
+                      </h3>
+                      <p className="text-[14px] sm:text-[15px] text-[#393C41] leading-[1.6] text-pretty">
+                        {family.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <Button
+                      to={family.to}
+                      variant="primary"
+                      tone="light"
+                      className="w-full sm:w-auto"
+                    >
+                      {family.ctaLabel}
+                    </Button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[#E3E4E6] text-center">
+          <div className="mt-14 pt-8 border-t border-[#E3E4E6] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <span className="text-[13px] text-[#5C5E62]">
+              Every configuration is engineered around local DISCOM net-metering and structural wind
+              codes.
+            </span>
             <TextLink to="/deploy" arrow>
               Unsure which system fits your roof? Compare options in the Design Studio
             </TextLink>
           </div>
         </QuietSection>
 
-        {/* SCENE 03: ROOFTOP BEAUTY & INDIAN HEAT ENGINEERING (CONSOLIDATES #design + #heat-performance) */}
-        <Panel
+        {/* SCENE 03: ROOFTOP BEAUTY & INDIAN HEAT ENGINEERING (LARGE EDITORIAL ARCHITECTURAL FRAME) */}
+        <section
           id="design"
-          media={media["home-design"]}
-          tone="dark"
-          className="scroll-mt-14"
-          topAddon={
-            <div
-              id="heat-performance"
-              className="scroll-mt-24 inline-flex items-center px-3.5 py-1 rounded-full bg-[#171A20]/65 border border-white/20 text-[12px] font-medium tracking-[0.05em] uppercase text-[#FFFFFF] backdrop-blur-xs"
-            >
-              Architecture &amp; Thermal Engineering
+          data-theme="light"
+          className="relative w-full py-16 sm:py-20 md:py-24 lg:py-32 px-5 sm:px-8 lg:px-12 bg-[#F4F4F4] text-[#171A20] border-y border-[#E3E4E6] scroll-mt-14"
+        >
+          <div className="max-w-[1240px] mx-auto space-y-10 sm:space-y-12">
+            {/* Editorial Split Header */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-end">
+              <div className="lg:col-span-7 space-y-3">
+                <div
+                  id="heat-performance"
+                  className="scroll-mt-24 text-[12px] font-medium uppercase tracking-[0.08em] text-[#5C5E62]"
+                >
+                  02 · Architecture &amp; Thermal Engineering
+                </div>
+                <h2 className="text-[28px] sm:text-[36px] lg:text-[44px] font-medium tracking-[-0.024em] leading-[1.1] text-[#171A20] text-balance max-w-[22ch]">
+                  Engineered for Indian Rooftops and 45°C Summers
+                </h2>
+              </div>
+
+              <div className="lg:col-span-5 space-y-5">
+                <p className="text-[15px] sm:text-[16px] text-[#393C41] leading-[1.6] text-pretty">
+                  Low-profile terrace mounts and concealed conduit raceways paired with −0.30%/°C
+                  thermal engineering—preserving walkable roof geometry without exposed cable trays.
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    onClick={() => setSpecsOpen(true)}
+                    variant="primary"
+                    tone="light"
+                    className="w-full sm:w-auto"
+                  >
+                    View Technical Specs
+                  </Button>
+                  <Button
+                    to="/residential"
+                    variant="secondary"
+                    tone="light"
+                    className="w-full sm:w-auto bg-[#FFFFFF] border-[#D0D2D6] hover:bg-[#EAEAEA]"
+                  >
+                    Explore Solar Panels
+                  </Button>
+                </div>
+              </div>
             </div>
-          }
-          title="Engineered for Indian Rooftops and 45°C Summers"
-          lead="Low-profile terrace mounts and concealed conduit raceways paired with −0.30%/°C thermal engineering."
-          stats={
-            <StatRow
-              stats={[
-                { value: "-0.30% / °C", label: "Temp. Coeff.*" },
-                { value: "22.45%+", label: "Efficiency*" },
-                { value: "158 km/h", label: "Wind Basis*" },
-              ]}
-            />
-          }
-          actions={
-            <>
-              <Button
-                onClick={() => setSpecsOpen(true)}
-                variant="primary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                View Technical Specs
-              </Button>
-              <Button
-                to="/residential"
-                variant="secondary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Explore Solar Panels
-              </Button>
-            </>
-          }
-          disclaimer="*Reference 580W N-Type TOPCon (22.45%–22.8%) and IS 875 44 m/s wind basis; final specs follow site survey and OEM datasheet."
-        />
+
+            {/* Large Unobstructed Architectural Photograph Frame */}
+            <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full overflow-hidden rounded-[6px] bg-[#171A20] border border-black/[0.08] shadow-[0_18px_44px_rgba(23,26,32,0.08)]">
+              <Media media={media["home-design"]} className="w-full h-full object-cover" />
+            </div>
+
+            {/* Below-Frame Verified Specification Bar & Reference Footnote */}
+            <div className="pt-2 space-y-6">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-8 py-6 border-y border-[#D8DADC]">
+                <div>
+                  <div className="text-[17px] min-[375px]:text-[19px] sm:text-[28px] lg:text-[34px] font-medium tracking-[-0.02em] leading-[1.1] tabular-nums whitespace-nowrap text-[#171A20]">
+                    -0.30% / °C
+                  </div>
+                  <div className="text-[12px] font-medium uppercase tracking-[0.04em] sm:tracking-[0.05em] text-[#5C5E62] mt-1.5">
+                    Temp. Coeff.*
+                  </div>
+                </div>
+                <div className="border-l border-[#D8DADC] pl-2.5 sm:pl-8">
+                  <div className="text-[17px] min-[375px]:text-[19px] sm:text-[28px] lg:text-[34px] font-medium tracking-[-0.02em] leading-[1.1] tabular-nums whitespace-nowrap text-[#171A20]">
+                    22.45%+
+                  </div>
+                  <div className="text-[12px] font-medium uppercase tracking-[0.04em] sm:tracking-[0.05em] text-[#5C5E62] mt-1.5">
+                    Efficiency*
+                  </div>
+                </div>
+                <div className="border-l border-[#D8DADC] pl-2.5 sm:pl-8">
+                  <div className="text-[17px] min-[375px]:text-[19px] sm:text-[28px] lg:text-[34px] font-medium tracking-[-0.02em] leading-[1.1] tabular-nums whitespace-nowrap text-[#171A20]">
+                    158 km/h
+                  </div>
+                  <div className="text-[12px] font-medium uppercase tracking-[0.04em] sm:tracking-[0.05em] text-[#5C5E62] mt-1.5">
+                    Wind Basis*
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[12px] text-[#5C5E62] leading-[1.5]">
+                *Reference 580W N-Type TOPCon (22.45%–22.8%) and IS 875 44 m/s wind basis; final
+                specs follow site survey and OEM datasheet.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* SCENE 04A: SOLAR + BATTERY OUTAGE PROTECTION */}
         <Panel
@@ -418,7 +469,7 @@ function IndexPage() {
                 to="/omnigrid"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] text-[12px] min-[375px]:text-[13px] sm:text-[14px]"
               >
                 Explore Battery Storage
               </Button>
@@ -426,48 +477,61 @@ function IndexPage() {
                 to="/deploy"
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] text-[12px] min-[375px]:text-[13px] sm:text-[14px]"
               >
                 Configure Solar + Storage
               </Button>
             </>
           }
-          disclaimer="*Transfer time, continuous backup power, and runtime depend on your installed hybrid inverter model, battery state of charge, and active home appliance loads."
+          disclaimer="*Transfer time, backup output, and runtime depend on your installed hybrid inverter, battery state of charge, and active home loads."
         />
 
         {/* SCENE 04B: ENERGY VISIBILITY & ILLUSTRATIVE MONITORING EXAMPLE */}
-        <QuietSection
-          id="monitoring"
-          bg="white"
-          className="scroll-mt-14 border-b border-[#E3E4E6]"
-          containerClassName="max-w-6xl"
-        >
+        <QuietSection id="monitoring" bg="white" className="scroll-mt-14 border-b border-[#E3E4E6]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            <div className="lg:col-span-6 space-y-5 text-center lg:text-left">
-              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62]">
-                Energy Visibility · OEM Inverter Cloud
+            <div className="lg:col-span-5 space-y-6 text-left">
+              <div className="space-y-3">
+                <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#5C5E62]">
+                  03 · Energy Visibility · OEM Inverter Cloud
+                </div>
+                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-medium tracking-[-0.024em] leading-[1.1] text-[#171A20] text-balance">
+                  Generation, Home Load &amp; Reserve in One View
+                </h2>
+                <p className="text-[15px] sm:text-[16px] text-[#393C41] leading-[1.6] text-pretty">
+                  Compatible hybrid inverters stream solar output, household demand, battery
+                  reserve, and net-metering export directly to the inverter manufacturer&apos;s app.
+                  WAVENOX assists with initial portal setup and only reviews diagnostic logs with
+                  your explicit authorization.
+                </p>
               </div>
-              <h2 className="text-[26px] sm:text-[32px] lg:text-[38px] font-medium tracking-[-0.02em] leading-[1.14] text-[#171A20]">
-                Generation, Home Load &amp; Reserve in One View
-              </h2>
-              <p className="text-[15px] sm:text-[16px] text-[#5C5E62] leading-[1.6] max-w-[52ch] mx-auto lg:mx-0">
-                Compatible hybrid inverters stream solar output, household demand, battery reserve,
-                and net-metering export directly to the inverter manufacturer&apos;s app. WAVENOX
-                assists with initial portal setup and only reviews diagnostic logs with your
-                explicit authorization.
-              </p>
-              <div className="pt-1">
+
+              <div className="divide-y divide-[#E3E4E6] border-y border-[#E3E4E6] text-[13px]">
+                <div className="py-3 flex items-center justify-between gap-4">
+                  <span className="text-[#5C5E62]">Daytime Dispatch</span>
+                  <span className="font-medium text-[#171A20]">
+                    Home Loads → LFP Reserve → DISCOM Export
+                  </span>
+                </div>
+                <div className="py-3 flex items-center justify-between gap-4">
+                  <span className="text-[#5C5E62]">Outage Switchover</span>
+                  <span className="font-medium text-[#171A20] tabular-nums">
+                    Automatic Backup (&lt; 20 ms target)
+                  </span>
+                </div>
+              </div>
+
+              <div>
                 <TextLink to="/omnigrid" hash="flow-simulation" arrow>
                   Explore 24-hour energy flow modeling
                 </TextLink>
               </div>
             </div>
 
-            <div className="lg:col-span-6 flex flex-col items-center">
-              <div className="w-full max-w-[356px] rounded-[32px] p-4 bg-[#171A20] text-[#FFFFFF] shadow-xl border-4 border-[#393C41]">
-                <div className="rounded-[22px] bg-[#171A20] p-5 space-y-5">
-                  <div className="flex justify-between items-center gap-2 text-[12px] text-[#FFFFFF]/80">
-                    <span className="font-medium text-[#FFFFFF] whitespace-nowrap">
+            <div className="lg:col-span-7">
+              <div className="w-full rounded-[6px] bg-[#F4F4F4] border border-[#E3E4E6] p-6 sm:p-10 lg:p-12 flex flex-col items-center">
+                <div className="w-full max-w-[400px] rounded-[10px] bg-[#171A20] text-[#FFFFFF] p-5 sm:p-6 shadow-[0_18px_40px_rgba(23,26,32,0.14)] border border-white/10 space-y-5">
+                  <div className="flex justify-between items-center gap-2 pb-4 border-b border-white/10 text-[12px] text-[#FFFFFF]/80">
+                    <span className="font-medium tracking-[0.02em] text-[#FFFFFF] whitespace-nowrap">
                       OEM Inverter App
                     </span>
                     <span className="px-2.5 py-0.5 rounded-[4px] bg-[#FFFFFF]/10 text-[#FFFFFF] text-[12px] whitespace-nowrap">
@@ -475,11 +539,11 @@ function IndexPage() {
                     </span>
                   </div>
 
-                  <div className="space-y-3.5">
-                    <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-3">
+                  <div className="space-y-3">
+                    <div className="p-4 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-3">
                       <div>
                         <div className="text-[12px] text-[#FFFFFF]/70">Solar Production</div>
-                        <div className="text-[19px] font-medium text-[#FFFFFF] tabular-nums">
+                        <div className="text-[22px] font-medium text-[#FFFFFF] tabular-nums mt-0.5">
                           5.8 kW
                         </div>
                       </div>
@@ -489,16 +553,16 @@ function IndexPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 text-[12px]">
-                      <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06]">
+                      <div className="p-4 rounded-[6px] bg-[#FFFFFF]/[0.06]">
                         <div className="text-[#FFFFFF]/70">Home Load</div>
-                        <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums mt-0.5 whitespace-nowrap">
+                        <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums mt-0.5 whitespace-nowrap">
                           1.6 kW
                         </div>
                       </div>
-                      <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06]">
+                      <div className="p-4 rounded-[6px] bg-[#FFFFFF]/[0.06]">
                         <div className="text-[#FFFFFF]/70">Battery Reserve</div>
                         <div className="flex items-baseline gap-1.5 mt-0.5 whitespace-nowrap">
-                          <span className="text-[16px] font-medium text-[#FFFFFF] tabular-nums">
+                          <span className="text-[18px] font-medium text-[#FFFFFF] tabular-nums">
                             98%
                           </span>
                           <span className="text-[12px] text-[#FFFFFF]/70 tabular-nums">
@@ -508,10 +572,10 @@ function IndexPage() {
                       </div>
                     </div>
 
-                    <div className="p-3.5 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-2">
+                    <div className="p-4 rounded-[6px] bg-[#FFFFFF]/[0.06] flex justify-between items-center gap-2">
                       <div>
                         <div className="text-[12px] text-[#FFFFFF]/70">Grid Net Export</div>
-                        <div className="text-[16px] font-medium text-[#FFFFFF] tabular-nums whitespace-nowrap">
+                        <div className="text-[18px] font-medium text-[#FFFFFF] tabular-nums mt-0.5 whitespace-nowrap">
                           2.0 kW export
                         </div>
                       </div>
@@ -521,12 +585,12 @@ function IndexPage() {
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <p className="text-[12px] text-[#5C5E62] text-center max-w-[38ch] mt-4">
-                Illustrative monitoring example. Screens and metrics depend on your installed OEM
-                inverter hardware and cloud provider.
-              </p>
+                <p className="text-[12px] text-[#5C5E62] text-center max-w-[44ch] mt-5">
+                  Illustrative monitoring example. Screens and metrics depend on your installed OEM
+                  inverter hardware and cloud provider.
+                </p>
+              </div>
             </div>
           </div>
         </QuietSection>
@@ -535,18 +599,21 @@ function IndexPage() {
         <QuietSection
           id="savings"
           bg="surface"
+          eyebrow="04 · Tariff & Subsidy Modeling"
           className="scroll-mt-14"
-          containerClassName="max-w-4xl"
           title="Estimate Your Solar System & Savings"
           lead="Select your electricity board and monthly power bill to preview indicative system size, annual savings, and central subsidy eligibility."
         >
-          <div className="max-w-3xl mx-auto bg-[#FFFFFF] p-6 sm:p-10 rounded-[8px] border border-[#E3E4E6] space-y-8">
-            {/* Top Controls: DISCOM Selector + Bill Slider */}
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <label htmlFor="discom-select" className="text-[13px] font-medium text-[#5C5E62]">
-                    Electricity Board (DISCOM)
+          <div className="max-w-[1080px] mx-auto bg-[#FFFFFF] p-6 sm:p-10 lg:p-12 rounded-[6px] border border-[#E3E4E6] space-y-8 sm:space-y-10">
+            {/* Step 1 & 2: DISCOM Selector + Monthly Bill Slider in a Clean 12-Col Split */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              <div className="lg:col-span-6 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label
+                    htmlFor="discom-select"
+                    className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]"
+                  >
+                    1. Electricity Board (DISCOM)
                   </label>
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] border border-[#E3E4E6] bg-[#F4F4F4] text-[#171A20] text-[12px] font-medium">
                     <span
@@ -566,7 +633,7 @@ function IndexPage() {
                   id="discom-select"
                   value={selectedDiscom}
                   onChange={(e) => setSelectedDiscom(e.target.value)}
-                  className="h-11 px-3.5 bg-[#F4F4F4] border border-[#E3E4E6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
+                  className="w-full min-h-[44px] px-3.5 py-2.5 bg-[#FFFFFF] border border-[#D0D2D6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
                 >
                   {DISCOMS.map((d) => (
                     <option key={d.code} value={d.code}>
@@ -576,12 +643,12 @@ function IndexPage() {
                 </select>
               </div>
 
-              <div className="space-y-3 pt-2">
+              <div className="lg:col-span-6 space-y-3">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-[13px] font-medium text-[#5C5E62]">
-                    Monthly Electricity Bill
+                  <span className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
+                    2. Monthly Electricity Bill
                   </span>
-                  <span className="text-[22px] font-medium tabular-nums text-[#171A20]">
+                  <span className="text-[26px] sm:text-[30px] font-medium tracking-[-0.02em] leading-none tabular-nums text-[#171A20]">
                     ₹{formatInr(monthlyBill)}
                   </span>
                 </div>
@@ -596,84 +663,98 @@ function IndexPage() {
                   aria-label="Monthly electricity bill"
                   aria-valuetext={`₹${formatInr(monthlyBill)} per month`}
                 />
-                <div className="flex justify-between text-[12px] text-[#5C5E62]">
+                <div className="flex justify-between text-[12px] text-[#5C5E62] tabular-nums">
                   <span>₹2,000 / mo</span>
                   <span>₹35,000+ / mo</span>
                 </div>
               </div>
             </div>
 
-            {/* Middle: 3 Primary Metric Outputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#E3E4E6] text-center">
-              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
-                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+            {/* Step 3, 4, 5: Three Primary Metric Outputs with Architectural Hairlines (No Nested Gray Cards) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-0 py-7 sm:py-8 border-y border-[#E3E4E6] sm:divide-x sm:divide-[#E3E4E6]">
+              <div className="sm:pr-8">
+                <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
+                  Recommended System
+                </div>
+                <div className="text-[30px] sm:text-[36px] lg:text-[40px] font-medium tracking-[-0.025em] leading-[1.1] tabular-nums text-[#171A20] mt-2">
                   {solarEstimate.recommendedKw} kW
                 </div>
-                <div className="text-[12px] text-[#5C5E62] mt-1">
+                <div className="text-[13px] text-[#5C5E62] mt-1">
                   Recommended ({solarEstimate.recommendedPanels} Panels)
                 </div>
               </div>
-              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
-                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+
+              <div className="pt-5 border-t border-[#E3E4E6] sm:pt-0 sm:border-t-0 sm:px-8">
+                <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
+                  Est. Annual Savings
+                </div>
+                <div className="text-[30px] sm:text-[36px] lg:text-[40px] font-medium tracking-[-0.025em] leading-[1.1] tabular-nums text-[#171A20] mt-2">
                   ₹{formatInr(solarEstimate.annualSavingsInr)}
                 </div>
-                <div className="text-[12px] text-[#5C5E62] mt-1">Est. Annual Savings</div>
+                <div className="text-[13px] text-[#5C5E62] mt-1">
+                  Based on {solarEstimate.assumptions.discom.code} tariff schedule
+                </div>
               </div>
-              <div className="p-4 rounded-[6px] bg-[#F4F4F4]">
-                <div className="text-[26px] sm:text-[30px] font-medium tracking-tight tabular-nums text-[#171A20]">
+
+              <div className="pt-5 border-t border-[#E3E4E6] sm:pt-0 sm:border-t-0 sm:pl-8">
+                <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
+                  Conditional Central Subsidy
+                </div>
+                <div className="text-[30px] sm:text-[36px] lg:text-[40px] font-medium tracking-[-0.025em] leading-[1.1] tabular-nums text-[#171A20] mt-2">
                   ₹{formatInr(solarEstimate.subsidyInr)}
                 </div>
-                <div className="text-[12px] text-[#5C5E62] mt-1">
+                <div className="text-[13px] text-[#5C5E62] mt-1">
                   Potential DBT Subsidy (Conditional)*
                 </div>
               </div>
             </div>
 
-            {/* Compact System Generation & Capex Summary */}
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 rounded-[6px] bg-[#F4F4F4]/70 text-[12px] text-[#5C5E62]">
-              <span>
-                Indicative Generation:{" "}
-                <strong className="font-medium text-[#171A20]">
-                  {formatInr(solarEstimate.annualGenKwh)} kWh/yr
-                </strong>{" "}
-                ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr)
-              </span>
-              <span>
-                Gross Turnkey:{" "}
-                <strong className="font-medium text-[#171A20]">
-                  ₹{formatInr(solarEstimate.grossInr)}
-                </strong>{" "}
-                · Post-DBT*:{" "}
-                <strong className="font-medium text-[#171A20]">
-                  ₹{formatInr(solarEstimate.netInr)}
-                </strong>
-              </span>
+            {/* Step 6: Generation Summary + Studio / Consultation Actions */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-1 text-[13px] text-[#5C5E62] tabular-nums">
+                <div>
+                  Indicative Generation:{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    {formatInr(solarEstimate.annualGenKwh)} kWh/yr
+                  </strong>{" "}
+                  ({solarEstimate.assumptions.yieldKwhPerKwYear} kWh/kWp/yr)
+                </div>
+                <div>
+                  Gross Turnkey:{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    ₹{formatInr(solarEstimate.grossInr)}
+                  </strong>{" "}
+                  · Post-DBT*:{" "}
+                  <strong className="font-medium text-[#171A20]">
+                    ₹{formatInr(solarEstimate.netInr)}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                <Button
+                  to="/deploy"
+                  search={{ bill: monthlyBill, discom: selectedDiscom }}
+                  variant="primary"
+                  tone="light"
+                  className="w-full sm:w-auto min-w-[200px]"
+                >
+                  Open in Design Studio
+                </Button>
+                <Button
+                  onClick={() => openConsultationDrawer()}
+                  variant="secondary"
+                  tone="light"
+                  className="w-full sm:w-auto min-w-[200px]"
+                >
+                  Talk to a Solar Advisor
+                </Button>
+              </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-1">
-              <Button
-                to="/deploy"
-                search={{ bill: monthlyBill, discom: selectedDiscom }}
-                variant="primary"
-                tone="light"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Open in Design Studio
-              </Button>
-              <Button
-                onClick={() => openConsultationDrawer()}
-                variant="secondary"
-                tone="light"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Talk to a Solar Advisor
-              </Button>
-            </div>
-
-            {/* Unified Bottom Regulatory Disclosure */}
-            <div className="pt-5 border-t border-[#E3E4E6] space-y-2 text-center">
-              <p className="text-[12px] text-[#5C5E62] leading-relaxed">
+            {/* Step 7: Unified Bottom Regulatory Disclosure */}
+            <div className="pt-6 border-t border-[#E3E4E6] flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+              <p className="text-[12px] text-[#5C5E62] leading-[1.55] max-w-3xl text-pretty">
                 *
                 {solarEstimate.status === "VERIFIED"
                   ? `Modeled on verified ${solarEstimate.assumptions.discom.authority} (${solarEstimate.assumptions.discom.state}) telescopic tariff slabs and conditional MNRE PM Surya Ghar central subsidy guidelines.`
@@ -683,16 +764,14 @@ function IndexPage() {
                 to your DISCOM. Actual system pricing, roof capacity, and export settlements depend
                 on a site survey and formal quotation.
               </p>
-              <div>
-                <Link
-                  to="/legal/disclosures"
-                  hash="sources"
-                  className="text-[12px] font-medium text-[#171A20] underline underline-offset-4 hover:text-[#5C5E62] transition-colors"
-                >
-                  Inspect tariff sources &amp; calculation methodology (
-                  {solarEstimate.assumptions.discom.authority} &amp; MNRE)
-                </Link>
-              </div>
+              <Link
+                to="/legal/disclosures"
+                hash="sources"
+                className="text-[12px] font-medium text-[#171A20] underline underline-offset-4 hover:text-[#5C5E62] transition-colors shrink-0"
+              >
+                Inspect tariff sources &amp; calculation methodology (
+                {solarEstimate.assumptions.discom.authority} &amp; MNRE)
+              </Link>
             </div>
           </div>
         </QuietSection>
@@ -701,27 +780,29 @@ function IndexPage() {
         <QuietSection
           id="process"
           bg="white"
+          eyebrow="05 · Turnkey Execution"
           className="scroll-mt-14"
-          containerClassName="max-w-6xl"
           title="From Consultation to Power-On"
           lead="A coordinated six-stage workflow from initial tariff review and roof survey to DISCOM bi-directional meter commissioning."
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 lg:gap-x-12 gap-y-10 lg:gap-y-12">
             {STEPS.map((step) => (
-              <div key={step.num} className="pt-5 border-t border-[#E3E4E6] space-y-2.5">
+              <div key={step.num} className="pt-6 border-t border-[#E3E4E6] space-y-3">
                 <span className="text-[12px] font-semibold tracking-[0.08em] uppercase tabular-nums text-[#5C5E62] block">
                   STEP {step.num}
                 </span>
-                <h3 className="text-[19px] font-medium tracking-[-0.01em] text-[#171A20]">
+                <h3 className="text-[20px] font-medium tracking-[-0.015em] text-[#171A20]">
                   {step.title}
                 </h3>
-                <p className="text-[14px] text-[#5C5E62] leading-[1.6]">{step.desc}</p>
+                <p className="text-[14px] sm:text-[15px] text-[#393C41] leading-[1.6] text-pretty">
+                  {step.desc}
+                </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[#E3E4E6] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <p className="text-[12px] text-[#5C5E62] max-w-2xl">
+          <div className="mt-14 pt-8 border-t border-[#E3E4E6] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <p className="text-[13px] text-[#5C5E62] max-w-2xl">
               Commissioning timelines depend on terrace structural readiness, local DISCOM feeder
               capacity, and utility inspection schedules.
             </p>
@@ -735,20 +816,27 @@ function IndexPage() {
         <QuietSection
           id="faq"
           bg="surface"
+          eyebrow="06 · Governance & Clarity"
           className="scroll-mt-14"
-          containerClassName="max-w-6xl"
           title="Governance, Warranties & Common Questions"
           lead="Every specification, tariff basis, and warranty boundary is documented openly before you commit."
         >
           {/* Part A: Three Editorial Governance Foundations */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-14 mb-14 border-b border-[#E3E4E6]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 pb-14 mb-14 border-b border-[#E3E4E6]">
             {TRUST_CARDS.map((card) => (
-              <div key={card.title} className="flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <h3 className="text-[17px] font-medium text-[#171A20]">{card.title}</h3>
-                  <p className="text-[14px] text-[#5C5E62] leading-[1.6]">{card.description}</p>
+              <div
+                key={card.title}
+                className="flex flex-col justify-between space-y-4 pt-6 border-t border-[#D8DADC]"
+              >
+                <div className="space-y-2.5">
+                  <h3 className="text-[18px] font-medium tracking-[-0.015em] text-[#171A20]">
+                    {card.title}
+                  </h3>
+                  <p className="text-[14px] sm:text-[15px] text-[#393C41] leading-[1.6] text-pretty">
+                    {card.description}
+                  </p>
                 </div>
-                <div>
+                <div className="pt-1">
                   <TextLink to={card.to} arrow>
                     {card.linkLabel}
                   </TextLink>
@@ -757,19 +845,35 @@ function IndexPage() {
             ))}
           </div>
 
-          {/* Part B: Accessible 6-Item Accordion Synchronized with FAQPage JSON-LD */}
-          <div className="max-w-3xl mx-auto space-y-8">
-            <div className="bg-[#FFFFFF] rounded-[8px] border border-[#E3E4E6] px-6 sm:px-8">
-              <Faq items={FAQ_ITEMS} defaultValue="subsidy" className="border-t-0 border-b-0" />
+          {/* Part B: 12-Column Editorial FAQ Split (Borderless Accordion Synchronized with FAQPage JSON-LD) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            <div className="lg:col-span-4 space-y-4">
+              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#5C5E62]">
+                Knowledge Base
+              </div>
+              <h3 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.18] text-[#171A20]">
+                Direct Answers on Subsidies, Backup &amp; Roof Care
+              </h3>
+              <p className="text-[14px] text-[#5C5E62] leading-[1.6] text-pretty">
+                Need engineering specifics for your property? Explore the full 26-topic reference
+                library or speak directly with a WAVENOX solar advisor.
+              </p>
+              <div className="pt-2 flex flex-col items-start gap-3">
+                <TextLink to="/faq" arrow>
+                  Browse complete Knowledge Base (26 Topics)
+                </TextLink>
+                <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
+                  Speak with a WAVENOX advisor ({BRAND_CONFIG.contact.phone.display})
+                </TextLink>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-              <TextLink to="/faq" arrow>
-                Browse complete Knowledge Base (26 Topics)
-              </TextLink>
-              <TextLink href={`tel:${BRAND_CONFIG.contact.phone.dial}`} arrow>
-                Speak with a WAVENOX advisor ({BRAND_CONFIG.contact.phone.display})
-              </TextLink>
+            <div className="lg:col-span-8">
+              <Faq
+                items={FAQ_ITEMS}
+                defaultValue="subsidy"
+                className="border-[#D8DADC] divide-[#D8DADC]"
+              />
             </div>
           </div>
         </QuietSection>
@@ -797,7 +901,7 @@ function IndexPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] text-[12px] min-[375px]:text-[13px] sm:text-[14px]"
               >
                 Get Solar Estimate
               </Button>
@@ -805,7 +909,7 @@ function IndexPage() {
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px] text-[12px] min-[375px]:text-[13px] sm:text-[14px]"
               >
                 Request Consultation
               </Button>

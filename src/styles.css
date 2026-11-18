@@ -70,14 +70,21 @@
   --border: var(--line);
   --radius-btn: 4px;
 
-  /* Typography: Fluid clamp type scale (>= 12px floor) */
-  --text-display: clamp(2.125rem, 3.5vw + 1rem, 3rem);
-  --text-headline: clamp(1.625rem, 2.4vw + 0.9rem, 2.5rem);
-  --text-title: clamp(1.25rem, 1vw + 0.95rem, 1.5rem);
-  --text-lead: clamp(0.9375rem, 0.45vw + 0.82rem, 1.0625rem);
-  --text-body: clamp(0.875rem, 0.25vw + 0.8rem, 0.9375rem);
-  --text-stat-value: clamp(1.1875rem, 2vw + 0.75rem, 2rem);
-  --text-label: clamp(0.75rem, 0.2vw + 0.7rem, 0.8125rem);
+  /* Typography: Fluid clamp type scale (>= 0.75rem / 12px floor, max <= 2.5x min) */
+  --text-display: clamp(2.125rem, 2.8vw + 1.25rem, 3.375rem);
+  --text-headline: clamp(1.75rem, 2.2vw + 1rem, 2.75rem);
+  --text-title: clamp(1.25rem, 0.9vw + 0.95rem, 1.625rem);
+  --text-lead: clamp(0.9375rem, 0.35vw + 0.85rem, 1.125rem);
+  --text-body: clamp(0.875rem, 0.2vw + 0.82rem, 1rem);
+  --text-stat-value: clamp(1.375rem, 1.8vw + 0.9rem, 2.25rem);
+  --text-label: clamp(0.75rem, 0.15vw + 0.72rem, 0.8125rem);
+
+  /* Responsive Spatial Composition Tokens */
+  --gutter-mobile: 1.25rem;
+  --gutter-desktop: 3rem;
+  --section-space-mobile: 4.5rem;
+  --section-space-desktop: 7.5rem;
+  --container-editorial: 77.5rem;
 }
 
 @layer base {
@@ -131,6 +138,10 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
   }
 }
 
@@ -197,21 +208,19 @@
   text-transform: uppercase;
 }
 
-/* Harmonized legacy button classes (44px accessible target height) */
+/* Harmonized legacy button classes (44px accessible minimum target height without rigid height clipping) */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  height: 44px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding: 0.625rem 1.5rem;
   border-radius: var(--radius-btn);
   background-color: var(--ink);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   white-space: nowrap;
   transition: background-color 150ms ease;
@@ -229,16 +238,14 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  height: 44px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding: 0.625rem 1.5rem;
   border-radius: var(--radius-btn);
   background-color: var(--surface);
   color: var(--ink);
   border: 1px solid var(--line);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   white-space: nowrap;
   transition:
@@ -258,18 +265,16 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  height: 44px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding: 0.625rem 1.5rem;
   border-radius: var(--radius-btn);
   background-color: rgba(23, 26, 32, 0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   white-space: nowrap;
   transition:
