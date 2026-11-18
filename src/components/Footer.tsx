@@ -74,27 +74,15 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#FFFFFF] text-[#171A20] border-t border-[#E3E4E6]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 pt-14 pb-12">
-        {/* QUIET IDENTITY & NEXT-STEP ACTION STRIP */}
-        <div className="pb-10 mb-10 border-b border-[#E3E4E6] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="max-w-xl space-y-1.5">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-8 lg:px-12 pt-16 pb-12">
+        {/* QUIET ARCHITECTURAL IDENTITY STRIP */}
+        <div className="pb-10 mb-10 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="max-w-xl space-y-2">
             <BrandLogo size="sm" asLink={false} className="text-[#171A20]" />
             <p className="text-[14px] text-[#5C5E62] leading-relaxed">{BRAND_CONFIG.tagline}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Link
-              to="/deploy"
-              className="h-11 px-5 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium hover:bg-[#2C3038] transition-colors inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
-            >
-              Design Your System
-            </Link>
-            <button
-              type="button"
-              onClick={() => openConsultationDrawer()}
-              className="h-11 px-5 rounded-[4px] border border-[#171A20]/25 bg-[#FFFFFF] text-[#171A20] text-[13px] font-medium hover:bg-[#F4F4F4] transition-colors inline-flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171A20]"
-            >
-              Talk to a Solar Advisor
-            </button>
+          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#5C5E62]">
+            Residential · Battery Storage · Commercial Solar
           </div>
         </div>
 

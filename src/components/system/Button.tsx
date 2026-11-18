@@ -23,7 +23,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   ref,
 ) {
   const baseClasses =
-    "inline-flex items-center justify-center min-h-[44px] h-11 px-5 sm:px-7 rounded-[4px] text-[13px] sm:text-[14px] font-medium leading-none tracking-[0.02em] whitespace-nowrap select-none transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 active:scale-[0.99]";
+    "inline-flex items-center justify-center min-h-[44px] py-2.5 px-5 sm:px-7 rounded-[4px] text-[13px] sm:text-[14px] font-medium leading-[1.2] tracking-[0.015em] whitespace-nowrap select-none transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 active:scale-[0.99]";
 
   let variantClasses = "";
   if (tone === "dark") {
