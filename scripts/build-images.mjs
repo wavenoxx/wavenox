@@ -21,12 +21,14 @@ const shots = [
   {
     slug: "home-design",
     source: path.resolve(rootDir, "src/assets/home-design-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-design-mobile-master.jpg"),
     alt: "Contemporary Indian residence terrace in warm late-afternoon daylight with a low-profile all-black solar array on a sandstone plinth beside a frameless glass balustrade",
     isHero: false,
   },
   {
     slug: "home-outage",
     source: path.resolve(rootDir, "src/assets/home-outage-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-outage-mobile-master.jpg"),
     alt: "Contemporary two-storey Indian residence warmly lit at blue-hour twilight with a low-profile rooftop solar array",
     isHero: false,
   },
@@ -39,18 +41,22 @@ const shots = [
   {
     slug: "home-final",
     source: path.resolve(rootDir, "src/assets/home-final-master.jpg"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-final-mobile-master.jpg"),
+    mobileCropPosition: "top",
     alt: "Contemporary Indian courtyard residence at warm twilight with a low-profile rooftop solar array, glowing interior windows, and reflection pool",
     isHero: false,
   },
   {
     slug: "res-hero",
     source: path.resolve(rootDir, "src/assets/luxury_solar_villa.jpg"),
+    mobileCropLeftRatio: 0.56,
     alt: "Front of a contemporary sandstone and teakwood villa at dusk with a low-profile black solar array along its flat roofline",
     isHero: true,
   },
   {
     slug: "res-terrace",
     source: path.resolve(rootDir, "src/assets/res-terrace-master.jpg"),
+    mobileCropLeftRatio: 0.5,
     alt: "Elevated matte-charcoal structural steel solar pergola canopy casting clean geometric shadow bands across a walkable Indian stone terrace lounge",
     isHero: false,
   },
@@ -64,12 +70,14 @@ const shots = [
   {
     slug: "omnigrid-hero",
     source: path.resolve(rootDir, "src/assets/og-core.jpg"),
+    mobileCropLeftRatio: 0.52,
     alt: "Three stacked matte-graphite battery modules on a concrete plinth with a wall-mounted hybrid inverter above in a minimal utility room",
     isHero: true,
   },
   {
     slug: "omnigrid-switchover",
     source: path.resolve(rootDir, "src/assets/omnigrid-switchover-master.jpg"),
+    mobileCropLeftRatio: 0.5,
     alt: "Wall-mounted matte-charcoal hybrid solar transfer inverter above a floor-standing modular lithium-iron-phosphate battery cabinet in a clean microcement utility room",
     isHero: false,
   },
@@ -77,24 +85,28 @@ const shots = [
     slug: "omnigrid-night",
     source: path.resolve(rootDir, "src/assets/omnigrid-night-master.jpg"),
     mobileSource: path.resolve(rootDir, "src/assets/omnigrid-night-mobile-master.jpg"),
+    mobileCropPosition: "top",
     alt: "Two-storey contemporary Indian residence at warm twilight with an integrated solar roof, glowing interior living spaces, and poolside terrace powered by battery reserve",
     isHero: false,
   },
   {
     slug: "commercial-hero",
     source: path.resolve(rootDir, "src/assets/enterprise_mw_rooftop.jpg"),
+    mobileCropLeftRatio: 0.5,
     alt: "Deccan industrial manufacturing plant rooftop covered with neat rows of solar panels at sunrise",
     isHero: true,
   },
   {
     slug: "commercial-industrial",
     source: path.resolve(rootDir, "src/assets/commercial-industrial-master.jpg"),
+    mobileCropLeftRatio: 0.5,
     alt: "Aerial view of a modern Indian industrial manufacturing warehouse with a megawatt-scale rooftop solar array and central inspection walkway",
     isHero: false,
   },
   {
     slug: "commercial-campus",
     source: path.resolve(rootDir, "src/assets/commercial-campus-master.jpg"),
+    mobileCropLeftRatio: 0.52,
     alt: "Elevated view of a contemporary Indian commercial and industrial campus with landscaped tree-lined avenues and organized rooftop solar arrays",
     isHero: false,
   },
@@ -220,9 +232,9 @@ async function main() {
       }
     }
 
-    // Generate mobile portrait
-    const maxMobileWidth = 540;
-    const maxMobileHeight = 960;
+    // Generate mobile 4:5 portrait (exact 0.80 ratio matching WAVENOX responsive aspect rule)
+    const maxMobileWidth = 800;
+    const maxMobileHeight = 1000;
 
     let mobileImgBuffer = null;
     if (shot.mobileSource) {
@@ -235,11 +247,16 @@ async function main() {
     }
 
     if (!mobileImgBuffer) {
-      // High-precision 9:16 extraction from master canvas
+      // Focal-calibrated 4:5 (0.80) extraction from master canvas
       const targetH = origHeight;
-      const targetW = Math.round(targetH * (9 / 16));
+      const targetW = Math.round(targetH * (4 / 5));
       const extractW = Math.min(targetW, origWidth);
-      const left = Math.max(0, Math.round((origWidth - extractW) / 2));
+      const centerRatio = shot.mobileCropLeftRatio ?? 0.5;
+      const maxLeft = Math.max(0, origWidth - extractW);
+      const left = Math.min(
+        maxLeft,
+        Math.max(0, Math.round(origWidth * centerRatio - extractW / 2)),
+      );
       mobileImgBuffer = await sharp(imgBuffer)
         .extract({ left, top: 0, width: extractW, height: targetH })
         .toBuffer();
@@ -253,12 +270,13 @@ async function main() {
       : Math.min(maxMobileWidth, mobileOrigW);
     const mobileHeight = shot.preserveNativeWebpHero
       ? mobileOrigH
-      : Math.min(maxMobileHeight, mobileOrigH);
+      : Math.round((mobileWidth * 5) / 4);
 
     const mobileWebpFile = `${filePrefix}-mobile.webp`;
     const mobileJpgFile = `${filePrefix}-mobile.jpg`;
     let mobileAvifFile = null;
     let mobileWebpSrcSet = `/media/${mobileWebpFile}`;
+    let mobileAvifSrcSet = undefined;
 
     if (shot.preserveNativeWebpHero) {
       const mobileBreakpoints = [480, 640, mobileOrigW].filter(
@@ -312,35 +330,79 @@ async function main() {
         .jpeg({ quality: 92, mozjpeg: true })
         .toFile(path.join(outDir, mobileJpgFile));
     } else {
+      const cropPos = shot.mobileCropPosition || "centre";
       mobileAvifFile = `${filePrefix}-mobile.avif`;
+      const mobileWidths = [...new Set([480, 640, mobileWidth])]
+        .filter((w) => w <= mobileWidth)
+        .sort((a, b) => a - b);
+
+      const avifEntries = [];
+      const webpEntries = [];
+
+      for (const mw of mobileWidths) {
+        const mh = Math.round((mw * 5) / 4);
+        const mwAvif = `${filePrefix}-mobile-${mw}w.avif`;
+        const mwWebp = `${filePrefix}-mobile-${mw}w.webp`;
+
+        await sharp(mobileImgBuffer)
+          .resize(mw, mh, {
+            fit: "cover",
+            position: cropPos,
+            withoutEnlargement: true,
+            kernel: sharp.kernel.lanczos3,
+          })
+          .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+          .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
+          .toFile(path.join(outDir, mwAvif));
+        avifEntries.push(`/media/${mwAvif} ${mw}w`);
+
+        await sharp(mobileImgBuffer)
+          .resize(mw, mh, {
+            fit: "cover",
+            position: cropPos,
+            withoutEnlargement: true,
+            kernel: sharp.kernel.lanczos3,
+          })
+          .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+          .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
+          .toFile(path.join(outDir, mwWebp));
+        webpEntries.push(`/media/${mwWebp} ${mw}w`);
+      }
+
+      mobileAvifSrcSet = avifEntries.join(", ");
+      mobileWebpSrcSet = webpEntries.join(", ");
+
+      // Also write canonical -mobile.avif / -mobile.webp / -mobile.jpg fallbacks
       await sharp(mobileImgBuffer)
         .resize(mobileWidth, mobileHeight, {
           fit: "cover",
-          position: "center",
+          position: cropPos,
           withoutEnlargement: true,
           kernel: sharp.kernel.lanczos3,
         })
-        .avif({ quality: shot.isHero ? 56 : 54, effort: 6 })
+        .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+        .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
         .toFile(path.join(outDir, mobileAvifFile));
 
       await sharp(mobileImgBuffer)
         .resize(mobileWidth, mobileHeight, {
           fit: "cover",
-          position: "center",
+          position: cropPos,
           withoutEnlargement: true,
           kernel: sharp.kernel.lanczos3,
         })
-        .webp({ quality: shot.isHero ? 78 : 74, smartSubsample: true })
+        .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+        .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
         .toFile(path.join(outDir, mobileWebpFile));
 
       await sharp(mobileImgBuffer)
         .resize(mobileWidth, mobileHeight, {
           fit: "cover",
-          position: "center",
+          position: cropPos,
           withoutEnlargement: true,
           kernel: sharp.kernel.lanczos3,
         })
-        .jpeg({ quality: shot.isHero ? 80 : 76, mozjpeg: true })
+        .jpeg({ quality: shot.isHero ? 84 : 80, mozjpeg: true })
         .toFile(path.join(outDir, mobileJpgFile));
     }
 
@@ -362,7 +424,7 @@ async function main() {
       webp: desktopWebpList.join(", "),
       mobileSrc: `/media/${mobileJpgFile}`,
       mobileWebp: mobileWebpSrcSet,
-      mobileAvif: mobileAvifFile ? `/media/${mobileAvifFile}` : undefined,
+      mobileAvif: mobileAvifSrcSet || (mobileAvifFile ? `/media/${mobileAvifFile}` : undefined),
     });
   }
 

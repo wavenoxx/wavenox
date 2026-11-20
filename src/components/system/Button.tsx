@@ -32,7 +32,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
         "bg-[#FFFFFF] text-[#171A20] hover:bg-[#F4F4F4] active:bg-[#E3E4E6] shadow-[0_2px_10px_rgba(0,0,0,0.28)] focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
     } else {
       variantClasses =
-        "bg-[#171A20]/55 border border-[#FFFFFF]/35 text-[#FFFFFF] backdrop-blur-md hover:bg-[#171A20]/75 hover:border-[#FFFFFF]/60 active:bg-[#171A20]/85 focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
+        "bg-[#171A20]/75 border border-[#FFFFFF]/30 text-[#FFFFFF] backdrop-blur-md hover:bg-[#171A20]/90 hover:border-[#FFFFFF]/55 active:bg-[#171A20] shadow-[0_2px_10px_rgba(0,0,0,0.24)] focus-visible:ring-[#FFFFFF] focus-visible:ring-offset-[#171A20]";
     }
   } else {
     // tone === "light"
@@ -41,7 +41,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
         "bg-[#171A20] text-[#FFFFFF] hover:bg-[#2B2F36] active:bg-[#000000] shadow-[0_1px_4px_rgba(23,26,32,0.14)] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
     } else {
       variantClasses =
-        "bg-[#F4F4F4] border border-[#E3E4E6] text-[#171A20] hover:bg-[#EAEAEA] hover:border-[#171A20]/30 active:bg-[#DFDFDF] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
+        "bg-[#F4F4F4] border border-transparent text-[#171A20] hover:bg-[#E8E9EC] active:bg-[#DFDFDF] focus-visible:ring-[#171A20] focus-visible:ring-offset-[#FFFFFF]";
     }
   }
 

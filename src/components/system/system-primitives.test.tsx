@@ -5,6 +5,10 @@ import { StatRow } from "./StatRow";
 import { Button } from "./Button";
 import { Reveal } from "./Reveal";
 import { QuietSection } from "./QuietSection";
+import { EditorialFeature } from "./EditorialFeature";
+import { EditorialCarousel } from "./EditorialCarousel";
+import { SpecsGrid } from "./SpecsGrid";
+import { BatteryHonestyAdvisor } from "../BatteryHonestyAdvisor";
 
 describe("Phase 1 / Workstream 2 Design Foundation Primitives", () => {
   it("renders Panel with full and closing height variants while keeping SSR content visible", () => {
@@ -99,5 +103,62 @@ describe("Phase 1 / Workstream 2 Design Foundation Primitives", () => {
     expect(darkHtml).toContain('data-theme="dark"');
     expect(darkHtml).toContain("bg-[#171A20]");
     expect(darkHtml).toContain("Dark Quiet Frame");
+  });
+
+  it("enforces Desktop 16:9 -> Mobile 4:5 on EditorialFeature and consistent 4:3 on EditorialCarousel", () => {
+    const featureHtml = renderToStaticMarkup(
+      <EditorialFeature
+        id="test-feature"
+        media={{
+          src: "/media/home-design-1376w.jpg",
+          webp: "/media/home-design-1376w.webp 1376w",
+          mobileWebp: "/media/home-design-mobile-800w.webp 800w",
+        }}
+        title="Editorial Gallery"
+        lead="Clean left-aligned copy."
+      />,
+    );
+    expect(featureHtml).toContain("aspect-[4/5] md:aspect-[16/9]");
+    expect(featureHtml).toContain('media="(max-width: 768px)"');
+    expect(featureHtml).toContain('data-theme="light"');
+
+    const carouselHtml = renderToStaticMarkup(
+      <EditorialCarousel
+        label="Feature gallery"
+        slides={[
+          {
+            id: "s1",
+            media: {
+              src: "/media/res-hero-1376w.jpg",
+              webp: "/media/res-hero-1376w.webp 1376w",
+              mobileWebp: "/media/res-hero-mobile-614w.webp 614w",
+            },
+            title: "Slide One",
+            description: "First detail.",
+          },
+        ]}
+      />,
+    );
+    expect(carouselHtml).toContain("aspect-[4/3]");
+    expect(carouselHtml).not.toContain('media="(max-width: 768px)"');
+    expect(carouselHtml).toContain('aria-roledescription="carousel"');
+    expect(carouselHtml).toContain('aria-label="1 of 1"');
+  });
+
+  it("renders Obsidian #000000 SpecsGrid and formatted kWh units in BatteryHonestyAdvisor", () => {
+    const specsHtml = renderToStaticMarkup(
+      <SpecsGrid
+        id="specs-test"
+        title="System Specs"
+        categories={[{ title: "Modules", items: [{ label: "Power", value: "580W" }] }]}
+      />,
+    );
+    expect(specsHtml).toContain('data-theme="dark"');
+    expect(specsHtml).toContain("bg-[#000000]");
+    expect(specsHtml).toContain("580W");
+
+    const batteryHtml = renderToStaticMarkup(<BatteryHonestyAdvisor />);
+    expect(batteryHtml).toContain("42.9 kWh");
+    expect(batteryHtml).not.toContain("42.900000000000006");
   });
 });
