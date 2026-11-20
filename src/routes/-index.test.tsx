@@ -56,8 +56,8 @@ async function renderHomeHtml(): Promise<string> {
   return decodeHtmlEntities(renderToStaticMarkup(<HomePage />));
 }
 
-describe("Phase 1 / Workstream 4 Eight-Scene Homepage", () => {
-  it("preserves all 10 required legacy anchor IDs uniquely with 9 structural main sections (down from 10)", async () => {
+describe("Phase 1 / Workstream 4 Unified Editorial Homepage", () => {
+  it("preserves all 10 required legacy anchor IDs plus #specs uniquely across 10 structural main sections", async () => {
     const html = await renderHomeHtml();
 
     const requiredIds = [
@@ -69,6 +69,7 @@ describe("Phase 1 / Workstream 4 Eight-Scene Homepage", () => {
       "monitoring",
       "savings",
       "process",
+      "specs",
       "faq",
       "consultation",
     ];
@@ -79,7 +80,7 @@ describe("Phase 1 / Workstream 4 Eight-Scene Homepage", () => {
     }
 
     const sectionTags = html.match(/<section\b/g) || [];
-    expect(sectionTags.length).toBe(9);
+    expect(sectionTags.length).toBe(10);
   });
 
   it("renders truthful monitoring illustration without Realtime/animate-pulse claims and uses closing height on Scene 8", async () => {

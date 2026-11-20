@@ -21,8 +21,10 @@ export const media = {
     avif: "/media/home-design-640w.avif 640w, /media/home-design-1080w.avif 1080w, /media/home-design-1376w.avif 1376w",
     webp: "/media/home-design-640w.webp 640w, /media/home-design-1080w.webp 1080w, /media/home-design-1376w.webp 1376w",
     mobileSrc: "/media/home-design-mobile.jpg",
-    mobileWebp: "/media/home-design-mobile.webp",
-    mobileAvif: "/media/home-design-mobile.avif",
+    mobileWebp:
+      "/media/home-design-mobile-480w.webp 480w, /media/home-design-mobile-640w.webp 640w, /media/home-design-mobile-800w.webp 800w",
+    mobileAvif:
+      "/media/home-design-mobile-480w.avif 480w, /media/home-design-mobile-640w.avif 640w, /media/home-design-mobile-800w.avif 800w",
   } as MediaDescriptor,
   "home-outage": {
     src: "/media/home-outage-1376w.jpg",
@@ -32,8 +34,10 @@ export const media = {
     avif: "/media/home-outage-640w.avif 640w, /media/home-outage-1080w.avif 1080w, /media/home-outage-1376w.avif 1376w",
     webp: "/media/home-outage-640w.webp 640w, /media/home-outage-1080w.webp 1080w, /media/home-outage-1376w.webp 1376w",
     mobileSrc: "/media/home-outage-mobile.jpg",
-    mobileWebp: "/media/home-outage-mobile.webp",
-    mobileAvif: "/media/home-outage-mobile.avif",
+    mobileWebp:
+      "/media/home-outage-mobile-480w.webp 480w, /media/home-outage-mobile-640w.webp 640w, /media/home-outage-mobile-800w.webp 800w",
+    mobileAvif:
+      "/media/home-outage-mobile-480w.avif 480w, /media/home-outage-mobile-640w.avif 640w, /media/home-outage-mobile-800w.avif 800w",
   } as MediaDescriptor,
   "home-heat": {
     src: "/media/home-heat-1376w.jpg",
@@ -43,8 +47,8 @@ export const media = {
     avif: "/media/home-heat-640w.avif 640w, /media/home-heat-1080w.avif 1080w, /media/home-heat-1376w.avif 1376w",
     webp: "/media/home-heat-640w.webp 640w, /media/home-heat-1080w.webp 1080w, /media/home-heat-1376w.webp 1376w",
     mobileSrc: "/media/home-heat-mobile.jpg",
-    mobileWebp: "/media/home-heat-mobile.webp",
-    mobileAvif: "/media/home-heat-mobile.avif",
+    mobileWebp: "/media/home-heat-mobile-480w.webp 480w, /media/home-heat-mobile-614w.webp 614w",
+    mobileAvif: "/media/home-heat-mobile-480w.avif 480w, /media/home-heat-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "home-final": {
     src: "/media/home-final-1376w.jpg",
@@ -54,8 +58,10 @@ export const media = {
     avif: "/media/home-final-640w.avif 640w, /media/home-final-1080w.avif 1080w, /media/home-final-1376w.avif 1376w",
     webp: "/media/home-final-640w.webp 640w, /media/home-final-1080w.webp 1080w, /media/home-final-1376w.webp 1376w",
     mobileSrc: "/media/home-final-mobile.jpg",
-    mobileWebp: "/media/home-final-mobile.webp",
-    mobileAvif: "/media/home-final-mobile.avif",
+    mobileWebp:
+      "/media/home-final-mobile-480w.webp 480w, /media/home-final-mobile-640w.webp 640w, /media/home-final-mobile-800w.webp 800w",
+    mobileAvif:
+      "/media/home-final-mobile-480w.avif 480w, /media/home-final-mobile-640w.avif 640w, /media/home-final-mobile-800w.avif 800w",
   } as MediaDescriptor,
   "res-hero": {
     src: "/media/res-hero-1376w.jpg",
@@ -65,8 +71,8 @@ export const media = {
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1376w.avif 1376w",
     webp: "/media/res-hero-640w.webp 640w, /media/res-hero-1080w.webp 1080w, /media/res-hero-1376w.webp 1376w",
     mobileSrc: "/media/res-hero-mobile.jpg",
-    mobileWebp: "/media/res-hero-mobile.webp",
-    mobileAvif: "/media/res-hero-mobile.avif",
+    mobileWebp: "/media/res-hero-mobile-480w.webp 480w, /media/res-hero-mobile-614w.webp 614w",
+    mobileAvif: "/media/res-hero-mobile-480w.avif 480w, /media/res-hero-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "res-terrace": {
     src: "/media/res-terrace-1376w.jpg",
@@ -76,8 +82,10 @@ export const media = {
     avif: "/media/res-terrace-640w.avif 640w, /media/res-terrace-1080w.avif 1080w, /media/res-terrace-1376w.avif 1376w",
     webp: "/media/res-terrace-640w.webp 640w, /media/res-terrace-1080w.webp 1080w, /media/res-terrace-1376w.webp 1376w",
     mobileSrc: "/media/res-terrace-mobile.jpg",
-    mobileWebp: "/media/res-terrace-mobile.webp",
-    mobileAvif: "/media/res-terrace-mobile.avif",
+    mobileWebp:
+      "/media/res-terrace-mobile-480w.webp 480w, /media/res-terrace-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/res-terrace-mobile-480w.avif 480w, /media/res-terrace-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "res-weather": {
     src: "/media/res-weather-1376w.jpg",
@@ -87,8 +95,10 @@ export const media = {
     avif: "/media/res-weather-640w.avif 640w, /media/res-weather-1080w.avif 1080w, /media/res-weather-1376w.avif 1376w",
     webp: "/media/res-weather-640w.webp 640w, /media/res-weather-1080w.webp 1080w, /media/res-weather-1376w.webp 1376w",
     mobileSrc: "/media/res-weather-mobile.jpg",
-    mobileWebp: "/media/res-weather-mobile.webp",
-    mobileAvif: "/media/res-weather-mobile.avif",
+    mobileWebp:
+      "/media/res-weather-mobile-480w.webp 480w, /media/res-weather-mobile-640w.webp 640w, /media/res-weather-mobile-768w.webp 768w",
+    mobileAvif:
+      "/media/res-weather-mobile-480w.avif 480w, /media/res-weather-mobile-640w.avif 640w, /media/res-weather-mobile-768w.avif 768w",
   } as MediaDescriptor,
   "omnigrid-hero": {
     src: "/media/omnigrid-hero-1376w.jpg",
@@ -98,8 +108,10 @@ export const media = {
     avif: "/media/omnigrid-hero-640w.avif 640w, /media/omnigrid-hero-1080w.avif 1080w, /media/omnigrid-hero-1376w.avif 1376w",
     webp: "/media/omnigrid-hero-640w.webp 640w, /media/omnigrid-hero-1080w.webp 1080w, /media/omnigrid-hero-1376w.webp 1376w",
     mobileSrc: "/media/omnigrid-hero-mobile.jpg",
-    mobileWebp: "/media/omnigrid-hero-mobile.webp",
-    mobileAvif: "/media/omnigrid-hero-mobile.avif",
+    mobileWebp:
+      "/media/omnigrid-hero-mobile-480w.webp 480w, /media/omnigrid-hero-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/omnigrid-hero-mobile-480w.avif 480w, /media/omnigrid-hero-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "omnigrid-switchover": {
     src: "/media/omnigrid-switchover-1376w.jpg",
@@ -109,8 +121,10 @@ export const media = {
     avif: "/media/omnigrid-switchover-640w.avif 640w, /media/omnigrid-switchover-1080w.avif 1080w, /media/omnigrid-switchover-1376w.avif 1376w",
     webp: "/media/omnigrid-switchover-640w.webp 640w, /media/omnigrid-switchover-1080w.webp 1080w, /media/omnigrid-switchover-1376w.webp 1376w",
     mobileSrc: "/media/omnigrid-switchover-mobile.jpg",
-    mobileWebp: "/media/omnigrid-switchover-mobile.webp",
-    mobileAvif: "/media/omnigrid-switchover-mobile.avif",
+    mobileWebp:
+      "/media/omnigrid-switchover-mobile-480w.webp 480w, /media/omnigrid-switchover-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/omnigrid-switchover-mobile-480w.avif 480w, /media/omnigrid-switchover-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "omnigrid-night": {
     src: "/media/omnigrid-night-1376w.jpg",
@@ -120,8 +134,10 @@ export const media = {
     avif: "/media/omnigrid-night-640w.avif 640w, /media/omnigrid-night-1080w.avif 1080w, /media/omnigrid-night-1376w.avif 1376w",
     webp: "/media/omnigrid-night-640w.webp 640w, /media/omnigrid-night-1080w.webp 1080w, /media/omnigrid-night-1376w.webp 1376w",
     mobileSrc: "/media/omnigrid-night-mobile.jpg",
-    mobileWebp: "/media/omnigrid-night-mobile.webp",
-    mobileAvif: "/media/omnigrid-night-mobile.avif",
+    mobileWebp:
+      "/media/omnigrid-night-mobile-480w.webp 480w, /media/omnigrid-night-mobile-640w.webp 640w, /media/omnigrid-night-mobile-768w.webp 768w",
+    mobileAvif:
+      "/media/omnigrid-night-mobile-480w.avif 480w, /media/omnigrid-night-mobile-640w.avif 640w, /media/omnigrid-night-mobile-768w.avif 768w",
   } as MediaDescriptor,
   "commercial-hero": {
     src: "/media/commercial-hero-1376w.jpg",
@@ -131,8 +147,10 @@ export const media = {
     avif: "/media/commercial-hero-640w.avif 640w, /media/commercial-hero-1080w.avif 1080w, /media/commercial-hero-1376w.avif 1376w",
     webp: "/media/commercial-hero-640w.webp 640w, /media/commercial-hero-1080w.webp 1080w, /media/commercial-hero-1376w.webp 1376w",
     mobileSrc: "/media/commercial-hero-mobile.jpg",
-    mobileWebp: "/media/commercial-hero-mobile.webp",
-    mobileAvif: "/media/commercial-hero-mobile.avif",
+    mobileWebp:
+      "/media/commercial-hero-mobile-480w.webp 480w, /media/commercial-hero-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/commercial-hero-mobile-480w.avif 480w, /media/commercial-hero-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "commercial-industrial": {
     src: "/media/commercial-industrial-1376w.jpg",
@@ -142,8 +160,10 @@ export const media = {
     avif: "/media/commercial-industrial-640w.avif 640w, /media/commercial-industrial-1080w.avif 1080w, /media/commercial-industrial-1376w.avif 1376w",
     webp: "/media/commercial-industrial-640w.webp 640w, /media/commercial-industrial-1080w.webp 1080w, /media/commercial-industrial-1376w.webp 1376w",
     mobileSrc: "/media/commercial-industrial-mobile.jpg",
-    mobileWebp: "/media/commercial-industrial-mobile.webp",
-    mobileAvif: "/media/commercial-industrial-mobile.avif",
+    mobileWebp:
+      "/media/commercial-industrial-mobile-480w.webp 480w, /media/commercial-industrial-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/commercial-industrial-mobile-480w.avif 480w, /media/commercial-industrial-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "commercial-campus": {
     src: "/media/commercial-campus-1376w.jpg",
@@ -153,8 +173,10 @@ export const media = {
     avif: "/media/commercial-campus-640w.avif 640w, /media/commercial-campus-1080w.avif 1080w, /media/commercial-campus-1376w.avif 1376w",
     webp: "/media/commercial-campus-640w.webp 640w, /media/commercial-campus-1080w.webp 1080w, /media/commercial-campus-1376w.webp 1376w",
     mobileSrc: "/media/commercial-campus-mobile.jpg",
-    mobileWebp: "/media/commercial-campus-mobile.webp",
-    mobileAvif: "/media/commercial-campus-mobile.avif",
+    mobileWebp:
+      "/media/commercial-campus-mobile-480w.webp 480w, /media/commercial-campus-mobile-614w.webp 614w",
+    mobileAvif:
+      "/media/commercial-campus-mobile-480w.avif 480w, /media/commercial-campus-mobile-614w.avif 614w",
   } as MediaDescriptor,
   "studio-estate": {
     src: "/media/studio-estate-1376w.jpg",
@@ -164,8 +186,8 @@ export const media = {
     avif: "/media/studio-estate-640w.avif 640w, /media/studio-estate-1080w.avif 1080w, /media/studio-estate-1376w.avif 1376w",
     webp: "/media/studio-estate-640w.webp 640w, /media/studio-estate-1080w.webp 1080w, /media/studio-estate-1376w.webp 1376w",
     mobileSrc: "/media/studio-estate-mobile.jpg",
-    mobileWebp: "/media/studio-estate-mobile.webp",
-    mobileAvif: "/media/studio-estate-mobile.avif",
+    mobileWebp: "/media/studio-estate-mobile-432w.webp 432w",
+    mobileAvif: "/media/studio-estate-mobile-432w.avif 432w",
   } as MediaDescriptor,
   "homes-hero": {
     src: "/media/res-hero-1376w.jpg",
@@ -175,8 +197,8 @@ export const media = {
     avif: "/media/res-hero-640w.avif 640w, /media/res-hero-1080w.avif 1080w, /media/res-hero-1376w.avif 1376w",
     webp: "/media/res-hero-640w.webp 640w, /media/res-hero-1080w.webp 1080w, /media/res-hero-1376w.webp 1376w",
     mobileSrc: "/media/res-hero-mobile.jpg",
-    mobileWebp: "/media/res-hero-mobile.webp",
-    mobileAvif: "/media/res-hero-mobile.avif",
+    mobileWebp: "/media/res-hero-mobile-480w.webp 480w, /media/res-hero-mobile-614w.webp 614w",
+    mobileAvif: "/media/res-hero-mobile-480w.avif 480w, /media/res-hero-mobile-614w.avif 614w",
   } as MediaDescriptor,
 } as const;
 

@@ -2,7 +2,16 @@ import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Panel, QuietSection, StatRow, Button, TextLink, SpecsDrawer } from "@/components/system";
+import {
+  Panel,
+  EditorialFeature,
+  SpecsGrid,
+  StatRow,
+  Button,
+  TextLink,
+  SpecsDrawer,
+  type SpecCategory,
+} from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
@@ -36,7 +45,8 @@ export const Route = createFileRoute("/residential")({
         rel: "preload",
         as: "image",
         type: "image/avif",
-        href: media["res-hero"].mobileAvif,
+        imageSrcSet: media["res-hero"].mobileAvif,
+        imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
       },
@@ -67,26 +77,45 @@ export const Route = createFileRoute("/residential")({
   component: ResidentialPage,
 });
 
-const RESIDENTIAL_STEPS = [
+const RESIDENTIAL_SPECS: SpecCategory[] = [
   {
-    num: "01",
-    title: "Roof Feasibility",
-    desc: "3D shadow mapping and custom terrace layout.",
+    title: "Modules & Performance",
+    items: [
+      { label: "Cell Technology", value: "N-Type TOPCon Monocrystalline Bifacial" },
+      { label: "Nominal Panel Power", value: "580W DCR (Reference)" },
+      { label: "Module Efficiency", value: "22.45% – 22.8% (STC)" },
+      { label: "Temperature Coefficient", value: "-0.30% / °C (Pmax)" },
+    ],
   },
   {
-    num: "02",
-    title: "DISCOM Sanction",
-    desc: "Net-metering application and utility liaison handled for you.",
+    title: "Terrace & Structural",
+    items: [
+      { label: "Pergola Clear Height", value: "7 to 9 ft walkable headroom" },
+      { label: "Basic Wind Speed", value: "IS 875 (Part 3) 44 m/s (158 km/h)" },
+      {
+        label: "Roof Waterproofing",
+        value: "Non-penetrating ballasted or chemical-sealed anchors",
+      },
+      { label: "Structure Material", value: "Anodized 6063-T6 Aluminium & SS304" },
+    ],
   },
   {
-    num: "03",
-    title: "Coordinated Install",
-    desc: "Precision terrace installation fulfilled by authorized solar installation teams.",
+    title: "Subsidy & Utility",
+    items: [
+      { label: "PM Surya Ghar DBT", value: "Up to ₹78,000* (3 kW+ eligible homes)" },
+      { label: "Grid Connection", value: "Bi-directional DISCOM net-metering" },
+      { label: "Compliance", value: "MNRE ALMM Approved & BIS Certified" },
+      { label: "Monitoring", value: "OEM Inverter Mobile Portal (Wi-Fi / 4G)" },
+    ],
   },
   {
-    num: "04",
-    title: "Ongoing Support",
-    desc: "Inverter mobile app telemetry and 25-year OEM linear module warranty.",
+    title: "Warranties",
+    items: [
+      { label: "Linear Power Output", value: "25 Years OEM (≥ 89.4% at Year 25)" },
+      { label: "Module Product Warranty", value: "12 Years OEM Manufacturer Coverage" },
+      { label: "Inverter Warranty", value: "10 Years OEM Manufacturer Coverage" },
+      { label: "Ingress Protection", value: "IP68 weather-sealed connectors & J-box" },
+    ],
   },
 ];
 
@@ -98,185 +127,208 @@ function ResidentialPage() {
       <Header />
 
       <main>
-        {/* 1. PANEL: res-hero */}
+        {/* SEC 0: BOOKEND HERO (16:9 DESKTOP / 4:5 MOBILE) */}
         <Panel
           id="solar-for-homes"
           as="h1"
           media={media["res-hero"]}
           priority={true}
           tone="dark"
-          title="Solar for Homes"
-          lead="Clean, reliable power tailored for independent residences and villas."
-          stats={
-            <StatRow
-              stats={[
-                { value: "₹78,000", label: "Surya Ghar Subsidy" },
-                { value: "25 Years", label: "Linear Warranty" },
-                { value: "22.8%", label: "Module Efficiency" },
-              ]}
-            />
-          }
+          className="scroll-mt-14"
+          title="Solar Panels"
+          lead="Lower Your Power Bills. Power Your Home."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
-                Get Solar Estimate
+                Design Your System
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
-                Talk to a Solar Advisor
+                Book a Consultation
               </Button>
             </>
           }
-          disclaimer="*Subsidy under PM Surya Ghar Muft Bijli Yojana subject to central portal sanctioning."
         />
 
-        {/* 2. PANEL: res-terrace */}
-        <Panel
+        {/* SEC 1: TERRACE ARCHITECTURE (PURE #FFFFFF EDITORIAL — 16:9 DESKTOP / 4:5 MOBILE) */}
+        <EditorialFeature
           id="terrace-design"
           media={media["res-terrace"]}
-          tone="dark"
           title="Designed for Your Terrace"
-          lead="Concealed mounting and elevated pergolas that protect your outdoor living space."
-          stats={
-            <StatRow
-              stats={[
-                { value: "7 to 9 ft", label: "Clear Headroom" },
-                { value: "44 m/s", label: "Basic Wind Speed", sublabel: "IS 875 (158 km/h)" },
-              ]}
-            />
-          }
+          lead="Concealed conduit routing and elevated pergola frames protect both roof waterproofing and your outdoor living space—never exposing messy cable trays across your elevation."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[200px]"
               >
                 Get Solar Estimate
               </Button>
               <Button
                 onClick={() => setSpecsOpen(true)}
                 variant="secondary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[200px]"
               >
                 View Technical Specs
               </Button>
             </>
           }
+          cards={[
+            {
+              metric: "7 to 9 ft",
+              title: "Walkable Headroom",
+              description:
+                "Elevated steel pergola canopies preserve usable shaded terrace floor space beneath overhead bifacial solar modules.",
+            },
+            {
+              metric: "Zero Exposed",
+              title: "Concealed Raceways",
+              description:
+                "DC strings and earthing conductors route neatly along structural channels instead of cutting across visible facade walls.",
+            },
+            {
+              metric: "Slab-Safe",
+              title: "Waterproof Anchoring",
+              description:
+                "Precast ballasted blocks or epoxy-sealed chemical anchors specified after structural waterproofing inspection.",
+            },
+          ]}
         />
 
-        {/* 3. PANEL: res-weather */}
-        <Panel
+        {/* SEC 2: SEVERE WEATHER & HEAT RESILIENCE */}
+        <EditorialFeature
           id="home-resilience"
           media={media["res-weather"]}
-          tone="dark"
-          title="Severe Weather Resilience"
-          lead="Engineered to withstand heavy monsoons, cyclone wind gusts, and scorching summer heat."
-          stats={
-            <StatRow
-              stats={[
-                { value: "44 m/s", label: "Basic Wind Speed", sublabel: "IS 875 (158 km/h)" },
-                { value: "IP68", label: "Water & Dust Proof" },
-                { value: "25 Years", label: "Linear Guarantee" },
-              ]}
-            />
-          }
+          title="Built for Indian Monsoons and 45°C Heat"
+          lead="N-Type TOPCon dual-glass modules and structural wind frames engineered for coastal gusts, heavy monsoon rains, and peak Deccan summer temperatures."
           actions={
             <>
               <Button
                 to="/omnigrid"
                 variant="primary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
                 Explore Battery Storage
               </Button>
               <Button
                 to="/deploy"
                 variant="secondary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
-                Get Solar Estimate
+                Size Your Roof
               </Button>
             </>
           }
+          cards={[
+            {
+              metric: "158 km/h",
+              title: "IS 875 Wind Basis",
+              description:
+                "Engineered to IS 875 (Part 3) 44 m/s structural wind loads with corrosion-resistant anodized aluminium and SS304 hardware.",
+            },
+            {
+              metric: "IP68",
+              title: "Monsoon-Sealed",
+              description:
+                "Dual-tempered glass laminates and weatherproof junction housings shield cells against sustained driving rain and dust.",
+            },
+            {
+              metric: "-0.30%/°C",
+              title: "Summer Thermal Yield",
+              description:
+                "Low temperature coefficient sustains higher midday energy production when residential cooling loads peak.",
+            },
+          ]}
         />
 
-        {/* 4. QUIET SECTION: One Team, Start to Finish */}
-        <QuietSection
+        {/* SEC 3: COORDINATED JOURNEY */}
+        <EditorialFeature
           id="turnkey"
-          bg="surface"
+          media={media["home-design"]}
           title="Coordinated Journey, Start to Finish"
-          lead="From DISCOM net-metering coordination to authorized partner installation, WAVENOX guides every step."
+          lead="From 3D roof shading analysis and DISCOM net-metering applications to authorized partner installation and PM Surya Ghar documentation, WAVENOX guides every milestone."
+          cardColumns={4}
+          cards={[
+            {
+              metric: "01",
+              title: "Roof Feasibility",
+              description:
+                "3D sun-path shading map, parapet setback study, and custom terrace structural plan.",
+            },
+            {
+              metric: "02",
+              title: "DISCOM Sanction",
+              description:
+                "Utility net-metering paperwork, technical feasibility filing, and subsidy portal preparation.",
+            },
+            {
+              metric: "03",
+              title: "Precision Install",
+              description:
+                "Clean rooftop mounting, concealed conduits, earthing, and bi-directional meter commissioning.",
+            },
+            {
+              metric: "04",
+              title: "25-Year Support",
+              description:
+                "Inverter cloud onboarding, subsidy tracking assistance, and 25-year OEM linear warranty backing.",
+            },
+          ]}
+          className="pb-16 sm:pb-24 lg:pb-28"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pt-4">
-            {RESIDENTIAL_STEPS.map((step) => (
-              <div key={step.num} className="space-y-2">
-                <span className="text-[13px] font-medium tabular-nums text-[#5C5E62] block">
-                  {step.num}
-                </span>
-                <h3 className="text-[16px] font-medium text-[#171A20]">{step.title}</h3>
-                <p className="text-[13px] text-[#5C5E62] leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
             <TextLink to="/deploy" arrow>
-              Configure your residential system
+              Configure your residential system in Design Studio
             </TextLink>
-          </div>
-
-          {/* Cross-Solution Navigation */}
-          <div className="mt-12 pt-8 border-t border-[#E3E4E6] max-w-3xl mx-auto">
-            <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
-              Explore Related WAVENOX Solutions
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+            <div className="flex flex-wrap items-center gap-6 text-[14px]">
               <Link
                 to="/omnigrid"
-                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+                className="font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
               >
-                <div className="text-[14px] font-medium text-[#171A20]">Solar + Storage</div>
-                <div className="text-[12px] text-[#5C5E62] mt-0.5">Omnigrid LFP backup</div>
+                Solar + Storage →
               </Link>
               <Link
                 to="/enterprise"
-                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
+                className="font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
               >
-                <div className="text-[14px] font-medium text-[#171A20]">Commercial Solar</div>
-                <div className="text-[12px] text-[#5C5E62] mt-0.5">Factories &amp; campuses</div>
-              </Link>
-              <Link
-                to="/deploy"
-                className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
-              >
-                <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
-                <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive roof sizing</div>
+                Commercial Solar →
               </Link>
             </div>
           </div>
-        </QuietSection>
+        </EditorialFeature>
 
-        {/* 5. PANEL: home-final */}
+        {/* SEC 4: DARK #000000 TECHNICAL SPECIFICATIONS */}
+        <SpecsGrid
+          id="residential-specs"
+          title="Residential Solar Specs"
+          subtitle="Verified reference specifications for WAVENOX residential rooftop and elevated pergola installations."
+          categories={RESIDENTIAL_SPECS}
+          footnote="*Central DBT subsidy under MNRE PM Surya Ghar Muft Bijli Yojana (up to ₹78,000 for eligible ≥ 3 kW domestic installations) is subject to national portal approval and DISCOM commissioning."
+        />
+
+        {/* SEC 5: BOOKEND CLOSING CTA (16:9 DESKTOP / 4:5 MOBILE) */}
         <Panel
           id="consultation"
+          height="closing"
           media={media["home-final"]}
           tone="dark"
+          className="scroll-mt-14"
           title="Plan Your Residential Solar System"
-          lead="Get an indicative solar estimate for your home or speak with a WAVENOX advisor to review roof layout and subsidy eligibility."
+          lead="Preview an indicative estimate for your roof online or schedule a consultation to review layout and PM Surya Ghar eligibility."
           stats={
             <StatRow
               stats={[
@@ -291,7 +343,7 @@ function ResidentialPage() {
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
                 Get Solar Estimate
               </Button>
@@ -299,7 +351,7 @@ function ResidentialPage() {
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
                 Request Consultation
               </Button>
@@ -311,7 +363,7 @@ function ResidentialPage() {
       <Footer />
 
       {/* Technical Specifications Drawer */}
-      <SpecsDrawer open={specsOpen} onOpenChange={setSpecsOpen} />
+      <SpecsDrawer open={specsOpen} onOpenChange={setSpecsOpen} categories={RESIDENTIAL_SPECS} />
     </div>
   );
 }

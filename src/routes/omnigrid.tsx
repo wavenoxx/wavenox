@@ -4,8 +4,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import {
   Panel,
-  QuietSection,
-  StatRow,
+  EditorialFeature,
+  SpecsGrid,
   Button,
   TextLink,
   SpecsDrawer,
@@ -48,7 +48,8 @@ export const Route = createFileRoute("/omnigrid")({
         rel: "preload",
         as: "image",
         type: "image/avif",
-        href: media["omnigrid-hero"].mobileAvif,
+        imageSrcSet: media["omnigrid-hero"].mobileAvif,
+        imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
       },
@@ -80,16 +81,24 @@ export const Route = createFileRoute("/omnigrid")({
 
 const OMNIGRID_SPECS: SpecCategory[] = [
   {
-    title: "Battery Storage",
+    title: "Capacity & Output",
     items: [
       { label: "Usable Capacity", value: `${batteryCap} kWh per unit`, verify: true },
+      { label: "Scalable Architecture", value: "Up to 42.9 kWh (3 modular units)" },
       { label: "Continuous Output", value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW` },
-      { label: "Peak Output (10s)", value: `${PRODUCTS_CONFIG.battery.peakPowerKw} kW` },
+      { label: "Peak Surge Output (10s)", value: `${PRODUCTS_CONFIG.battery.peakPowerKw} kW` },
+    ],
+  },
+  {
+    title: "Chemistry & Efficiency",
+    items: [
       { label: "Battery Chemistry", value: PRODUCTS_CONFIG.battery.chemistry },
       {
         label: "Round-Trip Efficiency",
         value: `${PRODUCTS_CONFIG.battery.roundTripEfficiencyPct}%`,
       },
+      { label: "Cycle Life", value: "6,000+ Cycles (15-year design life)" },
+      { label: "Acoustic Profile", value: "Solid-state silent — zero diesel exhaust" },
     ],
   },
   {
@@ -99,240 +108,237 @@ const OMNIGRID_SPECS: SpecCategory[] = [
       { label: "Ingress Protection", value: PRODUCTS_CONFIG.battery.protectionRating },
       { label: "Operating Temperature", value: PRODUCTS_CONFIG.battery.operatingTempRangeC },
       { label: "Mounting Options", value: PRODUCTS_CONFIG.battery.mounting },
-      { label: "Warranty", value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years Comprehensive` },
+    ],
+  },
+  {
+    title: "Warranty & Integration",
+    items: [
+      { label: "Warranty Coverage", value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years OEM` },
+      { label: "Grid Safety", value: "Automatic anti-islanding utility isolation" },
+      { label: "Inverter Pairing", value: "Compatible hybrid string inverter" },
+      { label: "Monitoring", value: "OEM Inverter Cloud App (Wi-Fi / 4G)" },
     ],
   },
 ];
 
-const LOAD_ITEMS = [
-  { id: "wifi", label: "Lights & Wi-Fi", watts: 300 },
-  { id: "fridge", label: "Refrigerator & Fans", watts: 800 },
-  { id: "ac", label: "1.5 Ton AC", watts: 1800 },
-  { id: "heavy", label: "Water Pump / Heavy", watts: 2200 },
-];
-
 function OmnigridPage() {
   const [specsOpen, setSpecsOpen] = React.useState(false);
-  const [selectedLoads, setSelectedLoads] = React.useState<string[]>(["wifi", "fridge"]);
-
-  const totalWatts = React.useMemo(() => {
-    let sum = 0;
-    for (const load of LOAD_ITEMS) {
-      if (selectedLoads.includes(load.id)) {
-        sum += load.watts;
-      }
-    }
-    return Math.max(sum, 150);
-  }, [selectedLoads]);
-
-  // Usable kWh * 1000 * 0.9 efficiency factor / total watts
-  const backupHours = React.useMemo(() => {
-    const hours = (batteryCap * 1000 * 0.9) / totalWatts;
-    return hours > 24 ? "24+" : hours.toFixed(1);
-  }, [totalWatts]);
-
-  const toggleLoad = (id: string) => {
-    setSelectedLoads((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
-  };
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#171A20] selection:bg-[#171A20] selection:text-[#FFFFFF]">
       <Header />
 
       <main>
-        {/* 1. PANEL: omnigrid-hero */}
+        {/* SEC 0: BOOKEND HERO (16:9 DESKTOP / 4:5 MOBILE) */}
         <Panel
           id="omnigrid"
           as="h1"
           media={media["omnigrid-hero"]}
           priority={true}
           tone="dark"
+          className="scroll-mt-14"
           title="Omnigrid"
-          lead="Home battery storage engineered for continuous power during grid outages."
-          stats={
-            <StatRow
-              stats={[
-                { value: `${batteryCap} kWh`, label: "Usable Capacity" },
-                {
-                  value: `${PRODUCTS_CONFIG.battery.continuousPowerKw} kW`,
-                  label: "Continuous Output",
-                },
-                { value: `${PRODUCTS_CONFIG.battery.warrantyYears} Years`, label: "Warranty" },
-              ]}
-            />
-          }
+          lead="Home Battery Storage for Continuous Power Through Grid Outages."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
-                Configure Solar + Storage
+                Configure Storage
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px]"
               >
-                Talk to a Solar Advisor
+                Book a Consultation
               </Button>
             </>
           }
-          disclaimer="Backup runtime depends on installed battery capacity, state of charge, and active household appliance loads."
         />
 
-        {/* 2. PANEL: omnigrid-switchover */}
-        <Panel
+        {/* SEC 1: AUTOMATIC OUTAGE SWITCHOVER */}
+        <EditorialFeature
           id="outage-defense"
           media={media["omnigrid-switchover"]}
-          tone="dark"
           title="Automatic Outage Switchover"
-          lead="When utility power drops, the hybrid islanding gateway isolates from the street grid and switches your home to stored solar in under 20 milliseconds."
-          stats={
-            <StatRow
-              stats={[
-                {
-                  value: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs,
-                  label: "Transfer Speed",
-                },
-                { value: "10.0 kW", label: "Peak Surge Rating" },
-              ]}
-            />
-          }
+          lead="When utility power drops, the hybrid islanding gateway isolates cleanly from the street feeder and transitions critical home circuits to stored solar in under 20 milliseconds."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[210px]"
               >
                 Configure Solar + Storage
               </Button>
               <Button
                 onClick={() => setSpecsOpen(true)}
                 variant="secondary"
-                tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                tone="light"
+                className="w-full sm:w-auto sm:min-w-[200px]"
               >
                 View Technical Specs
               </Button>
             </>
           }
+          cards={[
+            {
+              metric: PRODUCTS_CONFIG.battery.islandingTransferSpeedMs,
+              title: "UPS-Grade Transfer",
+              description:
+                "Wi-Fi routers, desktop workstations, and home automation stay online without restarting when the grid trips.",
+            },
+            {
+              metric: "10.0 kW",
+              title: "Peak Surge Capacity",
+              description:
+                "Handles starting currents for 1.5-ton inverter air conditioners, refrigerators, and domestic booster pumps.",
+            },
+            {
+              metric: "Zero Fumes",
+              title: "Silent Solid-State",
+              description:
+                "Replaces noisy diesel generators and acid-fume lead batteries with sealed architectural LiFePO4 modules.",
+            },
+          ]}
         />
 
-        {/* 3. PANEL: omnigrid-night */}
-        <Panel
+        {/* SEC 2: USE SOLAR AFTER SUNSET */}
+        <EditorialFeature
           id="sunset-power"
           media={media["omnigrid-night"]}
-          tone="dark"
           title="Use Solar After Sunset"
-          lead="Store daytime excess solar generation to power evening air conditioning and essential home circuits."
-          stats={
-            <StatRow
-              stats={[
-                { value: "Up to 90%", label: "Solar Self-Use" },
-                { value: "Zero", label: "Diesel Fumes" },
-              ]}
-            />
-          }
+          lead="Store excess midday rooftop generation to power evening air conditioning, lighting, and family spaces cleanly through the night."
+          cards={[
+            {
+              metric: "14.3 – 42.9 kWh",
+              title: "Modular Expansion",
+              description:
+                "Begin with a single 14.3 kWh cabinet and expand cleanly to 28.6 kWh or 42.9 kWh as household loads grow.",
+            },
+            {
+              metric: "Up to 90%",
+              title: "Solar Self-Use",
+              description:
+                "Capture peak afternoon sunshine inside your own reserve for evening appliances and overnight outage protection.",
+            },
+            {
+              metric: "6,000+ Cycles",
+              title: "Thermal-Safe LFP",
+              description:
+                "Lithium Iron Phosphate chemistry delivers superior thermal stability in high-ambient Indian utility rooms.",
+            },
+          ]}
+        />
+
+        {/* SEC 3: 24-HOUR SOLAR & STORAGE FLOW */}
+        <EditorialFeature
+          id="flow-simulation"
+          title="24-Hour Solar & Storage Flow"
+          lead="Explore how rooftop solar generation, Omnigrid LiFePO4 storage, household loads, and the DISCOM net-meter coordinate across daylight peaks, evening cooling, and grid outages."
+        >
+          <EnergyFlowSimulator />
+        </EditorialFeature>
+
+        {/* SEC 4: BACKUP DURATION & HONESTY ADVISOR */}
+        <EditorialFeature
+          id="estimator"
+          title="Backup Duration & Honesty Advisor"
+          lead="Calculate sustained runtime across real BEE-rated Indian appliances—paired with a transparent net-metering payback statement."
+          className="pb-16 sm:pb-24 lg:pb-28"
+        >
+          <div className="space-y-8">
+            <BatteryHonestyAdvisor />
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  to="/deploy"
+                  variant="primary"
+                  tone="light"
+                  className="w-full sm:w-auto sm:min-w-[210px]"
+                >
+                  Configure Solar + Storage
+                </Button>
+                <Button
+                  onClick={() => openConsultationDrawer()}
+                  variant="secondary"
+                  tone="light"
+                  className="w-full sm:w-auto sm:min-w-[200px]"
+                >
+                  Book a Consultation
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-6 text-[14px]">
+                <Link
+                  to="/residential"
+                  className="font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  Solar Panels →
+                </Link>
+                <Link
+                  to="/enterprise"
+                  className="font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
+                >
+                  Commercial Solar →
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <TextLink to="/warranty" arrow>
+                Review 10-year OEM battery &amp; inverter warranty terms
+              </TextLink>
+            </div>
+          </div>
+        </EditorialFeature>
+
+        {/* SEC 5: DARK #000000 OMNIGRID SYSTEM SPECS */}
+        <SpecsGrid
+          id="omnigrid-specs"
+          title="Omnigrid System Specs"
+          subtitle="Modular LiFePO4 residential storage and hybrid backup gateway specifications."
+          categories={OMNIGRID_SPECS}
+          footnote="Backup runtime depends on installed battery capacity, state of charge, inverter configuration, and active household appliance duty cycles."
+        />
+
+        {/* SEC 6: BOOKEND CLOSING CTA (16:9 DESKTOP / 4:5 MOBILE) */}
+        <Panel
+          id="consultation"
+          height="closing"
+          media={media["home-final"]}
+          tone="dark"
+          className="scroll-mt-14"
+          title="Backup Power Built for Your Home"
+          lead="Size your rooftop solar array and Omnigrid storage capacity online or schedule an architectural consultation."
           actions={
             <>
               <Button
                 to="/deploy"
                 variant="primary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[204px]"
               >
-                Configure Solar + Storage
+                Configure Storage
               </Button>
               <Button
                 onClick={() => openConsultationDrawer()}
                 variant="secondary"
                 tone="dark"
-                className="w-full sm:w-auto min-w-[210px]"
+                className="w-full sm:w-auto sm:min-w-[210px]"
               >
-                Talk to a Solar Advisor
+                Request Consultation
               </Button>
             </>
           }
         />
-
-        {/* 4. ENERGY FLOW: 24-Hour Home Simulation */}
-        <QuietSection
-          id="flow-simulation"
-          bg="white"
-          title="24-Hour Solar & Storage Flow"
-          lead="See how solar generation, battery storage, and the DISCOM grid interact throughout the day and evening."
-        >
-          <EnergyFlowSimulator />
-        </QuietSection>
-
-        {/* 5. QUIET SECTION: Backup Duration & Honesty Advisor */}
-        <QuietSection
-          id="estimator"
-          bg="surface"
-          title="Backup Duration &amp; Honesty Advisor"
-          lead="Calculate runtime across real BEE-rated appliances, with transparent payback guidance."
-        >
-          <div className="max-w-4xl mx-auto space-y-6">
-            <BatteryHonestyAdvisor />
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-              <Button
-                to="/deploy"
-                variant="primary"
-                tone="light"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Configure Solar + Storage
-              </Button>
-              <Button
-                onClick={() => openConsultationDrawer()}
-                variant="secondary"
-                tone="light"
-                className="w-full sm:w-auto min-w-[210px]"
-              >
-                Talk to a Solar Advisor
-              </Button>
-            </div>
-
-            {/* Cross-Solution Navigation */}
-            <div className="mt-12 pt-8 border-t border-[#E3E4E6] max-w-3xl mx-auto">
-              <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5C5E62] text-center mb-4">
-                Explore Related WAVENOX Solutions
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
-                <Link
-                  to="/residential"
-                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
-                >
-                  <div className="text-[14px] font-medium text-[#171A20]">Solar Panels</div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Rooftop &amp; pergola</div>
-                </Link>
-                <Link
-                  to="/enterprise"
-                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
-                >
-                  <div className="text-[14px] font-medium text-[#171A20]">Commercial Solar</div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Factories &amp; campuses</div>
-                </Link>
-                <Link
-                  to="/deploy"
-                  className="p-4 rounded-[6px] border border-[#E3E4E6] bg-[#FFFFFF] hover:bg-[#EAEAEA] transition-colors block"
-                >
-                  <div className="text-[14px] font-medium text-[#171A20]">Design Studio</div>
-                  <div className="text-[12px] text-[#5C5E62] mt-0.5">Interactive sizing</div>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </QuietSection>
       </main>
 
       <Footer />

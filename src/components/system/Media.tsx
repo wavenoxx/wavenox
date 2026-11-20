@@ -17,10 +17,15 @@ export interface MediaProps {
   src?: string;
   alt?: string;
   priority?: boolean;
+  /** Deprioritize initially hidden / off-screen carousel slides above the fold */
+  lowPriority?: boolean;
+  /** Keep desktop landscape/square sources on mobile (for 4:3 and 1:1 containers) */
+  preserveDesktopAspect?: boolean;
   className?: string;
   fill?: boolean;
   width?: number;
   height?: number;
+  sizes?: string;
   objectPosition?: string;
 }
 
@@ -29,10 +34,13 @@ export function Media({
   src,
   alt = "",
   priority = false,
+  lowPriority = false,
+  preserveDesktopAspect = false,
   className = "",
   fill = true,
   width,
   height,
+  sizes,
   objectPosition = "center",
 }: MediaProps) {
   const descriptor: MediaDescriptor =
@@ -41,8 +49,8 @@ export function Media({
   const finalAlt = descriptor.alt || alt || "";
   const loading = priority ? "eager" : "lazy";
   const decoding = priority ? ("sync" as const) : ("async" as const);
-  // React 19 supports fetchPriority
-  const fetchPriority = priority ? ("high" as const) : ("auto" as const);
+  // Per modern-web-guidance optimize-image-priority: omit fetchPriority when default
+  const fetchPriority = priority ? ("high" as const) : lowPriority ? ("low" as const) : undefined;
 
   const imgClasses = fill ? `w-full h-full object-cover ${className}` : className;
 
@@ -50,13 +58,11 @@ export function Media({
     objectPosition,
   };
 
-  const hasResponsive = Boolean(
-    descriptor.mobileAvif ||
-    descriptor.mobileWebp ||
-    descriptor.mobileSrc ||
-    descriptor.avif ||
-    descriptor.webp,
-  );
+  const useMobileSources =
+    !preserveDesktopAspect &&
+    Boolean(descriptor.mobileAvif || descriptor.mobileWebp || descriptor.mobileSrc);
+
+  const hasResponsive = Boolean(useMobileSources || descriptor.avif || descriptor.webp);
 
   if (!hasResponsive) {
     return (
@@ -74,16 +80,14 @@ export function Media({
     );
   }
 
-  const hasMobileSources = Boolean(
-    descriptor.mobileAvif || descriptor.mobileWebp || descriptor.mobileSrc,
-  );
-  const desktopMedia = hasMobileSources ? "(min-width: 769px)" : undefined;
-  const mobileSizes = priority ? "(max-width: 420px) 360px, 100vw" : "100vw";
+  const desktopMedia = useMobileSources ? "(min-width: 769px)" : undefined;
+  const desktopSizes = sizes || "100vw";
+  const mobileSizes = sizes || (priority ? "(max-width: 420px) 360px, 100vw" : "100vw");
 
   return (
     <picture className={fill ? "block w-full h-full" : undefined}>
-      {/* Mobile crop (<= 768px) */}
-      {descriptor.mobileAvif && (
+      {/* Dedicated 4:5 mobile sources (<= 768px) for 16:9 -> 4:5 responsive slots */}
+      {useMobileSources && descriptor.mobileAvif && (
         <source
           media="(max-width: 768px)"
           srcSet={descriptor.mobileAvif}
@@ -91,7 +95,7 @@ export function Media({
           type="image/avif"
         />
       )}
-      {descriptor.mobileWebp && (
+      {useMobileSources && descriptor.mobileWebp && (
         <source
           media="(max-width: 768px)"
           srcSet={descriptor.mobileWebp}
@@ -99,14 +103,26 @@ export function Media({
           type="image/webp"
         />
       )}
-      {descriptor.mobileSrc && <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />}
+      {useMobileSources && descriptor.mobileSrc && (
+        <source media="(max-width: 768px)" srcSet={descriptor.mobileSrc} />
+      )}
 
-      {/* Desktop / Default sources (>= 769px when dedicated mobile sources exist) */}
+      {/* Desktop / Aspect-Preserving sources */}
       {descriptor.avif && (
-        <source media={desktopMedia} srcSet={descriptor.avif} sizes="100vw" type="image/avif" />
+        <source
+          media={desktopMedia}
+          srcSet={descriptor.avif}
+          sizes={desktopSizes}
+          type="image/avif"
+        />
       )}
       {descriptor.webp && (
-        <source media={desktopMedia} srcSet={descriptor.webp} sizes="100vw" type="image/webp" />
+        <source
+          media={desktopMedia}
+          srcSet={descriptor.webp}
+          sizes={desktopSizes}
+          type="image/webp"
+        />
       )}
 
       {/* Fallback img */}

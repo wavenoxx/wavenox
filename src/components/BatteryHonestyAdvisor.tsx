@@ -1,5 +1,4 @@
 import * as React from "react";
-import { AlertCircle, ShieldCheck, Zap, BatteryCharging, CheckCircle2, Info } from "lucide-react";
 import { PRODUCTS_CONFIG } from "@/config/products";
 
 export interface BatteryLoadItem {
@@ -98,47 +97,45 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
     return Math.max(50, sum);
   }, [selectedLoadIds]);
 
+  const unitKwh = PRODUCTS_CONFIG.battery.usableCapacityKwh;
+  const grossKwh = (batteryCount * unitKwh).toFixed(1);
   // Total usable kWh = units * 14.3 * 0.9 efficiency factor
-  const totalUsableKwh = batteryCount * PRODUCTS_CONFIG.battery.usableCapacityKwh * 0.9;
+  const totalUsableKwh = batteryCount * unitKwh * 0.9;
   const backupHours = ((totalUsableKwh * 1000) / totalWatts).toFixed(1);
   const isAcRunning = selectedLoadIds.includes("ac-inverter");
 
   return (
-    <div
-      className={`rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] overflow-hidden shadow-xs ${className}`}
-    >
-      {/* 1. Honest Economic Advisory Banner */}
-      <div className="p-5 sm:p-6 bg-[#F8F9FA] border-b border-[#E3E4E6] space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-[3px]">
-            Financial Transparency Advisory
-          </span>
-          <span className="text-[12px] text-[#5C5E62]">Net-Metering vs. Storage ROI</span>
+    <div className={`rounded-[8px] bg-[#F4F4F4] p-6 sm:p-8 lg:p-10 space-y-8 ${className}`}>
+      {/* 1. Honest Economic Advisory Strip (Calm Architectural Hierarchy — No Loud Pills) */}
+      <div className="border-l-2 border-[#171A20] pl-5 space-y-2">
+        <div className="text-[12px] font-medium uppercase tracking-[0.06em] text-[#5C5E62]">
+          Net-Metering vs. Storage Payback
         </div>
-        <h3 className="text-[18px] sm:text-[20px] font-medium text-[#171A20] leading-snug">
+        <h3 className="text-[20px] sm:text-[22px] font-medium tracking-[-0.018em] text-[#171A20] leading-snug">
           When Does a Home Battery Make Sense in Telangana?
         </h3>
-        <p className="text-[13px] sm:text-[14px] text-[#5C5E62] leading-relaxed">
-          <strong className="text-[#171A20]">Plain Statement on Payback:</strong> Under net-metering
-          regulations in Telangana (TGSPDCL / TGNPDCL), the electricity grid acts as a 100%
-          efficient virtual battery during daylight. Surplus solar units are exported to the grid
-          and credited against your bill at the full retail tariff rate. Adding a physical lithium
-          storage pack (₹2,80,000+ per 14.3 kWh unit) does{" "}
-          <strong className="text-[#171A20]">not improve your financial ROI</strong> or speed up
-          payback. Purchase battery storage for{" "}
-          <strong className="text-[#171A20]">uninterrupted power security during blackouts</strong>,
-          not as an investment.
+        <p className="text-[14px] sm:text-[15px] text-[#5C5E62] leading-[1.6] max-w-[78ch]">
+          <strong className="font-medium text-[#171A20]">Plain Statement on Payback:</strong> Under
+          net-metering regulations in Telangana (TGSPDCL / TGNPDCL), the utility grid credits
+          daytime surplus exports against your bill at the retail tariff rate. Adding a physical
+          lithium storage pack (₹2,80,000+ per 14.3 kWh unit) does{" "}
+          <strong className="font-medium text-[#171A20]">not improve your financial ROI</strong> or
+          speed up payback. Purchase battery storage for{" "}
+          <strong className="font-medium text-[#171A20]">
+            uninterrupted power security during blackouts
+          </strong>
+          , not as a financial return instrument.
         </p>
       </div>
 
-      {/* 2. Battery Unit Stacking Controls */}
-      <div className="p-5 sm:p-6 border-b border-[#E3E4E6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FFFFFF]">
-        <div>
-          <span className="text-[12px] font-medium text-[#5C5E62] uppercase tracking-wider block">
+      {/* 2. Storage Configuration & Unit Stacking Controls */}
+      <div className="pt-6 border-t border-[#E3E4E6] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="text-[12px] font-medium text-[#5C5E62] uppercase tracking-[0.06em]">
             Storage Configuration
-          </span>
-          <div className="text-[16px] font-semibold text-[#171A20]">
-            {batteryCount}x 14.3 kWh LiFePO4 Pack ({batteryCount * 14.3} kWh Gross /{" "}
+          </div>
+          <div className="text-[17px] sm:text-[19px] font-medium text-[#171A20] tabular-nums">
+            {batteryCount}x {unitKwh.toFixed(1)} kWh LiFePO4 Pack ({grossKwh} kWh Gross /{" "}
             {totalUsableKwh.toFixed(1)} kWh Usable)
           </div>
         </div>
@@ -146,10 +143,11 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
         <div
           role="radiogroup"
           aria-label="Battery capacity units"
-          className="flex items-center gap-1.5 bg-[#F4F4F4] p-1 rounded-[6px]"
+          className="grid grid-cols-3 gap-1.5 bg-[#FFFFFF] p-1 rounded-[4px] border border-[#E3E4E6] shrink-0"
         >
           {[1, 2, 3].map((units) => {
             const isSelected = batteryCount === units;
+            const formattedKwh = (units * unitKwh).toFixed(1);
             return (
               <button
                 key={units}
@@ -157,25 +155,32 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => setBatteryCount(units)}
-                className={`px-3 py-1.5 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer ${
-                  isSelected ? "bg-[#171A20] text-[#FFFFFF]" : "text-[#5C5E62] hover:text-[#171A20]"
+                className={`min-h-[44px] px-2 sm:px-3.5 py-1.5 text-[12px] sm:text-[13px] font-medium rounded-[4px] transition-colors cursor-pointer tabular-nums flex flex-col sm:flex-row items-center justify-center sm:gap-1 leading-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
+                  isSelected
+                    ? "bg-[#171A20] text-[#FFFFFF]"
+                    : "text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4]"
                 }`}
               >
-                {units} Unit{units > 1 ? "s" : ""} ({units * 14.3} kWh)
+                <span>
+                  {units} Unit{units > 1 ? "s" : ""}
+                </span>
+                <span className={isSelected ? "text-[#FFFFFF]/85" : "text-[#5C5E62]"}>
+                  ({formattedKwh} kWh)
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 3. Realistic Sourced Appliances Multi-Select Grid */}
-      <div className="p-5 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-[13px] font-semibold uppercase tracking-wider text-[#171A20]">
+      {/* 3. Essential Loads Multi-Select Grid (Clean Elevated Toggles — No Heavy Black Slabs) */}
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h4 className="text-[13px] font-medium uppercase tracking-[0.06em] text-[#171A20]">
             Select Outage Essential Loads (BEE Rated Standards)
           </h4>
-          <span className="text-[12px] font-mono text-[#5C5E62] tabular-nums">
-            Active Load: {totalWatts} Watts
+          <span className="text-[13px] font-medium text-[#5C5E62] tabular-nums">
+            Active Load: <strong className="text-[#171A20]">{totalWatts} W</strong>
           </span>
         </div>
 
@@ -186,30 +191,33 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
               <button
                 key={load.id}
                 type="button"
-                role="button"
                 aria-pressed={isSelected}
                 onClick={() => toggleLoad(load.id)}
-                className={`p-3.5 rounded-[4px] border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                className={`p-4 rounded-[8px] border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] ${
                   isSelected
-                    ? "border-[#171A20] bg-[#171A20] text-[#FFFFFF]"
-                    : "border-[#E3E4E6] bg-[#FFFFFF] text-[#171A20] hover:border-[#171A20]/40"
+                    ? "border-[#171A20] bg-[#FFFFFF] ring-1 ring-[#171A20] text-[#171A20]"
+                    : "border-[#E3E4E6] bg-[#FFFFFF]/70 text-[#5C5E62] hover:bg-[#FFFFFF] hover:border-[#B8BCC2]"
                 }`}
               >
-                <div>
-                  <div className="text-[13px] font-medium leading-snug">{load.name}</div>
-                  <div
-                    className={`text-[12px] mt-0.5 leading-tight ${
-                      isSelected ? "text-[#FFFFFF]/90" : "text-[#5C5E62]"
-                    }`}
-                  >
-                    {load.source}
+                <div className="space-y-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <span
+                      className={`text-[14px] font-medium leading-snug ${
+                        isSelected ? "text-[#171A20]" : "text-[#393C41]"
+                      }`}
+                    >
+                      {load.name}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
+                        isSelected ? "bg-[#171A20]" : "bg-[#D0D2D6]"
+                      }`}
+                    />
                   </div>
+                  <div className="text-[12px] text-[#5C5E62] leading-[1.35]">{load.source}</div>
                 </div>
-                <div
-                  className={`text-[12px] font-mono mt-3 tabular-nums font-semibold ${
-                    isSelected ? "text-[#F57C00]" : "text-[#171A20]"
-                  }`}
-                >
+                <div className="text-[13px] font-medium tabular-nums text-[#171A20]">
                   ~{load.watts} W
                 </div>
               </button>
@@ -218,29 +226,31 @@ export function BatteryHonestyAdvisor({ className = "" }: BatteryHonestyAdvisorP
         </div>
 
         {/* Runtime Display */}
-        <div className="mt-6 p-6 rounded-[6px] bg-[#F4F4F4] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="mt-6 p-6 sm:p-8 rounded-[8px] bg-[#FFFFFF] flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="text-[32px] sm:text-[40px] font-medium text-[#171A20] tabular-nums tracking-tight leading-none">
+            <div className="text-[36px] sm:text-[44px] font-medium text-[#171A20] tabular-nums tracking-[-0.028em] leading-none">
               {backupHours} Hours
             </div>
-            <div className="text-[13px] text-[#5C5E62] mt-1">
-              Continuous backup time at {totalWatts} W sustained consumption
+            <div className="text-[14px] text-[#5C5E62] mt-2">
+              Continuous backup duration at {totalWatts} W sustained load
               {isAcRunning ? " (including 1.5-ton inverter AC)" : ""}
             </div>
           </div>
 
-          <div className="text-[12px] text-[#5C5E62] sm:text-right max-w-xs space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-2 text-[13px] text-[#5C5E62] md:text-right">
             <div>
               Transfer Speed:{" "}
-              <strong className="text-[#171A20]">
+              <strong className="font-medium text-[#171A20]">
                 {PRODUCTS_CONFIG.battery.islandingTransferSpeedMs}
               </strong>
             </div>
             <div>
-              Chemistry: <strong className="text-[#171A20]">Lithium Iron Phosphate (LFP)</strong>
+              Chemistry:{" "}
+              <strong className="font-medium text-[#171A20]">Lithium Iron Phosphate (LFP)</strong>
             </div>
             <div>
-              Cycle Life: <strong className="text-[#171A20]">6,000+ Cycles (15 Years)</strong>
+              Cycle Life:{" "}
+              <strong className="font-medium text-[#171A20]">6,000+ Cycles (15 Years)</strong>
             </div>
           </div>
         </div>

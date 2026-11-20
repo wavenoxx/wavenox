@@ -328,6 +328,27 @@
     box-shadow 320ms ease;
 }
 
+/* Freeflow Horizontal Editorial Carousel (Modern Web Guidance compliant) */
+.editorial-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  touch-action: manipulation;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.editorial-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .editorial-carousel-track {
+    scroll-behavior: smooth;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1 !important;
@@ -392,6 +413,12 @@
   height: 6px;
   border-radius: 999px;
   background: var(--line);
+}
+
+/* Defer off-screen rendering for strictly below-the-fold editorial sections */
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto none auto 88rem;
 }
 
 /* Print Optimization for Architectural Feasibility Dossier */

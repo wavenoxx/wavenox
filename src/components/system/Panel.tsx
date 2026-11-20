@@ -20,6 +20,7 @@ export interface PanelProps {
   children?: React.ReactNode;
   className?: string;
   objectPosition?: string;
+  /** Retained for backward compatibility; all Panels now enforce exact 4:5 mobile framing */
   mobileNaturalFrame?: boolean;
 }
 
@@ -44,13 +45,20 @@ export function Panel({
   mobileNaturalFrame = false,
 }: PanelProps) {
   const isDark = tone === "dark";
+  const isHero = as === "h1";
   const toneClasses = isDark ? "bg-[#171A20] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#171A20]";
+
+  // Universal WAVENOX responsive ratio law:
+  // Desktop (>=769px): full-bleed viewport hero / closing showcase
+  // Mobile (<=768px): exact 4:5 portrait framing matching native 4:5 mobile masters
   const heightClasses =
     height === "closing"
-      ? "min-h-[80svh] lg:min-h-[84svh]"
-      : mobileNaturalFrame
-        ? "max-[769px]:min-h-0 max-[769px]:aspect-[1122/1402] min-[769px]:min-h-[100svh]"
-        : "min-h-[100svh]";
+      ? "max-[768px]:min-h-0 max-[768px]:aspect-[4/5] min-[769px]:min-h-[80svh] lg:min-h-[84svh]"
+      : "max-[768px]:min-h-0 max-[768px]:aspect-[4/5] min-[769px]:min-h-[100svh]";
+
+  const topSafePadding = isHero
+    ? "pt-[66px] min-[375px]:pt-[68px] sm:pt-24 lg:pt-[108px] pb-1"
+    : "pt-[64px] sm:pt-16 lg:pt-24 pb-1";
 
   return (
     <section
@@ -73,20 +81,24 @@ export function Panel({
           />
         )}
 
-        {/* Calm directional scrims preserve middle photographic focal clarity */}
+        {/* Calibrated upper sky scrim + subtle bottom action edge — middle photography stays unobstructed */}
         {isDark ? (
-          <div
-            className={
-              mobileNaturalFrame
-                ? "hidden min-[769px]:block absolute inset-0 pointer-events-none z-10"
-                : "absolute inset-0 pointer-events-none z-10"
-            }
-            style={{
-              background: mobileNaturalFrame
-                ? "linear-gradient(180deg, rgba(11,14,19,0.54) 0%, rgba(11,14,19,0.20) 24%, rgba(11,14,19,0.0) 42%, rgba(11,14,19,0.0) 80%, rgba(11,14,19,0.18) 100%)"
-                : "linear-gradient(180deg, rgba(11,14,19,0.64) 0%, rgba(11,14,19,0.22) 24%, rgba(11,14,19,0.0) 40%, rgba(11,14,19,0.0) 62%, rgba(11,14,19,0.60) 80%, rgba(11,14,19,0.86) 100%)",
-            }}
-          />
+          <>
+            <div
+              className="hidden min-[769px]:block absolute inset-0 pointer-events-none z-10"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(11,14,19,0.58) 0%, rgba(11,14,19,0.22) 26%, rgba(11,14,19,0.0) 44%, rgba(11,14,19,0.0) 74%, rgba(11,14,19,0.44) 100%)",
+              }}
+            />
+            <div
+              className="min-[769px]:hidden absolute inset-0 pointer-events-none z-10"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(11,14,19,0.58) 0%, rgba(11,14,19,0.22) 30%, rgba(11,14,19,0.0) 48%, rgba(11,14,19,0.0) 76%, rgba(11,14,19,0.34) 100%)",
+              }}
+            />
+          </>
         ) : (
           <div
             className="absolute inset-0 pointer-events-none z-10"
@@ -96,44 +108,25 @@ export function Panel({
             }}
           />
         )}
-        {mobileNaturalFrame && isDark && (
-          <div
-            className="min-[769px]:hidden absolute inset-x-0 top-0 h-40 pointer-events-none z-10"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(11,14,19,0.52) 0%, rgba(11,14,19,0.22) 55%, rgba(11,14,19,0.0) 100%)",
-            }}
-          />
-        )}
       </div>
 
-      {/* Top Section: Title & Lead within upper safe zone */}
+      {/* Upper Safe Zone: Title & Crisp Subtitle */}
       <div
-        className={`relative ${
-          mobileNaturalFrame
-            ? "pt-14 min-[375px]:pt-[60px] sm:pt-20 lg:pt-[88px] pb-1"
-            : "pt-10 sm:pt-12 lg:pt-14 pb-1.5"
-        } px-5 sm:px-8 lg:px-12 text-center z-20 w-full max-w-5xl mx-auto`}
+        className={`relative ${topSafePadding} px-5 sm:px-8 lg:px-12 text-center z-20 w-full max-w-[960px] mx-auto`}
       >
         <Reveal immediate={priority}>
           {title &&
-            (as === "h1" ? (
-              <h1 className="text-[30px] min-[375px]:text-[34px] sm:text-[44px] lg:text-[52px] font-medium tracking-[-0.028em] leading-[1.06] text-inherit text-balance max-w-[22ch] mx-auto">
+            (isHero ? (
+              <h1 className="text-[32px] min-[375px]:text-[36px] sm:text-[48px] lg:text-[60px] font-medium tracking-[-0.03em] leading-[1.06] text-inherit text-balance max-w-[18ch] mx-auto">
                 {title}
               </h1>
             ) : (
-              <h2 className="text-[25px] min-[375px]:text-[27px] sm:text-[36px] lg:text-[42px] font-medium tracking-[-0.024em] leading-[1.1] text-inherit text-balance max-w-[24ch] sm:max-w-[36ch] mx-auto">
+              <h2 className="text-[28px] min-[375px]:text-[32px] sm:text-[42px] lg:text-[52px] font-medium tracking-[-0.028em] leading-[1.08] text-inherit text-balance max-w-[20ch] sm:max-w-[26ch] mx-auto">
                 {title}
               </h2>
             ))}
           {lead && (
-            <p
-              className={`${
-                mobileNaturalFrame
-                  ? "text-[13px] min-[375px]:text-[14px] sm:text-[16px] lg:text-[18px] mt-1.5 sm:mt-2.5 leading-[1.35] sm:leading-[1.5] max-w-[36ch] sm:max-w-[54ch] text-balance"
-                  : "text-[13px] min-[375px]:text-[14px] sm:text-[15px] lg:text-[16px] mt-1.5 sm:mt-2 leading-[1.4] sm:leading-[1.5] max-w-[40ch] sm:max-w-[72ch] lg:max-w-[80ch] text-pretty"
-              } font-normal text-inherit/90 mx-auto`}
-            >
+            <p className="text-[13px] min-[375px]:text-[14px] sm:text-[17px] lg:text-[19px] mt-2 sm:mt-3 leading-[1.4] sm:leading-[1.48] max-w-[36ch] sm:max-w-[54ch] text-balance font-normal text-inherit/92 mx-auto">
               {lead}
             </p>
           )}
@@ -141,25 +134,13 @@ export function Panel({
         </Reveal>
       </div>
 
-      {/* Middle Photographic Focal Band */}
-      <div
-        className={`relative flex-1 ${
-          mobileNaturalFrame
-            ? "min-h-0 min-[769px]:min-h-[200px]"
-            : "min-h-[140px] sm:min-h-[220px] lg:min-h-[260px]"
-        } flex items-center justify-center px-5 sm:px-8 z-20`}
-      >
+      {/* Unobstructed Middle Photographic Focal Band */}
+      <div className="relative flex-1 min-h-0 min-[769px]:min-h-[200px] flex items-center justify-center px-5 sm:px-8 z-20">
         {children}
       </div>
 
-      {/* Bottom Dock: Stats, Actions, Disclaimer */}
-      <div
-        className={`relative ${
-          mobileNaturalFrame
-            ? "pb-4 min-[375px]:pb-5 sm:pb-8 lg:pb-10 pt-2"
-            : "pb-5 sm:pb-8 lg:pb-10 pt-2"
-        } px-5 sm:px-8 lg:px-12 flex flex-col items-center gap-2.5 sm:gap-4 lg:gap-5 z-20 w-full max-w-4xl mx-auto text-center`}
-      >
+      {/* Bottom Dock: Optional Quiet Stats, Standardized 2-Button Actions, Optional Disclaimer */}
+      <div className="relative pb-4 min-[375px]:pb-5 sm:pb-8 lg:pb-11 pt-2 px-5 sm:px-8 lg:px-12 flex flex-col items-center gap-2.5 sm:gap-4 lg:gap-5 z-20 w-full max-w-4xl mx-auto text-center">
         {stats && (
           <Reveal immediate={priority} delay={0.08} className="w-full">
             {stats}
@@ -168,20 +149,14 @@ export function Panel({
 
         {actions && (
           <Reveal immediate={priority} delay={0.14} className="w-full">
-            <div
-              className={
-                mobileNaturalFrame
-                  ? "grid grid-cols-2 sm:flex sm:flex-row items-center justify-center gap-2 min-[375px]:gap-3 sm:gap-4 w-full max-w-[390px] sm:max-w-none mx-auto"
-                  : "grid grid-cols-1 min-[375px]:grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4 w-full max-w-[380px] sm:max-w-none mx-auto [&>*]:max-sm:min-w-0 [&>*]:max-sm:!px-3"
-              }
-            >
+            <div className="grid grid-cols-2 sm:flex sm:flex-row items-center justify-center gap-2 min-[375px]:gap-3 sm:gap-4 w-full max-w-[390px] sm:max-w-none mx-auto [&>*]:max-sm:min-w-0 [&>*]:max-sm:!px-2.5 [&>*]:max-sm:text-[12px] [&>*]:max-sm:min-[375px]:text-[13px]">
               {actions}
             </div>
           </Reveal>
         )}
 
         {disclaimer && (
-          <p className="text-[12px] font-normal leading-[1.45] tracking-[0.01em] text-inherit/75 max-w-[66ch] mx-auto text-pretty">
+          <p className="hidden sm:block text-[12px] font-normal leading-[1.45] tracking-[0.01em] text-inherit/75 max-w-[66ch] mx-auto text-pretty">
             {disclaimer}
           </p>
         )}

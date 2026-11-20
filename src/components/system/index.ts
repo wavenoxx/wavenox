@@ -5,5 +5,8 @@ export * from "./Reveal";
 export * from "./Media";
 export * from "./Panel";
 export * from "./QuietSection";
+export * from "./EditorialFeature";
+export * from "./EditorialCarousel";
+export * from "./SpecsGrid";
 export * from "./SpecsDrawer";
 export * from "./Faq";

@@ -93,14 +93,14 @@ export function Footer() {
               <h2 className="text-[12px] font-semibold text-[#171A20] uppercase tracking-[0.14em]">
                 {col.heading}
               </h2>
-              <ul className="space-y-2.5 text-[13px] text-[#5C5E62]">
+              <ul className="space-y-1.5 text-[13px] text-[#5C5E62]">
                 {col.links.map((item) => (
                   <li key={item.label}>
                     {item.action ? (
                       <button
                         type="button"
                         onClick={item.action}
-                        className="hover:text-[#171A20] transition-colors cursor-pointer text-left rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+                        className="min-h-[26px] py-0.5 hover:text-[#171A20] transition-colors cursor-pointer text-left inline-flex items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
                       >
                         {item.label}
                       </button>
@@ -109,16 +109,16 @@ export function Footer() {
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-[#171A20] transition-colors inline-flex items-center gap-1 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+                        className="min-h-[26px] py-0.5 hover:text-[#171A20] transition-colors inline-flex items-center gap-1 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
                       >
                         <span>{item.label}</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                       </a>
                     ) : item.to ? (
                       <Link
                         to={item.to}
                         search={item.search}
-                        className="hover:text-[#171A20] transition-colors inline-block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+                        className="min-h-[26px] py-0.5 hover:text-[#171A20] transition-colors inline-flex items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
                       >
                         {item.label}
                       </Link>
@@ -142,28 +142,28 @@ export function Footer() {
             <span className="text-[12px] text-[#5C5E62]">{BRAND_CONFIG.contact.address}</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-5">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a
               href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
-              className="flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+              className="min-h-[28px] py-1 inline-flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
             >
-              <Phone className="w-4 h-4 text-[#F57C00]" aria-hidden="true" />
+              <Phone className="w-4 h-4 text-[#F57C00] shrink-0" aria-hidden="true" />
               <span>{BRAND_CONFIG.contact.phone.display}</span>
             </a>
             <a
               href={BRAND_CONFIG.contact.whatsapp.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+              className="min-h-[28px] py-1 inline-flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
             >
-              <MessageSquare className="w-4 h-4 text-[#F57C00]" aria-hidden="true" />
+              <MessageSquare className="w-4 h-4 text-[#F57C00] shrink-0" aria-hidden="true" />
               <span>WhatsApp: {BRAND_CONFIG.contact.whatsapp.display}</span>
             </a>
             <a
               href={`mailto:${BRAND_CONFIG.contact.email}`}
-              className="flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
+              className="min-h-[28px] py-1 inline-flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
             >
-              <Mail className="w-4 h-4 text-[#F57C00]" aria-hidden="true" />
+              <Mail className="w-4 h-4 text-[#F57C00] shrink-0" aria-hidden="true" />
               <span>{BRAND_CONFIG.contact.email}</span>
             </a>
           </div>
@@ -178,33 +178,36 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-4 shrink-0">
             <Link
               to="/legal/privacy"
-              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+              className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
             >
               Privacy
             </Link>
             <span aria-hidden="true">·</span>
             <Link
               to="/legal/terms"
-              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+              className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
             >
               Terms
             </Link>
             <span aria-hidden="true">·</span>
             <Link
               to="/legal/disclosures"
-              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+              className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
             >
               Disclosures
             </Link>
             <span aria-hidden="true">·</span>
             <Link
               to="/about-this-project"
-              className="text-[#393C41] hover:text-[#171A20] transition-colors"
+              className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
             >
               Colophon
             </Link>
             <span aria-hidden="true">·</span>
-            <Link to="/faq" className="text-[#393C41] hover:text-[#171A20] transition-colors">
+            <Link
+              to="/faq"
+              className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
+            >
               FAQ
             </Link>
           </div>

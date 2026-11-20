@@ -261,7 +261,7 @@ export function Header() {
     setActiveMobileCategory(null);
   }, [pathname, clearCloseTimer]);
 
-  // Half-hero threshold + adaptive surface sensing via rAF
+  // Half-hero threshold + adaptive surface sensing via rAF & ResizeObserver
   React.useEffect(() => {
     if (!isOverlay) {
       setHeaderStage("liquid-glass");
@@ -275,20 +275,21 @@ export function Header() {
       rafId = 0;
       const y = window.scrollY;
       const heroEl =
-        document.getElementById("solar-panels") || document.querySelector("main section");
+        document.querySelector<HTMLElement>("main > section:first-of-type") ||
+        document.getElementById("solar-panels");
       const heroHeight = heroEl ? heroEl.getBoundingClientRect().height : window.innerHeight;
-      const activateAt = Math.max(200, Math.round(heroHeight * 0.48));
+      const activateAt = Math.max(180, Math.round(heroHeight * 0.48));
 
-      if (y < 48) {
+      if (y < 44) {
         setHeaderStage("hero-top");
         setGlassTone("dark");
       } else if (y < activateAt) {
         setHeaderStage("hero-crossing");
       } else {
         setHeaderStage("liquid-glass");
-        const sections = document.querySelectorAll<HTMLElement>("main [data-theme]");
+        const surfaces = document.querySelectorAll<HTMLElement>("main > [data-theme], footer");
         let detectedTone: "dark" | "light" = "light";
-        for (const el of sections) {
+        for (const el of surfaces) {
           const rect = el.getBoundingClientRect();
           if (rect.top <= 28 && rect.bottom > 28) {
             detectedTone = el.getAttribute("data-theme") === "dark" ? "dark" : "light";
@@ -306,10 +307,22 @@ export function Header() {
     };
 
     measure();
+    const settleTimer = window.setTimeout(measure, 120);
+    const heroNode = document.querySelector<HTMLElement>("main > section:first-of-type");
+    const resizeObserver =
+      heroNode && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(scheduleMeasure)
+        : null;
+    if (resizeObserver && heroNode) {
+      resizeObserver.observe(heroNode);
+    }
+
     window.addEventListener("scroll", scheduleMeasure, { passive: true });
     window.addEventListener("resize", scheduleMeasure, { passive: true });
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
+      window.clearTimeout(settleTimer);
+      resizeObserver?.disconnect();
       window.removeEventListener("scroll", scheduleMeasure);
       window.removeEventListener("resize", scheduleMeasure);
     };
@@ -535,10 +548,10 @@ export function Header() {
             aria-label="Open navigation menu"
             className={`lg:hidden min-h-[44px] px-3.5 py-1.5 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
               useDarkInk
-                ? "bg-[#171A20]/[0.07] text-[#171A20] hover:bg-[#171A20]/[0.12]"
+                ? "bg-[#171A20]/[0.08] border border-[#171A20]/[0.12] text-[#171A20] hover:bg-[#171A20]/[0.14]"
                 : headerStage === "liquid-glass"
-                  ? "bg-white/20 text-[#FFFFFF] border border-white/20 hover:bg-white/30"
-                  : "bg-white/15 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
+                  ? "bg-white/20 text-[#FFFFFF] border border-white/25 hover:bg-white/30"
+                  : "bg-[#171A20]/35 text-[#FFFFFF] border border-white/20 backdrop-blur-xs hover:bg-[#171A20]/50"
             }`}
           >
             Menu
