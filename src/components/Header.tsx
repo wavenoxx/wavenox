@@ -1,14 +1,22 @@
 import * as React from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Phone, MessageSquare, Globe, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  X,
+  Phone,
+  MessageSquare,
+  Globe,
+  HelpCircle,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { REGION_HUBS } from "@/routes/service-areas";
 
-type NavItemKey = Exclude<MegaMenuCategory, null> | "studio";
+type NavItemKey = Exclude<MegaMenuCategory, null>;
 
 interface NavItem {
   key: NavItemKey;
@@ -21,7 +29,6 @@ const HEADER_NAV_ITEMS: NavItem[] = [
   { key: "solar", label: "Solar Panels", to: "/residential", hasMenu: true },
   { key: "omnigrid", label: "Solar + Storage", to: "/omnigrid", hasMenu: true },
   { key: "commercial", label: "Commercial", to: "/enterprise", hasMenu: true },
-  { key: "studio", label: "Design Studio", to: "/deploy", hasMenu: false },
   { key: "discover", label: "Discover", to: "/our-story", hasMenu: true },
 ];
 
@@ -201,7 +208,18 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
 ];
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = React.useState(false);
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
+  const currentMatch = routerState.matches[routerState.matches.length - 1];
+  const headerTone =
+    (currentMatch?.staticData as { headerTone?: "overlay" | "solid" } | undefined)?.headerTone ??
+    "solid";
+  const isOverlay = headerTone === "overlay";
+
+  const [headerStage, setHeaderStage] = React.useState<
+    "hero-top" | "hero-crossing" | "liquid-glass"
+  >(isOverlay ? "hero-top" : "liquid-glass");
+  const [glassTone, setGlassTone] = React.useState<"dark" | "light">(isOverlay ? "dark" : "light");
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [activeCategory, setActiveCategory] = React.useState<MegaMenuCategory>(null);
   const [regionModalOpen, setRegionModalOpen] = React.useState(false);
@@ -212,14 +230,6 @@ export function Header() {
   const mobileBackBtnRef = React.useRef<HTMLButtonElement | null>(null);
   const mobileCatBtnRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
   const navigate = useNavigate();
-
-  const routerState = useRouterState();
-  const pathname = routerState.location.pathname;
-
-  const currentMatch = routerState.matches[routerState.matches.length - 1];
-  const headerTone =
-    (currentMatch?.staticData as { headerTone?: "overlay" | "solid" } | undefined)?.headerTone ??
-    "solid";
 
   const clearCloseTimer = React.useCallback(() => {
     if (closeTimerRef.current) {
@@ -251,14 +261,59 @@ export function Header() {
     setActiveMobileCategory(null);
   }, [pathname, clearCloseTimer]);
 
+  // Half-hero threshold + adaptive surface sensing via rAF
   React.useEffect(() => {
-    function handleScroll() {
-      setIsScrolled(window.scrollY > 40);
+    if (!isOverlay) {
+      setHeaderStage("liquid-glass");
+      setGlassTone("light");
+      return;
     }
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
+    let rafId = 0;
+
+    const measure = () => {
+      rafId = 0;
+      const y = window.scrollY;
+      const heroEl =
+        document.getElementById("solar-panels") || document.querySelector("main section");
+      const heroHeight = heroEl ? heroEl.getBoundingClientRect().height : window.innerHeight;
+      const activateAt = Math.max(200, Math.round(heroHeight * 0.48));
+
+      if (y < 48) {
+        setHeaderStage("hero-top");
+        setGlassTone("dark");
+      } else if (y < activateAt) {
+        setHeaderStage("hero-crossing");
+      } else {
+        setHeaderStage("liquid-glass");
+        const sections = document.querySelectorAll<HTMLElement>("main [data-theme]");
+        let detectedTone: "dark" | "light" = "light";
+        for (const el of sections) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 28 && rect.bottom > 28) {
+            detectedTone = el.getAttribute("data-theme") === "dark" ? "dark" : "light";
+            break;
+          }
+        }
+        setGlassTone(detectedTone);
+      }
+    };
+
+    const scheduleMeasure = () => {
+      if (!rafId) {
+        rafId = window.requestAnimationFrame(measure);
+      }
+    };
+
+    measure();
+    window.addEventListener("scroll", scheduleMeasure, { passive: true });
+    window.addEventListener("resize", scheduleMeasure, { passive: true });
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", scheduleMeasure);
+      window.removeEventListener("resize", scheduleMeasure);
+    };
+  }, [isOverlay, pathname]);
 
   // Close MegaMenu on Escape or when viewport narrows below desktop breakpoint (1024px)
   React.useEffect(() => {
@@ -317,8 +372,22 @@ export function Header() {
   };
 
   const isMenuVisible = activeCategory !== null;
-  const isOverlay = headerTone === "overlay";
-  const showSolidHeader = isScrolled || !isOverlay || isMenuVisible;
+  const isHiddenInHeroCross =
+    isOverlay && headerStage === "hero-crossing" && !isMenuVisible && !menuOpen;
+  const useDarkInk = isMenuVisible || (headerStage === "liquid-glass" && glassTone === "light");
+  const showOrderCta = headerStage === "liquid-glass" || isMenuVisible || !isOverlay;
+
+  const surfaceClassName = isMenuVisible
+    ? "bg-[#FFFFFF] text-[#171A20] border-b border-[#E3E4E6]"
+    : headerStage === "liquid-glass"
+      ? glassTone === "dark"
+        ? "header-liquid-glass-dark text-[#FFFFFF]"
+        : "header-liquid-glass-light text-[#171A20]"
+      : "bg-transparent text-[#FFFFFF]";
+
+  const visibilityClassName = isHiddenInHeroCross
+    ? "-translate-y-full opacity-0 pointer-events-none focus-within:translate-y-0 focus-within:opacity-100 focus-within:pointer-events-auto"
+    : "translate-y-0 opacity-100";
 
   const currentMobileCat = MOBILE_CATEGORIES.find((c) => c.id === activeMobileCategory);
 
@@ -326,18 +395,21 @@ export function Header() {
     <>
       <header
         onMouseLeave={handleMouseLeave}
-        className={`fixed top-0 left-0 right-0 h-14 z-50 transition-colors duration-200 flex items-center justify-between px-5 sm:px-6 lg:px-8 xl:px-10 ${
-          showSolidHeader
-            ? "bg-[#FFFFFF]/95 backdrop-blur-md text-[#171A20] border-b border-[#E3E4E6]"
-            : "bg-transparent text-[#FFFFFF]"
-        }`}
+        className={`fixed top-0 left-0 right-0 h-14 z-50 header-bar-motion flex items-center justify-between px-5 sm:px-6 lg:px-8 xl:px-10 ${surfaceClassName} ${visibilityClassName}`}
       >
-        {/* Left: Brand Wordmark */}
+        {/* Left: Signature Brand Wordmark */}
         <div className="flex items-center shrink-0">
-          <BrandLogo size="md" className={showSolidHeader ? "text-[#171A20]" : "text-[#FFFFFF]"} />
+          <BrandLogo
+            size="md"
+            className={`${useDarkInk ? "text-[#171A20]" : "text-[#FFFFFF]"} ${
+              !useDarkInk && headerStage === "hero-top"
+                ? "drop-shadow-[0_1px_8px_rgba(0,0,0,0.28)]"
+                : ""
+            }`.trim()}
+          />
         </div>
 
-        {/* Center: 5-Item Desktop Navigation Rail (1024px+) */}
+        {/* Center: 4-Item Desktop Navigation Rail (1024px+) */}
         <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1" aria-label="Main Navigation">
           {HEADER_NAV_ITEMS.map((item) => {
             const isHovered = item.hasMenu && activeCategory === item.key;
@@ -389,14 +461,14 @@ export function Header() {
                 className={`relative whitespace-nowrap px-3 xl:px-3.5 py-1.5 rounded-[4px] text-[14px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
                   isHovered
                     ? "bg-[#F4F4F4] text-[#171A20]"
-                    : showSolidHeader
+                    : useDarkInk
                       ? isCurrentRoute
-                        ? "bg-[#F4F4F4]/80 text-[#171A20]"
-                        : "hover:bg-[#F4F4F4] text-[#171A20]"
+                        ? "bg-[#171A20]/[0.08] text-[#171A20]"
+                        : "hover:bg-[#171A20]/[0.06] text-[#171A20]"
                       : isCurrentRoute
                         ? "bg-white/15 text-[#FFFFFF]"
-                        : "hover:bg-white/10 text-[#FFFFFF]"
-                }`}
+                        : "hover:bg-white/15 text-[#FFFFFF]"
+                } ${!useDarkInk && headerStage === "hero-top" ? "[text-shadow:0_1px_6px_rgba(0,0,0,0.32)]" : ""}`}
               >
                 {item.label}
               </Link>
@@ -404,8 +476,21 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right: Desktop Utilities & Advisor Action / Mobile Menu Trigger */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Right: Desktop Utilities & Order Action / Mobile Menu Trigger */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Desktop Support / FAQ Link (1024px+) */}
+          <Link
+            to="/faq"
+            title="Solar FAQ & Support"
+            aria-label="Solar FAQ and Support"
+            onClick={() => setActiveCategory(null)}
+            className={`hidden lg:inline-flex items-center justify-center p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+              useDarkInk ? "hover:bg-[#171A20]/[0.06]" : "hover:bg-white/15"
+            }`}
+          >
+            <HelpCircle className="w-[18px] h-[18px]" />
+          </Link>
+
           {/* Desktop Region / DISCOM Selector (1024px+) */}
           <button
             type="button"
@@ -416,27 +501,29 @@ export function Header() {
             title="Supported States & DISCOMs"
             aria-label="Supported States and DISCOMs"
             className={`hidden lg:inline-flex items-center justify-center p-2 rounded-[4px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
-              showSolidHeader ? "hover:bg-[#F4F4F4]" : "hover:bg-white/10"
+              useDarkInk ? "hover:bg-[#171A20]/[0.06]" : "hover:bg-white/15"
             }`}
           >
             <Globe className="w-[18px] h-[18px]" />
           </button>
 
-          {/* Desktop Primary Consultation Action (1024px+) */}
-          <button
-            type="button"
-            onClick={() => {
-              setActiveCategory(null);
-              openConsultationDrawer();
-            }}
-            className={`hidden lg:inline-flex items-center justify-center whitespace-nowrap h-8 px-3.5 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
-              showSolidHeader
-                ? "bg-[#171A20] text-[#FFFFFF] hover:bg-[#2C3038]"
-                : "bg-white/15 border border-white/30 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
-            }`}
-          >
-            Talk to Advisor
-          </button>
+          {/* Desktop Primary Order Action (Active in Liquid Glass Bar, MegaMenu & Solid Routes) */}
+          {showOrderCta && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveCategory(null);
+                openConsultationDrawer();
+              }}
+              className={`hidden lg:inline-flex items-center justify-center whitespace-nowrap min-h-[36px] px-4 py-1.5 ml-1 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+                useDarkInk
+                  ? "bg-[#171A20] text-[#FFFFFF] border border-[#171A20] hover:bg-[#2B2F36]"
+                  : "bg-[#171A20] text-[#FFFFFF] border border-white/25 hover:bg-[#2B2F36] shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
+              }`}
+            >
+              Order Solar Panels
+            </button>
+          )}
 
           {/* Mobile & Tablet Menu Trigger (<1024px) */}
           <button
@@ -447,9 +534,11 @@ export function Header() {
             }}
             aria-label="Open navigation menu"
             className={`lg:hidden min-h-[44px] px-3.5 py-1.5 rounded-[4px] text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
-              showSolidHeader
-                ? "bg-[#F4F4F4] text-[#171A20] hover:bg-[#EAEAEA]"
-                : "bg-white/15 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
+              useDarkInk
+                ? "bg-[#171A20]/[0.07] text-[#171A20] hover:bg-[#171A20]/[0.12]"
+                : headerStage === "liquid-glass"
+                  ? "bg-white/20 text-[#FFFFFF] border border-white/20 hover:bg-white/30"
+                  : "bg-white/15 text-[#FFFFFF] backdrop-blur-xs hover:bg-white/25"
             }`}
           >
             Menu
@@ -667,7 +756,7 @@ export function Header() {
                     }}
                     className="w-full h-11 px-6 rounded-[4px] bg-[#F4F4F4] border border-[#E3E4E6] text-[#171A20] text-[14px] font-medium hover:bg-[#EAEAEA] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer"
                   >
-                    Talk to a Solar Advisor
+                    Order Solar Panels
                   </button>
 
                   <div className="flex items-center justify-center gap-4 text-[13px] text-[#5C5E62] pt-1">

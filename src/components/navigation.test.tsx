@@ -2,6 +2,11 @@ import * as React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
+const mockUseRouterState = vi.fn(() => ({
+  location: { pathname: "/" },
+  matches: [{ staticData: { headerTone: "overlay" } }],
+}));
+
 vi.mock("@tanstack/react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@tanstack/react-router")>();
   return {
@@ -31,10 +36,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
       );
     },
     useNavigate: () => vi.fn(),
-    useRouterState: () => ({
-      location: { pathname: "/" },
-      matches: [{ staticData: { headerTone: "overlay" } }],
-    }),
+    useRouterState: () => mockUseRouterState(),
   };
 });
 
@@ -60,9 +62,17 @@ describe("Phase 1 / Workstream 3 Navigation, MegaMenu & Footer Architecture", ()
     expect(html).toBe("");
   });
 
-  it("renders Header with 5 top-level labels, direct Design Studio link (/deploy), lg breakpoint, and no private routes", () => {
+  it("renders Header with 4 top-level labels, custom SVG BrandLogo, icon-only hero utilities, and no private routes", () => {
+    mockUseRouterState.mockReturnValue({
+      location: { pathname: "/" },
+      matches: [{ staticData: { headerTone: "overlay" } }],
+    });
     const html = renderToStaticMarkup(<Header />);
     const decoded = html.replace(/&amp;/g, "&");
+
+    expect(decoded).toContain('aria-label="WAVENOX Home"');
+    expect(decoded).toContain("<svg");
+    expect(decoded).toContain('<span class="sr-only">WAVENOX</span>');
 
     expect(decoded).toContain('aria-label="Main Navigation"');
     const navMatch = decoded.match(
@@ -72,20 +82,30 @@ describe("Phase 1 / Workstream 3 Navigation, MegaMenu & Footer Architecture", ()
     const navHtml = navMatch![1];
 
     const navLabels = [...navHtml.matchAll(/<a\b[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]);
-    expect(navLabels).toEqual([
-      "Solar Panels",
-      "Solar + Storage",
-      "Commercial",
-      "Design Studio",
-      "Discover",
-    ]);
+    expect(navLabels).toEqual(["Solar Panels", "Solar + Storage", "Commercial", "Discover"]);
+    expect(navHtml).not.toContain("Design Studio");
 
-    expect(navHtml).toContain('href="/deploy"');
-    expect(navHtml).not.toMatch(/href="\/deploy"[^>]*aria-expanded/);
+    expect(decoded).toContain('aria-label="Solar FAQ and Support"');
+    expect(decoded).toContain('aria-label="Supported States and DISCOMs"');
+    expect(decoded).not.toContain("Talk to Advisor");
+
     expect(html).toContain("hidden lg:flex");
     expect(html).toContain("lg:hidden");
     expect(html).not.toContain("/ops");
     expect(html).not.toContain("/portal");
+  });
+
+  it("renders Liquid Glass header with Order Solar Panels CTA on solid sub-pages", () => {
+    mockUseRouterState.mockReturnValue({
+      location: { pathname: "/deploy" },
+      matches: [{ staticData: { headerTone: "solid" } }],
+    });
+    const html = renderToStaticMarkup(<Header />);
+    const decoded = html.replace(/&amp;/g, "&");
+
+    expect(decoded).toContain("header-liquid-glass-light");
+    expect(decoded).toContain("Order Solar Panels");
+    expect(decoded).not.toContain("Talk to Advisor");
   });
 
   it("renders unified clickable MegaMenu cards with lazy 640w imagery, zero nested links, and unique destinations per menu", () => {
