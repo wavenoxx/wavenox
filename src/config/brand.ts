@@ -12,7 +12,7 @@ export const DEFAULT_BRAND_NAME = "WAVENOX";
 /**
  * Neutral brand name used until a statutory corporate entity (e.g. Pvt. Ltd. / LLP)
  * is explicitly configured and verified by the business owner via environment variables.
- * Never invent a corporate registration or label live customer pages as a "portfolio concept".
+ * Never invent a corporate registration or label live customer pages as a demonstration concept.
  */
 export const DEFAULT_LEGAL_NAME = "WAVENOX";
 export const DEFAULT_SITE_URL = "https://wavenox.in";
@@ -191,7 +191,7 @@ export function buildBrandConfig(env: PublicEnvironment = {}): BrandConfig {
   const legalName = customLegalName || DEFAULT_LEGAL_NAME;
   const legalEntityNotice = legalEntityVerified
     ? `Operated by ${legalName}. Project-specific installation and EPC execution scopes are governed by your formal execution agreement.`
-    : `${name} operates as a customer-facing solar energy brand. Formal contracting entity registration (CIN/GSTIN) and assigned execution partner details require owner verification in platform configuration and are specified directly on your project-specific commercial quotation and installation agreement prior to contract execution.`;
+    : `${name} operates as a customer-facing solar energy brand. Formal contracting entity registration (CIN/GSTIN) and assigned regional execution partner details are verified prior to onboarding and specified directly on your project-specific commercial quotation and execution agreement.`;
 
   const tagline = clean(env.VITE_TAGLINE) || DEFAULT_TAGLINE;
   const domain = validSiteUrl(clean(env.VITE_SITE_URL) || DEFAULT_SITE_URL);

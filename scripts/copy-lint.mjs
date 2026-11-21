@@ -28,7 +28,17 @@ const BANNED_TERMS = [
   "Unleash",
   "Absolute power",
   "Zero compromise",
+  "Tesla",
+  "Powerwall",
+  "portfolio concept",
+  "without subcontractor",
+  "guaranteed engineering",
+  "100% solar self-consumption",
+  "24/7 outage protection",
 ];
+
+// Pattern rules requiring negative lookahead (e.g., preserve SBI's official "Solar Roof Top" loan title)
+const EXTRA_BANNED_REGEXES = [/\bSolar Roof\b(?!\s+Top)/gi];
 
 const BANNED_REGEX = new RegExp(
   `\\b(${BANNED_TERMS.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\b`,
@@ -66,14 +76,17 @@ async function main() {
     const lines = content.split("\n");
 
     lines.forEach((line, index) => {
-      let match;
-      while ((match = BANNED_REGEX.exec(line)) !== null) {
-        violations.push({
-          file: path.relative(path.resolve(__dirname, ".."), filePath),
-          line: index + 1,
-          word: match[0],
-          text: line.trim(),
-        });
+      for (const regex of [BANNED_REGEX, ...EXTRA_BANNED_REGEXES]) {
+        regex.lastIndex = 0;
+        let match;
+        while ((match = regex.exec(line)) !== null) {
+          violations.push({
+            file: path.relative(path.resolve(__dirname, ".."), filePath),
+            line: index + 1,
+            word: match[0],
+            text: line.trim(),
+          });
+        }
       }
     });
   }
@@ -84,11 +97,13 @@ async function main() {
       console.error(`  ${v.file}:${v.line} -> "${v.word}": ${v.text}`);
     }
     console.error(
-      "\nPlease replace banned buzzwords with calm, plain Hyderabad engineering language.",
+      "\nPlease replace banned buzzwords or unverified claims with calm, plain Pan-India solar engineering language.",
     );
     process.exit(1);
   } else {
-    console.log("✅ Copy lint passed: 0 banned marketing buzzwords found in src/.");
+    console.log(
+      "✅ Copy lint passed: 0 banned marketing buzzwords, trademark terms, or unverified claims found in src/.",
+    );
   }
 }
 

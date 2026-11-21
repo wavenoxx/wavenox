@@ -1,5 +1,7 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { expect, it } from "vitest";
-import { protectResponse } from "./response-policy";
+import { CSP, protectResponse } from "./response-policy";
 
 it("protects private SSR, server-function and failed API responses without caching them", () => {
   for (const path of [
@@ -121,4 +123,31 @@ it("never compresses private, no-store, HEAD, disallowed-q, pre-encoded, or non-
     const out = protectResponse(response, request, true);
     expect(out.headers.get("content-encoding")).not.toBe("gzip");
   }
+});
+
+it("allows Pan-India Google Ads, GA4, GTM, Meta Pixel, and Turnstile origins identically in server CSP and _headers", () => {
+  for (const origin of [
+    "https://challenges.cloudflare.com",
+    "https://www.googletagmanager.com",
+    "https://www.googleadservices.com",
+    "https://googleads.g.doubleclick.net",
+    "https://www.google-analytics.com",
+    "https://analytics.google.com",
+    "https://stats.g.doubleclick.net",
+    "https://www.google.com",
+    "https://connect.facebook.net",
+    "https://www.facebook.com",
+    "https://bid.g.doubleclick.net",
+  ]) {
+    expect(CSP).toContain(origin);
+  }
+
+  const headersFile = readFileSync(resolve(process.cwd(), "public/_headers"), "utf-8");
+  const cspLine = headersFile
+    .split("\n")
+    .map((l) => l.trim())
+    .find((l) => l.startsWith("Content-Security-Policy:"));
+  expect(cspLine).toBeDefined();
+  const staticCsp = cspLine!.replace(/^Content-Security-Policy:\s*/, "").trim();
+  expect(staticCsp).toBe(CSP);
 });

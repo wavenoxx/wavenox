@@ -26,7 +26,7 @@ const OFFICIAL_STEPS = [
     subtitle: "Consumer Profile & Service Verification",
     actor: "Consumer / WAVENOX Liaison",
     description:
-      "Register on the National Portal (pmsuryaghar.gov.in) by selecting your State, DISCOM (e.g. TGSPDCL), entering your Consumer Account Number, linked mobile number, and active email address.",
+      "Register on the National Portal (pmsuryaghar.gov.in) by selecting your State, DISCOM (e.g. TGSPDCL, MSEDCL, BESCOM, UGVCL, UPPCL, or KSEB), entering your Consumer Account Number, linked mobile number, and active email address.",
     requirements: [
       "Electricity Bill Consumer Number (USC)",
       "Linked Mobile Number with OTP verification",
@@ -36,7 +36,7 @@ const OFFICIAL_STEPS = [
     stepNumber: "02",
     title: "Technical Feasibility Approval (TFA)",
     subtitle: "Distribution Transformer Feeder Clearance",
-    actor: "State DISCOM (TGSPDCL / APEPDCL)",
+    actor: "Respective State DISCOM",
     description:
       "The local DISCOM divisional office evaluates feeder capacity on your distribution transformer (DT). Under Ministry of Power 2024 Rules, residential installations up to 10 kW are granted simplified technical feasibility without separate load studies.",
     requirements: [
@@ -110,7 +110,7 @@ const DOCUMENT_CHECKLIST = [
     title: "Terrace / Rooftop Ownership Proof",
     format: "Municipal tax receipt or title deed",
     detail:
-      "Latest Municipal Corporation Property Tax receipt (e.g. GHMC/GHMC assessment) proving terrace access rights.",
+      "Latest Municipal Corporation, Gram Panchayat, or Society Property Tax receipt proving rooftop ownership or terrace access rights.",
     critical: true,
   },
   {

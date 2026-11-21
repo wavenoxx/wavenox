@@ -18,6 +18,7 @@ import { BUSINESS } from "../config/business";
 import { CONSULTATION_EVENT } from "../lib/consultation";
 import { BrandLogo } from "../components/BrandLogo";
 import { initTelemetry } from "../lib/telemetry";
+import { initAdTracking, trackPageView } from "../lib/analytics";
 import { LanguageProvider } from "../lib/i18n";
 
 const LazyConsultationDrawer = lazy(() =>
@@ -142,6 +143,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         : []),
       { property: "og:title", content: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}` },
       { property: "og:description", content: BRAND_CONFIG.description },
+      { property: "og:site_name", content: BRAND_CONFIG.name },
+      { property: "og:locale", content: "en_IN" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: BRAND_CONFIG.domain },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/icon-512.png` },
@@ -173,26 +176,47 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const orgId = `${BRAND_CONFIG.domain}/#organization`;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: `${BRAND_CONFIG.name} Architectural Solar`,
-    legalName: BRAND_CONFIG.legalName,
-    url: BRAND_CONFIG.domain,
-    logo: `${BRAND_CONFIG.domain}/icon-512.png`,
-    image: `${BRAND_CONFIG.domain}/icon-512.png`,
-    telephone: BRAND_CONFIG.contact.phoneDisplay,
-    email: BRAND_CONFIG.contact.email,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: BUSINESS.primaryCity,
-      addressRegion: BUSINESS.primaryRegion,
-      addressCountry: "IN",
-    },
-    areaServed: {
-      "@type": "State",
-      name: "Telangana",
-    },
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": orgId,
+        name: `${BRAND_CONFIG.name} Architectural Solar`,
+        legalName: BRAND_CONFIG.legalName,
+        url: BRAND_CONFIG.domain,
+        logo: `${BRAND_CONFIG.domain}/icon-512.png`,
+        image: `${BRAND_CONFIG.domain}/icon-512.png`,
+        telephone: BRAND_CONFIG.contact.phoneDisplay,
+        email: BRAND_CONFIG.contact.email,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: BUSINESS.primaryCity,
+          addressRegion: BUSINESS.primaryRegion,
+          addressCountry: "IN",
+        },
+        areaServed: {
+          "@type": "Country",
+          name: "India",
+        },
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: BRAND_CONFIG.contact.phone.dial,
+          email: BRAND_CONFIG.contact.email,
+          contactType: "customer service",
+          areaServed: "IN",
+          availableLanguage: ["English", "Hindi", "Telugu"],
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${BRAND_CONFIG.domain}/#website`,
+        url: BRAND_CONFIG.domain,
+        name: BRAND_CONFIG.name,
+        publisher: { "@id": orgId },
+      },
+    ],
   };
 
   return (
@@ -218,8 +242,11 @@ function RootComponent() {
 
   useEffect(() => {
     initTelemetry();
+    initAdTracking();
+    trackPageView(router.state.location.pathname);
     const unsub = router.subscribe("onResolved", () => {
       initTelemetry();
+      trackPageView(router.state.location.pathname);
     });
     return () => {
       unsub();

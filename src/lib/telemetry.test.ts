@@ -277,4 +277,65 @@ describe("Marketing Attribution & Telemetry Privacy Engine (Step 5 — Phase B)"
     expect(sanitized.referrer).toBeUndefined();
     expect(sanitized.attribution_channel).toBe("unknown");
   });
+
+  it("8. persists attribution across sessions via 90-day localStorage TTL and recognizes paid_social boosted without typo", () => {
+    expect(classifyAttributionChannel({ utm_source: "meta", utm_medium: "boosted" })).toBe(
+      "paid_social",
+    );
+
+    const localStore = new Map<string, string>();
+    const sessionStore = new Map<string, string>();
+    const makeStore = (m: Map<string, string>) => ({
+      getItem: (k: string) => m.get(k) ?? null,
+      setItem: (k: string, v: string) => {
+        m.set(k, v);
+      },
+      removeItem: (k: string) => {
+        m.delete(k);
+      },
+      clear: () => m.clear(),
+    });
+
+    Object.defineProperty(globalThis, "window", {
+      value: {
+        location: {
+          href: "https://wavenox.in/solar-quote?utm_source=google&utm_medium=cpc&gclid=Cj0KCQ_90day",
+          origin: "https://wavenox.in",
+          pathname: "/solar-quote",
+          search: "?utm_source=google&utm_medium=cpc&gclid=Cj0KCQ_90day",
+        },
+        sessionStorage: makeStore(sessionStore),
+        localStorage: makeStore(localStore),
+      },
+      configurable: true,
+      writable: true,
+    });
+    Object.defineProperty(globalThis, "document", {
+      value: { referrer: "https://www.google.com/" },
+      configurable: true,
+      writable: true,
+    });
+
+    const first = recordTelemetryNavigation(undefined, undefined, new Date().toISOString());
+    expect(first.click_id_value).toBe("Cj0KCQ_90day");
+
+    // Simulate new tab / session cleared while localStorage keeps 90-day attribution
+    sessionStore.clear();
+    Object.assign(globalThis.window.location, {
+      href: "https://wavenox.in/deploy",
+      pathname: "/deploy",
+      search: "",
+    });
+    const recovered = getStoredTelemetry();
+    expect(recovered.click_id_value).toBe("Cj0KCQ_90day");
+    expect(recovered.first_touch_source).toBe("google");
+    expect(recovered.conversion_path).toBe("/deploy");
+
+    // Simulate expired 91-day record in storage -> automatically cleared
+    const raw = JSON.parse(localStore.get("wavenox_attribution_v2")!) as { expiresAt: number };
+    raw.expiresAt = Date.now() - 1000;
+    localStore.set("wavenox_attribution_v2", JSON.stringify(raw));
+    sessionStore.clear();
+    expect(getStoredTelemetry()).toEqual({});
+  });
 });

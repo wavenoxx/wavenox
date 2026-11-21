@@ -17,6 +17,7 @@ const pages = [
   "/deploy",
   "/net-metering",
   "/architects",
+  "/solar-quote",
   "/legal/privacy",
   "/legal/terms",
 ];

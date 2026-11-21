@@ -68,7 +68,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
           { label: "Service Areas & Priority Hubs", to: "/service-areas" },
           {
             label: "Talk to a Solar Advisor",
-            action: () => openConsultationDrawer("residential"),
+            action: () => openConsultationDrawer("independent_home"),
           },
         ],
       },
@@ -110,7 +110,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
           { label: "10-Year Battery Warranty", to: "/warranty" },
           {
             label: "Talk to a Storage Advisor",
-            action: () => openConsultationDrawer("omnigrid"),
+            action: () => openConsultationDrawer("villa"),
           },
         ],
       },
@@ -183,7 +183,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
         title: "Company & Governance",
         links: [
           { label: "Our Story & Delivery Model", to: "/our-story" },
-          { label: "Engineering Case Study", to: "/about-this-project" },
+          { label: "Quick Solar Quote", to: "/solar-quote" },
           { label: "Privacy & Data Protection", to: "/legal/privacy" },
           { label: "Talk to a Solar Advisor", action: () => openConsultationDrawer() },
         ],

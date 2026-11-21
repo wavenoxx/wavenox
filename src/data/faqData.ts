@@ -47,7 +47,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Subsidies & Surya Ghar",
     question: "Do I have to visit DISCOM offices or government departments myself?",
     answer:
-      "No. WAVENOX handles the entire regulatory liaison process end-to-end. Our regulatory engineering team creates your National Portal registration, submits technical single-line diagrams (SLD) to your local DISCOM (such as TGSPDCL, TGNPDCL, APEPDCL, APSPDCL, or BESCOM), secures the feasibility sanction, coordinates the physical meter inspection, and submits the commissioning certificate.",
+      "No. WAVENOX coordinates regulatory liaison workflow end-to-end. Our engineering coordination team prepares your National Portal registration, assists with technical single-line diagrams (SLD) for your state DISCOM (including TGSPDCL, MSEDCL, BESCOM, UGVCL, UPPCL, KSEB, and other Indian utilities), tracks feasibility clearance, coordinates physical meter inspection, and supports commissioning submission.",
     featured: true,
   },
   {
@@ -67,7 +67,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Omnigrid & Outages",
     question: "How quickly does Omnigrid take over during a power outage?",
     answer:
-      "Omnigrid integrates high-speed solid-state islanding switchgear that disconnects your home from the utility grid and restores microgrid power in under 20 milliseconds (<20 ms). This transition is instantaneous—desktop computers, home automation servers, Wi-Fi mesh routers, and luxury home entertainment systems stay powered without a flicker or reboot.",
+      "Omnigrid integrates high-speed solid-state islanding switchgear that disconnects your home from the utility grid and restores microgrid power in under 20 milliseconds (<20 ms). Desktop workstations, home automation controllers, Wi-Fi routers, and household electronics stay powered through brief transfer transitions.",
     featured: true,
   },
   {
@@ -123,7 +123,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Terrace & Pergolas",
     question: "How do WAVENOX elevated structures perform during cyclones and monsoons?",
     answer:
-      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Structures are engineered in accordance with IS 875 (Part 3) for the site's basic wind speed — e.g. 44 m/s (158 km/h) in Hyderabad and 50 m/s in coastal zones — ensuring total structural stability through severe monsoonal squalls.",
+      "All mounting structures are fabricated from structural 6063-T6 architectural anodized aluminum and heavy-gauge hot-dip galvanized steel (80+ micron zinc coating). Structures are engineered in accordance with IS 875 (Part 3) for your site's wind zone — spanning inland corridors (39–47 m/s) to high-velocity coastal cyclonic zones (up to 50–55 m/s) — ensuring structural stability through severe monsoonal squalls.",
     featured: false,
   },
 
@@ -143,7 +143,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "TOPCon Technology",
     question: "Do solar panels produce less power when the ambient temperature is 42°C+?",
     answer:
-      "All solar panels experience reduced voltage as temperatures rise above 25°C STC. Under peak summer ambient temperatures of 44°C in Hyderabad, rooftop cell temperatures typically reach ~65°C–70°C (ΔT ≈ 45°C). At -0.30%/°C, thermal derating is ~13.5% (yielding 86.5% relative output), compared to ~18.0% loss (-0.40%/°C, yielding 82.0% output) for legacy PERC. This delivers ~5.5% higher actual power output under harsh midday summer heat: [(86.5 − 82.0) / 82.0 ≈ +5.49%].",
+      "All solar panels experience reduced voltage as temperatures rise above 25°C STC. Under peak summer ambient temperatures of 44°C across high-heat Indian corridors, rooftop cell temperatures typically reach ~65°C–70°C (ΔT ≈ 45°C). At -0.30%/°C, thermal derating is ~13.5% (yielding 86.5% relative output), compared to ~18.0% loss (-0.40%/°C, yielding 82.0% output) for legacy PERC. This delivers ~5.5% higher modeled output under harsh midday summer heat: [(86.5 − 82.0) / 82.0 ≈ +5.49%].",
     featured: true,
   },
   {
@@ -179,9 +179,9 @@ export const FAQ_DATA: FaqTopic[] = [
     id: "discom-banking-rules",
     category: "billing",
     categoryLabel: "Net Metering & DISCOMs",
-    question: "What are the solar banking rules in Telangana, Andhra Pradesh, and Karnataka?",
+    question: "How do state DISCOM solar net-metering and banking rules work across India?",
     answer:
-      "In Telangana (TGSPDCL / TGNPDCL) and Andhra Pradesh (APEPDCL / APSPDCL), excess solar credits bank month-to-month and settle annually at the tariff determined by the respective State Electricity Regulatory Commission (SERC). In Karnataka (BESCOM), net metering is available for domestic consumers up to sanctioned transformer capacity. WAVENOX coordinates all utility tariff filings automatically.",
+      "Across major Indian DISCOMs (including TGSPDCL, MSEDCL, UGVCL, BESCOM, UPPCL, and KSEB), residential net metering banks surplus daytime exports month-to-month and settles remaining credits at annual SERC-notified APPC rates. Systems up to 10 kW benefit from simplified feasibility clearance under Ministry of Power guidelines, and WAVENOX coordinates all utility documentation with regional execution teams.",
     featured: false,
   },
   {
@@ -210,7 +210,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Commercial & Tax (Section 33)",
     question: "What is the typical return on investment (ROI) for commercial solar in India?",
     answer:
-      "Commercial and industrial tariffs in Telangana (TGSPDCL/TGNPDCL HT tariffs) range between ₹8.50 and ₹11.80 per unit. Combined with Section 33 tax depreciation and GST input tax credits (ITC) where applicable, indicative payback periods typically range between 3.0 and 4.2 years depending on daytime load utilization and corporate tax regime.",
+      "Commercial and industrial DISCOM tariffs across major Indian states typically range between ₹7.50 and ₹12.00 per unit. Combined with Section 33 tax depreciation and GST input tax credits (ITC) where applicable, indicative payback periods typically range between 3.0 and 4.5 years depending on state tariff structure, daytime load utilization, and corporate tax regime.",
     featured: false,
   },
   {
@@ -228,9 +228,9 @@ export const FAQ_DATA: FaqTopic[] = [
     id: "25-year-linear-warranty-breakdown",
     category: "warranty",
     categoryLabel: "Warranties & Service",
-    question: "What does the 25-Year Linear Power Guarantee actually cover?",
+    question: "What does the 25-Year Linear Output Warranty actually cover?",
     answer:
-      "Our 25-Year Linear Performance Guarantee guarantees that power degradation will not exceed 1.0% in Year 1 and will degrade by no more than 0.40% per year thereafter. At Year 25, your solar panels are guaranteed to produce at least 89.4% of their original nameplate output under the Tier-1 OEM manufacturer performance warranty.",
+      "The Tier-1 OEM 25-Year Linear Output Warranty specifies that module power degradation will not exceed 1.0% in Year 1 and no more than 0.40% per year thereafter. At Year 25, panels are warranted by the OEM manufacturer to retain at least 89.4% of original nameplate output.",
     featured: true,
   },
   {
@@ -239,7 +239,7 @@ export const FAQ_DATA: FaqTopic[] = [
     categoryLabel: "Warranties & Service",
     question: "What are the warranty terms for the inverter and battery storage?",
     answer:
-      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Modular LiFePO4 battery storage units carry a 10-year / 6,000-cycle performance warranty guaranteeing at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
+      "Hybrid smart string inverters come with a 10-year comprehensive manufacturer warranty. Modular LiFePO4 battery storage units carry a 10-year / 6,000-cycle OEM performance warranty warranting at least 70% capacity retention at the end of 10 years of daily charge-discharge cycling.",
     featured: false,
   },
   {

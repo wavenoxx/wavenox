@@ -209,7 +209,10 @@ describe("Category A — State-Specific Tariff & Bill Engine (Phase A)", () => {
     expect(VERIFIED_DISCOMS.TGNPDCL.portalUrl).toBe("https://tgnpdcl.com");
     expect(VERIFIED_DISCOMS.APEPDCL.portalUrl).toBe("https://www.apeasternpower.com");
     expect(VERIFIED_DISCOMS.APSPDCL.portalUrl).toBe("https://apspdcl.in");
-    expect(Object.keys(DISCOM_TARIFF_PROFILES)).toHaveLength(11);
+    expect(Object.keys(DISCOM_TARIFF_PROFILES)).toHaveLength(28);
+    expect(DISCOM_TARIFF_PROFILES.UGVCL_PGVCL.state).toBe("Gujarat");
+    expect(DISCOM_TARIFF_PROFILES.JVVNL.state).toBe("Rajasthan");
+    expect(DISCOM_TARIFF_PROFILES.OTHER_INDIA.status).toBe("INDICATIVE");
 
     // Task A & Final Source Patch: TGERC Proceedings No. TGERC/Secy/77/2025 (29.12.2025) ₹2.57/kWh & APERC Reg. No. 4 of 2023 ₹2.09/kWh
     expect(DISCOM_TARIFF_PROFILES.TGSPDCL.exportSettlementRateInr).toBe(2.57);
@@ -413,5 +416,18 @@ describe("Regulatory Engine — Financing, Wind, Depreciation & Physics Invarian
     expect(calculateModuleDegradation(0)).toBe(100);
     expect(calculateModuleDegradation(1)).toBe(99.0);
     expect(calculateModuleDegradation(25)).toBe(89.4);
+  });
+
+  it("ensures every Pan-India regional meteorology profile monthly yield sums exactly to annualKwhPerKw", () => {
+    const entries = Object.entries(CITY_SOLAR_METEOROLOGY);
+    expect(entries.length).toBe(19);
+    for (const [cityKey, profile] of entries) {
+      expect(profile.monthlyYield, cityKey).toHaveLength(12);
+      const sum = profile.monthlyYield.reduce((acc, m) => acc + m.yieldKwh, 0);
+      expect(sum, `${cityKey} monthly sum vs annualKwhPerKw`).toBe(profile.annualKwhPerKw);
+    }
+    expect(getSolarYieldProfileForDiscom("UGVCL_PGVCL").city).toBe("Ahmedabad");
+    expect(getSolarYieldProfileForDiscom("OTHER_INDIA").city).toBe("Pan-India Baseline");
+    expect(getSolarYieldProfileForDiscom("UNKNOWN_BOARD").status).toBe("UNAVAILABLE");
   });
 });

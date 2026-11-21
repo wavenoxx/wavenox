@@ -11,6 +11,7 @@ import {
 } from "@/components/ArchitecturalDossierModal";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { isDemoReferenceCode, isValidReferenceCode } from "@/functions/leads";
+import { trackContactClick } from "@/lib/analytics";
 
 const MAX_SESSION_CONFIRMATION_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -51,8 +52,8 @@ export const Route = createFileRoute("/order/received")({
 const NEXT_STEPS = [
   {
     num: "01",
-    title: "Satellite Roof Geometry Review",
-    desc: "Our solar engineers analyze high-resolution satellite imagery of your roof topology, tilt, and azimuth to verify module placement.",
+    title: "Desktop Roof Layout & Shadow Review",
+    desc: "Our solar engineers review your submitted terrace profile, sanctioned load, and local DISCOM parameters to prepare a preliminary module layout.",
   },
   {
     num: "02",
@@ -213,6 +214,7 @@ function OrderReceivedPage() {
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackContactClick("whatsapp", "order_received")}
                 variant="secondary"
                 tone="light"
                 className="w-full sm:w-auto min-w-[180px]"
@@ -269,6 +271,7 @@ function OrderReceivedPage() {
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackContactClick("whatsapp", "order_received")}
                 variant="secondary"
                 tone="light"
                 className="w-full sm:w-auto min-w-[180px]"

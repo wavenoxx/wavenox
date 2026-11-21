@@ -15,37 +15,27 @@ import {
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/residential")({
   staticData: {
     headerTone: "overlay" as const,
   },
   head: () => ({
-    meta: [
-      { title: `Solar for Homes — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content:
-          "Low-profile residential solar for villas and independent homes in India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and Omnigrid battery backup.",
-      },
-      { property: "og:title", content: `Solar for Homes — ${BRAND_CONFIG.name}` },
-      {
-        property: "og:description",
-        content:
-          "Clean rooftop solar engineered for Indian residential terraces. 25-year warranty and reliable battery backup.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/res-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/residential` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Solar for Homes — ${BRAND_CONFIG.name}`,
+      description:
+        "Low-profile residential solar for villas and independent homes across India. PM Surya Ghar subsidies up to ₹78,000, 25-year OEM warranty, and Omnigrid battery backup.",
+      path: "/residential",
+      imagePath: "/media/res-hero-1600w.jpg",
+    }),
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/residential` },
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["res-hero"].mobileWebp,
+        type: "image/avif",
+        imageSrcSet: media["res-hero"].mobileAvif || media["res-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -53,8 +43,8 @@ export const Route = createFileRoute("/residential")({
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["res-hero"].webp,
+        type: "image/avif",
+        imageSrcSet: media["res-hero"].avif || media["res-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -65,13 +55,23 @@ export const Route = createFileRoute("/residential")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: `${BRAND_CONFIG.name} Residential Solar Architecture`,
+          "@type": "Service",
+          name: `${BRAND_CONFIG.name} Residential Rooftop Solar`,
           url: `${BRAND_CONFIG.domain}/residential`,
           description:
-            "Architectural rooftop solar designed for Indian villas and residences. N-Type TOPCon bifacial modules, terrace pergola structures, IS 875 (Part 3) 44 m/s wind resilience, and PM Surya Ghar subsidy integration.",
+            "Architectural rooftop solar designed for Indian homes and villas. N-Type TOPCon bifacial modules, terrace pergola structures, IS 875 (Part 3) wind resilience, and PM Surya Ghar subsidy integration.",
+          provider: {
+            "@type": "Organization",
+            name: BRAND_CONFIG.name,
+            url: BRAND_CONFIG.domain,
+          },
+          areaServed: "IN",
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Solar for Homes", path: "/residential" },
+      ]),
     ],
   }),
   component: ResidentialPage,
@@ -136,8 +136,8 @@ function ResidentialPage() {
           mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
-          title="Solar Panels"
-          lead="Lower Your Power Bills. Power Your Home."
+          title="Residential Solar Arrays"
+          lead="Engineered High-Yield Solar for Modern Homes."
           actions={
             <>
               <Button

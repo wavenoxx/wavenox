@@ -18,30 +18,17 @@ import { Media } from "@/components/system/Media";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/our-story")({
   head: () => ({
-    meta: [
-      { title: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content:
-          "The founding philosophy of WAVENOX: Why we rejected conventional solar utility scaffolding to engineer integrated, architectural clean energy for India’s finest residences.",
-      },
-      {
-        property: "og:title",
-        content: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
-      },
-      {
-        property: "og:description",
-        content:
-          "Discover how WAVENOX transformed solar from an unsightly utility into an architectural crown for luxury residences.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-design-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/our-story` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Design Ethos & The Reimagination of the Rooftop — ${BRAND_CONFIG.name}`,
+      description:
+        "The founding philosophy of WAVENOX: engineering integrated, architectural rooftop solar and battery storage systems across India.",
+      path: "/our-story",
+      imagePath: "/media/home-design-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/our-story` }],
     scripts: [
       {
@@ -50,8 +37,7 @@ export const Route = createFileRoute("/our-story")({
           "@context": "https://schema.org",
           "@type": "AboutPage",
           name: "WAVENOX Design Ethos and Architectural History",
-          description:
-            "The founding principles of WAVENOX clean energy architecture, rooted in Hyderabad, Telangana.",
+          description: "The founding principles of WAVENOX clean energy architecture across India.",
           publisher: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -60,6 +46,10 @@ export const Route = createFileRoute("/our-story")({
           },
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Our Story", path: "/our-story" },
+      ]),
     ],
   }),
   component: OurStoryPage,

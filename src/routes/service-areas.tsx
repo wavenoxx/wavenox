@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   MapPin,
   Building2,
@@ -14,7 +14,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/system/Button";
 import { BRAND_CONFIG } from "@/config/brand";
+import { INDIAN_STATES_AND_UTS } from "@/config/business";
 import { openConsultationDrawer } from "@/lib/consultation";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export interface ServiceAreasSearch {
   state?: string;
@@ -25,52 +27,37 @@ export const Route = createFileRoute("/service-areas")({
     state: typeof search.state === "string" ? search.state : undefined,
   }),
   head: () => ({
-    meta: [
-      {
-        title: `Service Areas & DISCOM Jurisdictions — ${BRAND_CONFIG.name}`,
-      },
-      {
-        name: "description",
-        content:
-          "WAVENOX architectural solar engineering and DISCOM net-metering synchronization across Telangana, Karnataka, Maharashtra, Andhra Pradesh, Delhi-NCR, Goa, and Tamil Nadu.",
-      },
-      {
-        property: "og:title",
-        content: `Service Areas & DISCOM Jurisdictions — ${BRAND_CONFIG.name}`,
-      },
-      {
-        property: "og:description",
-        content:
-          "Architectural rooftop solar feasibility and bi-directional DISCOM net-metering across India's premier luxury hubs.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/service-areas` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Pan-India Service Areas & DISCOM Jurisdictions — ${BRAND_CONFIG.name}`,
+      description:
+        "WAVENOX Pan-India rooftop solar engineering and DISCOM net-metering coordination across all 28 States & 8 Union Territories, from Gujarat and Rajasthan to Maharashtra, Delhi-NCR, Telangana, Karnataka, and Kerala.",
+      path: "/service-areas",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/service-areas` }],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Organization",
-          name: BRAND_CONFIG.name,
-          url: BRAND_CONFIG.domain,
-          telephone: BRAND_CONFIG.contact.phone.display,
-          email: BRAND_CONFIG.contact.email,
-          areaServed: [
-            "Telangana",
-            "Karnataka",
-            "Maharashtra",
-            "Andhra Pradesh",
-            "Delhi",
-            "Haryana",
-            "Goa",
-            "Tamil Nadu",
-          ],
+          "@type": "Service",
+          name: `${BRAND_CONFIG.name} Pan-India Solar Engineering & Net-Metering Liaison`,
+          url: `${BRAND_CONFIG.domain}/service-areas`,
+          provider: {
+            "@type": "Organization",
+            name: BRAND_CONFIG.name,
+            url: BRAND_CONFIG.domain,
+          },
+          areaServed: {
+            "@type": "Country",
+            name: "India",
+          },
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Service Areas & DISCOMs", path: "/service-areas" },
+      ]),
     ],
   }),
   component: ServiceAreasPage,
@@ -267,6 +254,127 @@ export const REGION_HUBS: RegionHub[] = [
     notes:
       "High corrosion-resistant anodized aluminum architecture designed for coastal humidity and salt spray along the ECR corridor. TNERC grid export tariff compliance.",
   },
+  {
+    id: "gujarat",
+    state: "Gujarat",
+    headline: "Ahmedabad, Gandhinagar, Surat & Vadodara",
+    discoms: ["UGVCL / PGVCL / MGVCL / DGVCL", "Torrent Power (Ahmedabad / Surat)"],
+    keyDistricts: [
+      "Ahmedabad & Gandhinagar (SG Highway, Bopal, Sindhu Bhavan)",
+      "Surat & Bharuch (Vesu, Piplod & Industrial GIDC)",
+      "Vadodara & Rajkot (Alkapuri, Kalawad Road)",
+    ],
+    headquarters: "Service Coverage: All Gujarat Districts (Coordinated via WAVENOX Network)",
+    irradiance: "5.7 – 6.2 kWh/m²/day",
+    annualGenerationPerKw: "1,650 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 39 – 50 m/s (Inland & Coastal)",
+    netMeteringPortal: "GERC & PM Surya Ghar National Portal",
+    netMeteringPortalUrl: "https://pmsuryaghar.gov.in",
+    leadTimeWeeks: "2 to 4 Weeks (GERC Simplified Feasibility to Meter Sync)",
+    notes:
+      "High-insolation semi-arid yields with hydrophobic glass coatings and streamlined GERC net-metering workflows for residential and MSME GIDC roofs.",
+  },
+  {
+    id: "rajasthan",
+    state: "Rajasthan",
+    headline: "Jaipur, Udaipur, Jodhpur & Bikaner",
+    discoms: ["JVVNL (Jaipur Vidyut)", "AVVNL (Ajmer)", "JdVVNL (Jodhpur)"],
+    keyDistricts: [
+      "Jaipur (C-Scheme, Vaishali Nagar, Malviya Nagar)",
+      "Udaipur (Fateh Sagar, Sukhadia Circle)",
+      "Jodhpur, Kota & Bikaner",
+    ],
+    headquarters: "Service Coverage: Across Rajasthan (Coordinated via WAVENOX Network)",
+    irradiance: "5.8 – 6.4 kWh/m²/day",
+    annualGenerationPerKw: "1,700 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 47 m/s (169 km/h)",
+    netMeteringPortal: "RERC & JVVNL Rooftop Solar Portal",
+    netMeteringPortalUrl: "https://energy.rajasthan.gov.in",
+    leadTimeWeeks: "3 to 4 Weeks (JVVNL Feasibility to Bi-Directional Meter)",
+    notes:
+      "Engineered for high ambient summer heat (45°C+) with N-Type TOPCon -0.30%/°C thermal efficiency and elevated sand-dust resistant structures.",
+  },
+  {
+    id: "uttar-pradesh",
+    state: "Uttar Pradesh",
+    headline: "Noida, Greater Noida, Lucknow & Kanpur",
+    discoms: ["PVVNL (Noida / Meerut)", "MVVNL (Lucknow)", "DVVNL / PuVVNL / KESCO"],
+    keyDistricts: [
+      "Noida & Greater Noida (Sector 44, Sector 150, Yamuna Expressway)",
+      "Lucknow (Gomti Nagar, Hazratganj, Indira Nagar)",
+      "Ghaziabad, Kanpur, Agra & Varanasi",
+    ],
+    headquarters: "Service Coverage: Across Uttar Pradesh (UPNEDA Empanelled Partner Network)",
+    irradiance: "5.0 – 5.5 kWh/m²/day",
+    annualGenerationPerKw: "1,460 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 47 m/s (169 km/h)",
+    netMeteringPortal: "UPNEDA & UPPCL Smart Meter Solar Portal",
+    netMeteringPortalUrl: "https://upneda.org.in",
+    leadTimeWeeks: "3 to 5 Weeks (UPNEDA Subsidy + UPPCL Net-Metering)",
+    notes:
+      "Supports central PM Surya Ghar subsidy plus applicable UP state rooftop incentives with hybrid battery backup against summer feeder outages.",
+  },
+  {
+    id: "kerala",
+    state: "Kerala",
+    headline: "Kochi, Thiruvananthapuram, Thrissur & Kozhikode",
+    discoms: ["KSEB (Kerala State Electricity Board Ltd)"],
+    keyDistricts: [
+      "Kochi (Panampilly Nagar, Kakkanad, Marine Drive)",
+      "Thiruvananthapuram (Kowdiar, Technopark Corridor)",
+      "Thrissur, Kottayam & Kozhikode",
+    ],
+    headquarters: "Service Coverage: Across All 14 Kerala Districts (ANERT / KSEB Workflow)",
+    irradiance: "4.8 – 5.4 kWh/m²/day",
+    annualGenerationPerKw: "1,360 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 39 m/s (Heavy Monsoon Rated)",
+    netMeteringPortal: "KSEB Soura Net-Metering Portal",
+    netMeteringPortalUrl: "https://ekiran.kseb.in",
+    leadTimeWeeks: "3 to 4 Weeks (KSEB Feasibility & Inspector Clearance)",
+    notes:
+      "Salt-mist-resistant 6063-T6 aluminum rails and IP65-sealed hybrid inverters engineered for coastal humidity and dual monsoon rainfall.",
+  },
+  {
+    id: "punjab-mp",
+    state: "Punjab, Haryana & MP",
+    headline: "Chandigarh, Ludhiana, Indore & Bhopal",
+    discoms: ["PSPCL (Punjab)", "UHBVN / DHBVN (Haryana)", "MPMKVVCL / MPPKVVCL (MP)"],
+    keyDistricts: [
+      "Chandigarh Tricity, Mohali & Ludhiana",
+      "Indore (Vijay Nagar, Super Corridor) & Bhopal (Arera Colony)",
+      "Jalandhar, Amritsar, Panchkula & Gwalior",
+    ],
+    headquarters: "Service Coverage: Punjab, Chandigarh, Haryana & Madhya Pradesh",
+    irradiance: "5.2 – 5.7 kWh/m²/day",
+    annualGenerationPerKw: "1,520 – 1,560 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 39 – 47 m/s",
+    netMeteringPortal: "State SERC & PM Surya Ghar National Portal",
+    netMeteringPortalUrl: "https://pmsuryaghar.gov.in",
+    leadTimeWeeks: "3 to 4 Weeks (TFA Clearance to Net-Meter Commissioning)",
+    notes:
+      "Turnkey residential villas and industrial MSME captive rooftop arrays with high-yield Section 33 depreciation structuring for factories and warehouses.",
+  },
+  {
+    id: "east-northeast",
+    state: "East & North-East",
+    headline: "Kolkata, Bhubaneswar, Patna, Raipur & Guwahati",
+    discoms: ["WBSEDCL / CESC", "TPCODL / Odisha DISCOMs", "NBPDCL / CSPDCL / APDCL"],
+    keyDistricts: [
+      "Kolkata (Salt Lake, New Town, Ballygunge)",
+      "Bhubaneswar (Patia, Chandrasekharpur) & Cuttack",
+      "Patna, Ranchi, Raipur & Guwahati",
+    ],
+    headquarters:
+      "Service Coverage: West Bengal, Odisha, Bihar, Jharkhand, Chhattisgarh & NE States",
+    irradiance: "4.6 – 5.4 kWh/m²/day",
+    annualGenerationPerKw: "1,260 – 1,500 Units / kW / Year (NASA POWER / PVWatts v8)",
+    cycloneRating: "IS 875 (Part 3) Basic Wind Speed: 44 – 50 m/s (Cyclone-Rated Odisha/WB)",
+    netMeteringPortal: "Regional State DISCOM & PM Surya Ghar Portal",
+    netMeteringPortalUrl: "https://pmsuryaghar.gov.in",
+    leadTimeWeeks: "3 to 5 Weeks (Regional DISCOM Sanction & Inspection)",
+    notes:
+      "Cyclone-reinforced coastal engineering for Odisha and coastal West Bengal plus Special Category MNRE subsidy guidance across North-Eastern states.",
+  },
 ];
 
 function ServiceAreasPage() {
@@ -300,7 +408,7 @@ function ServiceAreasPage() {
           </h1>
           <p className="text-[15px] sm:text-[17px] font-normal leading-relaxed text-[#5C5E62] max-w-2xl mx-auto mt-3 sm:mt-4 text-balance">
             Direct turnkey feasibility, architectural solar integration, and bi-directional DISCOM
-            meter synchronization across India&apos;s premier luxury hubs.
+            meter synchronization across all 28 Indian States and 8 Union Territories.
           </p>
 
           {/* Regional Switcher Pills */}
@@ -392,7 +500,7 @@ function ServiceAreasPage() {
                 <div className="text-[18px] font-semibold text-[#171A20]">
                   {currentHub.cycloneRating}
                 </div>
-                <div className="text-[12px] text-[#5C5E62] mt-0.5">IS 875 Part 3 Certified</div>
+                <div className="text-[12px] text-[#5C5E62] mt-0.5">IS 875 Part 3 Spec</div>
               </div>
             </div>
 
@@ -457,6 +565,87 @@ function ServiceAreasPage() {
           </div>
         </section>
 
+        {/* 2.5. PAN-INDIA STATE & DISCOM DIRECTORY (ALL 28 STATES & 8 UTs) */}
+        <section
+          id="pan-india-directory"
+          className="max-w-5xl mx-auto px-6 mt-20 sm:mt-24 scroll-mt-16"
+        >
+          <div className="space-y-3 mb-8 text-center max-w-2xl mx-auto">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#5C5E62] block">
+              Pan-India Coverage Directory
+            </span>
+            <h2 className="text-[26px] sm:text-[34px] font-medium tracking-tight text-[#171A20]">
+              All 28 Indian States &amp; 8 Union Territories Supported
+            </h2>
+            <p className="text-[14px] text-[#5C5E62] leading-relaxed">
+              Every state DISCOM and PM Surya Ghar DBT subsidy zone is supported through our
+              national coordination desk and authorized regional execution partners.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {(["South", "West", "North", "Central", "East", "North-East"] as const).map(
+              (regionName) => {
+                const entries = INDIAN_STATES_AND_UTS.filter((s) => s.region === regionName);
+                return (
+                  <div
+                    key={regionName}
+                    className="rounded-[8px] border border-[#E3E4E6] bg-[#FFFFFF] overflow-hidden"
+                  >
+                    <div className="px-5 py-3 bg-[#F4F4F4] border-b border-[#E3E4E6] flex items-center justify-between">
+                      <h3 className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#171A20]">
+                        {regionName} India
+                      </h3>
+                      <span className="text-[12px] text-[#5C5E62]">
+                        {entries.length} States / UTs
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:gap-px bg-[#E3E4E6]">
+                      {entries.map((entry) => (
+                        <div
+                          key={entry.name}
+                          className="bg-[#FFFFFF] p-4 flex flex-col justify-between gap-2"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[14px] font-semibold text-[#171A20]">
+                                {entry.name}
+                              </span>
+                              <span className="text-[12px] text-[#5C5E62]">{entry.type}</span>
+                            </div>
+                            <p className="text-[12px] text-[#5C5E62] mt-1 leading-snug">
+                              {entry.discomsSummary}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-3 pt-1 text-[12px] font-medium">
+                            <Link
+                              to="/solar-quote"
+                              search={{
+                                state: entry.name,
+                                discom: entry.defaultDiscomCode,
+                              }}
+                              className="text-[#171A20] hover:underline"
+                            >
+                              Get Quote →
+                            </Link>
+                            <Link
+                              to="/deploy"
+                              search={{ discom: entry.defaultDiscomCode }}
+                              className="text-[#5C5E62] hover:text-[#171A20] hover:underline"
+                            >
+                              Size System →
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              },
+            )}
+          </div>
+        </section>
+
         {/* 3. TECHNICAL VERIFICATION & SUPPORT */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <div className="p-8 sm:p-10 rounded-[10px] bg-[#171A20] text-white flex flex-col md:flex-row items-center justify-between gap-8">
@@ -492,8 +681,8 @@ function ServiceAreasPage() {
             Confirm Feasibility for Your Location
           </h2>
           <p className="text-[14px] sm:text-[16px] text-[#5C5E62] max-w-lg mx-auto">
-            Our structural engineering team will review your rooftop satellite orientation, slab
-            capacity, and DISCOM sanctioned load within 24 hours.
+            Our solar engineering team will review your rooftop shading geometry, slab layout, and
+            DISCOM sanctioned load before on-site execution.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
             <Button to="/deploy" variant="primary" tone="light" className="w-full sm:w-auto">

@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { SystemConfigurator } from "@/components/SystemConfigurator";
 import { BRAND_CONFIG } from "@/config/brand";
 import { media } from "@/config/media";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/deploy")({
   validateSearch: (search: Record<string, unknown>): { bill?: number; discom?: string } => {
@@ -23,30 +24,20 @@ export const Route = createFileRoute("/deploy")({
     };
   },
   head: () => ({
-    meta: [
-      { title: `Design Studio & System Sizing — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content:
-          "Design your custom architectural solar system. Interactive sizing tiers, Omnigrid battery storage, state DISCOM net-metering integration, and PM Surya Ghar subsidy calculation.",
-      },
-      { property: "og:title", content: `Design Studio — ${BRAND_CONFIG.name}` },
-      {
-        property: "og:description",
-        content:
-          "Configure modular solar capacity, battery autonomy, and 25-year wealth generation.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/deploy` },
-      { property: "og:type", content: "website" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Design Studio & System Sizing — ${BRAND_CONFIG.name}`,
+      description:
+        "Design your custom architectural solar system. Interactive sizing tiers, Omnigrid battery storage, Pan-India DISCOM net-metering integration, and PM Surya Ghar subsidy calculation.",
+      path: "/deploy",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/deploy` },
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["studio-villa"].webp,
+        type: "image/avif",
+        imageSrcSet: media["studio-villa"].avif || media["studio-villa"].webp,
         imageSizes: "(max-width: 420px) 270px, (max-width: 768px) 100vw, 58vw",
         fetchPriority: "high",
       },
@@ -67,9 +58,13 @@ export const Route = createFileRoute("/deploy")({
             priceCurrency: "INR",
           },
           description:
-            "Interactive architectural rooftop solar sizing calculator with DISCOM net-metering integration and PM Surya Ghar subsidy modeling.",
+            "Interactive architectural rooftop solar sizing calculator with Pan-India DISCOM net-metering integration and PM Surya Ghar subsidy modeling.",
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Solar Design Studio", path: "/deploy" },
+      ]),
     ],
   }),
   component: DeployPage,

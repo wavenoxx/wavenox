@@ -278,14 +278,17 @@ function PrivacyPage() {
           {/* Section 7 */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-[#171A20] border-b border-[#E2E8F0] pb-2">
-              7. Cookie-less Analytics &amp; Bot Protection
+              7. First-Party Attribution, Bot Protection &amp; Conversion Measurement
             </h2>
             <p>
-              We respect user privacy and intentionally do not deploy tracking cookies,
-              fingerprinting pixels, or cross-site profiling scripts. We use privacy-centric,
-              cookie-less Cloudflare Web Analytics for aggregated traffic telemetry. Form
-              submissions utilize Cloudflare Turnstile to prevent automated spam abuse without
-              tracking users across websites.
+              To associate consultation requests accurately with regional campaigns, we store
+              first-party campaign parameters (such as UTM tags and click identifiers) in your
+              browser&apos;s storage for up to 90 days without storing personal identity inside URL
+              telemetry. Form submissions may utilize Cloudflare Turnstile for automated spam
+              prevention. When explicitly enabled for active advertising campaigns via site
+              configuration, privacy-scoped conversion events (Google Ads, Google Analytics 4, or
+              Meta Pixel) are fired only upon genuine user interaction or live lead submission, with
+              optional SHA-256 hashed contact verification.
             </p>
           </section>
         </div>

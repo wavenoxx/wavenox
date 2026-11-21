@@ -4,11 +4,13 @@ import { Phone, MessageSquare, Mail, ArrowUpRight } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
 import { BrandLogo } from "./BrandLogo";
 import { openConsultationDrawer } from "@/lib/consultation";
+import { trackContactClick } from "@/lib/analytics";
 
 export interface FooterLinkItem {
   label: string;
   to?: string;
   search?: Record<string, string>;
+  hash?: string;
   href?: string;
   action?: () => void;
 }
@@ -42,16 +44,12 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     heading: "Service & Company",
     links: [
-      { label: "Service Areas & Hubs", to: "/service-areas" },
+      { label: "Pan-India Service Areas", to: "/service-areas" },
+      { label: "Quick Solar Quote", to: "/solar-quote" },
       {
-        label: "Telangana (TGSPDCL / TGNPDCL)",
+        label: "Maharashtra & West Grid",
         to: "/service-areas",
-        search: { state: "telangana" },
-      },
-      {
-        label: "Andhra Pradesh (APEPDCL / APSPDCL)",
-        to: "/service-areas",
-        search: { state: "andhra-pradesh" },
+        search: { state: "maharashtra" },
       },
       { label: "Our Story & Delivery Model", to: "/our-story" },
       { label: "Talk to a Solar Advisor", action: () => openConsultationDrawer() },
@@ -63,7 +61,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Calculation Disclosures", to: "/legal/disclosures" },
       { label: "Privacy Policy (DPDP 2023)", to: "/legal/privacy" },
       { label: "Terms of Service", to: "/legal/terms" },
-      { label: "Engineering Case Study", to: "/about-this-project" },
+      { label: "Warranty Coverage Scope", to: "/warranty", hash: "coverage" },
       { label: "PM Surya Ghar Portal", href: "https://pmsuryaghar.gov.in" },
     ],
   },
@@ -118,6 +116,7 @@ export function Footer() {
                       <Link
                         to={item.to}
                         search={item.search}
+                        hash={item.hash}
                         className="min-h-[26px] py-0.5 hover:text-[#171A20] transition-colors inline-flex items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
                       >
                         {item.label}
@@ -145,6 +144,7 @@ export function Footer() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a
               href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
+              onClick={() => trackContactClick("phone", "footer")}
               className="min-h-[28px] py-1 inline-flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
             >
               <Phone className="w-4 h-4 text-[#F57C00] shrink-0" aria-hidden="true" />
@@ -154,6 +154,7 @@ export function Footer() {
               href={BRAND_CONFIG.contact.whatsapp.link}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackContactClick("whatsapp", "footer")}
               className="min-h-[28px] py-1 inline-flex items-center gap-2 hover:text-[#171A20] transition-colors rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171A20]"
             >
               <MessageSquare className="w-4 h-4 text-[#F57C00] shrink-0" aria-hidden="true" />
@@ -198,10 +199,10 @@ export function Footer() {
             </Link>
             <span aria-hidden="true">·</span>
             <Link
-              to="/about-this-project"
+              to="/solar-quote"
               className="min-h-[26px] min-w-[28px] py-0.5 inline-flex items-center justify-center text-[#393C41] hover:text-[#171A20] transition-colors"
             >
-              Colophon
+              Quick Quote
             </Link>
             <span aria-hidden="true">·</span>
             <Link

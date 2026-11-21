@@ -9,9 +9,11 @@ import {
   ShieldCheck,
   AlertCircle,
 } from "lucide-react";
-import { estimate } from "@/config/solar";
+import { DISCOM_REGION_GROUPS, estimate } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
+import { trackLeadConversion } from "@/lib/analytics";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +29,7 @@ const PROPERTY_TIERS = [
     id: "villa" as const,
     title: "Luxury Villa",
     capacity: "15 kW – 25 kW",
-    desc: "Single-family residences requiring flush architectural mounting and 24/7 outage protection.",
+    desc: "Single-family residences requiring flush architectural mounting and automatic outage backup readiness.",
     icon: Home,
   },
   {
@@ -51,6 +53,12 @@ export interface ConsultationDrawerProps {
   initialTier?: string;
 }
 
+function normalizeTier(tier?: string): "villa" | "independent_home" | "commercial" {
+  if (tier === "commercial") return "commercial";
+  if (tier === "independent_home" || tier === "residential") return "independent_home";
+  return "villa";
+}
+
 export function ConsultationDrawer({
   defaultOpen = false,
   initialTier,
@@ -60,29 +68,29 @@ export function ConsultationDrawer({
   const [step, setStep] = React.useState<1 | 2 | 3>(1);
   const [selectedTier, setSelectedTier] = React.useState<
     "villa" | "independent_home" | "commercial"
-  >(
-    initialTier === "commercial" || initialTier === "independent_home" || initialTier === "villa"
-      ? initialTier
-      : "villa",
-  );
+  >(() => normalizeTier(initialTier));
   const [monthlyBill, setMonthlyBill] = React.useState(12000);
+  const [discomCode, setDiscomCode] = React.useState("");
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [city, setCity] = React.useState("Hyderabad");
+  const [city, setCity] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
   const [hpExtra, setHpExtra] = React.useState("");
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
   const resetForm = React.useCallback(() => {
     setStep(1);
+    setDiscomCode("");
     setName("");
     setPhone("");
-    setCity("Hyderabad");
+    setCity("");
     setPinCode("");
     setConsentGiven(false);
     setHpExtra("");
+    setTurnstileToken(undefined);
     setSubmitError(null);
   }, []);
 
@@ -90,9 +98,10 @@ export function ConsultationDrawer({
     () =>
       estimate({
         monthlyBillInr: monthlyBill,
+        discomCode: discomCode || undefined,
         segment: selectedTier === "commercial" ? "commercial" : "residential",
       }),
-    [monthlyBill, selectedTier],
+    [monthlyBill, discomCode, selectedTier],
   );
   const estimatedKw = calculation.recommendedKw;
   const estimatedAnnualSavings = calculation.annualSavingsInr;
@@ -102,12 +111,7 @@ export function ConsultationDrawer({
     function handleEvent(e: Event) {
       const customEvent = e as CustomEvent<{ tier?: string }>;
       if (customEvent.detail?.tier) {
-        const t = customEvent.detail.tier;
-        if (t === "commercial" || t === "independent_home" || t === "villa") {
-          setSelectedTier(t);
-        } else {
-          setSelectedTier("villa");
-        }
+        setSelectedTier(normalizeTier(customEvent.detail.tier));
       }
       setIsOpen(true);
       setSubmitError(null);
@@ -170,6 +174,7 @@ export function ConsultationDrawer({
           city,
           pin_code: pinCode.trim() || undefined,
           property_tier: selectedTier,
+          discom_code: discomCode || undefined,
           monthly_bill_inr: monthlyBill,
           system_kw: estimatedKw,
           battery_units: 0,
@@ -177,6 +182,7 @@ export function ConsultationDrawer({
           consent_given: true,
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
+          turnstile_token: turnstileToken,
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -189,6 +195,16 @@ export function ConsultationDrawer({
         setIsSubmitting(false);
         return;
       }
+
+      void trackLeadConversion({
+        referenceCode: res.referenceCode,
+        source: "drawer",
+        propertyTier: selectedTier,
+        discomCode: discomCode || undefined,
+        valueInr: calculation.netInr,
+        phone,
+        isDemo: Boolean(res.isDemo),
+      });
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem(
@@ -309,8 +325,34 @@ export function ConsultationDrawer({
                 2. Average Monthly Electricity Bill
               </h3>
               <p className="text-[12px] text-[#5C5E62] mt-0.5">
-                Calibrate based on your typical monthly power bill.
+                Calibrate based on your state DISCOM and typical monthly power bill.
               </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <label
+                htmlFor="drawer-discom"
+                className="block text-[12px] font-medium text-[#171A20]"
+              >
+                State / Electricity Board (Optional)
+              </label>
+              <select
+                id="drawer-discom"
+                value={discomCode}
+                onChange={(e) => setDiscomCode(e.target.value)}
+                className="w-full h-10 px-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[13px] text-[#171A20] focus:bg-[#FFFFFF] focus:border-[#171A20] focus:outline-none"
+              >
+                <option value="">All-India National Baseline (Auto)</option>
+                {DISCOM_REGION_GROUPS.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.discoms.map((d) => (
+                      <option key={d.code} value={d.code}>
+                        {d.state} — {d.code}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
             </div>
 
             <div className="bg-[#F4F4F4] p-4 rounded-[4px] border border-[#E3E4E6] space-y-3">
@@ -446,7 +488,7 @@ export function ConsultationDrawer({
                     id="drawer-city"
                     type="text"
                     required
-                    placeholder="e.g. Hyderabad, Bengaluru"
+                    placeholder="e.g. Mumbai, Pune, Ahmedabad, Hyderabad, Bengaluru"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
@@ -466,7 +508,7 @@ export function ConsultationDrawer({
                     maxLength={6}
                     pattern="[1-9][0-9]{5}"
                     inputMode="numeric"
-                    placeholder="e.g. 500033"
+                    placeholder="e.g. 400001"
                     value={pinCode}
                     onChange={(e) => setPinCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                     className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
@@ -525,6 +567,8 @@ export function ConsultationDrawer({
                   .
                 </label>
               </div>
+
+              <TurnstileWidget onToken={setTurnstileToken} />
 
               {submitError && (
                 <div className="p-3.5 rounded-[6px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px] flex items-center gap-2">

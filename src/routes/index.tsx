@@ -19,7 +19,7 @@ import {
 } from "@/components/system";
 import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
-import { DISCOMS, estimate } from "@/config/solar";
+import { DISCOMS, DISCOM_REGION_GROUPS, estimate } from "@/config/solar";
 import { openConsultationDrawer } from "@/lib/consultation";
 
 const SOLUTION_FAMILIES = [
@@ -235,26 +235,35 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "WAVENOX deploys low-profile residential solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year warranty, and 24/7 outage protection.",
+          "WAVENOX deploys low-profile residential solar across India. PM Surya Ghar subsidies up to ₹78,000, 25-year OEM performance warranty, and automatic backup readiness.",
       },
       { property: "og:title", content: `${BRAND_CONFIG.name} — Rooftop Solar for Indian Homes` },
       {
         property: "og:description",
         content:
-          "Low-profile architectural solar for Indian homes. Subsidies up to ₹78,000, 25-year linear warranty, and 24/7 outage protection.",
+          "Low-profile architectural solar for Indian homes. Subsidies up to ₹78,000, 25-year OEM linear warranty, and automatic outage backup readiness.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
+      { property: "og:image:width", content: "1600" },
+      { property: "og:image:height", content: "900" },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: `${BRAND_CONFIG.name} — Rooftop Solar for Indian Homes` },
+      {
+        name: "twitter:description",
+        content:
+          "Low-profile architectural solar for Indian homes. Subsidies up to ₹78,000, 25-year OEM linear warranty, and automatic outage backup readiness.",
+      },
+      { name: "twitter:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
     ],
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/` },
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["home-hero"].mobileWebp,
+        type: "image/avif",
+        imageSrcSet: media["home-hero"].mobileAvif || media["home-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -262,32 +271,14 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["home-hero"].webp,
+        type: "image/avif",
+        imageSrcSet: media["home-hero"].avif || media["home-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
       },
     ],
     scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: BRAND_CONFIG.name,
-          url: BRAND_CONFIG.domain,
-          logo: `${BRAND_CONFIG.domain}/icon-512.png`,
-          description: BRAND_CONFIG.description,
-          contactPoint: {
-            "@type": "ContactPoint",
-            telephone: BRAND_CONFIG.contact.phone.dial,
-            contactType: "customer service",
-            areaServed: "IN",
-            availableLanguage: ["English", "Telugu", "Hindi"],
-          },
-        }),
-      },
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -339,8 +330,8 @@ function IndexPage() {
           mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
-          title="Home Solar"
-          lead="Lower Your Power Bills. Run Your Home on Solar."
+          title="Architectural Home Solar"
+          lead="Clean Rooftop Energy. Built for Indian Weather."
           actions={
             <>
               <Button
@@ -475,7 +466,7 @@ function IndexPage() {
           id="outage-protection"
           media={media["home-outage"]}
           className="deferred-section"
-          title="Grid Goes Down, Lights Stay On"
+          title="Automatic Backup When Grid Power Drops"
           lead="Standard grid-tied solar shuts down during power cuts for utility anti-islanding safety. Pairing your array with modular LiFePO4 storage keeps essential home circuits running through blackouts."
           actions={
             <>
@@ -661,10 +652,15 @@ function IndexPage() {
                     onChange={(e) => setSelectedDiscom(e.target.value)}
                     className="w-full min-h-[44px] px-3.5 py-2.5 bg-[#FFFFFF] border border-[#D0D2D6] rounded-[4px] text-[14px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20]"
                   >
-                    {DISCOMS.map((d) => (
-                      <option key={d.code} value={d.code}>
-                        {d.code} ({d.state}) — {d.status === "VERIFIED" ? "Verified" : "Indicative"}
-                      </option>
+                    {DISCOM_REGION_GROUPS.map((group) => (
+                      <optgroup key={group.label} label={group.label}>
+                        {group.discoms.map((d) => (
+                          <option key={d.code} value={d.code}>
+                            {d.code} ({d.state}) —{" "}
+                            {d.status === "VERIFIED" ? "Verified" : "Indicative"}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
