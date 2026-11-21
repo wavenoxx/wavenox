@@ -21,30 +21,17 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { calculateModuleDegradation, MODULE_WARRANTY_TERMS } from "@/config/regulatory";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/warranty")({
   head: () => ({
-    meta: [
-      { title: `25-Year Asset Protection & Warranty Terms — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content:
-          "The WAVENOX 25-Year Asset Protection: 25-year linear power guarantee (≥89.4%), 10-year battery capacity retention (≥70%), and engineered weather-tight terrace mounting.",
-      },
-      {
-        property: "og:title",
-        content: `25-Year Asset Protection & Warranty Terms — ${BRAND_CONFIG.name}`,
-      },
-      {
-        property: "og:description",
-        content:
-          "Explore our comprehensive guarantees: 25-year power curve, 10-year storage warranty, and engineered terrace mounting.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/warranty` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `25-Year Asset Protection & Warranty Terms — ${BRAND_CONFIG.name}`,
+      description:
+        "The WAVENOX 25-Year Asset Protection: 25-year OEM linear output warranty (≥89.4%), 10-year battery capacity retention (≥70%), and engineered weather-tight terrace mounting.",
+      path: "/warranty",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/warranty` }],
     scripts: [
       {
@@ -54,7 +41,7 @@ export const Route = createFileRoute("/warranty")({
           "@type": "TechArticle",
           headline: "WAVENOX 25-Year Asset Protection and Degradation Warranties",
           description:
-            "Comprehensive guarantee schedule covering 25-year linear solar power degradation, 10-year LiFePO4 battery capacity, and weather-tight terrace mounting.",
+            "Comprehensive warranty schedule covering 25-year linear solar power degradation, 10-year LiFePO4 battery capacity, and weather-tight terrace mounting.",
           author: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -67,6 +54,10 @@ export const Route = createFileRoute("/warranty")({
           },
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Warranty & Support", path: "/warranty" },
+      ]),
     ],
   }),
   component: WarrantyPage,
@@ -120,8 +111,8 @@ function WarrantyPage() {
           </div>
         </section>
 
-        {/* 2. THE 4 CORNERSTONE GUARANTEES */}
-        <section className="max-w-5xl mx-auto px-6 mt-16 sm:mt-24">
+        {/* 2. THE 4 CORE PROTECTION PRINCIPLES */}
+        <section id="coverage" className="max-w-5xl mx-auto px-6 mt-16 sm:mt-24">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <span className="text-[12px] font-medium tracking-[0.2em] uppercase text-[#5C5E62] block mb-2">
               Comprehensive Coverage
@@ -170,8 +161,7 @@ function WarrantyPage() {
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Automotive-grade Lithium Iron Phosphate (LiFePO4) chemistry ensures cobalt-free
                 thermal stability. Reference architecture battery storage systems carry a 10-year or
-                6,000-cycle performance warranty guaranteeing at least 70% usable capacity
-                retention.
+                6,000-cycle performance warranty warranting at least 70% usable capacity retention.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Cycle Life: 6,000 cycles</span>
@@ -191,8 +181,9 @@ function WarrantyPage() {
               <p className="text-[14px] text-[#5C5E62] leading-relaxed">
                 Terrace usability and weather resistance are central to architectural solar design.
                 WAVENOX structures specify non-penetrating ballast footings or chemical epoxy
-                anchors designed to IS 875 (Part 3) standards (44 m/s basic wind speed in Hyderabad)
-                paired with elastomeric waterproofing membranes to protect roof slab integrity.
+                anchors designed to IS 875 (Part 3) standards (44 m/s – 50 m/s regional wind zones
+                across India) paired with elastomeric waterproofing membranes to protect roof slab
+                integrity.
               </p>
               <div className="pt-2 border-t border-[#E3E4E6] flex items-center justify-between text-[12px] text-[#5C5E62]">
                 <span>Mount Type: Ballast / Epoxy</span>
@@ -302,7 +293,7 @@ function WarrantyPage() {
                     </td>
                   </tr>
                   <tr className="bg-[#171A20] text-white">
-                    <td className="py-4 px-3 sm:px-6 font-semibold">Year 25 Guaranteed</td>
+                    <td className="py-4 px-3 sm:px-6 font-semibold">Year 25 OEM Warranted</td>
                     <td className="py-4 px-3 sm:px-6 text-white/70">80.2% (Often unserviceable)</td>
                     <td className="py-4 px-3 sm:px-6 font-bold text-white">
                       ≥ {calculateModuleDegradation(25).toFixed(1)}%

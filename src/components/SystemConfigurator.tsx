@@ -15,7 +15,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand";
-import { DISCOMS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS } from "@/config/solar";
+import { DISCOMS, DISCOM_REGION_GROUPS, SOLAR_ASSUMPTIONS, SYSTEM_TIERS } from "@/config/solar";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import {
   BACKUP_PRIORITY_OPTIONS,
@@ -23,6 +23,8 @@ import {
   type BackupPriorityId,
 } from "@/config/recommendation";
 import { getStoredTelemetry } from "@/lib/telemetry";
+import { trackContactClick, trackLeadConversion } from "@/lib/analytics";
+import { TurnstileWidget } from "./TurnstileWidget";
 import { Media, StatRow } from "@/components/system";
 import { media } from "@/config/media";
 import type { DossierData } from "./ArchitecturalDossierModal";
@@ -84,6 +86,9 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   // Stage 1: Property & Consumption State
   const [address, setAddress] = React.useState("");
   const [selectedDiscomCode, setSelectedDiscomCode] = React.useState(safeInitialDiscom);
+  const [propertyTier, setPropertyTier] = React.useState<
+    "independent_home" | "villa" | "commercial"
+  >("villa");
   const [monthlyBill, setMonthlyBill] = React.useState(safeInitialBill);
   const [confirmedBillBasis, setConfirmedBillBasis] = React.useState("");
   const [inputMode, setInputMode] = React.useState<"estimate" | "known">("estimate");
@@ -122,6 +127,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
   const [pinCode, setPinCode] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
   const [hpExtra, setHpExtra] = React.useState("");
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [previewDossierOpen, setPreviewDossierOpen] = React.useState(false);
@@ -466,7 +472,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           phone: userPhone.trim(),
           city: address.trim(),
           pin_code: cleanPin || undefined,
-          property_tier: "villa",
+          property_tier: propertyTier,
           discom_code: selectedDiscomCode,
           monthly_bill_inr: monthlyBill,
           system_kw: systemKw,
@@ -476,6 +482,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
           consent_given: true,
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
+          turnstile_token: turnstileToken,
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -490,6 +497,15 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
       }
 
       const isDemoResult = Boolean(res.isDemo);
+      void trackLeadConversion({
+        referenceCode: res.referenceCode,
+        source: "studio",
+        propertyTier,
+        discomCode: selectedDiscomCode,
+        valueInr: netPayableInr,
+        phone: userPhone.trim(),
+        isDemo: isDemoResult,
+      });
       const nowIso = new Date().toISOString();
 
       if (typeof window !== "undefined") {
@@ -686,13 +702,49 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                     Required]
                   </option>
                 )}
-                {DISCOMS.map((d) => (
-                  <option key={d.code} value={d.code}>
-                    {d.code} — {d.name} ({d.state}) [
-                    {d.status === "VERIFIED" ? "Verified" : "Indicative"}]
-                  </option>
+                {DISCOM_REGION_GROUPS.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.discoms.map((d) => (
+                      <option key={d.code} value={d.code}>
+                        {d.code} — {d.name} ({d.state}) [
+                        {d.status === "VERIFIED" ? "Verified" : "Indicative"}]
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <span className="block text-[12px] font-medium text-[#5C5E62]">Property Type</span>
+              <div
+                className="grid grid-cols-3 gap-2"
+                role="radiogroup"
+                aria-label="Property architecture tier"
+              >
+                {(
+                  [
+                    { id: "independent_home", label: "Independent Home" },
+                    { id: "villa", label: "Villa / Bungalow" },
+                    { id: "commercial", label: "Commercial / Office" },
+                  ] as const
+                ).map((tierOption) => (
+                  <button
+                    key={tierOption.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={propertyTier === tierOption.id}
+                    onClick={() => setPropertyTier(tierOption.id)}
+                    className={`min-h-[38px] px-2.5 py-1.5 rounded-[4px] border text-[12px] font-medium transition-colors cursor-pointer ${
+                      propertyTier === tierOption.id
+                        ? "bg-[#171A20] text-[#FFFFFF] border-[#171A20]"
+                        : "bg-[#FFFFFF] text-[#5C5E62] border-[#E3E4E6] hover:text-[#171A20]"
+                    }`}
+                  >
+                    {tierOption.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <BillIntelligence onConfirm={handleConfirmedBill} />
@@ -1881,7 +1933,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                       setAddress(e.target.value);
                       if (submitError) setSubmitError(null);
                     }}
-                    placeholder="e.g. Hyderabad, Bengaluru"
+                    placeholder="e.g. Mumbai, Pune, Ahmedabad, Bengaluru"
                     className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                   />
                 </div>
@@ -1904,7 +1956,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                       setPinCode(e.target.value.replace(/\D/g, "").slice(0, 6));
                       if (submitError) setSubmitError(null);
                     }}
-                    placeholder="e.g. 500033"
+                    placeholder="e.g. 400001"
                     className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] transition-colors focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
                   />
                 </div>
@@ -1965,6 +2017,8 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                 </label>
               </div>
 
+              <TurnstileWidget onToken={setTurnstileToken} />
+
               {submitError && (
                 <div
                   id="studio-form-error"
@@ -2002,6 +2056,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
                   href={BRAND_CONFIG.contact.whatsapp.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", "studio_form")}
                   className="inline-flex items-center gap-2 text-[13px] font-medium text-[#5C5E62] hover:text-[#171A20] transition-colors"
                 >
                   <MessageSquare className="w-4 h-4 text-[#F57C00]" />

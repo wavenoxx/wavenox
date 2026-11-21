@@ -221,6 +221,19 @@ const shots = [
 
 const candidateBreakpoints = [640, 1080, 1600, 1920, 2560];
 
+function resolveAvifOptions(width, nativeWidth, nativeQuality) {
+  if (width >= nativeWidth) {
+    return { quality: nativeQuality, effort: 6, chromaSubsampling: "4:4:4" };
+  }
+  if (width <= 480) {
+    return { quality: 62, effort: 6, chromaSubsampling: "4:2:0" };
+  }
+  if (width <= 640) {
+    return { quality: 64, effort: 6, chromaSubsampling: "4:2:0" };
+  }
+  return { quality: 76, effort: 6, chromaSubsampling: "4:2:0" };
+}
+
 async function main() {
   await fs.mkdir(outDir, { recursive: true });
 
@@ -245,40 +258,65 @@ async function main() {
     }
 
     if (shot.preserveNativeWebpHero) {
-      // Preserve native hero pixels and avoid double-lossy re-encoding at native width.
+      // Generate Perceptually Lossless AVIF + Smart WebP + mozjpeg JPG across responsive widths.
       const baseWidths = shot.preserveSquareAspect
         ? [480, 640, 1080, origWidth]
-        : [640, 1080, origWidth];
-      const heroBreakpoints = baseWidths.filter(
-        (w, idx, arr) => w <= origWidth && arr.indexOf(w) === idx,
-      );
+        : [640, 1080, 1440, origWidth];
+      const heroBreakpoints = [...new Set(baseWidths)]
+        .filter((w) => w <= origWidth)
+        .sort((a, b) => a - b);
       const jpgBreakpoints = [...new Set([...heroBreakpoints, Math.min(1600, origWidth)])].sort(
         (a, b) => a - b,
       );
+      const desktopAvifQuality = shot.avifDesktopQuality ?? (shot.isHero ? 84 : 84);
+      const desktopWebpBaseQuality = shot.isHero ? 92 : 90;
 
       for (const w of heroBreakpoints) {
         const h = Math.round(w / aspectRatio);
+        const sourcePipeline =
+          w < origWidth
+            ? sharp(imgBuffer).resize(w, h, {
+                fit: "cover",
+                withoutEnlargement: true,
+                kernel: sharp.kernel.lanczos3,
+              })
+            : sharp(imgBuffer);
+
+        // 1. Perceptually Lossless AVIF at native width; compact responsive downscales
+        const avifFileName = `${filePrefix}-${w}w.avif`;
+        const avifPath = path.join(outDir, avifFileName);
+        await sourcePipeline
+          .clone()
+          .avif(resolveAvifOptions(w, origWidth, desktopAvifQuality))
+          .toFile(avifPath);
+        desktopAvifList.push(`/media/${avifFileName} ${w}w`);
+
+        // 2. Smart WebP (preserve exact native WebP pixels if re-encode isn't materially smaller & clean)
         const webpFileName = `${filePrefix}-${w}w.webp`;
         const webpPath = path.join(outDir, webpFileName);
-        if (w === origWidth && path.extname(shot.source).toLowerCase() === ".webp") {
+        const targetWebpQuality =
+          w <= 640
+            ? Math.max(84, shot.desktopSmallQuality ?? desktopWebpBaseQuality)
+            : Math.min(94, shot.desktopMidQuality ?? desktopWebpBaseQuality);
+        const webpBuf = await sourcePipeline
+          .clone()
+          .webp({
+            quality: targetWebpQuality,
+            alphaQuality: 100,
+            smartSubsample: false,
+            effort: 6,
+            preset: "photo",
+          })
+          .toBuffer();
+
+        if (
+          w === origWidth &&
+          path.extname(shot.source).toLowerCase() === ".webp" &&
+          webpBuf.length > imgBuffer.length * 0.85
+        ) {
           await fs.writeFile(webpPath, imgBuffer);
         } else {
-          const desktopWebpQuality =
-            w <= 480
-              ? (shot.desktopTinyQuality ?? shot.desktopSmallQuality ?? 94)
-              : w <= 640
-                ? (shot.desktopSmallQuality ?? 94)
-                : (shot.desktopMidQuality ?? 94);
-          await sharp(imgBuffer)
-            .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
-            .webp({
-              quality: desktopWebpQuality,
-              alphaQuality: 100,
-              smartSubsample: true,
-              effort: 6,
-              preset: "photo",
-            })
-            .toFile(webpPath);
+          await fs.writeFile(webpPath, webpBuf);
         }
         desktopWebpList.push(`/media/${webpFileName} ${w}w`);
       }
@@ -289,7 +327,7 @@ async function main() {
         const jpgPath = path.join(outDir, jpgFileName);
         await sharp(imgBuffer)
           .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
-          .jpeg({ quality: 92, mozjpeg: true })
+          .jpeg({ quality: 86, mozjpeg: true })
           .toFile(jpgPath);
         desktopJpgList.push(`/media/${jpgFileName} ${w}w`);
 
@@ -301,34 +339,36 @@ async function main() {
     } else {
       for (const w of activeBreakpoints) {
         const h = Math.round(w / aspectRatio);
+        const base = sharp(imgBuffer).resize(w, h, {
+          fit: "cover",
+          withoutEnlargement: true,
+          kernel: sharp.kernel.lanczos3,
+        });
+        const processed =
+          w < origWidth ? base.sharpen({ sigma: 0.6, m1: 0.05, m2: 1.4, x1: 2 }) : base;
 
         // AVIF
         const avifFileName = `${filePrefix}-${w}w.avif`;
         const avifPath = path.join(outDir, avifFileName);
-        await sharp(imgBuffer)
-          .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
-          .sharpen({ sigma: 0.8, m1: 0.05, m2: 1.5, x1: 2 })
-          .avif({ quality: shot.isHero ? 86 : 80, effort: 6 })
+        await processed
+          .clone()
+          .avif(resolveAvifOptions(w, origWidth, shot.avifDesktopQuality ?? 82))
           .toFile(avifPath);
         desktopAvifList.push(`/media/${avifFileName} ${w}w`);
 
         // WebP
         const webpFileName = `${filePrefix}-${w}w.webp`;
         const webpPath = path.join(outDir, webpFileName);
-        await sharp(imgBuffer)
-          .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
-          .sharpen({ sigma: 0.8, m1: 0.05, m2: 1.5, x1: 2 })
-          .webp({ quality: shot.isHero ? 92 : 84, smartSubsample: true })
+        await processed
+          .clone()
+          .webp({ quality: 90, smartSubsample: false, effort: 6, preset: "photo" })
           .toFile(webpPath);
         desktopWebpList.push(`/media/${webpFileName} ${w}w`);
 
         // JPG fallback
         const jpgFileName = `${filePrefix}-${w}w.jpg`;
         const jpgPath = path.join(outDir, jpgFileName);
-        await sharp(imgBuffer)
-          .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
-          .jpeg({ quality: shot.isHero ? 90 : 84, mozjpeg: true })
-          .toFile(jpgPath);
+        await processed.clone().jpeg({ quality: 86, mozjpeg: true }).toFile(jpgPath);
         desktopJpgList.push(`/media/${jpgFileName} ${w}w`);
 
         // Check size budget at 1600w (or largest native width when < 1600w)
@@ -392,49 +432,78 @@ async function main() {
       mobileWebpSrcSet = `/media/${mobileWebpFile}`;
 
       if (shot.preserveNativeWebpHero) {
-        const mobileBreakpoints = [480, 640, mobileOrigW].filter(
-          (w, idx, arr) => w <= mobileOrigW && arr.indexOf(w) === idx,
-        );
+        const mobileBreakpoints = [...new Set([480, 640, 828, mobileOrigW])]
+          .filter((w) => w <= mobileOrigW)
+          .sort((a, b) => a - b);
         const mobileAspectRatio = mobileOrigW / mobileOrigH;
+        const mobileAvifEntries = [];
         const mobileWebpEntries = [];
         const isNativeMobileWebp = path.extname(shot.mobileSource || "").toLowerCase() === ".webp";
+        const mobileAvifQuality = shot.avifMobileQuality ?? 84;
+        const mobileWebpBaseQuality = shot.isHero ? 92 : 90;
+        mobileAvifFile = `${filePrefix}-mobile.avif`;
+        let canonicalWebpWritten = false;
 
         for (const mw of mobileBreakpoints) {
           const mh = Math.round(mw / mobileAspectRatio);
+          const mobileSourcePipeline =
+            mw < mobileOrigW
+              ? sharp(mobileImgBuffer).resize(mw, mh, {
+                  fit: "cover",
+                  withoutEnlargement: true,
+                  kernel: sharp.kernel.lanczos3,
+                })
+              : sharp(mobileImgBuffer);
+
+          // 1. Perceptually Lossless Mobile AVIF at native width; compact downscales for Slow 4G
+          const mwAvifFile = `${filePrefix}-mobile-${mw}w.avif`;
+          const mwAvifPath = path.join(outDir, mwAvifFile);
+          await mobileSourcePipeline
+            .clone()
+            .avif(resolveAvifOptions(mw, mobileOrigW, mobileAvifQuality))
+            .toFile(mwAvifPath);
+          mobileAvifEntries.push(`/media/${mwAvifFile} ${mw}w`);
+
+          if (mw === mobileOrigW) {
+            await fs.copyFile(mwAvifPath, path.join(outDir, mobileAvifFile));
+          }
+
+          // 2. Smart Mobile WebP (avoid generation loss vs native WebP master when savings < 10%)
           const mwFile = `${filePrefix}-mobile-${mw}w.webp`;
           const mwPath = path.join(outDir, mwFile);
-          if (mw === mobileOrigW && isNativeMobileWebp) {
-            await fs.writeFile(mwPath, mobileImgBuffer);
-          } else {
-            await sharp(mobileImgBuffer)
-              .resize(mw, mh, {
-                fit: "cover",
-                withoutEnlargement: true,
-                kernel: sharp.kernel.lanczos3,
-              })
-              .webp({
-                quality:
-                  mw <= 480
-                    ? (shot.mobileTinyQuality ?? shot.mobileDownscaleQuality ?? 56)
-                    : (shot.mobileDownscaleQuality ?? 56),
-                alphaQuality: 100,
-                smartSubsample: true,
-                effort: 6,
-                preset: "photo",
-              })
-              .toFile(mwPath);
+          const targetMobileWebpQuality = mw <= 640 ? 86 : mw <= 828 ? 88 : 94;
+          const mobileWebpBuf = await mobileSourcePipeline
+            .clone()
+            .webp({
+              quality: targetMobileWebpQuality,
+              alphaQuality: 100,
+              smartSubsample: false,
+              effort: 6,
+              preset: "photo",
+            })
+            .toBuffer();
+
+          const chosenMobileBuf =
+            mw === mobileOrigW &&
+            isNativeMobileWebp &&
+            mobileWebpBuf.length > mobileImgBuffer.length * 0.9
+              ? mobileImgBuffer
+              : mobileWebpBuf;
+          await fs.writeFile(mwPath, chosenMobileBuf);
+          if (mw === mobileOrigW) {
+            await fs.writeFile(path.join(outDir, mobileWebpFile), chosenMobileBuf);
+            canonicalWebpWritten = true;
           }
           mobileWebpEntries.push(`/media/${mwFile} ${mw}w`);
         }
+
+        mobileAvifSrcSet = mobileAvifEntries.join(", ");
         mobileWebpSrcSet = mobileWebpEntries.join(", ");
 
-        // Also write canonical -mobile.webp and -mobile.jpg fallback
-        if (isNativeMobileWebp) {
-          await fs.writeFile(path.join(outDir, mobileWebpFile), mobileImgBuffer);
-        } else {
+        if (!canonicalWebpWritten) {
           await sharp(mobileImgBuffer)
             .webp({
-              quality: 94,
+              quality: mobileWebpBaseQuality,
               alphaQuality: 100,
               smartSubsample: true,
               effort: 6,
@@ -442,8 +511,9 @@ async function main() {
             })
             .toFile(path.join(outDir, mobileWebpFile));
         }
+
         await sharp(mobileImgBuffer)
-          .jpeg({ quality: 92, mozjpeg: true })
+          .jpeg({ quality: 86, mozjpeg: true })
           .toFile(path.join(outDir, mobileJpgFile));
       } else {
         const cropPos = shot.mobileCropPosition || "centre";
@@ -468,7 +538,7 @@ async function main() {
               kernel: sharp.kernel.lanczos3,
             })
             .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-            .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
+            .avif(resolveAvifOptions(mw, mobileWidth, 84))
             .toFile(path.join(outDir, mwAvif));
           avifEntries.push(`/media/${mwAvif} ${mw}w`);
 
@@ -480,7 +550,7 @@ async function main() {
               kernel: sharp.kernel.lanczos3,
             })
             .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-            .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
+            .webp({ quality: 90, smartSubsample: false, preset: "photo" })
             .toFile(path.join(outDir, mwWebp));
           webpEntries.push(`/media/${mwWebp} ${mw}w`);
         }
@@ -497,7 +567,7 @@ async function main() {
             kernel: sharp.kernel.lanczos3,
           })
           .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-          .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
+          .avif({ quality: 84, effort: 6, chromaSubsampling: "4:4:4" })
           .toFile(path.join(outDir, mobileAvifFile));
 
         await sharp(mobileImgBuffer)
@@ -508,7 +578,7 @@ async function main() {
             kernel: sharp.kernel.lanczos3,
           })
           .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-          .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
+          .webp({ quality: 90, smartSubsample: false, preset: "photo" })
           .toFile(path.join(outDir, mobileWebpFile));
 
         await sharp(mobileImgBuffer)

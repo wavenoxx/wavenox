@@ -63,10 +63,273 @@ export interface BusinessConfig {
   reviews: CustomerReview[];
 }
 
+export interface IndianStateCoverageEntry {
+  name: string;
+  region: "North" | "West" | "South" | "East" | "Central" | "North-East";
+  type: "State" | "Union Territory";
+  defaultDiscomCode: string;
+  discomsSummary: string;
+}
+
+export const INDIAN_STATES_AND_UTS: IndianStateCoverageEntry[] = [
+  {
+    name: "Andhra Pradesh",
+    region: "South",
+    type: "State",
+    defaultDiscomCode: "APEPDCL",
+    discomsSummary: "APEPDCL, APSPDCL, APCPDCL",
+  },
+  {
+    name: "Arunachal Pradesh",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "Department of Power (Arunachal Pradesh)",
+  },
+  {
+    name: "Assam",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "APDCL",
+  },
+  {
+    name: "Bihar",
+    region: "East",
+    type: "State",
+    defaultDiscomCode: "NBPDCL_SBPDCL",
+    discomsSummary: "NBPDCL, SBPDCL",
+  },
+  {
+    name: "Chhattisgarh",
+    region: "Central",
+    type: "State",
+    defaultDiscomCode: "CSPDCL",
+    discomsSummary: "CSPDCL",
+  },
+  {
+    name: "Goa",
+    region: "West",
+    type: "State",
+    defaultDiscomCode: "GED",
+    discomsSummary: "Electricity Department Goa (GED)",
+  },
+  {
+    name: "Gujarat",
+    region: "West",
+    type: "State",
+    defaultDiscomCode: "UGVCL_PGVCL",
+    discomsSummary: "UGVCL, PGVCL, MGVCL, DGVCL, Torrent Power",
+  },
+  {
+    name: "Haryana",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "DHBVN",
+    discomsSummary: "DHBVN, UHBVN",
+  },
+  {
+    name: "Himachal Pradesh",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "HPSEBL",
+    discomsSummary: "HPSEBL",
+  },
+  {
+    name: "Jharkhand",
+    region: "East",
+    type: "State",
+    defaultDiscomCode: "JBVNL",
+    discomsSummary: "JBVNL",
+  },
+  {
+    name: "Karnataka",
+    region: "South",
+    type: "State",
+    defaultDiscomCode: "BESCOM",
+    discomsSummary: "BESCOM, HESCOM, MESCOM, GESCOM, CESC Mysuru",
+  },
+  {
+    name: "Kerala",
+    region: "South",
+    type: "State",
+    defaultDiscomCode: "KSEB",
+    discomsSummary: "KSEBL",
+  },
+  {
+    name: "Madhya Pradesh",
+    region: "Central",
+    type: "State",
+    defaultDiscomCode: "MPMKVVCL",
+    discomsSummary: "MPMKVVCL, MPPKVVCL, MPPoKVVCL",
+  },
+  {
+    name: "Maharashtra",
+    region: "West",
+    type: "State",
+    defaultDiscomCode: "MSEDCL",
+    discomsSummary: "MSEDCL, Tata Power, Adani Electricity, BEST",
+  },
+  {
+    name: "Manipur",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "MSPDCL",
+  },
+  {
+    name: "Meghalaya",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "MePDCL",
+  },
+  {
+    name: "Mizoram",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "Power & Electricity Department Mizoram",
+  },
+  {
+    name: "Nagaland",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "Department of Power Nagaland",
+  },
+  {
+    name: "Odisha",
+    region: "East",
+    type: "State",
+    defaultDiscomCode: "TPCODL",
+    discomsSummary: "TPCODL, TPNODL, TPSODL, TPWODL",
+  },
+  {
+    name: "Punjab",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "PSPCL",
+    discomsSummary: "PSPCL",
+  },
+  {
+    name: "Rajasthan",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "JVVNL",
+    discomsSummary: "JVVNL, AVVNL, JdVVNL",
+  },
+  {
+    name: "Sikkim",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "Sikkim Power Department",
+  },
+  {
+    name: "Tamil Nadu",
+    region: "South",
+    type: "State",
+    defaultDiscomCode: "TANGEDCO",
+    discomsSummary: "TANGEDCO (TNPDCL)",
+  },
+  {
+    name: "Telangana",
+    region: "South",
+    type: "State",
+    defaultDiscomCode: "TGSPDCL",
+    discomsSummary: "TGSPDCL, TGNPDCL",
+  },
+  {
+    name: "Tripura",
+    region: "North-East",
+    type: "State",
+    defaultDiscomCode: "APDCL",
+    discomsSummary: "TSECL",
+  },
+  {
+    name: "Uttar Pradesh",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "UPPCL",
+    discomsSummary: "UPPCL (PVVNL, MVVNL, DVVNL, PuVVNL, KESCO)",
+  },
+  {
+    name: "Uttarakhand",
+    region: "North",
+    type: "State",
+    defaultDiscomCode: "UPCL",
+    discomsSummary: "UPCL",
+  },
+  {
+    name: "West Bengal",
+    region: "East",
+    type: "State",
+    defaultDiscomCode: "WBSEDCL",
+    discomsSummary: "WBSEDCL, CESC Kolkata",
+  },
+  {
+    name: "Andaman & Nicobar Islands",
+    region: "South",
+    type: "Union Territory",
+    defaultDiscomCode: "OTHER_INDIA",
+    discomsSummary: "Electricity Department A&N",
+  },
+  {
+    name: "Chandigarh",
+    region: "North",
+    type: "Union Territory",
+    defaultDiscomCode: "PSPCL",
+    discomsSummary: "Chandigarh Electricity Dept",
+  },
+  {
+    name: "Dadra & Nagar Haveli and Daman & Diu",
+    region: "West",
+    type: "Union Territory",
+    defaultDiscomCode: "UGVCL_PGVCL",
+    discomsSummary: "DNHPDCL / ED Daman & Diu",
+  },
+  {
+    name: "Delhi (NCT)",
+    region: "North",
+    type: "Union Territory",
+    defaultDiscomCode: "BRPL",
+    discomsSummary: "BSES Rajdhani, BSES Yamuna, Tata Power-DDL, NDMC",
+  },
+  {
+    name: "Jammu & Kashmir",
+    region: "North",
+    type: "Union Territory",
+    defaultDiscomCode: "JPDCL",
+    discomsSummary: "JPDCL, KPDCL",
+  },
+  {
+    name: "Ladakh",
+    region: "North",
+    type: "Union Territory",
+    defaultDiscomCode: "JPDCL",
+    discomsSummary: "Ladakh Power Development Dept",
+  },
+  {
+    name: "Lakshadweep",
+    region: "South",
+    type: "Union Territory",
+    defaultDiscomCode: "OTHER_INDIA",
+    discomsSummary: "Lakshadweep Electricity Dept",
+  },
+  {
+    name: "Puducherry",
+    region: "South",
+    type: "Union Territory",
+    defaultDiscomCode: "TANGEDCO",
+    discomsSummary: "Electricity Department Puducherry",
+  },
+];
+
 export const BUSINESS: BusinessConfig = {
-  regionLabel: "Telangana, Karnataka, Maharashtra, Andhra Pradesh, Delhi-NCR, Goa & Tamil Nadu",
+  regionLabel: "Pan-India — All 28 States & 8 Union Territories",
   primaryCity: "Hyderabad",
-  primaryRegion: "Telangana",
+  primaryRegion: "India",
   country: "IN",
   geo: { latitude: 17.385, longitude: 78.4867 },
 
@@ -149,6 +412,66 @@ export const BUSINESS: BusinessConfig = {
       description:
         "High-wind-rated rooftop solar engineering and commercial net-metering coordination for residential estates and industrial facilities across Tamil Nadu.",
       keyProjects: ["Boat Club", "Poes Garden", "East Coast Road (ECR)", "OMR"],
+    },
+    {
+      city: "Ahmedabad, Surat & Vadodara",
+      shortName: "Gujarat",
+      schemaName: "Ahmedabad",
+      state: "Gujarat",
+      tag: "GUJARAT SERVICE CORRIDOR (UGVCL / PGVCL / TORRENT)",
+      description:
+        "High-insolation rooftop solar and industrial net-metering installations coordinated across Ahmedabad, Gandhinagar, Vadodara, Surat, and Rajkot.",
+      keyProjects: ["SG Highway", "Bopal", "Vesu Surat", "Alkapuri Vadodara"],
+    },
+    {
+      city: "Jaipur, Udaipur & Jodhpur",
+      shortName: "Rajasthan",
+      schemaName: "Jaipur",
+      state: "Rajasthan",
+      tag: "RAJASTHAN SERVICE CORRIDOR (JVVNL / AVVNL / JdVVNL)",
+      description:
+        "High-ambient-temperature N-Type TOPCon rooftop arrays engineered for desert heat tolerance across Jaipur, Udaipur, and Jodhpur.",
+      keyProjects: ["C-Scheme", "Vaishali Nagar", "Fateh Sagar", "Jodhpur"],
+    },
+    {
+      city: "Lucknow, Noida & Kanpur",
+      shortName: "Uttar Pradesh",
+      schemaName: "Lucknow",
+      state: "Uttar Pradesh",
+      tag: "UP SERVICE CORRIDOR (UPPCL / PVVNL / MVVNL)",
+      description:
+        "Residential PM Surya Ghar and hybrid LFP storage systems coordinated across Noida, Greater Noida, Lucknow, Ghaziabad, Varanasi, and Kanpur.",
+      keyProjects: ["Gomti Nagar", "Noida Sector 44–150", "Indirapuram", "Swaroop Nagar"],
+    },
+    {
+      city: "Kochi, Thiruvananthapuram & Kozhikode",
+      shortName: "Kerala",
+      schemaName: "Kochi",
+      state: "Kerala",
+      tag: "KERALA SERVICE CORRIDOR (KSEB)",
+      description:
+        "Monsoon-sealed marine-grade rooftop solar and battery backup engineered for high-humidity coastal corridors across Kerala.",
+      keyProjects: ["Panampilly Nagar", "Kakkanad", "Kowdiar", "Calicut Beach"],
+    },
+    {
+      city: "Chandigarh Tricity, Ludhiana & Bhopal",
+      shortName: "Punjab & MP",
+      schemaName: "Chandigarh",
+      state: "Punjab, Haryana & MP",
+      tag: "NORTH-CENTRAL SERVICE CORRIDOR (PSPCL / MPMKVVCL)",
+      description:
+        "Residential and industrial C&I solar installations across Chandigarh, Mohali, Ludhiana, Indore, and Bhopal via our authorized regional execution network.",
+      keyProjects: ["Chandigarh Sectors", "Sarabha Nagar", "Vijay Nagar Indore", "Arera Colony"],
+    },
+    {
+      city: "Kolkata, Bhubaneswar & Guwahati",
+      shortName: "East & North-East",
+      schemaName: "Kolkata",
+      state: "West Bengal, Odisha & NE",
+      tag: "EASTERN SERVICE CORRIDOR (WBSEDCL / TPCODL / APDCL)",
+      description:
+        "Cyclone-rated IS 875 Part 3 structural solar arrays and hybrid backup deployments across Kolkata, Bhubaneswar, Patna, Raipur, and Guwahati.",
+      keyProjects: ["Salt Lake", "New Town", "Patia Bhubaneswar", "GS Road Guwahati"],
     },
   ],
 

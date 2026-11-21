@@ -7,27 +7,17 @@ import { Button } from "@/components/system/Button";
 import { BRAND_CONFIG } from "@/config/brand";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { FAQ_DATA, FAQ_CATEGORIES, type FaqCategoryId } from "@/data/faqData";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
-    meta: [
-      { title: `FAQ & Solar Knowledge Center — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content:
-          "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 33 tax depreciation.",
-      },
-      { property: "og:title", content: `FAQ & Solar Knowledge Center — ${BRAND_CONFIG.name}` },
-      {
-        property: "og:description",
-        content:
-          "Authoritative advisory on PM Surya Ghar subsidies, DISCOM net-metering approvals, Omnigrid battery safety, and terrace pergolas.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/faq` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `FAQ & Solar Knowledge Center — ${BRAND_CONFIG.name}`,
+      description:
+        "Comprehensive guidance on rooftop solar in India: PM Surya Ghar subsidies up to ₹78,000, DISCOM net metering, Omnigrid battery backup, terrace pergolas, and Section 33 tax depreciation.",
+      path: "/faq",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/faq` }],
     scripts: [
       {
@@ -45,6 +35,10 @@ export const Route = createFileRoute("/faq")({
           })),
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "FAQ", path: "/faq" },
+      ]),
     ],
   }),
   component: FaqPage,

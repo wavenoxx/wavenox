@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutThisProjectRouteImport } from './routes/about-this-project'
 import { Route as ArchitectsRouteImport } from './routes/architects'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
@@ -22,6 +21,7 @@ import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as ResidentialRouteImport } from './routes/residential'
 import { Route as ServiceAreasRouteImport } from './routes/service-areas'
+import { Route as SolarQuoteRouteImport } from './routes/solar-quote'
 import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as WarrantyRouteImport } from './routes/warranty'
 import { Route as LegalDisclosuresRouteImport } from './routes/legal/disclosures'
@@ -32,11 +32,6 @@ import { Route as OrderReceivedRouteImport } from './routes/order/received'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutThisProjectRoute = AboutThisProjectRouteImport.update({
-  id: '/about-this-project',
-  path: '/about-this-project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchitectsRoute = ArchitectsRouteImport.update({
@@ -94,6 +89,11 @@ const ServiceAreasRoute = ServiceAreasRouteImport.update({
   path: '/service-areas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SolarQuoteRoute = SolarQuoteRouteImport.update({
+  id: '/solar-quote',
+  path: '/solar-quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TechnologyRoute = TechnologyRouteImport.update({
   id: '/technology',
   path: '/technology',
@@ -127,7 +127,6 @@ const OrderReceivedRoute = OrderReceivedRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -139,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/portal': typeof PortalRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
+  '/solar-quote': typeof SolarQuoteRoute
   '/technology': typeof TechnologyRoute
   '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -148,7 +148,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -160,6 +159,7 @@ export interface FileRoutesByTo {
   '/portal': typeof PortalRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
+  '/solar-quote': typeof SolarQuoteRoute
   '/technology': typeof TechnologyRoute
   '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -170,7 +170,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about-this-project': typeof AboutThisProjectRoute
   '/architects': typeof ArchitectsRoute
   '/deploy': typeof DeployRoute
   '/enterprise': typeof EnterpriseRoute
@@ -182,6 +181,7 @@ export interface FileRoutesById {
   '/portal': typeof PortalRoute
   '/residential': typeof ResidentialRoute
   '/service-areas': typeof ServiceAreasRoute
+  '/solar-quote': typeof SolarQuoteRoute
   '/technology': typeof TechnologyRoute
   '/warranty': typeof WarrantyRoute
   '/legal/disclosures': typeof LegalDisclosuresRoute
@@ -193,7 +193,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -205,6 +204,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/residential'
     | '/service-areas'
+    | '/solar-quote'
     | '/technology'
     | '/warranty'
     | '/legal/disclosures'
@@ -214,7 +214,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -226,6 +225,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/residential'
     | '/service-areas'
+    | '/solar-quote'
     | '/technology'
     | '/warranty'
     | '/legal/disclosures'
@@ -235,7 +235,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/about-this-project'
     | '/architects'
     | '/deploy'
     | '/enterprise'
@@ -247,6 +246,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/residential'
     | '/service-areas'
+    | '/solar-quote'
     | '/technology'
     | '/warranty'
     | '/legal/disclosures'
@@ -257,7 +257,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutThisProjectRoute: typeof AboutThisProjectRoute
   ArchitectsRoute: typeof ArchitectsRoute
   DeployRoute: typeof DeployRoute
   EnterpriseRoute: typeof EnterpriseRoute
@@ -269,6 +268,7 @@ export interface RootRouteChildren {
   PortalRoute: typeof PortalRoute
   ResidentialRoute: typeof ResidentialRoute
   ServiceAreasRoute: typeof ServiceAreasRoute
+  SolarQuoteRoute: typeof SolarQuoteRoute
   TechnologyRoute: typeof TechnologyRoute
   WarrantyRoute: typeof WarrantyRoute
   LegalDisclosuresRoute: typeof LegalDisclosuresRoute
@@ -284,13 +284,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about-this-project': {
-      id: '/about-this-project'
-      path: '/about-this-project'
-      fullPath: '/about-this-project'
-      preLoaderRoute: typeof AboutThisProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/architects': {
@@ -370,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solar-quote': {
+      id: '/solar-quote'
+      path: '/solar-quote'
+      fullPath: '/solar-quote'
+      preLoaderRoute: typeof SolarQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/technology': {
       id: '/technology'
       path: '/technology'
@@ -417,7 +417,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutThisProjectRoute: AboutThisProjectRoute,
   ArchitectsRoute: ArchitectsRoute,
   DeployRoute: DeployRoute,
   EnterpriseRoute: EnterpriseRoute,
@@ -429,6 +428,7 @@ const rootRouteChildren: RootRouteChildren = {
   PortalRoute: PortalRoute,
   ResidentialRoute: ResidentialRoute,
   ServiceAreasRoute: ServiceAreasRoute,
+  SolarQuoteRoute: SolarQuoteRoute,
   TechnologyRoute: TechnologyRoute,
   WarrantyRoute: WarrantyRoute,
   LegalDisclosuresRoute: LegalDisclosuresRoute,

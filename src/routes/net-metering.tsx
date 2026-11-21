@@ -20,32 +20,20 @@ import { openConsultationDrawer } from "@/lib/consultation";
 import { DISCOMS } from "@/config/solar";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
+import { trackLeadConversion } from "@/lib/analytics";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { PmSuryaGharJourney } from "@/components/PmSuryaGharJourney";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/net-metering")({
   head: () => ({
-    meta: [
-      {
-        title: `DISCOM Net-Metering & Feeder Sanction Guide — ${BRAND_CONFIG.name}`,
-      },
-      {
-        name: "description",
-        content:
-          "Authoritative guide to rooftop solar net-metering approvals, transformer DT load capacity rules, and PM Surya Ghar subsidy sanctions across TGSPDCL, APEPDCL, BESCOM, and MSEDCL.",
-      },
-      {
-        property: "og:title",
-        content: `DISCOM Net-Metering & Feeder Sanction Guide — ${BRAND_CONFIG.name}`,
-      },
-      {
-        property: "og:description",
-        content:
-          "Calculate your permissible solar capacity, metering class, and sanction timeline under State Electricity Regulatory Commission (SERC) codes.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/net-metering` },
-      { property: "og:type", content: "website" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `DISCOM Net-Metering & Feeder Sanction Guide — ${BRAND_CONFIG.name}`,
+      description:
+        "Authoritative Pan-India guide to rooftop solar net-metering approvals, transformer DT load capacity rules, and PM Surya Ghar subsidy sanctions across TGSPDCL, MSEDCL, BESCOM, UGVCL, UPPCL, KSEB, and TANGEDCO.",
+      path: "/net-metering",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/net-metering` }],
     scripts: [
       {
@@ -54,9 +42,9 @@ export const Route = createFileRoute("/net-metering")({
           "@context": "https://schema.org",
           "@type": "TechArticle",
           headline:
-            "State DISCOM Net-Metering Feasibility, Transformer Load Allocations & PM Surya Ghar Subsidy Guide",
+            "Pan-India State DISCOM Net-Metering Feasibility, Transformer Load Allocations & PM Surya Ghar Subsidy Guide",
           description:
-            "Statutory engineering reference for rooftop solar net-metering approvals across TGSPDCL, APEPDCL, BESCOM, and other Indian electrical utilities.",
+            "Statutory engineering reference for rooftop solar net-metering approvals across Indian state electrical utilities.",
           author: {
             "@type": "Organization",
             name: BRAND_CONFIG.name,
@@ -69,6 +57,52 @@ export const Route = createFileRoute("/net-metering")({
           },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: "How to Get PM Surya Ghar Rooftop Solar Subsidy & DISCOM Net-Metering in India",
+          description:
+            "Five statutory stages from National Portal registration to DBT Central Financial Assistance disbursement.",
+          step: [
+            {
+              "@type": "HowToStep",
+              position: 1,
+              name: "National Portal Registration",
+              text: "Register on pmsuryaghar.gov.in by selecting your State, DISCOM, electricity Consumer Number, and linked mobile.",
+            },
+            {
+              "@type": "HowToStep",
+              position: 2,
+              name: "Technical Feasibility Approval (TFA)",
+              text: "Utility feeder clearance (simplified / deemed feasibility up to 10 kW under Ministry of Power rules).",
+            },
+            {
+              "@type": "HowToStep",
+              position: 3,
+              name: "ALMM & DCR Turnkey Installation",
+              text: "Install DCR TOPCon solar modules and grid-tied or hybrid inverter compliant with IS 875 standards.",
+            },
+            {
+              "@type": "HowToStep",
+              position: 4,
+              name: "Work Completion & Net-Meter Inspection",
+              text: "Upload Work Completion Report and coordinate DISCOM bi-directional meter installation.",
+            },
+            {
+              "@type": "HowToStep",
+              position: 5,
+              name: "Direct Benefit Transfer (DBT)",
+              text: "Receive MNRE Central Financial Assistance up to ₹78,000 directly into your Aadhaar-linked bank account.",
+            },
+          ],
+        }),
+      },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Net-Metering & Subsidies", path: "/net-metering" },
+      ]),
     ],
   }),
   component: NetMeteringPage,
@@ -220,6 +254,210 @@ const REGULATORY_DATA: Record<string, DiscomRegulatoryData> = {
     meterTypeWholeCurrentLimitKw: 20,
     inspectionRequired: true,
   },
+  UGVCL_PGVCL: {
+    code: "UGVCL_PGVCL",
+    name: "Gujarat DISCOMs (UGVCL / PGVCL / MGVCL / DGVCL / Torrent)",
+    state: "Gujarat",
+    portalUrl: "https://suryagujarat.guvnl.com",
+    portalName: "Surya Gujarat / GUVNL Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 18,
+    meterTypeSinglePhaseLimitKw: 6,
+    meterTypeWholeCurrentLimitKw: 20,
+    inspectionRequired: true,
+  },
+  JVVNL: {
+    code: "JVVNL",
+    name: "Rajasthan DISCOMs (JVVNL / AVVNL / JdVVNL)",
+    state: "Rajasthan",
+    portalUrl: "https://energy.rajasthan.gov.in",
+    portalName: "Rajasthan State DISCOM Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  UPPCL: {
+    code: "UPPCL",
+    name: "Uttar Pradesh DISCOMs (UPPCL / PVVNL / MVVNL / KESCO)",
+    state: "Uttar Pradesh",
+    portalUrl: "https://upneda.org.in",
+    portalName: "UPNEDA & UPPCL Smart Net-Meter Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 24,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 20,
+    inspectionRequired: true,
+  },
+  KSEB: {
+    code: "KSEB",
+    name: "Kerala State Electricity Board (KSEBL)",
+    state: "Kerala",
+    portalUrl: "https://ekiran.kseb.in",
+    portalName: "KSEB e-Kiran Solar Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  MPMKVVCL: {
+    code: "MPMKVVCL",
+    name: "Madhya Pradesh DISCOMs (MPMKVVCL / MPPKVVCL / MPPoKVVCL)",
+    state: "Madhya Pradesh",
+    portalUrl: "https://solar.mponline.gov.in",
+    portalName: "MP Urja Vikas Nigam Solar Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  PSPCL: {
+    code: "PSPCL",
+    name: "Punjab State Power Corporation (PSPCL)",
+    state: "Punjab",
+    portalUrl: "https://pspcl.in",
+    portalName: "PSPCL Rooftop Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 7,
+    meterTypeWholeCurrentLimitKw: 20,
+    inspectionRequired: true,
+  },
+  UHBVN: {
+    code: "UHBVN",
+    name: "Haryana North Power Utility (UHBVN)",
+    state: "Haryana",
+    portalUrl: "https://uhbvn.org.in",
+    portalName: "UHBVN Solar Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 20,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 20,
+    inspectionRequired: true,
+  },
+  WBSEDCL: {
+    code: "WBSEDCL",
+    name: "West Bengal DISCOMs (WBSEDCL / CESC)",
+    state: "West Bengal",
+    portalUrl: "https://www.wbsedcl.in",
+    portalName: "WBSEDCL & CESC Net-Metering Desk",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 25,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  NBPDCL_SBPDCL: {
+    code: "NBPDCL_SBPDCL",
+    name: "Bihar DISCOMs (NBPDCL / SBPDCL)",
+    state: "Bihar",
+    portalUrl: "https://nbpdcl.co.in",
+    portalName: "Bihar Smart Meter Solar Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 24,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  TPCODL: {
+    code: "TPCODL",
+    name: "Odisha DISCOMs (TPCODL / TPNODL / TPSODL / TPWODL)",
+    state: "Odisha",
+    portalUrl: "https://www.tpcentralodisha.com",
+    portalName: "TP Odisha Solar Rooftop Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  CSPDCL: {
+    code: "CSPDCL",
+    name: "Chhattisgarh State Power Distribution (CSPDCL)",
+    state: "Chhattisgarh",
+    portalUrl: "https://cspdcl.co.in",
+    portalName: "CSPDCL & CREDA Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 22,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  JBVNL: {
+    code: "JBVNL",
+    name: "Jharkhand Bijli Vitran Nigam (JBVNL)",
+    state: "Jharkhand",
+    portalUrl: "https://jbvnl.co.in",
+    portalName: "JBVNL / JREDA Rooftop Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 24,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  UPCL: {
+    code: "UPCL",
+    name: "Uttarakhand Power Corporation (UPCL)",
+    state: "Uttarakhand",
+    portalUrl: "https://upcl.org",
+    portalName: "UPCL & UREDA Solar Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
+  HPSEBL: {
+    code: "HPSEBL",
+    name: "Himachal Pradesh State Electricity Board (HPSEBL)",
+    state: "Himachal Pradesh",
+    portalUrl: "https://hpseb.in",
+    portalName: "HPSEBL / HIMURJA Net-Metering Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 22,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  JPDCL: {
+    code: "JPDCL",
+    name: "Jammu & Kashmir DISCOMs (JPDCL / KPDCL)",
+    state: "Jammu & Kashmir",
+    portalUrl: "https://jkpdd.net",
+    portalName: "JKPDD / JPDCL Rooftop Solar Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 24,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  APDCL: {
+    code: "APDCL",
+    name: "Assam & North East DISCOMs (APDCL / MePDCL / TSECL)",
+    state: "Assam & North East",
+    portalUrl: "https://apdcl.org",
+    portalName: "APDCL & State SNA Solar Portal",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 24,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 15,
+    inspectionRequired: true,
+  },
+  OTHER_INDIA: {
+    code: "OTHER_INDIA",
+    name: "All Other Indian States & UTs (National Portal)",
+    state: "Pan-India",
+    portalUrl: "https://pmsuryaghar.gov.in",
+    portalName: "PM Surya Ghar National Portal (Pan-India)",
+    maxSolarCapacityPct: 100,
+    sanctionDays: 21,
+    meterTypeSinglePhaseLimitKw: 5,
+    meterTypeWholeCurrentLimitKw: 18,
+    inspectionRequired: true,
+  },
 };
 
 function NetMeteringPage() {
@@ -230,6 +468,7 @@ function NetMeteringPage() {
   const [phone, setPhone] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
   const [hpExtra, setHpExtra] = React.useState("");
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = React.useState<{
@@ -275,6 +514,7 @@ function NetMeteringPage() {
           consent_given: true,
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
+          turnstile_token: turnstileToken,
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -287,6 +527,15 @@ function NetMeteringPage() {
         setIsSubmitting(false);
         return;
       }
+
+      void trackLeadConversion({
+        referenceCode: res.referenceCode,
+        source: "net_metering",
+        propertyTier: "villa",
+        discomCode: selectedCode,
+        phone,
+        isDemo: Boolean(res.isDemo),
+      });
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem(
@@ -334,9 +583,9 @@ function NetMeteringPage() {
           </h1>
 
           <p className="text-[16px] sm:text-[18px] text-[#5C5E62] max-w-2xl mx-auto leading-relaxed">
-            Eliminating regulatory ambiguity. WAVENOX manages 100% of the DISCOM engineering
-            applications, technical feasibility studies, bi-directional meter synchronization, and
-            PM Surya Ghar subsidies for your estate.
+            Eliminating regulatory ambiguity across India. WAVENOX coordinates end-to-end DISCOM
+            applications, technical feasibility reviews, bi-directional meter synchronization, and
+            PM Surya Ghar subsidy workflows for your home.
           </p>
         </section>
 
@@ -473,7 +722,7 @@ function NetMeteringPage() {
           <div className="p-8 sm:p-12 rounded-[8px] bg-[#FFFFFF] border border-[#E3E4E6] shadow-sm space-y-6">
             <div className="text-center space-y-2 max-w-xl mx-auto">
               <div className="text-xs font-bold uppercase tracking-widest text-[#5C5E62]">
-                Instant Feasibility Verification
+                DISCOM Feasibility Inquiry
               </div>
               <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#171A20]">
                 Verify Your Transformer DT Clearance
@@ -626,6 +875,8 @@ function NetMeteringPage() {
                     .
                   </label>
                 </div>
+
+                <TurnstileWidget onToken={setTurnstileToken} />
 
                 {submitError && (
                   <div className="p-3.5 rounded-[6px] bg-[#B42318]/10 border border-[#B42318]/30 text-[#B42318] text-[12px]">

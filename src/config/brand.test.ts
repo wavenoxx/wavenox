@@ -34,9 +34,7 @@ describe("Brand & Business Configuration Integrity (Step 1)", () => {
     expect(defaultConfig.legalName).toBe(DEFAULT_LEGAL_NAME);
     expect(defaultConfig.legalName).not.toContain("Concept");
     expect(defaultConfig.legalEntityVerified).toBe(false);
-    expect(defaultConfig.legalEntityNotice).toContain(
-      "owner verification in platform configuration",
-    );
+    expect(defaultConfig.legalEntityNotice).toContain("verified prior to onboarding");
 
     // Providing a custom legal name without explicit verification flag remains unverified
     const unverifiedCustom = buildBrandConfig({

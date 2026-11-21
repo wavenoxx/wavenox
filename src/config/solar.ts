@@ -69,26 +69,48 @@ export interface SolarSystemTier {
 }
 
 const DISCOM_CODES_ORDER = [
+  // South India (VERIFIED TG/AP first so DISCOMS[0] remains TGSPDCL)
   "TGSPDCL",
   "TGNPDCL",
   "BESCOM",
-  "MSEDCL",
-  "TATA_MUMBAI",
   "APEPDCL",
   "APSPDCL",
+  "TANGEDCO",
+  "KSEB",
+  // West India
+  "MSEDCL",
+  "TATA_MUMBAI",
+  "UGVCL_PGVCL",
+  "GED",
+  // North India
   "BRPL",
   "DHBVN",
-  "GED",
-  "TANGEDCO",
+  "UHBVN",
+  "JVVNL",
+  "UPPCL",
+  "PSPCL",
+  "UPCL",
+  "HPSEBL",
+  "JPDCL",
+  // Central & East India
+  "MPMKVVCL",
+  "CSPDCL",
+  "WBSEDCL",
+  "NBPDCL_SBPDCL",
+  "TPCODL",
+  "JBVNL",
+  // North East & All-India Fallback
+  "APDCL",
+  "OTHER_INDIA",
 ] as const;
 
 /**
- * State-aware DISCOM catalog with explicit VerificationStatus per utility:
+ * State-aware Pan-India DISCOM catalog with explicit VerificationStatus per utility:
  * - VERIFIED: Telangana (TGSPDCL, TGNPDCL) via TGERC FY 2025-26/2026-27 orders & TGERC Reg. No. 1 of 2025,
  *             and Andhra Pradesh (APEPDCL, APSPDCL) via APERC FY 2025-26/2026-27 orders & APERC Reg. No. 4 of 2023.
- * - INDICATIVE: Regional tariff benchmarks for Karnataka, Maharashtra, Delhi-NCR,
- *               Goa, and Tamil Nadu pending individual SERC slab ingestion.
- * - Note: Numeric surplus export settlement rates (exportRateInr) are classified as INDICATIVE across all utilities.
+ * - INDICATIVE: Regional tariff benchmarks covering all Indian states & Union Territories
+ *               pending individual SERC slab ingestion.
+ * - Note: Numeric surplus export settlement rates (exportRateInr) are classified as INDICATIVE unless noted.
  */
 export const DISCOMS: DiscomInfo[] = DISCOM_CODES_ORDER.map((code) => {
   const p = DISCOM_TARIFF_PROFILES[code];
@@ -113,6 +135,38 @@ export const DISCOMS: DiscomInfo[] = DISCOM_CODES_ORDER.map((code) => {
     netMeteringRegulationSource: p.netMeteringRegulationSource,
   };
 });
+
+const REGION_DEFS: { label: string; codes: readonly string[] }[] = [
+  {
+    label: "South India",
+    codes: ["TGSPDCL", "TGNPDCL", "BESCOM", "APEPDCL", "APSPDCL", "TANGEDCO", "KSEB"],
+  },
+  {
+    label: "West India",
+    codes: ["MSEDCL", "TATA_MUMBAI", "UGVCL_PGVCL", "GED"],
+  },
+  {
+    label: "North India",
+    codes: ["BRPL", "DHBVN", "UHBVN", "JVVNL", "UPPCL", "PSPCL", "UPCL", "HPSEBL", "JPDCL"],
+  },
+  {
+    label: "Central & East India",
+    codes: ["MPMKVVCL", "CSPDCL", "WBSEDCL", "NBPDCL_SBPDCL", "TPCODL", "JBVNL"],
+  },
+  {
+    label: "North-East & All-India Fallback",
+    codes: ["APDCL", "OTHER_INDIA"],
+  },
+];
+
+export const DISCOM_REGION_GROUPS: { label: string; discoms: DiscomInfo[] }[] = REGION_DEFS.map(
+  (group) => ({
+    label: group.label,
+    discoms: group.codes
+      .map((code) => DISCOMS.find((d) => d.code === code))
+      .filter((d): d is DiscomInfo => Boolean(d)),
+  }),
+);
 
 export const SOLAR_ASSUMPTIONS = {
   panelWatt: PRODUCTS_CONFIG.module.ratedPowerW, // 580W N-Type TOPCon

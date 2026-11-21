@@ -15,6 +15,7 @@ import { BrandLogo } from "./BrandLogo";
 import { MegaMenu, type MegaMenuCategory } from "./MegaMenu";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { REGION_HUBS } from "@/routes/service-areas";
+import { trackContactClick } from "@/lib/analytics";
 
 type NavItemKey = Exclude<MegaMenuCategory, null>;
 
@@ -191,14 +192,14 @@ const MOBILE_CATEGORIES: MobileCategory[] = [
       },
       {
         title: "Our Story & Delivery Model",
-        description: "Direct engineering without subcontractor handoffs",
+        description: "Unified solar design & authorized partner execution",
         to: "/our-story",
       },
     ],
     actions: [
       { label: "Frequently Asked Questions", to: "/faq" },
       { label: "Calculation Methodology", to: "/legal/disclosures" },
-      { label: "Engineering Case Study", to: "/about-this-project" },
+      { label: "Quick Solar Quote", to: "/solar-quote" },
     ],
     primaryCta: {
       label: "Talk to a Solar Advisor",
@@ -534,7 +535,7 @@ export function Header() {
                   : "bg-[#171A20] text-[#FFFFFF] border border-white/25 hover:bg-[#2B2F36] shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
               }`}
             >
-              Order Solar Panels
+              Get Solar Quote
             </button>
           )}
 
@@ -575,10 +576,11 @@ export function Header() {
             <div className="flex items-center justify-between pb-4 border-b border-[#E3E4E6]">
               <div>
                 <Dialog.Title className="text-[17px] font-medium text-[#171A20]">
-                  Active Solar Grid Jurisdictions
+                  Pan-India Solar Grid Coverage
                 </Dialog.Title>
                 <Dialog.Description className="text-[12px] text-[#5C5E62] mt-0.5">
-                  Select your state to view technical parameters and DISCOM net-metering.
+                  All 28 Indian States &amp; 8 Union Territories · PM Surya Ghar &amp; DISCOM
+                  Net-Metering
                 </Dialog.Description>
               </div>
               <Dialog.Close asChild>
@@ -592,7 +594,13 @@ export function Header() {
               </Dialog.Close>
             </div>
 
-            <div className="py-4 space-y-2 text-[14px] overflow-y-auto max-h-[380px] pr-1">
+            <div className="mt-3 p-3 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[12px] leading-relaxed">
+              Serving homeowners and commercial campuses across{" "}
+              <strong>All 28 States &amp; 8 UTs</strong> with state-wise DISCOM feasibility &amp;
+              net-metering coordination.
+            </div>
+
+            <div className="py-4 space-y-2 text-[14px] overflow-y-auto max-h-[340px] pr-1">
               {REGION_HUBS.map((hub) => (
                 <Link
                   key={hub.id}
@@ -623,18 +631,15 @@ export function Header() {
                 onClick={() => setRegionModalOpen(false)}
                 className="flex-1 h-11 rounded-[4px] border border-[#171A20] text-[#171A20] text-[13px] font-medium flex items-center justify-center hover:bg-[#F4F4F4] transition-colors"
               >
-                View All Jurisdictions
+                All 28 States &amp; UTs
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setRegionModalOpen(false);
-                  openConsultationDrawer();
-                }}
-                className="flex-1 h-11 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium hover:bg-[#171A20]/90 transition-colors cursor-pointer"
+              <Link
+                to="/solar-quote"
+                onClick={() => setRegionModalOpen(false)}
+                className="flex-1 h-11 rounded-[4px] bg-[#171A20] text-[#FFFFFF] text-[13px] font-medium flex items-center justify-center hover:bg-[#171A20]/90 transition-colors"
               >
-                Request Consultation
-              </button>
+                Get Quick Quote
+              </Link>
             </div>
           </Dialog.Content>
         </Dialog.Portal>
@@ -727,11 +732,11 @@ export function Header() {
                         <span>Frequently Asked Questions</span>
                       </Link>
                       <Link
-                        to="/about-this-project"
+                        to="/solar-quote"
                         onClick={() => setMenuOpen(false)}
                         className="min-h-[44px] py-2.5 px-3 rounded-[6px] text-[15px] font-medium text-[#171A20] hover:bg-[#F4F4F4]/80 transition-colors flex items-center justify-between text-left"
                       >
-                        <span>Engineering Case Study</span>
+                        <span>Quick Solar Quote</span>
                       </Link>
                     </div>
                   </nav>
@@ -749,7 +754,7 @@ export function Header() {
                   >
                     <span className="flex items-center gap-2.5 text-[13px] font-medium text-[#171A20]">
                       <Globe className="w-4 h-4 text-[#5C5E62]" />
-                      <span>India (EN) · Active DISCOMs</span>
+                      <span>India (EN) · All States &amp; DISCOMs</span>
                     </span>
                     <ChevronRight className="w-4 h-4 text-[#5C5E62]" />
                   </button>
@@ -769,12 +774,13 @@ export function Header() {
                     }}
                     className="w-full h-11 px-6 rounded-[4px] bg-[#F4F4F4] border border-[#E3E4E6] text-[#171A20] text-[14px] font-medium hover:bg-[#EAEAEA] active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer"
                   >
-                    Order Solar Panels
+                    Get Solar Quote
                   </button>
 
                   <div className="flex items-center justify-center gap-4 text-[13px] text-[#5C5E62] pt-1">
                     <a
                       href={`tel:${BRAND_CONFIG.contact.phone.dial}`}
+                      onClick={() => trackContactClick("phone", "header_mobile_menu")}
                       className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors py-1"
                     >
                       <Phone className="w-3.5 h-3.5 text-[#F57C00]" />
@@ -785,6 +791,7 @@ export function Header() {
                       href={BRAND_CONFIG.contact.whatsapp.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackContactClick("whatsapp", "header_mobile_menu")}
                       className="flex items-center gap-1.5 hover:text-[#171A20] transition-colors py-1"
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-[#F57C00]" />

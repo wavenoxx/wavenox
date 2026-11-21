@@ -19,31 +19,19 @@ import { openConsultationDrawer } from "@/lib/consultation";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
+import { trackLeadConversion } from "@/lib/analytics";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/architects")({
   head: () => ({
-    meta: [
-      {
-        title: `Architectural Solar & Technical Specifications — ${BRAND_CONFIG.name}`,
-      },
-      {
-        name: "description",
-        content:
-          "Turnkey rooftop solar integration for architects, interior designers, and luxury estate builders in India. Zero-penetration structural engineering, concealed conduit raceways, IS 875 (Part 3) 44 m/s wind resilience, and CAD specifications.",
-      },
-      {
-        property: "og:title",
-        content: `Architectural Solar & Technical Specifications — ${BRAND_CONFIG.name}`,
-      },
-      {
-        property: "og:description",
-        content:
-          "Engineering solar into modern architectural design language. Concealed conduits, zero terrace punctures, and IS 875 (Part 3) 44 m/s wind-load design.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/architects` },
-      { property: "og:type", content: "website" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Architectural Solar & Technical Specifications — ${BRAND_CONFIG.name}`,
+      description:
+        "Turnkey rooftop solar integration for architects, interior designers, and residential builders across India. Zero-penetration structural engineering, concealed conduit raceways, IS 875 wind resilience, and CAD specifications.",
+      path: "/architects",
+      imagePath: "/media/home-hero-1600w.jpg",
+    }),
     links: [{ rel: "canonical", href: `${BRAND_CONFIG.domain}/architects` }],
     scripts: [
       {
@@ -62,6 +50,10 @@ export const Route = createFileRoute("/architects")({
           areaServed: "IN",
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "For Architects", path: "/architects" },
+      ]),
     ],
   }),
   component: ArchitectsPage,
@@ -71,7 +63,7 @@ const ARCHITECT_PILLARS = [
   {
     icon: Layers,
     title: "Zero-Puncture Terrace Membrane Preservation",
-    desc: "Our non-penetrative structural ballast clamps and perimeter parapet anchors protect 100% of the builder's waterproofing membrane, engineered to IS 875 standards.",
+    desc: "Our non-penetrative structural ballast clamps and perimeter parapet anchors preserve the building waterproofing membrane without slab core-drilling, engineered to IS 875 standards.",
   },
   {
     icon: Compass,
@@ -80,8 +72,8 @@ const ARCHITECT_PILLARS = [
   },
   {
     icon: Wind,
-    title: "IS 875 (Part 3) Wind Load Engineering (44 m/s)",
-    desc: "Engineered with structural 6005-T5 anodized aluminum and marine-grade SS304 fasteners to meet IS 875 (Part 3) basic wind speed standards (44 m/s in Hyderabad; 50 m/s in coastal zones).",
+    title: "IS 875 (Part 3) Wind Load Engineering (44–55 m/s)",
+    desc: "Engineered with structural 6005-T5 anodized aluminum and marine-grade SS304 fasteners to meet IS 875 (Part 3) regional wind speed standards (44–47 m/s in inland metros and 50–55 m/s in coastal zones).",
   },
 ];
 
@@ -123,6 +115,7 @@ function ArchitectsPage() {
   const [projectLocation, setProjectLocation] = React.useState("");
   const [hpExtra, setHpExtra] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = React.useState<{
@@ -151,7 +144,7 @@ function ArchitectsPage() {
         data: {
           name: contactName.trim(),
           phone: phone.trim(),
-          city: projectLocation.trim() || "Hyderabad",
+          city: projectLocation.trim() || "India",
           property_tier: "villa",
           company_name: studioName.trim(),
           source: "architects",
@@ -159,6 +152,7 @@ function ArchitectsPage() {
           consent_given: true,
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
+          turnstile_token: turnstileToken,
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -171,6 +165,14 @@ function ArchitectsPage() {
         setIsSubmitting(false);
         return;
       }
+
+      void trackLeadConversion({
+        referenceCode: res.referenceCode,
+        source: "architects",
+        propertyTier: "villa",
+        phone: phone.trim(),
+        isDemo: Boolean(res.isDemo),
+      });
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem(
@@ -466,7 +468,7 @@ function ArchitectsPage() {
                       required
                       value={projectLocation}
                       onChange={(e) => setProjectLocation(e.target.value)}
-                      placeholder="e.g. Jubilee Hills, Hyderabad"
+                      placeholder="e.g. Mumbai, Bengaluru, Ahmedabad, Hyderabad"
                       className="w-full h-11 px-3.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[6px] text-[14px] text-[#171A20] placeholder:text-[#9CA3AF] focus:bg-[#FFFFFF] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
                     />
                   </div>
@@ -497,6 +499,8 @@ function ArchitectsPage() {
                     .
                   </label>
                 </div>
+
+                <TurnstileWidget onToken={setTurnstileToken} />
 
                 <button
                   type="submit"

@@ -17,6 +17,7 @@ import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { EnergyFlowSimulator } from "@/components/EnergyFlowSimulator";
 import { BatteryHonestyAdvisor } from "@/components/BatteryHonestyAdvisor";
+import { buildBreadcrumbJsonLd, buildSeoSocialMeta } from "@/lib/seo";
 
 const batteryCap = PRODUCTS_CONFIG.battery.usableCapacityKwh;
 
@@ -25,30 +26,19 @@ export const Route = createFileRoute("/omnigrid")({
     headerTone: "overlay" as const,
   },
   head: () => ({
-    meta: [
-      { title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
-      {
-        name: "description",
-        content: `Whole-home battery storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, instant outage switchover, and intelligent peak-tariff shaving.`,
-      },
-      { property: "og:title", content: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}` },
-      {
-        property: "og:description",
-        content:
-          "Whole-home battery energy storage. Instant blackout protection, zero diesel noise, and 100% solar self-consumption.",
-      },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/omnigrid-hero-1600w.jpg` },
-      { property: "og:url", content: `${BRAND_CONFIG.domain}/omnigrid` },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: buildSeoSocialMeta({
+      title: `Omnigrid Clean Energy Storage — ${BRAND_CONFIG.name}`,
+      description: `High-voltage LFP energy storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, instant outage switchover, and intelligent peak-tariff shaving.`,
+      path: "/omnigrid",
+      imagePath: "/media/omnigrid-hero-1600w.jpg",
+    }),
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/omnigrid` },
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["omnigrid-hero"].mobileWebp,
+        type: "image/avif",
+        imageSrcSet: media["omnigrid-hero"].mobileAvif || media["omnigrid-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -56,8 +46,8 @@ export const Route = createFileRoute("/omnigrid")({
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["omnigrid-hero"].webp,
+        type: "image/avif",
+        imageSrcSet: media["omnigrid-hero"].avif || media["omnigrid-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -68,12 +58,22 @@ export const Route = createFileRoute("/omnigrid")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: `${BRAND_CONFIG.name} Home Clean Energy Storage Architecture`,
+          "@type": "Service",
+          name: `${BRAND_CONFIG.name} Omnigrid Clean Energy Storage`,
           url: `${BRAND_CONFIG.domain}/omnigrid`,
-          description: `Whole-home battery storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, <20ms instant outage switchover, LiFePO4 chemistry, and 10-year warranty.`,
+          description: `High-voltage LFP energy storage engineered for Indian grid resilience. ${batteryCap} kWh usable capacity per unit, <20ms instant outage switchover, LiFePO4 chemistry, and 10-year warranty.`,
+          provider: {
+            "@type": "Organization",
+            name: BRAND_CONFIG.name,
+            url: BRAND_CONFIG.domain,
+          },
+          areaServed: "IN",
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Omnigrid Battery Storage", path: "/omnigrid" },
+      ]),
     ],
   }),
   component: OmnigridPage,

@@ -57,7 +57,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     navAboutProject: "About Project",
     navContact: "WhatsApp Liaison",
 
-    heroTitle: "Architectural Rooftop Solar for Hyderabad Residences",
+    heroTitle: "Architectural Rooftop Solar for Indian Residences",
     heroSubtitle:
       "Engineered elevated pergolas, N-type TOPCon bifacial modules, and DISCOM net-metering synchronization.",
     ctaDesignYours: "Design Yours",
@@ -68,9 +68,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     statSubsidyTitle: "National Subsidy",
     statSubsidyValue: "Up to ₹78,000",
     statGenerationTitle: "Annual Yield",
-    statGenerationValue: "1,490 kWh/kWp",
+    statGenerationValue: "1,490+ kWh/kWp",
     statWindTitle: "Wind Resilience",
-    statWindValue: "44 m/s (IS 875)",
+    statWindValue: "44–50 m/s (IS 875)",
     statDegradationTitle: "25-Yr Performance",
     statDegradationValue: "≥89.4% Output",
 
@@ -81,12 +81,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     terraceProfileLabel: "Terrace Architecture",
     effectiveCostLabel: "Effective Cost After Subsidy",
     twentyFiveYearSavingsLabel: "25-Year Est. Savings",
-    billDecoderHeadline: "TGERC Bill Decoder",
-    satelliteSketcherLabel: "Satellite Terrace Sketcher",
+    billDecoderHeadline: "DISCOM Bill Decoder",
+    satelliteSketcherLabel: "Rooftop Dimensions & Zones",
 
-    discomBadge: "TGSPDCL / TGNPDCL Net-Metering Ready",
+    discomBadge: "Pan-India DISCOM Net-Metering Ready",
     honestTimelineBadge: "Statutory 15–30 Day Processing Target",
-    conceptCreditNotice: "Design portfolio & engineering demonstration concept.",
+    conceptCreditNotice: "Indicative solar modeling subject to site verification.",
   },
   te: {
     navResidential: "నివాస సోలార్",
@@ -97,7 +97,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     navAboutProject: "ప్రాజెక్ట్ వివరాలు",
     navContact: "వాట్సాప్ సంప్రదింపు",
 
-    heroTitle: "హైదరాబాద్ నివాసాల కోసం ఆధునిక రూఫ్‌టాప్ సోలార్ ఆర్కిటెక్చర్",
+    heroTitle: "భారతీయ నివాసాల కోసం ఆధునిక రూఫ్‌టాప్ సోలార్ ఆర్కిటెక్చర్",
     heroSubtitle:
       "ఎలివేటెడ్ టెర్రస్ పెర్గోలా స్ట్రక్చర్లు, N-టైప్ టాప్‌కాన్ బైఫేషియల్ సెల్స్ మరియు డిస్కం నెట్-మీటరింగ్ సమన్వయం.",
     ctaDesignYours: "సిస్టమ్ డిజైన్ చేయండి",
@@ -108,9 +108,9 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     statSubsidyTitle: "జాతీయ సబ్సిడీ",
     statSubsidyValue: "రూ. 78,000 వరకు",
     statGenerationTitle: "వార్షిక ఉత్పత్తి",
-    statGenerationValue: "1,490 kWh/kWp",
+    statGenerationValue: "1,490+ kWh/kWp",
     statWindTitle: "తుఫాను నిరోధకత",
-    statWindValue: "44 m/s (IS 875)",
+    statWindValue: "44–50 m/s (IS 875)",
     statDegradationTitle: "25 ఏళ్ల పనితీరు",
     statDegradationValue: "≥89.4% సామర్థ్యం",
 
@@ -121,12 +121,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
     terraceProfileLabel: "టెర్రస్ ఆర్కిటెక్చర్",
     effectiveCostLabel: "సబ్సిడీ తర్వాత నికర ఖర్చు",
     twentyFiveYearSavingsLabel: "25 ఏళ్ల మొత్తం ఆదా",
-    billDecoderHeadline: "TGERC విద్యుత్ బిల్లు డీకోడర్",
-    satelliteSketcherLabel: "శాటిలైట్ టెర్రస్ స్కెచర్",
+    billDecoderHeadline: "డిస్కం విద్యుత్ బిల్లు డీకోడర్",
+    satelliteSketcherLabel: "రూఫ్‌టాప్ కొలతలు & జోన్‌లు",
 
-    discomBadge: "TGSPDCL / TGNPDCL నెట్-మీటరింగ్ అనుకూలం",
+    discomBadge: "పాన్-ఇండియా డిస్కం నెట్-మీటరింగ్ అనుకూలం",
     honestTimelineBadge: "చట్టబద్ధమైన 15–30 రోజుల ప్రాసెసింగ్ వ్యవధి",
-    conceptCreditNotice: "డిజైన్ పోర్ట్‌ఫోలియో & ఇంజనీరింగ్ ప్రదర్శన కాన్సెప్ట్.",
+    conceptCreditNotice: "సైట్ పరిశీలనకు లోబడి సూచనాత్మక సోలార్ అంచనా.",
   },
 };
 
@@ -155,54 +155,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Sync html lang attribute and hreflang meta links
+  // Sync html lang attribute (do not emit fake localized hreflang links on English-only URLs)
   React.useEffect(() => {
     if (typeof document === "undefined") return;
-
     document.documentElement.lang = language;
-
-    // Ensure hreflang alternate links exist in document head
-    let linkEn = document.querySelector(
-      'link[rel="alternate"][hreflang="en"]',
-    ) as HTMLLinkElement | null;
-    let linkTe = document.querySelector(
-      'link[rel="alternate"][hreflang="te"]',
-    ) as HTMLLinkElement | null;
-    let linkDefault = document.querySelector(
-      'link[rel="alternate"][hreflang="x-default"]',
-    ) as HTMLLinkElement | null;
-
-    const currentUrl = window.location.origin + window.location.pathname;
-
-    if (!linkEn) {
-      linkEn = document.createElement("link");
-      linkEn.rel = "alternate";
-      linkEn.hreflang = "en";
-      linkEn.href = currentUrl;
-      document.head.appendChild(linkEn);
-    } else {
-      linkEn.href = currentUrl;
-    }
-
-    if (!linkTe) {
-      linkTe = document.createElement("link");
-      linkTe.rel = "alternate";
-      linkTe.hreflang = "te";
-      linkTe.href = currentUrl;
-      document.head.appendChild(linkTe);
-    } else {
-      linkTe.href = currentUrl;
-    }
-
-    if (!linkDefault) {
-      linkDefault = document.createElement("link");
-      linkDefault.rel = "alternate";
-      linkDefault.hreflang = "x-default";
-      linkDefault.href = currentUrl;
-      document.head.appendChild(linkDefault);
-    } else {
-      linkDefault.href = currentUrl;
-    }
   }, [language]);
 
   const value = React.useMemo(

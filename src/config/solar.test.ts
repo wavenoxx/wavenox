@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   DISCOMS,
+  DISCOM_REGION_GROUPS,
   SOLAR_ASSUMPTIONS,
   SYSTEM_TIERS,
   calculateGovtSubsidyInr,
@@ -625,5 +626,19 @@ describe("Solar Engine — Roof Feasibility, Financing & Commercial Section 33 T
     expect(zeroTaxEntity.taxAdjustedIllustrativePaybackYears).toBe(
       zeroTaxEntity.operationalPaybackYears,
     );
+  });
+
+  it("covers Pan-India DISCOMs and grouped regional options with TGSPDCL ordered first", () => {
+    expect(DISCOMS[0]?.code).toBe("TGSPDCL");
+    expect(DISCOMS.length).toBe(28);
+    const totalGrouped = DISCOM_REGION_GROUPS.reduce((acc, g) => acc + g.discoms.length, 0);
+    expect(totalGrouped).toBe(28);
+
+    for (const code of ["UGVCL_PGVCL", "JVVNL", "UPPCL", "KSEB", "OTHER_INDIA"]) {
+      const est = estimate({ monthlyBillInr: 8000, discomCode: code });
+      expect(est.status).toBe("INDICATIVE");
+      expect(est.systemKw).toBeGreaterThan(0);
+      expect(est.subsidyInr).toBeGreaterThan(0);
+    }
   });
 });

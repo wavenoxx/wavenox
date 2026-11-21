@@ -38,11 +38,11 @@ export function SunPathSimulator() {
             </span>
           </div>
           <h3 className="text-[24px] sm:text-[30px] font-medium tracking-tight text-[#FFFFFF] mt-1.5">
-            Hyderabad Sun-Path & Shadow Projection
+            Representative Indian Sun-Path &amp; Shadow Projection
           </h3>
           <p className="text-[13px] text-[#9CA3AF] mt-1">
             Astronomical solar coordinates at {HYDERABAD_COORDS.latDeg}° N,{" "}
-            {HYDERABAD_COORDS.lonDeg}° E (Deccan Plateau)
+            {HYDERABAD_COORDS.lonDeg}° E (Representative Central-South India Reference Latitude)
           </p>
         </div>
 

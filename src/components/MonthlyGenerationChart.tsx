@@ -73,30 +73,23 @@ export function MonthlyGenerationChart({
         </div>
 
         {/* City Switcher */}
-        <div
-          role="radiogroup"
-          aria-label="City solar yield profile"
-          className="flex flex-wrap items-center gap-1 self-start sm:self-auto bg-[#FFFFFF] border border-[#E3E4E6] p-1 rounded-[6px]"
-        >
-          {Object.entries(CITY_SOLAR_METEOROLOGY).map(([key, prof]) => {
-            const isSelected = key === selectedCityKey;
-            return (
-              <button
-                key={key}
-                type="button"
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => setSelectedCityKey(key)}
-                className={`px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer ${
-                  isSelected
-                    ? "bg-[#171A20] text-[#FFFFFF]"
-                    : "text-[#5C5E62] hover:text-[#171A20] hover:bg-[#F4F4F4]"
-                }`}
-              >
-                {prof.city}
-              </button>
-            );
-          })}
+        <div className="self-start sm:self-auto shrink-0">
+          <label htmlFor="city-yield-select" className="sr-only">
+            Select Indian city solar yield profile
+          </label>
+          <select
+            id="city-yield-select"
+            aria-label="City solar yield profile"
+            value={selectedCityKey}
+            onChange={(e) => setSelectedCityKey(e.target.value)}
+            className="min-h-[40px] max-w-[260px] px-3 py-1.5 bg-[#FFFFFF] border border-[#E3E4E6] rounded-[6px] text-[13px] font-medium text-[#171A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171A20] cursor-pointer"
+          >
+            {Object.entries(CITY_SOLAR_METEOROLOGY).map(([key, prof]) => (
+              <option key={key} value={key}>
+                {prof.city} ({prof.state})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

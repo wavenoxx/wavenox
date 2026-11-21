@@ -15,7 +15,10 @@ import { media } from "@/config/media";
 import { BRAND_CONFIG } from "@/config/brand";
 import { submitLead } from "@/functions/leads";
 import { getStoredTelemetry } from "@/lib/telemetry";
-import { calculateCommercialSolarAssessment } from "@/config/solar";
+import { trackLeadConversion } from "@/lib/analytics";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
+import { DISCOMS, DISCOM_REGION_GROUPS, calculateCommercialSolarAssessment } from "@/config/solar";
 
 export const Route = createFileRoute("/enterprise")({
   staticData: {
@@ -36,17 +39,26 @@ export const Route = createFileRoute("/enterprise")({
           "High-capacity rooftop solar infrastructure for manufacturing plants, cold storage, and corporate campuses.",
       },
       { property: "og:image", content: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg` },
+      { property: "og:image:width", content: "1600" },
+      { property: "og:image:height", content: "900" },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/enterprise` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: `Commercial Solar — ${BRAND_CONFIG.name}` },
+      {
+        name: "twitter:description",
+        content:
+          "High-capacity rooftop solar infrastructure for manufacturing plants, cold storage, and corporate campuses across India.",
+      },
+      { name: "twitter:image", content: `${BRAND_CONFIG.domain}/media/commercial-hero-1600w.jpg` },
     ],
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/enterprise` },
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["commercial-hero"].mobileWebp,
+        type: "image/avif",
+        imageSrcSet: media["commercial-hero"].mobileAvif || media["commercial-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -54,8 +66,8 @@ export const Route = createFileRoute("/enterprise")({
       {
         rel: "preload",
         as: "image",
-        type: "image/webp",
-        imageSrcSet: media["commercial-hero"].webp,
+        type: "image/avif",
+        imageSrcSet: media["commercial-hero"].avif || media["commercial-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -79,6 +91,10 @@ export const Route = createFileRoute("/enterprise")({
           areaServed: "IN",
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Commercial Solar", path: "/enterprise" },
+      ]),
     ],
   }),
   component: EnterprisePage,
@@ -132,6 +148,7 @@ function EnterprisePage() {
   const [specsOpen, setSpecsOpen] = React.useState(false);
 
   // Commercial Calculator State
+  const [discomCode, setDiscomCode] = React.useState(DISCOMS[0]?.code || "TGSPDCL");
   const [roofAreaSqFt, setRoofAreaSqFt] = React.useState(50000);
   const [commercialTariff, setCommercialTariff] = React.useState(10.5);
   const [commissionedHalf, setCommissionedHalf] = React.useState<"H1" | "H2">("H1");
@@ -141,9 +158,12 @@ function EnterprisePage() {
   const [clientName, setClientName] = React.useState("");
   const [companyName, setCompanyName] = React.useState("");
   const [phone, setPhone] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [pinCode, setPinCode] = React.useState("");
   const [companyWebsite, setCompanyWebsite] = React.useState("");
   const [hpExtra, setHpExtra] = React.useState("");
   const [consentGiven, setConsentGiven] = React.useState(false);
+  const [turnstileToken, setTurnstileToken] = React.useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
@@ -154,12 +174,12 @@ function EnterprisePage() {
     () =>
       calculateCommercialSolarAssessment({
         capacityKw,
-        discomCode: "TGSPDCL",
+        discomCode,
         commissioningWindow: commissionedHalf === "H1" ? "H1_FULL_RATE" : "H2_HALF_RATE",
         corporateTaxRatePct: taxRatePct,
         hasTaxableProfit: taxRatePct > 0,
       }),
-    [capacityKw, commissionedHalf, taxRatePct],
+    [capacityKw, discomCode, commissionedHalf, taxRatePct],
   );
   const annualUnitsKwh = commercialAssessment.annualGenKwh;
   const annualSavingsInr = React.useMemo(
@@ -185,6 +205,17 @@ function EnterprisePage() {
       return;
     }
 
+    if (!city.trim()) {
+      setSubmitError("Please enter your plant city or industrial corridor.");
+      return;
+    }
+
+    const cleanPin = pinCode.trim();
+    if (!cleanPin || !/^[1-9][0-9]{5}$/.test(cleanPin)) {
+      setSubmitError("Please enter a valid 6-digit Indian postal PIN code.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -196,16 +227,19 @@ function EnterprisePage() {
           phone,
           company_name: companyName.trim() || undefined,
           company_url: companyWebsite.trim() || undefined,
-          city: "Hyderabad",
+          city: city.trim(),
+          pin_code: cleanPin,
           property_tier: "commercial",
+          discom_code: discomCode,
           roof_area_sqft: roofAreaSqFt,
           system_kw: capacityKw,
           net_price_inr: estCapexInr,
           source: "enterprise",
-          notes: `Commercial proposal for ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft (~${capacityMw} MWp). Tariff: ₹${commercialTariff}/unit.`,
+          notes: `Commercial proposal for ${roofAreaSqFt.toLocaleString("en-IN")} sq.ft (~${capacityMw} MWp) in ${city.trim()} (${discomCode}). Tariff: ₹${commercialTariff}/unit.`,
           consent_given: true,
           consent_version: "2026-11-v2",
           consent_timestamp: new Date().toISOString(),
+          turnstile_token: turnstileToken,
           hp_extra: hpExtra.trim() || undefined,
           ...telemetry,
         },
@@ -218,6 +252,16 @@ function EnterprisePage() {
         setIsSubmitting(false);
         return;
       }
+
+      void trackLeadConversion({
+        referenceCode: res.referenceCode,
+        source: "enterprise",
+        propertyTier: "commercial",
+        discomCode,
+        valueInr: estCapexInr,
+        phone,
+        isDemo: Boolean(res.isDemo),
+      });
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem(
@@ -713,6 +757,72 @@ function EnterprisePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label
+                        htmlFor="rfp-city"
+                        className="block text-[12px] font-medium text-[#171A20] uppercase tracking-[0.06em] mb-1.5"
+                      >
+                        City / Industrial Area *
+                      </label>
+                      <input
+                        id="rfp-city"
+                        type="text"
+                        required
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="e.g. Pune, Ahmedabad, Gurugram, Hyderabad"
+                        className="w-full min-h-[44px] px-3.5 bg-[#FFFFFF] border border-[#D0D2D6] rounded-[4px] text-[14px] text-[#171A20] placeholder:text-[#8E9094] transition-colors focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="rfp-pincode"
+                        className="block text-[12px] font-medium text-[#171A20] uppercase tracking-[0.06em] mb-1.5"
+                      >
+                        6-Digit PIN Code *
+                      </label>
+                      <input
+                        id="rfp-pincode"
+                        type="text"
+                        required
+                        maxLength={6}
+                        pattern="[1-9][0-9]{5}"
+                        inputMode="numeric"
+                        value={pinCode}
+                        onChange={(e) => setPinCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        placeholder="e.g. 411001"
+                        className="w-full min-h-[44px] px-3.5 bg-[#FFFFFF] border border-[#D0D2D6] rounded-[4px] text-[14px] text-[#171A20] placeholder:text-[#8E9094] transition-colors focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none tabular-nums"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="rfp-discom"
+                      className="block text-[12px] font-medium text-[#171A20] uppercase tracking-[0.06em] mb-1.5"
+                    >
+                      State Utility / DISCOM Jurisdiction
+                    </label>
+                    <select
+                      id="rfp-discom"
+                      value={discomCode}
+                      onChange={(e) => setDiscomCode(e.target.value)}
+                      className="w-full min-h-[44px] px-3.5 bg-[#FFFFFF] border border-[#D0D2D6] rounded-[4px] text-[14px] text-[#171A20] focus:border-[#171A20] focus:ring-1 focus:ring-[#171A20] focus:outline-none"
+                    >
+                      {DISCOM_REGION_GROUPS.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.discoms.map((d) => (
+                            <option key={d.code} value={d.code}>
+                              {d.state} — {d.code} ({d.name})
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label
                         htmlFor="rfp-company"
                         className="block text-[12px] font-medium text-[#171A20] uppercase tracking-[0.06em] mb-1.5"
                       >
@@ -792,6 +902,8 @@ function EnterprisePage() {
                       .
                     </label>
                   </div>
+
+                  <TurnstileWidget onToken={setTurnstileToken} />
 
                   <button
                     type="submit"

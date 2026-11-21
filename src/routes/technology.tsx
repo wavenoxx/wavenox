@@ -24,6 +24,7 @@ import { BRAND_CONFIG } from "@/config/brand";
 import { PRODUCTS_CONFIG } from "@/config/products";
 import { openConsultationDrawer } from "@/lib/consultation";
 import { SunPathSimulator } from "@/components/SunPathSimulator";
+import { buildBreadcrumbJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/technology")({
   head: () => ({
@@ -43,10 +44,22 @@ export const Route = createFileRoute("/technology")({
         content:
           "Explore the structural metallurgy, cell physics, and software engineering behind architectural solar.",
       },
-      { property: "og:image", content: `${BRAND_CONFIG.domain}/media/home-heat-1600w.jpg` },
+      { property: "og:image", content: `${BRAND_CONFIG.domain}${media["home-heat"].src}` },
+      { property: "og:image:width", content: "1376" },
+      { property: "og:image:height", content: "768" },
       { property: "og:url", content: `${BRAND_CONFIG.domain}/technology` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: `Solar Engineering & Technical Standards — ${BRAND_CONFIG.name}`,
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Explore the structural metallurgy, cell physics, and software engineering behind architectural solar.",
+      },
+      { name: "twitter:image", content: `${BRAND_CONFIG.domain}${media["home-heat"].src}` },
     ],
     links: [
       { rel: "canonical", href: `${BRAND_CONFIG.domain}/technology` },
@@ -54,7 +67,8 @@ export const Route = createFileRoute("/technology")({
         rel: "preload",
         as: "image",
         type: "image/avif",
-        href: media["home-heat"].mobileAvif,
+        imageSrcSet: media["home-heat"].mobileAvif || media["home-heat"].mobileWebp,
+        imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
       },
@@ -89,6 +103,10 @@ export const Route = createFileRoute("/technology")({
           },
         }),
       },
+      buildBreadcrumbJsonLd([
+        { name: "Home", path: "/" },
+        { name: "Technology & Standards", path: "/technology" },
+      ]),
     ],
   }),
   component: TechnologyPage,
@@ -118,7 +136,7 @@ function TechnologyPage() {
           {/* Key Engineering Benchmarks Ribbon */}
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {[
-              { value: "22.45%", label: "Module Efficiency", sub: "STC Certified" },
+              { value: "22.45%", label: "Module Efficiency", sub: "STC Datasheet Rating" },
               { value: "-0.30%", label: "Temp. Coeff.", sub: "Per °C Rise" },
               { value: "< 20 ms", label: "Islanding Speed", sub: "Solid-State" },
               { value: "44 m/s", label: "Basic Wind Speed", sub: "IS 875 Part 3 (158 km/h)" },
@@ -299,7 +317,7 @@ function TechnologyPage() {
           </div>
         </section>
 
-        {/* SUN-PATH & SHADOW SIMULATION (REAL HYDERABAD ASTRONOMICAL DATA) */}
+        {/* SUN-PATH & SHADOW SIMULATION (REPRESENTATIVE 17.39°N DECCAN ASTRONOMICAL DATA) */}
         <section className="max-w-5xl mx-auto px-6 mt-20 sm:mt-28">
           <SunPathSimulator />
         </section>
@@ -454,7 +472,7 @@ function TechnologyPage() {
                     <div className="text-[18px] font-semibold text-[#171A20] tabular-nums">
                       6,000 Cycles
                     </div>
-                    <div className="text-[12px] text-[#5C5E62]">LiFePO4 Lifecycle Guarantee</div>
+                    <div className="text-[12px] text-[#5C5E62]">LiFePO4 Warranted Cycle Life</div>
                   </div>
                 </div>
               </div>
@@ -580,7 +598,7 @@ function TechnologyPage() {
               <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-baseline">
                 <span className="font-medium text-[#171A20]">Asset Warranty</span>
                 <span className="sm:col-span-2 text-[#5C5E62]">
-                  25-Year Linear Power Guarantee (≥ 89.4% at Year 25)
+                  25-Year OEM Linear Output Warranty (≥ 89.4% at Year 25)
                 </span>
                 <span className="font-semibold text-[#171A20] sm:text-right">
                   10-Yr Battery / 10-Yr Inverter

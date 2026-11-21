@@ -95,7 +95,7 @@ describe("Phase 1 / Workstream 3 Navigation, MegaMenu & Footer Architecture", ()
     expect(html).not.toContain("/portal");
   });
 
-  it("renders Liquid Glass header with Order Solar Panels CTA on solid sub-pages", () => {
+  it("renders Liquid Glass header with Get Solar Quote CTA on solid sub-pages", () => {
     mockUseRouterState.mockReturnValue({
       location: { pathname: "/deploy" },
       matches: [{ staticData: { headerTone: "solid" } }],
@@ -104,7 +104,7 @@ describe("Phase 1 / Workstream 3 Navigation, MegaMenu & Footer Architecture", ()
     const decoded = html.replace(/&amp;/g, "&");
 
     expect(decoded).toContain("header-liquid-glass-light");
-    expect(decoded).toContain("Order Solar Panels");
+    expect(decoded).toContain("Get Solar Quote");
     expect(decoded).not.toContain("Talk to Advisor");
   });
 

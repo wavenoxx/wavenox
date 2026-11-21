@@ -78,8 +78,8 @@ function DisclosuresPage() {
                 <p className="text-xs text-[#5C5E62] mt-1 leading-relaxed">
                   These figures are indicative models based on standard irradiation data and current
                   DISCOM tariffs. Actual generation depends on shading, tilt angle, local weather,
-                  and rooftop orientation. A certified site survey provides guaranteed engineering
-                  projections.
+                  and rooftop orientation. An on-site engineering survey provides site-verified
+                  projections before final commercial contracting.
                 </p>
               </div>
             </div>

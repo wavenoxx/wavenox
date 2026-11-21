@@ -167,7 +167,7 @@ export const leadSubmissionSchema = z.object({
     })
     .optional()
     .or(z.literal("")),
-  city: z.string().trim().min(1).max(100).default("Hyderabad"),
+  city: z.string().trim().min(1).max(100).default("India"),
   pin_code: z
     .string()
     .trim()
@@ -600,7 +600,7 @@ export async function processLeadSubmission(
         phone: normalizedPhone,
         company_name: validData.company_name?.trim() || null,
         company_url: validData.company_url?.trim() || null,
-        city: validData.city || "Hyderabad",
+        city: validData.city || "India",
         pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
         property_tier: validData.property_tier,
         discom_code: validData.discom_code || null,
@@ -697,7 +697,7 @@ export async function processLeadSubmission(
       reference_code: refCode,
       client_name: validData.name,
       phone: normalizedPhone,
-      city: validData.city || "Hyderabad",
+      city: validData.city || "India",
       pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
       property_tier: validData.property_tier,
       discom_code: validData.discom_code || null,
@@ -771,7 +771,7 @@ export async function processLeadSubmission(
         reference_code: refCode,
         client_name: validData.name,
         phone: normalizedPhone,
-        city: validData.city || "Hyderabad",
+        city: validData.city || "India",
         pin_code: validData.pin_code && validData.pin_code.length === 6 ? validData.pin_code : null,
         property_tier: validData.property_tier,
         discom_code: validData.discom_code || null,
@@ -892,7 +892,7 @@ export async function processLeadSubmission(
               `Email: ${validData.email || "N/A"}`,
               `Company: ${validData.company_name || "N/A"} (${validData.company_url || "N/A"})`,
               `Phone: ${normalizedPhone}`,
-              `City: ${validData.city || "Hyderabad"} (PIN: ${validData.pin_code || "N/A"})`,
+              `City: ${validData.city || "India"} (PIN: ${validData.pin_code || "N/A"})`,
               `Property Tier: ${validData.property_tier}`,
               `Source: ${validData.source}`,
               `System Size: ${validData.system_kw ? `${validData.system_kw} kW` : "N/A"}`,

@@ -66,6 +66,7 @@ export interface AttributionData {
 
 const STORAGE_KEY_V2 = "wavenox_attribution_v2";
 const LEGACY_STORAGE_KEY_V1 = "wavenox_attribution_v1";
+const ATTRIBUTION_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90-day multi-session attribution window
 
 const ALLOWLISTED_QUERY_PARAMS = new Set([
   "utm_source",
@@ -133,7 +134,7 @@ const PAID_SOCIAL_MEDIUMS = new Set([
   "social_paid",
   "cpm",
   "promoted",
-  " boosted",
+  "boosted",
 ]);
 const GENERIC_PAID_MEDIUMS = new Set(["paid", "ads", "ad", "display", "banner", "cpv"]);
 
@@ -492,6 +493,7 @@ interface StoredAttributionStateV2 {
   conversionPath: string;
   initialLandingUrl: string;
   initialReferrer?: string;
+  expiresAt?: number;
 }
 
 function buildAttributionDataFromState(state: StoredAttributionStateV2): AttributionData {
@@ -528,9 +530,69 @@ function buildAttributionDataFromState(state: StoredAttributionStateV2): Attribu
   };
 }
 
+function readRawAttributionItem(key: string): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const sess = window.sessionStorage?.getItem(key);
+    if (sess) return sess;
+  } catch {
+    // Ignore sessionStorage restrictions
+  }
+  try {
+    const local = window.localStorage?.getItem(key);
+    if (local) return local;
+  } catch {
+    // Ignore localStorage restrictions
+  }
+  return null;
+}
+
+function writeRawAttributionItem(key: string, value: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage?.setItem(key, value);
+  } catch {
+    // Ignore sessionStorage restrictions
+  }
+  try {
+    window.localStorage?.setItem(key, value);
+  } catch {
+    // Ignore localStorage restrictions
+  }
+}
+
+function clearExpiredAttributionItems(): void {
+  if (typeof window === "undefined") return;
+  for (const key of [STORAGE_KEY_V2, LEGACY_STORAGE_KEY_V1]) {
+    try {
+      window.sessionStorage?.removeItem(key);
+    } catch {
+      // Ignore
+    }
+    try {
+      window.localStorage?.removeItem(key);
+    } catch {
+      // Ignore
+    }
+  }
+}
+
+function parseActiveV2State(raw: string, nowMs: number): StoredAttributionStateV2 | null {
+  try {
+    const parsed = JSON.parse(raw) as StoredAttributionStateV2;
+    if (typeof parsed.expiresAt === "number" && nowMs > parsed.expiresAt) {
+      clearExpiredAttributionItems();
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Records initial entry or subsequent navigation into sessionStorage.
- * - First touch is captured once per session and NEVER overwritten.
+ * Records initial entry or subsequent navigation into sessionStorage and 90-day localStorage.
+ * - First touch is captured once per attribution window (90 days) and NEVER overwritten.
  * - Last touch is updated ONLY when a subsequent navigation contains explicit campaign parameters (UTMs or click IDs).
  * - Direct navigations or internal SPA transitions never overwrite a prior valid campaign touch.
  */
@@ -539,7 +601,7 @@ export function recordTelemetryNavigation(
   rawReferrer?: string,
   nowIso: string = new Date().toISOString(),
 ): AttributionData {
-  if (typeof window === "undefined" || !window.sessionStorage) {
+  if (typeof window === "undefined" || (!window.sessionStorage && !window.localStorage)) {
     return {};
   }
 
@@ -557,9 +619,12 @@ export function recordTelemetryNavigation(
     }
 
     const sanitizedRef = sanitizeReferrer(activeRef, currentOrigin);
-    const existingRaw = window.sessionStorage.getItem(STORAGE_KEY_V2);
+    const nowMs = Number.isNaN(Date.parse(nowIso)) ? Date.now() : Date.parse(nowIso);
+    const expiresAt = nowMs + ATTRIBUTION_TTL_MS;
+    const existingRaw = readRawAttributionItem(STORAGE_KEY_V2);
+    const parsedState = existingRaw ? parseActiveV2State(existingRaw, nowMs) : null;
 
-    if (!existingRaw) {
+    if (!parsedState) {
       const channel = classifyAttributionChannel({
         utm_source: sanitizedUrl.utm_source,
         utm_medium: sanitizedUrl.utm_medium,
@@ -589,15 +654,15 @@ export function recordTelemetryNavigation(
         conversionPath: sanitizedUrl.landingPath,
         initialLandingUrl: sanitizedUrl.cleanLandingUrl,
         initialReferrer: sanitizedRef?.cleanReferrer,
+        expiresAt,
       };
 
-      window.sessionStorage.setItem(STORAGE_KEY_V2, JSON.stringify(initialState));
+      writeRawAttributionItem(STORAGE_KEY_V2, JSON.stringify(initialState));
       const output = buildAttributionDataFromState(initialState);
-      window.sessionStorage.setItem(LEGACY_STORAGE_KEY_V1, JSON.stringify(output));
+      writeRawAttributionItem(LEGACY_STORAGE_KEY_V1, JSON.stringify(output));
       return output;
     }
 
-    const parsedState = JSON.parse(existingRaw) as StoredAttributionStateV2;
     let updatedLastTouch = parsedState.lastTouch;
 
     // Only update Last Touch when the new URL carries explicit campaign parameters (UTMs or click IDs)
@@ -631,20 +696,21 @@ export function recordTelemetryNavigation(
       firstTouch: parsedState.firstTouch, // Strictly immutable first touch
       lastTouch: updatedLastTouch,
       conversionPath: sanitizedUrl.landingPath,
+      expiresAt,
     };
 
-    window.sessionStorage.setItem(STORAGE_KEY_V2, JSON.stringify(nextState));
+    writeRawAttributionItem(STORAGE_KEY_V2, JSON.stringify(nextState));
     const output = buildAttributionDataFromState(nextState);
-    window.sessionStorage.setItem(LEGACY_STORAGE_KEY_V1, JSON.stringify(output));
+    writeRawAttributionItem(LEGACY_STORAGE_KEY_V1, JSON.stringify(output));
     return output;
   } catch (e) {
-    console.debug("[telemetry] Unable to access sessionStorage:", e);
+    console.debug("[telemetry] Unable to access attribution storage:", e);
     return {};
   }
 }
 
 /**
- * Initializes and persists attribution parameters into sessionStorage.
+ * Initializes and persists attribution parameters into sessionStorage and 90-day localStorage.
  * Safe to invoke on initial load and subsequent SPA navigations.
  */
 export function initTelemetry(): void {
@@ -656,14 +722,17 @@ export function initTelemetry(): void {
  * Automatically updates `conversion_path` to the current route pathname if in a browser context.
  */
 export function getStoredTelemetry(): AttributionData {
-  if (typeof window === "undefined" || !window.sessionStorage) {
+  if (typeof window === "undefined" || (!window.sessionStorage && !window.localStorage)) {
     return {};
   }
 
   try {
-    const storedV2 = window.sessionStorage.getItem(STORAGE_KEY_V2);
+    const storedV2 = readRawAttributionItem(STORAGE_KEY_V2);
     if (storedV2) {
-      const parsed = JSON.parse(storedV2) as StoredAttributionStateV2;
+      const parsed = parseActiveV2State(storedV2, Date.now());
+      if (!parsed) {
+        return {};
+      }
       const currentSanitized = sanitizeAttributionUrl(window.location.href);
       if (currentSanitized?.landingPath) {
         parsed.conversionPath = currentSanitized.landingPath;
@@ -672,7 +741,7 @@ export function getStoredTelemetry(): AttributionData {
     }
 
     // Legacy v1 fallback compatibility (sanitized before returning)
-    const storedV1 = window.sessionStorage.getItem(LEGACY_STORAGE_KEY_V1);
+    const storedV1 = readRawAttributionItem(LEGACY_STORAGE_KEY_V1);
     if (storedV1) {
       const legacy = JSON.parse(storedV1) as AttributionData;
       return sanitizeIncomingAttributionPayload(legacy);
