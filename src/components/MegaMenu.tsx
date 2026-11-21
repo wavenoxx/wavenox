@@ -38,14 +38,14 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Residential Rooftop Solar",
         subtitle: "Independent homes & villas",
-        image: "/media/res-hero-640w.webp",
+        image: "/media/res-hero-v2-640w.webp",
         alt: "WAVENOX architectural rooftop solar array on an Indian residence",
         to: "/residential",
       },
       {
         name: "Elevated Terrace Pergola",
         subtitle: "Shaded walkable terrace living space",
-        image: "/media/res-terrace-640w.webp",
+        image: "/media/res-terrace-v2-640w.webp",
         alt: "Elevated solar pergola canopy over a sandstone terrace",
         to: "/residential",
         hash: "terrace-design",
@@ -53,7 +53,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Severe Weather Engineering",
         subtitle: "Monsoon & 158 km/h wind protection",
-        image: "/media/res-weather-640w.webp",
+        image: "/media/res-weather-v2-640w.webp",
         alt: "Weather-sealed rooftop solar array engineered for monsoon resilience",
         to: "/residential",
         hash: "home-resilience",

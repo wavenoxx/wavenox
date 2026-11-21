@@ -48,24 +48,52 @@ const shots = [
   },
   {
     slug: "res-hero",
-    source: path.resolve(rootDir, "src/assets/luxury_solar_villa.jpg"),
-    mobileCropLeftRatio: 0.56,
-    alt: "Front of a contemporary sandstone and teakwood villa at dusk with a low-profile black solar array along its flat roofline",
+    outputSlug: "res-hero-v2",
+    source: path.resolve(rootDir, "src/assets/res-hero-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/res-hero-mobile-master.webp"),
+    alt: "Contemporary two-storey Indian residence at twilight with a flush all-black rooftop solar array, warm teakwood porch soffit, and illuminated garden lawn",
     isHero: true,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 74,
+    mobileDownscaleQuality: 56,
+    mobileTinyQuality: 44,
   },
   {
     slug: "res-terrace",
-    source: path.resolve(rootDir, "src/assets/res-terrace-master.jpg"),
-    mobileCropLeftRatio: 0.5,
-    alt: "Elevated matte-charcoal structural steel solar pergola canopy casting clean geometric shadow bands across a walkable Indian stone terrace lounge",
+    outputSlug: "res-terrace-v2",
+    source: path.resolve(rootDir, "src/assets/res-terrace-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/res-terrace-mobile-master.webp"),
+    alt: "Elevated matte-charcoal structural steel bifacial solar pergola shading a walkable Indian rooftop terrace dining and lounge deck at golden hour",
     isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
   },
   {
     slug: "res-weather",
-    source: path.resolve(rootDir, "src/assets/res-weather-master.jpg"),
-    mobileSource: path.resolve(rootDir, "src/assets/res-weather-mobile-master.jpg"),
-    alt: "Low-profile all-black monocrystalline solar panels and anodized black mounting rails secured on a flat stone rooftop terrace",
+    outputSlug: "res-weather-v2",
+    source: path.resolve(rootDir, "src/assets/res-weather-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/res-weather-mobile-master.webp"),
+    alt: "Heavy Indian monsoon rain pouring across all-black monocrystalline solar panels with water beading on tempered glass and anodized mounting clamps",
     isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
+  },
+  {
+    slug: "res-turnkey",
+    outputSlug: "res-turnkey-v2",
+    source: path.resolve(rootDir, "src/assets/res-turnkey-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/res-turnkey-mobile-master.webp"),
+    alt: "Completed two-storey contemporary Indian luxury home at golden sunset with an integrated all-black rooftop solar array, glowing glass living spaces, and landscaped lawn",
+    isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
   },
   {
     slug: "omnigrid-hero",
@@ -160,10 +188,12 @@ async function main() {
         if (w === origWidth && path.extname(shot.source).toLowerCase() === ".webp") {
           await fs.writeFile(webpPath, imgBuffer);
         } else {
+          const desktopWebpQuality =
+            w <= 640 ? (shot.desktopSmallQuality ?? 94) : (shot.desktopMidQuality ?? 94);
           await sharp(imgBuffer)
             .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
             .webp({
-              quality: 94,
+              quality: desktopWebpQuality,
               alphaQuality: 100,
               smartSubsample: true,
               effort: 6,
@@ -300,7 +330,10 @@ async function main() {
               kernel: sharp.kernel.lanczos3,
             })
             .webp({
-              quality: 56,
+              quality:
+                mw <= 480
+                  ? (shot.mobileTinyQuality ?? shot.mobileDownscaleQuality ?? 56)
+                  : (shot.mobileDownscaleQuality ?? 56),
               alphaQuality: 100,
               smartSubsample: true,
               effort: 6,

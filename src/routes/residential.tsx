@@ -44,8 +44,8 @@ export const Route = createFileRoute("/residential")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["res-hero"].mobileAvif,
+        type: "image/webp",
+        imageSrcSet: media["res-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -53,8 +53,8 @@ export const Route = createFileRoute("/residential")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["res-hero"].avif,
+        type: "image/webp",
+        imageSrcSet: media["res-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -133,6 +133,7 @@ function ResidentialPage() {
           as="h1"
           media={media["res-hero"]}
           priority={true}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Solar Panels"
@@ -211,6 +212,7 @@ function ResidentialPage() {
         <EditorialFeature
           id="home-resilience"
           media={media["res-weather"]}
+          className="deferred-section"
           title="Built for Indian Monsoons and 45°C Heat"
           lead="N-Type TOPCon dual-glass modules and structural wind frames engineered for coastal gusts, heavy monsoon rains, and peak Deccan summer temperatures."
           actions={
@@ -258,7 +260,7 @@ function ResidentialPage() {
         {/* SEC 3: COORDINATED JOURNEY */}
         <EditorialFeature
           id="turnkey"
-          media={media["home-design"]}
+          media={media["res-turnkey"]}
           title="Coordinated Journey, Start to Finish"
           lead="From 3D roof shading analysis and DISCOM net-metering applications to authorized partner installation and PM Surya Ghar documentation, WAVENOX guides every milestone."
           cardColumns={4}
@@ -288,7 +290,7 @@ function ResidentialPage() {
                 "Inverter cloud onboarding, subsidy tracking assistance, and 25-year OEM linear warranty backing.",
             },
           ]}
-          className="pb-16 sm:pb-24 lg:pb-28"
+          className="deferred-section pb-16 sm:pb-24 lg:pb-28"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
             <TextLink to="/deploy" arrow>

@@ -553,6 +553,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               alt="Architectural residential solar showroom render"
               priority={true}
               fill
+              sizes="(max-width: 420px) 270px, (max-width: 768px) 100vw, 58vw"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/60 via-black/25 to-transparent" />
