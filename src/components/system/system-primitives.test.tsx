@@ -119,6 +119,9 @@ describe("Phase 1 / Workstream 2 Design Foundation Primitives", () => {
       />,
     );
     expect(featureHtml).toContain("aspect-[4/5] md:aspect-[16/9]");
+    expect(featureHtml).toContain("w-full px-0 md:px-8 lg:px-12");
+    expect(featureHtml).toContain("md:max-h-[86dvh]");
+    expect(featureHtml).not.toContain("max-w-[1344px]");
     expect(featureHtml).toContain('media="(max-width: 768px)"');
     expect(featureHtml).toContain('data-theme="light"');
 

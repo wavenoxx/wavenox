@@ -57,26 +57,22 @@ export function EditorialFeature({
         <span id={secondaryAnchorId} className="block scroll-mt-20" aria-hidden="true" />
       )}
 
-      {/* Unobstructed Monumental Media Frame: 16:9 inset on Desktop -> Full-bleed 4:5 on Mobile */}
+      {/* Unobstructed Monumental Media Frame: Full-width with 48px Desktop Inset (calc(100vw - 96px)) -> Full-bleed 4:5 on Mobile */}
       {media && (
-        <div className="w-full max-w-[1344px] mx-auto px-0 md:px-8 lg:px-12">
-          <div className="relative w-full aspect-[4/5] md:aspect-[16/9] overflow-hidden rounded-none md:rounded-[8px] bg-[#F4F4F4]">
+        <div className="w-full px-0 md:px-8 lg:px-12">
+          <div className="relative w-full aspect-[4/5] md:aspect-[16/9] md:max-h-[86dvh] overflow-hidden rounded-none md:rounded-[8px] bg-[#F4F4F4]">
             <Media
               media={media}
               alt={alt}
               objectPosition={objectPosition}
-              sizes="(max-width: 768px) 100vw, (max-width: 1344px) 94vw, 1344px"
+              sizes="(max-width: 768px) 100vw, calc(100vw - 96px)"
               className="w-full h-full object-cover"
             />
           </div>
         </div>
       )}
 
-      {customMedia && (
-        <div className="w-full max-w-[1344px] mx-auto px-5 sm:px-6 md:px-8 lg:px-12">
-          {customMedia}
-        </div>
-      )}
+      {customMedia && <div className="w-full px-5 sm:px-6 md:px-8 lg:px-12">{customMedia}</div>}
 
       {/* Left-Aligned Editorial Typography & Feature Cards within 1116px Architectural Measure */}
       <div

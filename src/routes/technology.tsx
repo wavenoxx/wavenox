@@ -142,12 +142,13 @@ function TechnologyPage() {
         </section>
 
         {/* 2. THE VISUAL HERO CANVAS: N-TYPE CELL ARCHITECTURE */}
-        <section className="max-w-5xl mx-auto px-6 mt-14 sm:mt-16">
-          <div className="relative aspect-[16/9] w-full rounded-[12px] overflow-hidden border border-[#171A20]/10 shadow-2xl">
+        <section className="w-full px-0 md:px-8 lg:px-12 mt-14 sm:mt-16">
+          <div className="relative w-full aspect-[4/5] md:aspect-[16/9] md:max-h-[86dvh] rounded-none md:rounded-[8px] overflow-hidden bg-[#171A20]">
             <Media
               media={media["home-heat"]}
               priority={true}
               fill={true}
+              sizes="(max-width: 768px) 100vw, calc(100vw - 96px)"
               className="w-full h-full object-cover"
               alt="Microscopic architecture of N-type TOPCon bifacial silicon wafer under precision rim lighting"
             />

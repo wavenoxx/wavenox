@@ -87,12 +87,13 @@ function OurStoryPage() {
         </section>
 
         {/* 2. VISUAL CANVAS */}
-        <section className="max-w-5xl mx-auto px-6 mt-12 sm:mt-16">
-          <div className="relative aspect-[16/9] w-full rounded-[12px] overflow-hidden border border-[#171A20]/10 shadow-2xl">
+        <section className="w-full px-0 md:px-8 lg:px-12 mt-12 sm:mt-16">
+          <div className="relative w-full aspect-[4/5] md:aspect-[16/9] md:max-h-[86dvh] rounded-none md:rounded-[8px] overflow-hidden bg-[#F4F4F4]">
             <Media
               media={media["home-design"]}
               priority={true}
               fill={true}
+              sizes="(max-width: 768px) 100vw, calc(100vw - 96px)"
               className="w-full h-full object-cover"
               alt="Architectural solar villa terrace at golden hour"
             />
