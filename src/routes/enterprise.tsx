@@ -45,8 +45,8 @@ export const Route = createFileRoute("/enterprise")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["commercial-hero"].mobileAvif,
+        type: "image/webp",
+        imageSrcSet: media["commercial-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -54,8 +54,8 @@ export const Route = createFileRoute("/enterprise")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["commercial-hero"].avif,
+        type: "image/webp",
+        imageSrcSet: media["commercial-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -264,6 +264,7 @@ function EnterprisePage() {
           as="h1"
           media={media["commercial-hero"]}
           priority={true}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Commercial Solar"
@@ -342,6 +343,7 @@ function EnterprisePage() {
         <EditorialFeature
           id="campus-scale"
           media={media["commercial-campus"]}
+          className="deferred-section"
           title="Engineered for Industrial Roofs & Campuses"
           lead="Standing-seam metal sheds, cold storage depots, and corporate tech parks engineered with non-penetrating clamps, safe O&M walkways, and utility-compliant HT/LT synchronization."
           cards={[
@@ -811,7 +813,8 @@ function EnterprisePage() {
         <Panel
           id="consultation"
           height="closing"
-          media={media["commercial-hero"]}
+          media={media["commercial-closing"]}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Deploy Commercial Solar with WAVENOX"

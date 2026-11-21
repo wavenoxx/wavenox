@@ -80,14 +80,14 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Omnigrid Home Storage",
         subtitle: "14.3 kWh to 28.6 kWh modular battery",
-        image: "/media/omnigrid-hero-640w.webp",
+        image: "/media/omnigrid-hero-v2-640w.webp",
         alt: "WAVENOX Omnigrid LFP battery storage unit in a residential utility room",
         to: "/omnigrid",
       },
       {
         name: "Automatic Outage Switchover",
         subtitle: "Sub-20ms backup when grid power drops",
-        image: "/media/omnigrid-switchover-640w.webp",
+        image: "/media/omnigrid-switchover-v2-640w.webp",
         alt: "Home illuminated reliably by Omnigrid storage during a grid outage",
         to: "/omnigrid",
         hash: "outage-defense",
@@ -95,7 +95,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Solar After Sunset",
         subtitle: "Power evening ACs & home loads",
-        image: "/media/omnigrid-night-640w.webp",
+        image: "/media/omnigrid-night-v2-640w.webp",
         alt: "Warm evening courtyard residence powered by stored solar energy",
         to: "/omnigrid",
         hash: "sunset-power",
@@ -122,14 +122,14 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Commercial & Industrial Solar",
         subtitle: "Manufacturing, logistics & cold storage",
-        image: "/media/commercial-hero-640w.webp",
+        image: "/media/commercial-hero-v2-640w.webp",
         alt: "Commercial rooftop solar array across an industrial facility",
         to: "/enterprise",
       },
       {
         name: "Daytime Tariff Reduction",
         subtitle: "High-yield arrays for peak daytime loads",
-        image: "/media/commercial-industrial-640w.webp",
+        image: "/media/commercial-industrial-v2-640w.webp",
         alt: "High-density industrial solar installation reducing daytime operating tariffs",
         to: "/enterprise",
         hash: "operating-costs",
@@ -137,7 +137,7 @@ const MEGA_MENU_DATA: Record<Exclude<MegaMenuCategory, null>, MegaMenuCategoryCo
       {
         name: "Campus & Enterprise Assessment",
         subtitle: "Custom structural & grid feasibility",
-        image: "/media/commercial-campus-640w.webp",
+        image: "/media/commercial-campus-v2-640w.webp",
         alt: "Corporate and enterprise campus rooftop solar architecture",
         to: "/enterprise",
         hash: "assessment",

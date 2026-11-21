@@ -47,8 +47,8 @@ export const Route = createFileRoute("/omnigrid")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["omnigrid-hero"].mobileAvif,
+        type: "image/webp",
+        imageSrcSet: media["omnigrid-hero"].mobileWebp,
         imageSizes: "(max-width: 420px) 360px, 100vw",
         media: "(max-width: 768px)",
         fetchPriority: "high",
@@ -56,8 +56,8 @@ export const Route = createFileRoute("/omnigrid")({
       {
         rel: "preload",
         as: "image",
-        type: "image/avif",
-        imageSrcSet: media["omnigrid-hero"].avif,
+        type: "image/webp",
+        imageSrcSet: media["omnigrid-hero"].webp,
         imageSizes: "100vw",
         media: "(min-width: 769px)",
         fetchPriority: "high",
@@ -135,6 +135,7 @@ function OmnigridPage() {
           as="h1"
           media={media["omnigrid-hero"]}
           priority={true}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Omnigrid"
@@ -213,6 +214,7 @@ function OmnigridPage() {
         <EditorialFeature
           id="sunset-power"
           media={media["omnigrid-night"]}
+          className="deferred-section"
           title="Use Solar After Sunset"
           lead="Store excess midday rooftop generation to power evening air conditioning, lighting, and family spaces cleanly through the night."
           cards={[
