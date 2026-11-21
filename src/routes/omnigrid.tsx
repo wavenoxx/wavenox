@@ -316,6 +316,7 @@ function OmnigridPage() {
           id="consultation"
           height="closing"
           media={media["home-final"]}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Backup Power Built for Your Home"

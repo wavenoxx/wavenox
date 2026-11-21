@@ -20,17 +20,27 @@ const shots = [
   },
   {
     slug: "home-design",
-    source: path.resolve(rootDir, "src/assets/home-design-master.jpg"),
-    mobileSource: path.resolve(rootDir, "src/assets/home-design-mobile-master.jpg"),
-    alt: "Contemporary Indian residence terrace in warm late-afternoon daylight with a low-profile all-black solar array on a sandstone plinth beside a frameless glass balustrade",
+    outputSlug: "home-design-v2",
+    source: path.resolve(rootDir, "src/assets/home-design-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-design-mobile-master.webp"),
+    alt: "Warm golden-hour Indian rooftop terrace featuring an elevated travertine plinth with a low-profile all-black solar array, concealed black conduit raceways, frameless glass balustrade, and shaded lounge pergola",
     isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
   },
   {
     slug: "home-outage",
-    source: path.resolve(rootDir, "src/assets/home-outage-master.jpg"),
-    mobileSource: path.resolve(rootDir, "src/assets/home-outage-mobile-master.jpg"),
-    alt: "Contemporary two-storey Indian residence warmly lit at blue-hour twilight with a low-profile rooftop solar array",
+    outputSlug: "home-outage-v2",
+    source: path.resolve(rootDir, "src/assets/home-outage-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-outage-mobile-master.webp"),
+    alt: "Contemporary two-storey Indian residence glowing warmly at blue-hour dusk with a flush all-black rooftop solar array, teakwood balcony soffit, illuminated living spaces, and covered carport",
     isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
   },
   {
     slug: "home-heat",
@@ -40,11 +50,15 @@ const shots = [
   },
   {
     slug: "home-final",
-    source: path.resolve(rootDir, "src/assets/home-final-master.jpg"),
-    mobileSource: path.resolve(rootDir, "src/assets/home-final-mobile-master.jpg"),
-    mobileCropPosition: "top",
-    alt: "Contemporary Indian courtyard residence at warm twilight with a low-profile rooftop solar array, glowing interior windows, and reflection pool",
+    outputSlug: "home-final-v2",
+    source: path.resolve(rootDir, "src/assets/home-final-master.webp"),
+    mobileSource: path.resolve(rootDir, "src/assets/home-final-mobile-master.webp"),
+    alt: "Contemporary Indian courtyard residence at golden sunset with a full-span all-black rooftop solar array, glowing glass dining and living gallery, timber slat facade, and illuminated pool",
     isHero: false,
+    preserveNativeWebpHero: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    mobileDownscaleQuality: 84,
   },
   {
     slug: "res-hero",
@@ -180,11 +194,28 @@ const shots = [
     mobileDownscaleQuality: 84,
   },
   {
+    slug: "studio-villa",
+    outputSlug: "studio-villa-v2",
+    source: path.resolve(rootDir, "src/assets/studio-villa-master.webp"),
+    alt: "Contemporary two-storey Indian villa at twilight with a flush all-black rooftop solar array, warm illuminated glass balconies, timber accents, and covered carport",
+    isHero: true,
+    preserveNativeWebpHero: true,
+    preserveSquareAspect: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    desktopTinyQuality: 54,
+  },
+  {
     slug: "studio-estate",
-    source: path.resolve(rootDir, "src/assets/studio-estate-master.jpg"),
-    mobileSource: path.resolve(rootDir, "src/assets/studio-estate-mobile-master.jpg"),
-    alt: "Elevated architectural rooftop perspective of an Indian residence showing two organized south-facing rows of all-black solar panels, tilt frames, central walkway, and parapet setbacks",
+    outputSlug: "studio-estate-v2",
+    source: path.resolve(rootDir, "src/assets/studio-estate-master.webp"),
+    alt: "Elevated golden-hour architectural perspective of a multi-wing contemporary Indian estate featuring organized all-black rooftop solar arrays, timber facade louvers, landscaped gardens, and poolside courtyard",
     isHero: false,
+    preserveNativeWebpHero: true,
+    preserveSquareAspect: true,
+    desktopMidQuality: 92,
+    desktopSmallQuality: 84,
+    desktopTinyQuality: 80,
   },
 ];
 
@@ -215,7 +246,10 @@ async function main() {
 
     if (shot.preserveNativeWebpHero) {
       // Preserve native hero pixels and avoid double-lossy re-encoding at native width.
-      const heroBreakpoints = [640, 1080, origWidth].filter(
+      const baseWidths = shot.preserveSquareAspect
+        ? [480, 640, 1080, origWidth]
+        : [640, 1080, origWidth];
+      const heroBreakpoints = baseWidths.filter(
         (w, idx, arr) => w <= origWidth && arr.indexOf(w) === idx,
       );
       const jpgBreakpoints = [...new Set([...heroBreakpoints, Math.min(1600, origWidth)])].sort(
@@ -230,7 +264,11 @@ async function main() {
           await fs.writeFile(webpPath, imgBuffer);
         } else {
           const desktopWebpQuality =
-            w <= 640 ? (shot.desktopSmallQuality ?? 94) : (shot.desktopMidQuality ?? 94);
+            w <= 480
+              ? (shot.desktopTinyQuality ?? shot.desktopSmallQuality ?? 94)
+              : w <= 640
+                ? (shot.desktopSmallQuality ?? 94)
+                : (shot.desktopMidQuality ?? 94);
           await sharp(imgBuffer)
             .resize(w, h, { fit: "cover", withoutEnlargement: true, kernel: sharp.kernel.lanczos3 })
             .webp({
@@ -304,122 +342,155 @@ async function main() {
     }
 
     // Generate mobile 4:5 portrait (exact 0.80 ratio matching WAVENOX responsive aspect rule)
-    const maxMobileWidth = 800;
-    const maxMobileHeight = 1000;
-
-    let mobileImgBuffer = null;
-    if (shot.mobileSource) {
-      try {
-        mobileImgBuffer = await fs.readFile(shot.mobileSource);
-        console.log(`  Using dedicated mobile master for ${shot.slug}`);
-      } catch {
-        mobileImgBuffer = null;
-      }
-    }
-
-    if (!mobileImgBuffer) {
-      // Focal-calibrated 4:5 (0.80) extraction from master canvas
-      const targetH = origHeight;
-      const targetW = Math.round(targetH * (4 / 5));
-      const extractW = Math.min(targetW, origWidth);
-      const centerRatio = shot.mobileCropLeftRatio ?? 0.5;
-      const maxLeft = Math.max(0, origWidth - extractW);
-      const left = Math.min(
-        maxLeft,
-        Math.max(0, Math.round(origWidth * centerRatio - extractW / 2)),
-      );
-      mobileImgBuffer = await sharp(imgBuffer)
-        .extract({ left, top: 0, width: extractW, height: targetH })
-        .toBuffer();
-    }
-
-    const mobileMeta = await sharp(mobileImgBuffer).metadata();
-    const mobileOrigW = mobileMeta.width || maxMobileWidth;
-    const mobileOrigH = mobileMeta.height || maxMobileHeight;
-    const mobileWidth = shot.preserveNativeWebpHero
-      ? mobileOrigW
-      : Math.min(maxMobileWidth, mobileOrigW);
-    const mobileHeight = shot.preserveNativeWebpHero
-      ? mobileOrigH
-      : Math.round((mobileWidth * 5) / 4);
-
-    const mobileWebpFile = `${filePrefix}-mobile.webp`;
-    const mobileJpgFile = `${filePrefix}-mobile.jpg`;
+    let mobileJpgFile = undefined;
     let mobileAvifFile = null;
-    let mobileWebpSrcSet = `/media/${mobileWebpFile}`;
+    let mobileWebpSrcSet = undefined;
     let mobileAvifSrcSet = undefined;
 
-    if (shot.preserveNativeWebpHero) {
-      const mobileBreakpoints = [480, 640, mobileOrigW].filter(
-        (w, idx, arr) => w <= mobileOrigW && arr.indexOf(w) === idx,
-      );
-      const mobileAspectRatio = mobileOrigW / mobileOrigH;
-      const mobileWebpEntries = [];
-      const isNativeMobileWebp = path.extname(shot.mobileSource || "").toLowerCase() === ".webp";
+    if (!shot.preserveSquareAspect) {
+      const maxMobileWidth = 800;
+      const maxMobileHeight = 1000;
 
-      for (const mw of mobileBreakpoints) {
-        const mh = Math.round(mw / mobileAspectRatio);
-        const mwFile = `${filePrefix}-mobile-${mw}w.webp`;
-        const mwPath = path.join(outDir, mwFile);
-        if (mw === mobileOrigW && isNativeMobileWebp) {
-          await fs.writeFile(mwPath, mobileImgBuffer);
+      let mobileImgBuffer = null;
+      if (shot.mobileSource) {
+        try {
+          mobileImgBuffer = await fs.readFile(shot.mobileSource);
+          console.log(`  Using dedicated mobile master for ${shot.slug}`);
+        } catch {
+          mobileImgBuffer = null;
+        }
+      }
+
+      if (!mobileImgBuffer) {
+        // Focal-calibrated 4:5 (0.80) extraction from master canvas
+        const targetH = origHeight;
+        const targetW = Math.round(targetH * (4 / 5));
+        const extractW = Math.min(targetW, origWidth);
+        const centerRatio = shot.mobileCropLeftRatio ?? 0.5;
+        const maxLeft = Math.max(0, origWidth - extractW);
+        const left = Math.min(
+          maxLeft,
+          Math.max(0, Math.round(origWidth * centerRatio - extractW / 2)),
+        );
+        mobileImgBuffer = await sharp(imgBuffer)
+          .extract({ left, top: 0, width: extractW, height: targetH })
+          .toBuffer();
+      }
+
+      const mobileMeta = await sharp(mobileImgBuffer).metadata();
+      const mobileOrigW = mobileMeta.width || maxMobileWidth;
+      const mobileOrigH = mobileMeta.height || maxMobileHeight;
+      const mobileWidth = shot.preserveNativeWebpHero
+        ? mobileOrigW
+        : Math.min(maxMobileWidth, mobileOrigW);
+      const mobileHeight = shot.preserveNativeWebpHero
+        ? mobileOrigH
+        : Math.round((mobileWidth * 5) / 4);
+
+      const mobileWebpFile = `${filePrefix}-mobile.webp`;
+      mobileJpgFile = `${filePrefix}-mobile.jpg`;
+      mobileWebpSrcSet = `/media/${mobileWebpFile}`;
+
+      if (shot.preserveNativeWebpHero) {
+        const mobileBreakpoints = [480, 640, mobileOrigW].filter(
+          (w, idx, arr) => w <= mobileOrigW && arr.indexOf(w) === idx,
+        );
+        const mobileAspectRatio = mobileOrigW / mobileOrigH;
+        const mobileWebpEntries = [];
+        const isNativeMobileWebp = path.extname(shot.mobileSource || "").toLowerCase() === ".webp";
+
+        for (const mw of mobileBreakpoints) {
+          const mh = Math.round(mw / mobileAspectRatio);
+          const mwFile = `${filePrefix}-mobile-${mw}w.webp`;
+          const mwPath = path.join(outDir, mwFile);
+          if (mw === mobileOrigW && isNativeMobileWebp) {
+            await fs.writeFile(mwPath, mobileImgBuffer);
+          } else {
+            await sharp(mobileImgBuffer)
+              .resize(mw, mh, {
+                fit: "cover",
+                withoutEnlargement: true,
+                kernel: sharp.kernel.lanczos3,
+              })
+              .webp({
+                quality:
+                  mw <= 480
+                    ? (shot.mobileTinyQuality ?? shot.mobileDownscaleQuality ?? 56)
+                    : (shot.mobileDownscaleQuality ?? 56),
+                alphaQuality: 100,
+                smartSubsample: true,
+                effort: 6,
+                preset: "photo",
+              })
+              .toFile(mwPath);
+          }
+          mobileWebpEntries.push(`/media/${mwFile} ${mw}w`);
+        }
+        mobileWebpSrcSet = mobileWebpEntries.join(", ");
+
+        // Also write canonical -mobile.webp and -mobile.jpg fallback
+        if (isNativeMobileWebp) {
+          await fs.writeFile(path.join(outDir, mobileWebpFile), mobileImgBuffer);
         } else {
           await sharp(mobileImgBuffer)
-            .resize(mw, mh, {
-              fit: "cover",
-              withoutEnlargement: true,
-              kernel: sharp.kernel.lanczos3,
-            })
             .webp({
-              quality:
-                mw <= 480
-                  ? (shot.mobileTinyQuality ?? shot.mobileDownscaleQuality ?? 56)
-                  : (shot.mobileDownscaleQuality ?? 56),
+              quality: 94,
               alphaQuality: 100,
               smartSubsample: true,
               effort: 6,
               preset: "photo",
             })
-            .toFile(mwPath);
+            .toFile(path.join(outDir, mobileWebpFile));
         }
-        mobileWebpEntries.push(`/media/${mwFile} ${mw}w`);
-      }
-      mobileWebpSrcSet = mobileWebpEntries.join(", ");
-
-      // Also write canonical -mobile.webp and -mobile.jpg fallback
-      if (isNativeMobileWebp) {
-        await fs.writeFile(path.join(outDir, mobileWebpFile), mobileImgBuffer);
+        await sharp(mobileImgBuffer)
+          .jpeg({ quality: 92, mozjpeg: true })
+          .toFile(path.join(outDir, mobileJpgFile));
       } else {
+        const cropPos = shot.mobileCropPosition || "centre";
+        mobileAvifFile = `${filePrefix}-mobile.avif`;
+        const mobileWidths = [...new Set([480, 640, mobileWidth])]
+          .filter((w) => w <= mobileWidth)
+          .sort((a, b) => a - b);
+
+        const avifEntries = [];
+        const webpEntries = [];
+
+        for (const mw of mobileWidths) {
+          const mh = Math.round((mw * 5) / 4);
+          const mwAvif = `${filePrefix}-mobile-${mw}w.avif`;
+          const mwWebp = `${filePrefix}-mobile-${mw}w.webp`;
+
+          await sharp(mobileImgBuffer)
+            .resize(mw, mh, {
+              fit: "cover",
+              position: cropPos,
+              withoutEnlargement: true,
+              kernel: sharp.kernel.lanczos3,
+            })
+            .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+            .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
+            .toFile(path.join(outDir, mwAvif));
+          avifEntries.push(`/media/${mwAvif} ${mw}w`);
+
+          await sharp(mobileImgBuffer)
+            .resize(mw, mh, {
+              fit: "cover",
+              position: cropPos,
+              withoutEnlargement: true,
+              kernel: sharp.kernel.lanczos3,
+            })
+            .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
+            .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
+            .toFile(path.join(outDir, mwWebp));
+          webpEntries.push(`/media/${mwWebp} ${mw}w`);
+        }
+
+        mobileAvifSrcSet = avifEntries.join(", ");
+        mobileWebpSrcSet = webpEntries.join(", ");
+
+        // Also write canonical -mobile.avif / -mobile.webp / -mobile.jpg fallbacks
         await sharp(mobileImgBuffer)
-          .webp({
-            quality: 94,
-            alphaQuality: 100,
-            smartSubsample: true,
-            effort: 6,
-            preset: "photo",
-          })
-          .toFile(path.join(outDir, mobileWebpFile));
-      }
-      await sharp(mobileImgBuffer)
-        .jpeg({ quality: 92, mozjpeg: true })
-        .toFile(path.join(outDir, mobileJpgFile));
-    } else {
-      const cropPos = shot.mobileCropPosition || "centre";
-      mobileAvifFile = `${filePrefix}-mobile.avif`;
-      const mobileWidths = [...new Set([480, 640, mobileWidth])]
-        .filter((w) => w <= mobileWidth)
-        .sort((a, b) => a - b);
-
-      const avifEntries = [];
-      const webpEntries = [];
-
-      for (const mw of mobileWidths) {
-        const mh = Math.round((mw * 5) / 4);
-        const mwAvif = `${filePrefix}-mobile-${mw}w.avif`;
-        const mwWebp = `${filePrefix}-mobile-${mw}w.webp`;
-
-        await sharp(mobileImgBuffer)
-          .resize(mw, mh, {
+          .resize(mobileWidth, mobileHeight, {
             fit: "cover",
             position: cropPos,
             withoutEnlargement: true,
@@ -427,11 +498,10 @@ async function main() {
           })
           .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
           .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
-          .toFile(path.join(outDir, mwAvif));
-        avifEntries.push(`/media/${mwAvif} ${mw}w`);
+          .toFile(path.join(outDir, mobileAvifFile));
 
         await sharp(mobileImgBuffer)
-          .resize(mw, mh, {
+          .resize(mobileWidth, mobileHeight, {
             fit: "cover",
             position: cropPos,
             withoutEnlargement: true,
@@ -439,45 +509,18 @@ async function main() {
           })
           .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
           .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
-          .toFile(path.join(outDir, mwWebp));
-        webpEntries.push(`/media/${mwWebp} ${mw}w`);
+          .toFile(path.join(outDir, mobileWebpFile));
+
+        await sharp(mobileImgBuffer)
+          .resize(mobileWidth, mobileHeight, {
+            fit: "cover",
+            position: cropPos,
+            withoutEnlargement: true,
+            kernel: sharp.kernel.lanczos3,
+          })
+          .jpeg({ quality: shot.isHero ? 84 : 80, mozjpeg: true })
+          .toFile(path.join(outDir, mobileJpgFile));
       }
-
-      mobileAvifSrcSet = avifEntries.join(", ");
-      mobileWebpSrcSet = webpEntries.join(", ");
-
-      // Also write canonical -mobile.avif / -mobile.webp / -mobile.jpg fallbacks
-      await sharp(mobileImgBuffer)
-        .resize(mobileWidth, mobileHeight, {
-          fit: "cover",
-          position: cropPos,
-          withoutEnlargement: true,
-          kernel: sharp.kernel.lanczos3,
-        })
-        .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-        .avif({ quality: shot.isHero ? 64 : 62, effort: 6 })
-        .toFile(path.join(outDir, mobileAvifFile));
-
-      await sharp(mobileImgBuffer)
-        .resize(mobileWidth, mobileHeight, {
-          fit: "cover",
-          position: cropPos,
-          withoutEnlargement: true,
-          kernel: sharp.kernel.lanczos3,
-        })
-        .sharpen({ sigma: 0.7, m1: 0.05, m2: 1.4, x1: 2 })
-        .webp({ quality: shot.isHero ? 82 : 80, smartSubsample: true })
-        .toFile(path.join(outDir, mobileWebpFile));
-
-      await sharp(mobileImgBuffer)
-        .resize(mobileWidth, mobileHeight, {
-          fit: "cover",
-          position: cropPos,
-          withoutEnlargement: true,
-          kernel: sharp.kernel.lanczos3,
-        })
-        .jpeg({ quality: shot.isHero ? 84 : 80, mozjpeg: true })
-        .toFile(path.join(outDir, mobileJpgFile));
     }
 
     // Master default jpg guaranteed to exist on disk without upscaling
@@ -496,7 +539,7 @@ async function main() {
       height: origHeight,
       avif: desktopAvifList.length > 0 ? desktopAvifList.join(", ") : undefined,
       webp: desktopWebpList.join(", "),
-      mobileSrc: `/media/${mobileJpgFile}`,
+      mobileSrc: mobileJpgFile ? `/media/${mobileJpgFile}` : undefined,
       mobileWebp: mobileWebpSrcSet,
       mobileAvif: mobileAvifSrcSet || (mobileAvifFile ? `/media/${mobileAvifFile}` : undefined),
     });
@@ -527,8 +570,8 @@ ${manifestEntries
     ];
     if (e.avif) lines.push(`    avif: ${JSON.stringify(e.avif)},`);
     if (e.webp) lines.push(`    webp: ${JSON.stringify(e.webp)},`);
-    lines.push(`    mobileSrc: ${JSON.stringify(e.mobileSrc)},`);
-    lines.push(`    mobileWebp: ${JSON.stringify(e.mobileWebp)},`);
+    if (e.mobileSrc) lines.push(`    mobileSrc: ${JSON.stringify(e.mobileSrc)},`);
+    if (e.mobileWebp) lines.push(`    mobileWebp: ${JSON.stringify(e.mobileWebp)},`);
     if (e.mobileAvif) lines.push(`    mobileAvif: ${JSON.stringify(e.mobileAvif)},`);
     return `  ${JSON.stringify(e.slug)}: {\n${lines.join("\n")}\n  } as MediaDescriptor,`;
   })

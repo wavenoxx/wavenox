@@ -327,6 +327,7 @@ function ResidentialPage() {
           id="consultation"
           height="closing"
           media={media["home-final"]}
+          mobileNaturalFrame={true}
           tone="dark"
           className="scroll-mt-14"
           title="Plan Your Residential Solar System"

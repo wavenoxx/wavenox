@@ -538,7 +538,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
     }
   };
 
-  const activeMedia = estateView === "villa" ? media["res-hero"] : media["studio-estate"];
+  const activeMedia = estateView === "villa" ? media["studio-villa"] : media["studio-estate"];
 
   return (
     <div className="w-full bg-[#FFFFFF] text-[#171A20]">
@@ -552,6 +552,7 @@ export function SystemConfigurator({ initialBill, initialDiscom }: SystemConfigu
               media={activeMedia}
               alt="Architectural residential solar showroom render"
               priority={true}
+              preserveDesktopAspect={true}
               fill
               sizes="(max-width: 420px) 270px, (max-width: 768px) 100vw, 58vw"
               className="w-full h-full object-cover"
